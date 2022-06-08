@@ -2,6 +2,7 @@ import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { theme } from "../theme/AppTheme";
 import DashboardPage from "../ui/DashboardPage";
+import HomePage from "../ui/HomePage";
 import LoginPage from "../ui/LoginPage";
 
 const AppRoutes = () => {
@@ -12,6 +13,7 @@ const AppRoutes = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
           </Routes>
         </BrowserRouter>

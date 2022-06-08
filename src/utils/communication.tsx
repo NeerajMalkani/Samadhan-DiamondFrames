@@ -1,8 +1,7 @@
 export const communication = {
-  BlankMobile: "Enter Mobile number",
-  IncorrectEmail: "Incorrect Mobile number",
+  BlankUsername: "Enter User name",
   BlankPassword: "Enter Password",
-  IncorrectEmailOrPassword: "Mobile or Password are incorrect",
+  IncorrectUsernameOrPassword: "User name or Password are incorrect",
 
   NetworkError: "Please check your internet connection",
 };

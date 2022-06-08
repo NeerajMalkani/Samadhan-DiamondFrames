@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../theme/Styles.css";
 import companyLogo from "../assets/logo192.png";
-import { GetSession } from "../utils/sessions";
+import { CreateSession, GetSession } from "../utils/sessions";
 import { communication } from "../utils/communication";
 
 const LoginPage = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
     if (GetSession("isLogin") === "true") {
       navigate(`/dashboard`);
@@ -27,32 +27,33 @@ const LoginPage = () => {
 
   const [loading, setIsLoading] = useState(false);
 
-  const [mobileError, setMobileError] = useState("");
-  const [isMobileError, setIsMobileError] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+  const [isUsernameError, setIsUsernameError] = useState(false);
 
   const [passwordError, setPasswordError] = useState("");
   const [isPasswordError, setIsPasswordError] = useState(false);
 
-  const [mobile, setMobile] = useState("");
+  const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
 
   const loginClick = () => {
     setIsLoading(true);
-    setMobileError(!mobile ? communication.BlankMobile : "");
+    setUsernameError(!username ? communication.BlankUsername : "");
     setPasswordError(!password ? communication.BlankPassword : "");
-    setIsMobileError(!mobile);
+    setIsUsernameError(!username);
     setIsPasswordError(!password);
-    if (mobile && password) {
+    if (username && password) {
       setTimeout(() => {
         setIsLoading(false);
-        navigate(`/dashboard`);
+        CreateSession([{ key: "isLogin", value: "true" }]);
+        navigate(`/home`);
       }, 1000);
     } else {
       setIsLoading(false);
     }
   };
-  const onMobileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMobile(event.target.value);
+  const onusernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setusername(event.target.value);
   };
   const onPasswordeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -64,8 +65,8 @@ const LoginPage = () => {
         <Typography variant="h5" className="text-align-center padding-bottom-32">
           Login to your account
         </Typography>
-        <TextField id="mobile" error={isMobileError} label="Mobile number" placeholder="Mobile number" fullWidth={true} helperText={mobileError} onChange={onMobileChange} />
-        <TextField id="password" type="password" error={isPasswordError} label="Password" placeholder="Password" fullWidth={true} helperText={passwordError} style={{ marginTop: 24 }} onChange={onPasswordeChange} />
+        <TextField id="username" error={isUsernameError} label="User Name" fullWidth={true} helperText={usernameError} onChange={onusernameChange} />
+        <TextField id="password" type="password" error={isPasswordError} label="Password" fullWidth={true} helperText={passwordError} style={{ marginTop: 24 }} onChange={onPasswordeChange} />
         <Link href="#" style={{ alignSelf: "flex-end", marginTop: 16 }}>
           Forgot Password?
         </Link>

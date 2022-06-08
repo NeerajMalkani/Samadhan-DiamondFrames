@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 import { GetSession } from "../utils/sessions";
 
 const DashboardPage = () => {
@@ -10,7 +11,11 @@ const DashboardPage = () => {
       navigate(`/login`);
     }
   });
-  return <Box height="100vh" className="flex-center"></Box>;
+  return (
+    <Box height="100vh">
+      <Header />
+    </Box>
+  );
 };
 
 export default DashboardPage;
