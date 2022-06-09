@@ -409,3 +409,7 @@
 .padding-bottom-64 {
   padding-bottom: 64px;
 }
+
+.cur-pointer{
+  cursor: pointer;
+}
