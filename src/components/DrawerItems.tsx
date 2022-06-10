@@ -1,4 +1,5 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { Dispatch, SetStateAction } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import Diamond from "@mui/icons-material/Diamond";
 import Group from "@mui/icons-material/Group";
 import LocalOffer from "@mui/icons-material/LocalOffer";
@@ -6,7 +7,11 @@ import InsertComment from "@mui/icons-material/InsertComment";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 
-const DrawerItems = () => {
+interface OpenObj {
+  open: [boolean, Dispatch<SetStateAction<boolean>>];
+}
+
+const DrawerItems = ({ open }: OpenObj) => {
   const navigate = useNavigate();
   const arrItems = [
     {
@@ -17,6 +22,7 @@ const DrawerItems = () => {
         {
           title: "Activity",
           navigation: () => {
+            open[1](false);
             setTimeout(() => {
               navigate(`/activity`);
             }, 300);
