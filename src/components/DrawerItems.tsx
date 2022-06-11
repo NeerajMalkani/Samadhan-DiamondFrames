@@ -24,13 +24,21 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/activity`);
+              navigate(`/master/activity`);
             }, 300);
           },
         },
         { title: "Service" },
         { title: "Unit of Sales" },
-        { title: "Category" },
+        {
+          title: "Category",
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/master/category`);
+            }, 300);
+          },
+        },
         { title: "Products" },
         { title: "Service Product" },
         { title: "Department" },
