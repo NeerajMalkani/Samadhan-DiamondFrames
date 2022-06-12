@@ -27,13 +27,14 @@ const AppRoutes = () => {
         <Box sx={{ backgroundColor: "background.default" }}>
           <BrowserRouter>
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/master/activity" element={<ActivityPage />} />
-              <Route path="/master/service" element={<ServicePage />} />
-              <Route path="/master/unit" element={<UnitPage />} />
-              <Route path="/master/category" element={<CategoryPage />} />
+              <Route path="/Samadhan-DiamondFrames/" element={<LoginPage />} />
+              <Route path="/Samadhan-DiamondFrames/login" element={<LoginPage />} />
+              <Route path="/Samadhan-DiamondFrames/home" element={<HomePage />} />
+              <Route path="/Samadhan-DiamondFrames/dashboard" element={<DashboardPage />} />
+              <Route path="/Samadhan-DiamondFrames/master/activity" element={<ActivityPage />} />
+              <Route path="/Samadhan-DiamondFrames/master/service" element={<ServicePage />} />
+              <Route path="/Samadhan-DiamondFrames/master/unit" element={<UnitPage />} />
+              <Route path="/Samadhan-DiamondFrames/master/category" element={<CategoryPage />} />
             </Routes>
           </BrowserRouter>
         </Box>

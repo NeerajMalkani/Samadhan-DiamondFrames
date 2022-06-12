@@ -58,12 +58,12 @@ const Header = () => {
     {
       title: "Home",
       icon: <Home />,
-      click: () => navigate(`/home`),
+      click: () => navigate(`/Samadhan-DiamondFrames/home`),
     },
     {
       title: "Dashboard",
       icon: <Dashboard />,
-      click: () => navigate(`/dashboard`),
+      click: () => navigate(`/Samadhan-DiamondFrames/dashboard`),
     },
     { title: "App Admin", icon: <Person />, click: () => {} },
     {
@@ -71,7 +71,7 @@ const Header = () => {
       icon: <Logout />,
       click: () => {
         RemoveSession("isLogin");
-        navigate(`/login`);
+        navigate(`/Samadhan-DiamondFrames/login`);
       },
     },
   ];
@@ -104,7 +104,7 @@ const Header = () => {
       </AppBar>
       <React.Fragment key="left">
         <SwipeableDrawer anchor="left" open={objOpen[0]} onClose={() => objOpen[1](false)} onOpen={() => objOpen[1](true)}>
-          <DrawerItems open={objOpen}/>
+          <DrawerItems open={objOpen} />
         </SwipeableDrawer>
       </React.Fragment>
     </Box>

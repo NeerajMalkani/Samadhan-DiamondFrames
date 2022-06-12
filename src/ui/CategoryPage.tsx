@@ -9,6 +9,7 @@ import { categoryColumns } from "../utils/tablecolumns";
 import DataContext from "../contexts/DataContexts";
 import { ActivityRoleDataDummy, CategoryDataDummy, ServiceNameDataDummy, UnitOfSalesDataDummy } from "../utils/dummydata";
 import Provider from "../api/Provider";
+import CategoryModel from "../models/CategoryModel";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -22,15 +23,18 @@ const CategoryPage = () => {
   let navigate = useNavigate();
   useEffect(() => {
     if (GetSession("isLogin") !== "true") {
-      navigate(`/login`);
+      navigate(`/Samadhan-DiamondFrames/login`);
     }
   });
 
   const [loading, setLoading] = useState(true);
   const [arn, setArn] = React.useState("--Select--");
   const [sn, setSn] = React.useState("--Select--");
+  const [cn, setCn] = React.useState("");
+  const [hsn, setHsn] = React.useState("");
+  const [gst, setGst] = React.useState("");
   const [unitsOfSales, setUnitsOfSales] = React.useState<string[]>([]);
-  const [display, setDisplay] = React.useState("yes");
+  const [display, setDisplay] = React.useState("Yes");
   const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
   const [serviceNameList, setServiceNameList] = React.useContext(DataContext).serviceNameList;
   const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
@@ -71,7 +75,49 @@ const CategoryPage = () => {
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
-  const handleSubmitClick = () => {};
+  const handleSubmitClick = () => {
+    let isValid: boolean = true;
+    if (arn === "--Select--") {
+      isValid = false;
+    }
+    if (sn === "--Select--") {
+      isValid = false;
+    }
+    if (arn === "--Select--") {
+      isValid = false;
+    }
+    if (cn.trim() === "") {
+      isValid = false;
+    }
+    if (hsn.trim() === "") {
+      isValid = false;
+    }
+    if (gst.trim() === "") {
+      isValid = false;
+    }
+    if (isValid) {
+      setSn("--Select--");
+      setCn("--Select--");
+      setCn("");
+      setHsn("");
+      setGst("");
+      let arrCatList = [...categoryList];
+      const objCat: CategoryModel = {
+        id: categoryList.length + 1,
+        srno: categoryList.length + 1,
+        activityRoleName: arn,
+        serviceName: sn,
+        hsnSacCode: hsn,
+        unitOfSales: "Sq.Ft / Sq.Mtr",
+        gstRate: parseFloat(gst),
+        categoryName: cn,
+        display: display,
+        action: "",
+      };
+      arrCatList.push(objCat);
+      setCategoryList(arrCatList);
+    }
+  };
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -125,21 +171,48 @@ const CategoryPage = () => {
               <b>Category Name</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
-            <TextField fullWidth placeholder="Category Name" variant="outlined" size="small" />
+            <TextField
+              fullWidth
+              placeholder="Category Name"
+              variant="outlined"
+              size="small"
+              value={cn}
+              onChange={(e) => {
+                setCn(e.currentTarget.value);
+              }}
+            />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>HSN / SAC Code</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
-            <TextField fullWidth placeholder="HSN / SAC Code" variant="outlined" size="small" />
+            <TextField
+              fullWidth
+              placeholder="HSN / SAC Code"
+              variant="outlined"
+              size="small"
+              value={hsn}
+              onChange={(e) => {
+                setHsn(e.currentTarget.value);
+              }}
+            />
           </Grid>
           <Grid item xs={4} sm={2} md={3} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>GST Rate (%)</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
-            <TextField fullWidth placeholder="GST Rate (%)" variant="outlined" size="small" />
+            <TextField
+              fullWidth
+              placeholder="GST Rate (%)"
+              variant="outlined"
+              size="small"
+              value={gst}
+              onChange={(e) => {
+                setGst(e.currentTarget.value);
+              }}
+            />
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" sx={{ paddingRight: { xs: 0, sm: 4 } }}>
@@ -175,8 +248,8 @@ const CategoryPage = () => {
             </Typography>
             <FormControl>
               <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
-                <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                <FormControlLabel value="no" control={<Radio />} label="No" />
+                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
@@ -197,7 +270,19 @@ const CategoryPage = () => {
               </Box>
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
-                <DataGrid rows={categoryList} columns={categoryColumns} pageSize={5} rowsPerPageOptions={[5]} disableSelectionOnClick />
+                <DataGrid
+                  rows={categoryList}
+                  columns={categoryColumns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  disableSelectionOnClick
+                  sx={{
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: theme.palette.primary.main,
+                      color: theme.palette.primary.contrastText,
+                    },
+                  }}
+                />
               </div>
             )}
           </Grid>

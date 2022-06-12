@@ -13,7 +13,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (GetSession("isLogin") === "true") {
-      navigate(`/dashboard`);
+      navigate(`/Samadhan-DiamondFrames/dashboard`);
     }
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
@@ -48,7 +48,7 @@ const LoginPage = () => {
         setTimeout(() => {
           setIsLoading(false);
           CreateSession([{ key: "isLogin", value: "true" }]);
-          navigate(`/home`);
+          navigate(`/Samadhan-DiamondFrames/home`);
         }, 1000);
       } else {
         setIsLoading(false);
@@ -64,9 +64,13 @@ const LoginPage = () => {
     }
   };
   const onusernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsernameError("");
+    setIsUsernameError(false);
     setusername(event.target.value);
   };
   const onPasswordeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordError("");
+    setIsPasswordError(false);
     setPassword(event.target.value);
   };
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {

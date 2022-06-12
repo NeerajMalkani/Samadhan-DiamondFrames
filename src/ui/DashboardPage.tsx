@@ -8,7 +8,7 @@ const DashboardPage = () => {
   let navigate = useNavigate();
   useEffect(() => {
     if (GetSession("isLogin") !== "true") {
-      navigate(`/login`);
+      navigate(`/Samadhan-DiamondFrames/login`);
     }
   });
   return (

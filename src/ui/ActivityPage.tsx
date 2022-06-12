@@ -1,16 +1,4 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { KeyboardEvent, useEffect, useState } from "react";
@@ -20,8 +8,8 @@ import Provider from "../api/Provider";
 import { ActivityRoleDataDummy } from "../utils/dummydata";
 import { DataGrid } from "@mui/x-data-grid";
 import { activityColumns } from "../utils/tablecolumns";
-import {communication} from "../utils/communication"; 
-
+import { communication } from "../utils/communication";
+import { theme } from "../theme/AppTheme";
 
 const ActivityPage = () => {
   let navigate = useNavigate();
@@ -34,8 +22,7 @@ const ActivityPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [activityName, setActivityName] = React.useState("");
-  const [activityNamesList, setActivityNamesList] =
-    React.useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
   const [activitynameError, setactivitynameError] = useState("");
   const [isActivitynameError, setIsActivitynameError] = useState(false);
 
@@ -60,8 +47,8 @@ const ActivityPage = () => {
   };
 
   const handleSubmitClick = () => {
-    const IsTextFiledError=activityName.trim() === "";
-    setactivitynameError(IsTextFiledError? communication.BlankActivityName : "");
+    const IsTextFiledError = activityName.trim() === "";
+    setactivitynameError(IsTextFiledError ? communication.BlankActivityName : "");
     setIsActivitynameError(IsTextFiledError);
     if (!IsTextFiledError) {
       const arrActivity = [...activityNamesList];
@@ -70,31 +57,24 @@ const ActivityPage = () => {
         srno: activityNamesList.length + 1,
         activityName: activityName,
         activityDisplay: display,
-        action:"Edit"
+        action: "Edit",
       });
 
       setActivityNamesList(arrActivity);
       setDisplay("Yes");
       setActivityName("");
       setactivitynameError("");
-    setIsActivitynameError(false);
+      setIsActivitynameError(false);
     }
   };
 
-  const handleKeyboardEvent = (e: KeyboardEvent<HTMLImageElement>) => {
-    
-
-  };
+  const handleKeyboardEvent = (e: KeyboardEvent<HTMLImageElement>) => {};
 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Activity</Typography>
           </Grid>
@@ -126,23 +106,14 @@ const ActivityPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </Button>
           </Grid>
@@ -153,13 +124,7 @@ const ActivityPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
@@ -170,6 +135,12 @@ const ActivityPage = () => {
                   pageSize={5}
                   rowsPerPageOptions={[5]}
                   disableSelectionOnClick
+                  sx={{
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: theme.palette.primary.main,
+                      color: theme.palette.primary.contrastText,
+                    },
+                  }}
                 />
               </div>
             )}
