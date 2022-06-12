@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/Samadhan-DiamondFrames/static/css/main.a65d271f.css",
-    "main.js": "/Samadhan-DiamondFrames/static/js/main.b2ea6bc4.js",
+    "main.js": "/Samadhan-DiamondFrames/static/js/main.1bd55bf1.js",
     "static/js/787.7a525077.chunk.js": "/Samadhan-DiamondFrames/static/js/787.7a525077.chunk.js",
     "static/media/logo192.png": "/Samadhan-DiamondFrames/static/media/logo192.49ca58848b021b76a94b.png",
     "index.html": "/Samadhan-DiamondFrames/index.html",
     "main.a65d271f.css.map": "/Samadhan-DiamondFrames/static/css/main.a65d271f.css.map",
-    "main.b2ea6bc4.js.map": "/Samadhan-DiamondFrames/static/js/main.b2ea6bc4.js.map",
+    "main.1bd55bf1.js.map": "/Samadhan-DiamondFrames/static/js/main.1bd55bf1.js.map",
     "787.7a525077.chunk.js.map": "/Samadhan-DiamondFrames/static/js/787.7a525077.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a65d271f.css",
-    "static/js/main.b2ea6bc4.js"
+    "static/js/main.1bd55bf1.js"
   ]
 }
