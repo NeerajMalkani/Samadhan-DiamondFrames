@@ -42,7 +42,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Unit of Sales",
-          isActive: window.location.href.toLowerCase().includes("unitofsales"),
+          isActive: window.location.href.toLowerCase().includes("unit"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
