@@ -8,6 +8,8 @@ import ServiceNameModel from "../models/ServiceNameModel";
 import UnitOfSalesModel from "../models/UnitOfSalesModel";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/ActivityPage";
+import ServicePage from "../ui/ServicePage";
+import UnitPage from "../ui/UnitPage";
 import CategoryPage from "../ui/CategoryPage";
 import DashboardPage from "../ui/DashboardPage";
 import HomePage from "../ui/HomePage";
@@ -29,6 +31,8 @@ const AppRoutes = () => {
               <Route path="/home" element={<HomePage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/master/activity" element={<ActivityPage />} />
+              <Route path="/master/service" element={<ServicePage />} />
+              <Route path="/master/unit" element={<UnitPage />} />
               <Route path="/master/category" element={<CategoryPage />} />
             </Routes>
           </BrowserRouter>

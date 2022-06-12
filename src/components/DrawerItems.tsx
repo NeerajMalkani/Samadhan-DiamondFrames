@@ -30,8 +30,18 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
-        { title: "Service", isActive: window.location.href.toLowerCase().includes("service") },
-        { title: "Unit of Sales", isActive: window.location.href.toLowerCase().includes("unitofsales") },
+        { title: "Service", isActive: window.location.href.toLowerCase().includes("service"), navigation: () => {
+          open[1](false);
+          setTimeout(() => {
+            navigate(`/master/service`);
+          }, 300);
+        }, },
+        { title: "Unit of Sales", isActive: window.location.href.toLowerCase().includes("unitofsales"), navigation: () => {
+          open[1](false);
+          setTimeout(() => {
+            navigate(`/master/unit`);
+          }, 300);
+        }, },
         {
           title: "Category",
           isActive: window.location.href.toLowerCase().includes("category"),
