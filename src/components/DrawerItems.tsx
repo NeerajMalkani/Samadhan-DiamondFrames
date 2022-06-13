@@ -60,7 +60,13 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
-        { title: "Products", isActive: window.location.href.toLowerCase().includes("products") },
+        { title: "Products", isActive: window.location.href.toLowerCase().includes("products"),
+        navigation: () => {
+          open[1](false);
+          setTimeout(() => {
+            navigate(`/Samadhan-DiamondFrames/master/product`);
+          }, 300);
+        }, },
         { title: "Service Product", isActive: window.location.href.toLowerCase().includes("serviceproduct") },
         { title: "Department", isActive: window.location.href.toLowerCase().includes("department") },
         { title: "Location Type", isActive: window.location.href.toLowerCase().includes("locationtype") },

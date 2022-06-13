@@ -6,6 +6,7 @@ import ActivityRoleNameModel from "../models/ActivityRoleModel";
 import CategoryModel from "../models/CategoryModel";
 import ServiceNameModel from "../models/ServiceNameModel";
 import UnitOfSalesModel from "../models/UnitOfSalesModel";
+import ProductModel from "../models/ProductModel";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/ActivityPage";
 import ServicePage from "../ui/ServicePage";
@@ -14,15 +15,17 @@ import CategoryPage from "../ui/CategoryPage";
 import DashboardPage from "../ui/DashboardPage";
 import HomePage from "../ui/HomePage";
 import LoginPage from "../ui/LoginPage";
+import ProductPage from "../ui/Product";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
   const serviceNameList = useState<ServiceNameModel[]>([]);
   const unitOfSalesList = useState<UnitOfSalesModel[]>([]);
   const categoryList = useState<CategoryModel[]>([]);
+  const productList = useState<ProductModel[]>([]);
   return (
     <ThemeProvider theme={theme}>
-      <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList }}>
+      <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList:productList }}>
         <CssBaseline />
         <Box sx={{ backgroundColor: "background.default" }}>
           <BrowserRouter>
@@ -35,6 +38,7 @@ const AppRoutes = () => {
               <Route path="/Samadhan-DiamondFrames/master/service" element={<ServicePage />} />
               <Route path="/Samadhan-DiamondFrames/master/unit" element={<UnitPage />} />
               <Route path="/Samadhan-DiamondFrames/master/category" element={<CategoryPage />} />
+              <Route path="/Samadhan-DiamondFrames/master/product" element={<ProductPage />} />
             </Routes>
           </BrowserRouter>
         </Box>

@@ -134,3 +134,54 @@ export const activityColumns: GridColDef[] = [
         flex: 1,
         minWidth: 100,
       }];
+
+      export const productColumns: GridColDef[] = [
+        {
+          field: "srno",
+          headerName: "Sr. No.",
+          flex: 0.8,
+          minWidth: 60,
+        },
+        {
+          field: "activityRoleName",
+          headerName: "Activity Role Name",
+          flex: 1.8,
+          minWidth: 140,
+        },{
+          field: "serviceName",
+          headerName: "Service Name",
+          flex: 1.8,
+          minWidth: 140,
+        },{
+          field: "categoryName",
+          headerName: "Category Name",
+          flex: 1.8,
+          minWidth: 140,
+        },{
+          field: "productCode",
+          headerName: "Product Code",
+          flex: 1.8,
+          minWidth: 140,
+        },{
+          field: "productName",
+          headerName: "Product Name",
+          flex: 1.8,
+          minWidth: 140,
+        },{
+          field: "unitOfSales",
+          headerName: "Unit of Sale",
+          flex: 1.8,
+          minWidth: 140,
+        },
+        {
+          field: "display",
+          headerName: "Display",
+          flex: 1.8,
+          minWidth: 140,
+        },
+        {
+          field: "action",
+          headerName: "Action",
+          flex: 1,
+          minWidth: 100,
+        }];

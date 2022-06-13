@@ -2,6 +2,7 @@ import ActivityRoleNameModel from "../models/ActivityRoleModel";
 import CategoryModel from "../models/CategoryModel";
 import ServiceNameModel from "../models/ServiceNameModel";
 import UnitOfSalesModel from "../models/UnitOfSalesModel";
+import ProductModel from "../models/ProductModel";
 
 export const ActivityRoleDataDummy: ActivityRoleNameModel[] = [
   { id: 1, srno: 1, activityName: "Dealer", activityDisplay:"Yes", action:"Edit" },
@@ -23,4 +24,11 @@ export const UnitOfSalesDataDummy: UnitOfSalesModel[] = [
   { id: 8, srno: 8, unit: "Packet / No", unitDisplay:"Yes", action:"Edit" },
   { id: 9, srno: 9, unit: "BUCKET / KG", unitDisplay:"Yes", action:"Edit" },
 ];
+
+export const ProductDataDummy: ProductModel[] = [
+  { id: 1, srno: 1, activityRoleName: "",serviceName:"",categoryName:"",productCode:"",productName:"", hsnSacCode:"",gstRate:18,unitOfSales: "Sq.Ft / Sq.Mtr", display:"Yes", action:"Edit" },
+  { id: 2, srno: 2,  activityRoleName: "",serviceName:"",categoryName:"",productCode:"",productName:"",  hsnSacCode:"",gstRate:18,unitOfSales: "R.Ft / R.Mtr", display:"Yes", action:"Edit" },
+  { id: 3, srno: 3,  activityRoleName: "",serviceName:"",categoryName:"",productCode:"",productName:"", hsnSacCode:"",gstRate:18, unitOfSales: "Cu.Ft / Cu.Mtr", display:"Yes", action:"Edit" }
+];
+
 export const CategoryDataDummy: CategoryModel[] = [{ id: 1, srno: 1, activityRoleName: "Dealer", serviceName: "GYPSUM & POP", categoryName: "GI Frames", hsnSacCode: "73089090", gstRate: 18.0, unitOfSales: "Nos / Kg", display: "Yes", action: "" }];
