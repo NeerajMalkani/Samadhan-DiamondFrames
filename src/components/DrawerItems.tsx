@@ -60,7 +60,8 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
-        { title: "Products", isActive: window.location.href.toLowerCase().includes("products"),
+        { title: "Products", 
+        isActive: window.location.href.toLowerCase().includes("product"),
         navigation: () => {
           open[1](false);
           setTimeout(() => {
