@@ -10,6 +10,7 @@ import DataContext from "../contexts/DataContexts";
 import { ActivityRoleDataDummy, CategoryDataDummy, ServiceNameDataDummy, UnitOfSalesDataDummy, ProductDataDummy } from "../utils/dummydata";
 import Provider from "../api/Provider";
 import CategoryModel from "../models/CategoryModel";
+import ProductModel from "../models/ProductModel";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -107,21 +108,21 @@ const ProductPage = () => {
       setCn("");
       setHsn("");
       setGst("");
-      let arrCatList = [...categoryList];
-      const objCat: CategoryModel = {
-        id: categoryList.length + 1,
-        srno: categoryList.length + 1,
-        activityRoleName: arn,
-        serviceName: sn,
-        hsnSacCode: hsn,
-        unitOfSales: "Sq.Ft / Sq.Mtr",
-        gstRate: parseFloat(gst),
-        categoryName: cn,
-        display: display,
-        action: "",
-      };
-      arrCatList.push(objCat);
-      setCategoryList(arrCatList);
+      let arrCatList = [...productList];
+      // const objCat: ProductModel = {
+      //   id: productList.length + 1,
+      //   srno: productList.length + 1,
+      //   activityRoleName: arn,
+      //   serviceName: sn,
+      //   hsnSacCode: hsn,
+      //   unitOfSales: "Sq.Ft / Sq.Mtr",
+      //   gstRate: parseFloat(gst),
+      //   categoryName: cn,
+      //   display: display,
+      //   action: "",
+      // };
+      // arrCatList.push(objCat);
+      // setProductList(arrCatList);
     }
   };
 
@@ -246,7 +247,7 @@ const ProductPage = () => {
                 <b>Unit of Sales</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select
+              <Select 
                 multiple
                 value={unitsOfSales}
                 onChange={handleUnitChange}

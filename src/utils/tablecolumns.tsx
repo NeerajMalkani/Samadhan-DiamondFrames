@@ -81,6 +81,11 @@ export const activityColumns: GridColDef[] = [
     headerName: "Action",
     flex: 1,
     minWidth: 100,
+    renderCell: () => (
+      <a href="" className="clsEdit">
+        Edit
+      </a>
+    ),
   }];
 
   export const serviceColumns: GridColDef[] = [
