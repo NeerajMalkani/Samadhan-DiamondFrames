@@ -41,6 +41,8 @@ const ActivityPage = () => {
   const [isActivitynameError, setIsActivitynameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
 
   useEffect(() => {
     Provider.getAll("shows")
@@ -58,22 +60,6 @@ const ActivityPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(()=>{
-    setTimeout(() => {
-      debugger
-      const arrActivity = [...activityNamesList];
-     SetData(arrActivity[0]);
-    }, 5000);
-  },[]);
-
-  const SetData=(data:ActivityRoleNameModel)=>{
-    debugger;
-    // setDisplay(data.activityDisplay);
-    // setActivityName(data.activityName);
-    setactivitynameError("");
-    setIsActivitynameError(false);
-    setButtonDisplay("unset");
-  }
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -109,8 +95,25 @@ const ActivityPage = () => {
     setactivitynameError("");
     setIsActivitynameError(false);
     setButtonDisplay("none");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
   };
 
+  const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
+    if (type?.toLowerCase() == "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.activityDisplay);
+      setActivityName(a?.activityName);
+      setactivitynameError("");
+      setIsActivitynameError(false);
+      setButtonDisplay("unset");
+
+    }
+    else if (type?.toLowerCase() == "delete") {
+      
+     }
+  }
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -166,7 +169,7 @@ const ActivityPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Button
               variant="contained"
-              sx={{ mt: 1, mr: 1 }}
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
               style={{ display: buttonDisplay }}
               onClick={handleCancelClick}
             >
@@ -199,12 +202,18 @@ const ActivityPage = () => {
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
+                  style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
                   rows={activityNamesList}
                   columns={activityColumns}
                   pageSize={pageSize}
                   rowsPerPageOptions={[5, 10, 20]}
                   onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                   disableSelectionOnClick
+                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                    const arrActivity = [...activityNamesList];
+                    let a: ActivityRoleNameModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    handelEditAndDelete((e.target as any).textContent, a);
+                  }}
                   sx={{
                     "& .MuiDataGrid-columnHeaders": {
                       backgroundColor: theme.palette.primary.main,

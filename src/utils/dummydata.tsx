@@ -5,8 +5,8 @@ import UnitOfSalesModel from "../models/UnitOfSalesModel";
 import ProductModel from "../models/ProductModel";
 
 export const ActivityRoleDataDummy: ActivityRoleNameModel[] = [
-  { id: 1, srno: 1, activityName: "Dealer", activityDisplay:"Yes", action:"Edit" },
-  { id: 2, srno: 2, activityName: "Contractor", activityDisplay:"No", action:"Edit" },
+  { id: 1, srno: 1, activityName: "Dealer", activityDisplay:"Yes", action:"" },
+  { id: 2, srno: 2, activityName: "Contractor", activityDisplay:"No", action:"" },
 ];
 export const ServiceNameDataDummy: ServiceNameModel[] = [
   { id: 1, srno: 1, serviceName: "GYPSUM & POP", serviceDisplay:"Yes", action:"Edit" },
