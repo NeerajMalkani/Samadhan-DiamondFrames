@@ -1,7 +1,6 @@
 export default interface ActivityRoleNameModel {
-  id: number;
-  srno: number;
-  activityName: string;
-  activityDisplay: string;
+   id: number;
+  activityRoleName: string;
+  display: string;
   action: string;
 }

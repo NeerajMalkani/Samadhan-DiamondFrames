@@ -42,6 +42,10 @@ const ProductPage = () => {
     const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
     const [categoryList, setCategoryList] = React.useContext(DataContext).categoryList;
     const [productList, setProductList] = React.useContext(DataContext).productList;
+    const [pageSize, setPageSize] = React.useState<number>(5);
+    const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
+    const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
+    const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
 
     const theme = useTheme();
 
@@ -126,6 +130,32 @@ const ProductPage = () => {
     }
   };
 
+  const handleCancelClick = () => {
+    setDisplay("Yes");
+    // setActivityName("");
+    // setactivitynameError("");
+    // setIsActivitynameError(false);
+    setButtonDisplay("none");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+  };
+
+  const handelEditAndDelete = (type: string | null, a: CategoryModel | undefined) => {
+    if (type?.toLowerCase() == "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.display);
+      // setActivityName(a?.ac);
+      // setactivitynameError("");
+      // setIsActivitynameError(false);
+      // setButtonDisplay("unset");
+
+    }
+    else if (type?.toLowerCase() == "delete") {
+      
+     }
+  }
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -147,8 +177,8 @@ const ProductPage = () => {
                 <MenuItem value="--Select--">--Select--</MenuItem>
                 {activityNamesList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.activityName}>
-                      {item.activityName}
+                    <MenuItem key={index} value={item.activityRoleName}>
+                      {item.activityRoleName}
                     </MenuItem>
                   );
                 })}
@@ -281,6 +311,14 @@ const ProductPage = () => {
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={5} md={8}>
+          <Button
+              variant="contained"
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+              style={{ display: buttonDisplay }}
+              onClick={handleCancelClick}
+            >
+              Cancel
+            </Button>
             <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </Button>
@@ -298,11 +336,18 @@ const ProductPage = () => {
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
+                style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
                   rows={productList}
                   columns={productColumns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
+                  pageSize={pageSize}
+                  rowsPerPageOptions={[5, 10, 20]}
+                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                   disableSelectionOnClick
+                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                    const arrActivity = [...categoryList];
+                    let a: CategoryModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    handelEditAndDelete((e.target as any).textContent, a);
+                  }}
                   sx={{
                     "& .MuiDataGrid-columnHeaders": {
                       backgroundColor: theme.palette.primary.main,

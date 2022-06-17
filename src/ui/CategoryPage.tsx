@@ -39,6 +39,10 @@ const CategoryPage = () => {
   const [serviceNameList, setServiceNameList] = React.useContext(DataContext).serviceNameList;
   const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
   const [categoryList, setCategoryList] = React.useContext(DataContext).categoryList;
+  const [pageSize, setPageSize] = React.useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
   const theme = useTheme();
 
   useEffect(() => {
@@ -119,6 +123,32 @@ const CategoryPage = () => {
     }
   };
 
+  const handleCancelClick = () => {
+    setDisplay("Yes");
+    // setActivityName("");
+    // setactivitynameError("");
+    // setIsActivitynameError(false);
+    setButtonDisplay("none");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+  };
+
+  const handelEditAndDelete = (type: string | null, a: CategoryModel | undefined) => {
+    if (type?.toLowerCase() == "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.display);
+      // setActivityName(a?.ac);
+      // setactivitynameError("");
+      // setIsActivitynameError(false);
+      // setButtonDisplay("unset");
+
+    }
+    else if (type?.toLowerCase() == "delete") {
+      
+     }
+  }
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -140,8 +170,8 @@ const CategoryPage = () => {
                 <MenuItem value="--Select--">--Select--</MenuItem>
                 {activityNamesList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.activityName}>
-                      {item.activityName}
+                    <MenuItem key={index} value={item.activityRoleName}>
+                      {item.activityRoleName}
                     </MenuItem>
                   );
                 })}
@@ -155,10 +185,10 @@ const CategoryPage = () => {
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
               <Select value={sn} onChange={handleSNChange}>
-                <MenuItem value="--Select--">--Select--</MenuItem>
+                <MenuItem disabled={true} value="--Select--">--Select--</MenuItem>
                 {serviceNameList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.serviceName}>
+                    <MenuItem selected={index===1} key={index} value={item.serviceName}>
                       {item.serviceName}
                     </MenuItem>
                   );
@@ -235,7 +265,7 @@ const CategoryPage = () => {
                 MenuProps={MenuProps}
               >
                 {unitOfSalesList.map((units) => (
-                  <MenuItem key={units.id} value={units.unit} style={getStyles(units.unit, unitsOfSales, theme)}>
+                  <MenuItem selected={true} key={units.id} value={units.unit} style={getStyles(units.unit, unitsOfSales, theme)}>
                     {units.unit}
                   </MenuItem>
                 ))}
@@ -253,7 +283,15 @@ const CategoryPage = () => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          <Grid item xs={4} sm={4} md={3}>
+          <Grid item xs={4} sm={8} md={12}>
+          <Button
+              variant="contained"
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+              style={{ display: buttonDisplay }}
+              onClick={handleCancelClick}
+            >
+              Cancel
+            </Button>
             <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </Button>
@@ -271,11 +309,18 @@ const CategoryPage = () => {
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
+                 style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
                   rows={categoryList}
                   columns={categoryColumns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
+                  pageSize={pageSize}
+                  rowsPerPageOptions={[5, 10, 20]}
+                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                   disableSelectionOnClick
+                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                    const arrActivity = [...categoryList];
+                    let a: CategoryModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    handelEditAndDelete((e.target as any).textContent, a);
+                  }}
                   sx={{
                     "& .MuiDataGrid-columnHeaders": {
                       backgroundColor: theme.palette.primary.main,

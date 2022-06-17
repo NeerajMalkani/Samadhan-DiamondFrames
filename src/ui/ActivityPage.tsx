@@ -43,22 +43,39 @@ const ActivityPage = () => {
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
   const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
+  const [actionStatus, setActionStatus] = React.useState<string>("new");
+  const [selectedID, setSelectedID] = React.useState<number>(0);
 
   useEffect(() => {
-    Provider.getAll("shows")
+    FetchData();
+  }, []);
+
+  const FetchData = () => {
+    setSelectedID(0);
+    setActionStatus("new");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+    Provider.getAll("master/getactivityroles")
       .then((response: any) => {
-        if (response) {
-          setActivityNamesList(ActivityRoleDataDummy);
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any) {
+              a.display = a.display ? "Yes" : "No";
+            })
+            setActivityNamesList(response.data.data);
+          }
         } else {
+          //Show snackbar
         }
         setLoading(false);
       })
-      .catch((e: Error) => {
-        console.log(e);
+      .catch((e) => {
         setLoading(false);
+        //Show snackbar
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,16 +89,7 @@ const ActivityPage = () => {
     );
     setIsActivitynameError(IsTextFiledError);
     if (!IsTextFiledError) {
-      const arrActivity = [...activityNamesList];
-      arrActivity.push({
-        id: activityNamesList.length + 1,
-        srno: activityNamesList.length + 1,
-        activityName: activityName,
-        activityDisplay: display,
-        action: "Edit",
-      });
-
-      setActivityNamesList(arrActivity);
+      InsertUpdateData(activityName, display == "Yes");
       setDisplay("Yes");
       setActivityName("");
       setactivitynameError("");
@@ -97,22 +105,78 @@ const ActivityPage = () => {
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
+    setActionStatus("new");
   };
 
   const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
     if (type?.toLowerCase() == "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.activityDisplay);
-      setActivityName(a?.activityName);
+      setDisplay(a.display);
+      setActivityName(a?.activityRoleName);
+      setSelectedID(a.id);
       setactivitynameError("");
       setIsActivitynameError(false);
       setButtonDisplay("unset");
-
+      setActionStatus("edit");
     }
-    else if (type?.toLowerCase() == "delete") {
-      
-     }
+    else if (type?.toLowerCase() == "delete" && a !== undefined) {
+      setSelectedID(a.id);
+      Provider.delete("master/deleteactivityroles", { id:selectedID })
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          FetchData();
+        } else {
+          //Show snackbar
+        }
+        //setIsLoading(false);
+      })
+      .catch((e) => {
+        debugger;
+        console.log(e);
+        //setIsLoading(false);
+        //Show snackbar
+      });
+    }
+  }
+
+  const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
+    if (actionStatus == "new") {
+      Provider.create("master/insertactivityroles", { ActivityRoleName: activityName, Display: checked })
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            //Show snackbar
+          }
+          //setIsLoading(false);
+        })
+        .catch((e) => {
+          debugger;
+          console.log(e);
+          //setIsLoading(false);
+          //Show snackbar
+        });
+    } else if (actionStatus == "edit") {
+      Provider.create("master/updateactivityroles", { id: selectedID, ActivityRoleName: activityName, Display: checked })
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            //Show snackbar
+          }
+          //setIsLoading(false);
+        })
+        .catch((e) => {
+          debugger;
+          console.log(e);
+          //setIsLoading(false);
+          //Show snackbar
+        });
+    }
   }
 
   return (
