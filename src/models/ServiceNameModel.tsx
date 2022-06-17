@@ -1,4 +1,4 @@
-export default interface ActivityRoleNameModel {
+export default interface ServiceRoleNameModel {
   id: number;
   srno: number;
   serviceName: string;

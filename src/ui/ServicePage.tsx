@@ -10,6 +10,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { serviceColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
+import ServiceRoleNameModel from "../models/ServiceNameModel";
 
 const ServicePage = () => {
   let navigate = useNavigate();
@@ -25,6 +26,10 @@ const ServicePage = () => {
   const [serviceNamesList, setServiceNamesList] = React.useContext(DataContext).serviceNameList;
   const [servicenameError, setservicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
+  const [pageSize, setPageSize] = React.useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
 
   useEffect(() => {
     Provider.getAll("shows")
@@ -67,6 +72,32 @@ const ServicePage = () => {
       setIsServicenameError(false);
     }
   };
+
+  const handleCancelClick = () => {
+    setDisplay("Yes");
+    setServiceName("");
+    setservicenameError("");
+    setIsServicenameError(false);
+    setButtonDisplay("none");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+  };
+
+  const handelEditAndDelete = (type: string | null, a: ServiceRoleNameModel | undefined) => {
+    if (type?.toLowerCase() == "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.serviceDisplay);
+      setServiceName(a?.serviceName);
+      setservicenameError("");
+      setIsServicenameError(false);
+      setButtonDisplay("unset");
+
+    }
+    else if (type?.toLowerCase() == "delete") {
+      
+     }
+  }
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -111,6 +142,14 @@ const ServicePage = () => {
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
+          <Button
+              variant="contained"
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+              style={{ display: buttonDisplay }}
+              onClick={handleCancelClick}
+            >
+              Cancel
+            </Button>
             <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </Button>
@@ -128,11 +167,18 @@ const ServicePage = () => {
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
+                  style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
                   rows={serviceNamesList}
                   columns={serviceColumns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
+                  pageSize={pageSize}
+                  rowsPerPageOptions={[5, 10, 20]}
+                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                   disableSelectionOnClick
+                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                    const arrActivity = [...serviceNamesList];
+                    let a: ServiceRoleNameModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    handelEditAndDelete((e.target as any).textContent, a);
+                  }}
                   sx={{
                     "& .MuiDataGrid-columnHeaders": {
                       backgroundColor: theme.palette.primary.main,

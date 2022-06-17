@@ -124,6 +124,19 @@ export const serviceColumns: GridColDef[] = [
     headerName: "Action",
     flex: 1,
     minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button
+          variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr:1 }}>
+          Edit
+        </Button>
+
+        <Button
+          variant="contained" sx={{ backgroundColor: theme.palette.error.main }}>
+          Delete
+        </Button>
+      </Grid>
+    ),
   }];
 
 export const unitColumns: GridColDef[] = [
@@ -150,6 +163,19 @@ export const unitColumns: GridColDef[] = [
     headerName: "Action",
     flex: 1,
     minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button
+          variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr:1 }}>
+          Edit
+        </Button>
+
+        <Button
+          variant="contained" sx={{ backgroundColor: theme.palette.error.main }}>
+          Delete
+        </Button>
+      </Grid>
+    ),
   }];
 
 export const productColumns: GridColDef[] = [

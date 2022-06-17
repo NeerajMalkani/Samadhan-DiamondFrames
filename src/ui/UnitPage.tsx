@@ -10,6 +10,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { unitColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
+import UnitOfSalesModel from "../models/UnitOfSalesModel";
 
 const UnitPage = () => {
   let navigate = useNavigate();
@@ -28,6 +29,10 @@ const UnitPage = () => {
   const [isUnit1Error, setIsunit1Error] = useState(false);
   const [unit2Error, setUnit2Error] = useState("");
   const [isUnit2Error, setIsunit2Error] = useState(false);
+  const [pageSize, setPageSize] = React.useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
 
   useEffect(() => {
     Provider.getAll("shows")
@@ -79,6 +84,39 @@ const UnitPage = () => {
       setIsunit1Error(false);
     }
   };
+
+  const handleCancelClick = () => {
+    setDisplay("Yes");
+    setUnit1Name("");
+    setUnit2Name("");
+    setUnit1Error("");
+    setUnit2Error("");
+    setIsunit2Error(false);
+    setIsunit1Error(false);
+    setButtonDisplay("none");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+  };
+
+  const handelEditAndDelete = (type: string | null, a: UnitOfSalesModel | undefined) => {
+    if (type?.toLowerCase() == "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.unitDisplay);
+      setUnit1Name(a.unit.split("/")[0].trim());
+      setUnit2Name(a.unit.split("/")[1].trim());
+      setUnit1Error("");
+      setUnit2Error("");
+      setIsunit2Error(false);
+      setIsunit1Error(false);
+      setButtonDisplay("unset");
+
+    }
+    else if (type?.toLowerCase() == "delete") {
+
+    }
+  }
+
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -142,6 +180,14 @@ const UnitPage = () => {
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
+            <Button
+              variant="contained"
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+              style={{ display: buttonDisplay }}
+              onClick={handleCancelClick}
+            >
+              Cancel
+            </Button>
             <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </Button>
@@ -159,11 +205,18 @@ const UnitPage = () => {
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
+                  style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
                   rows={unitNamesList}
                   columns={unitColumns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
+                  pageSize={pageSize}
+                  rowsPerPageOptions={[5, 10, 20]}
+                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                   disableSelectionOnClick
+                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                    const arrActivity = [...unitNamesList];
+                    let a: UnitOfSalesModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    handelEditAndDelete((e.target as any).textContent, a);
+                  }}
                   sx={{
                     "& .MuiDataGrid-columnHeaders": {
                       backgroundColor: theme.palette.primary.main,
