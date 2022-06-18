@@ -8,6 +8,7 @@ import {
   Grid,
   Radio,
   RadioGroup,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -41,41 +42,54 @@ const ActivityPage = () => {
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
+    "auto"
+  );
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [selectedID, setSelectedID] = React.useState<number>(0);
+  const [open, setOpen] = React.useState(false);
+  const [snackMsg, setSnackMsg] = React.useState("");
 
   useEffect(() => {
     FetchData();
   }, []);
 
-  const FetchData = () => {
+  const ResetFields = () => {
     setSelectedID(0);
     setActionStatus("new");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
+    setButtonDisplay("none");
+  };
+
+  const FetchData = () => {
+    ResetFields();
     Provider.getAll("master/getactivityroles")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
-            arrList.map(function (a: any) {
+            arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
             });
             setActivityNamesList(response.data.data);
           }
         } else {
-          //Show snackbar
+          // setSnackMsg("your request cannot be processed");
+          // setOpen(true);
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
+        setSnackMsg("your request cannot be processed");
+        setOpen(true);
         //Show snackbar
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }
-
+  };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -107,7 +121,10 @@ const ActivityPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
+  const handelEditAndDelete = (
+    type: string | null,
+    a: ActivityRoleNameModel | undefined
+  ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -118,65 +135,68 @@ const ActivityPage = () => {
       setIsActivitynameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }
-    else if (type?.toLowerCase() === "delete" && a !== undefined) {
+    } else if (type?.toLowerCase() === "delete" && a !== undefined) {
       setSelectedID(a.id);
-      Provider.deleteAllParams("master/deleteactivityroles", { ID:selectedID })
-      .then((response) => {
-        debugger;
-        if (response.data && response.data.code === 200) {
-          FetchData();
-        } else {
-          //Show snackbar
-        }
-        //setIsLoading(false);
-      })
-      .catch((e) => {
-        debugger;
-        console.log(e);
-        //setIsLoading(false);
-        //Show snackbar
-      });
+      Provider.deleteAllParams("master/deleteactivityroles", { ID: a.id })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
+        });
     }
-  }
+  };
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertactivityroles", { ActivityRoleName: paramActivityName, Display: checked })
+      Provider.create("master/insertactivityroles", {
+        ActivityRoleName: paramActivityName,
+        Display: checked,
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
           //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateactivityroles", { id: selectedID, ActivityRoleName: paramActivityName, Display: checked })
+      Provider.create("master/updateactivityroles", {
+        id: selectedID,
+        ActivityRoleName: paramActivityName,
+        Display: checked,
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
-          //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     }
-  }
+  };
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -265,7 +285,10 @@ const ActivityPage = () => {
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
-                  style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
+                  style={{
+                    opacity: dataGridOpacity,
+                    pointerEvents: dataGridPointer,
+                  }}
                   rows={activityNamesList}
                   columns={activityColumns}
                   pageSize={pageSize}
@@ -274,7 +297,10 @@ const ActivityPage = () => {
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...activityNamesList];
-                    let a: ActivityRoleNameModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    let a: ActivityRoleNameModel | undefined = arrActivity.find(
+                      (el) => el.id === param.row.id
+                    );
+
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
                   sx={{
@@ -289,6 +315,14 @@ const ActivityPage = () => {
           </Grid>
         </Grid>
       </Container>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        message={snackMsg}
+        onClose={() => {
+          setOpen(false);
+        }}
+      />
     </Box>
   );
 };

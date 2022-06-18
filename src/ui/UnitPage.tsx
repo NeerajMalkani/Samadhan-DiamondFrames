@@ -1,4 +1,17 @@
-import { Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { KeyboardEvent, useEffect, useState } from "react";
@@ -24,7 +37,8 @@ const UnitPage = () => {
   const [display, setDisplay] = React.useState("Yes");
   const [unit1Name, setUnit1Name] = React.useState("");
   const [unit2Name, setUnit2Name] = React.useState("");
-  const [unitNamesList, setUnitNamesList] = React.useContext(DataContext).unitOfSalesList;
+  const [unitNamesList, setUnitNamesList] =
+    React.useContext(DataContext).unitOfSalesList;
   const [unit1Error, setUnit1Error] = useState("");
   const [isUnit1Error, setIsunit1Error] = useState(false);
   const [unit2Error, setUnit2Error] = useState("");
@@ -32,42 +46,38 @@ const UnitPage = () => {
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
+    "auto"
+  );
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [selectedID, setSelectedID] = React.useState<number>(0);
 
-  // useEffect(() => {
-  //   Provider.getAll("shows")
-  //     .then((response: any) => {
-  //       if (response) {
-  //         setUnitNamesList(UnitOfSalesDataDummy);
-  //       } else {
-  //       }
-  //       setLoading(false);
-  //     })
-  //     .catch((e: Error) => {
-  //       console.log(e);
-  //       setLoading(false);
-  //     });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  const [open, setOpen] = React.useState(false);
+  const [snackMsg, setSnackMsg] = React.useState("");
 
   useEffect(() => {
     FetchData();
   }, []);
 
-  const FetchData = () => {
+  const ResetFields = () => {
     setSelectedID(0);
     setActionStatus("new");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
+    setButtonDisplay("none");
+  };
+
+  const FetchData = () => {
+    ResetFields();
     Provider.getAll("master/getunitofsales")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
-            arrList.map(function (a: any) {
+            arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
             });
             setUnitNamesList(response.data.data);
           }
@@ -78,11 +88,11 @@ const UnitPage = () => {
       })
       .catch((e) => {
         setLoading(false);
-        //Show snackbar
+        setSnackMsg("your request cannot be processed");
+        setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }
-
+  };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -99,17 +109,7 @@ const UnitPage = () => {
     setIsunit2Error(IsTextFiledError2);
 
     if (!IsTextFiledError1 && !IsTextFiledError2) {
-      // const arrActivity = [...unitNamesList];
-      // arrActivity.push({
-      //   id: unitNamesList.length + 1,
-      //   srno: unitNamesList.length + 1,
-      //   unit: unit1Name + " / " + unit2Name,
-      //   unitDisplay: display,
-      //   action: "Edit",
-      // });
-
-      // setUnitNamesList(arrActivity);
-      InsertUpdateData((unit1Name + " / " + unit2Name), display === "Yes");
+      InsertUpdateData(unit1Name + " / " + unit2Name, display === "Yes");
       setDisplay("Yes");
       setUnit1Name("");
       setUnit2Name("");
@@ -133,26 +133,10 @@ const UnitPage = () => {
     setDataGridPointer("auto");
   };
 
-  // const handelEditAndDelete = (type: string | null, a: UnitOfSalesModel | undefined) => {
-  //   if (type?.toLowerCase() == "edit" && a !== undefined) {
-  //     setDataGridOpacity(0.3);
-  //     setDataGridPointer("none");
-  //     setDisplay(a.unitDisplay);
-  //     setUnit1Name(a.unit.split("/")[0].trim());
-  //     setUnit2Name(a.unit.split("/")[1].trim());
-  //     setUnit1Error("");
-  //     setUnit2Error("");
-  //     setIsunit2Error(false);
-  //     setIsunit1Error(false);
-  //     setButtonDisplay("unset");
-
-  //   }
-  //   else if (type?.toLowerCase() == "delete") {
-
-  //   }
-  // }
-
-  const handelEditAndDelete = (type: string | null, a: UnitOfSalesModel | undefined) => {
+  const handelEditAndDelete = (
+    type: string | null,
+    a: UnitOfSalesModel | undefined
+  ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -166,71 +150,78 @@ const UnitPage = () => {
       setIsunit1Error(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }
-    else if (type?.toLowerCase() === "delete" && a !== undefined) {
+    } else if (type?.toLowerCase() === "delete" && a !== undefined) {
       setSelectedID(a.id);
-      Provider.deleteAllParams("master/deleteunitofsales", { ID:selectedID })
-      .then((response) => {
-        debugger;
-        if (response.data && response.data.code === 200) {
-          FetchData();
-        } else {
-          //Show snackbar
-        }
-        //setIsLoading(false);
-      })
-      .catch((e) => {
-        debugger;
-        console.log(e);
-        //setIsLoading(false);
-        //Show snackbar
-      });
+      Provider.deleteAllParams("master/deleteunitofsales", { ID: a.id })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
+        });
     }
-  }
+  };
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertunitofsales", { UnitName: paramActivityName, Display: checked })
+      Provider.create("master/insertunitofsales", {
+        UnitName: paramActivityName,
+        Display: checked,
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
-          //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateunitofsales", { id: selectedID, UnitName: paramActivityName, Display: checked })
+      Provider.create("master/updateunitofsales", {
+        id: selectedID,
+        UnitName: paramActivityName,
+        Display: checked,
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
-          //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     }
-  }
+  };
 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid
+          container
+          spacing={{ xs: 1, md: 2 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Unit of Sale</Typography>
           </Grid>
@@ -281,7 +272,12 @@ const UnitPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+              <RadioGroup
+                row
+                name="row-radio-buttons-group"
+                value={display}
+                onChange={handleDisplayChange}
+              >
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
@@ -296,7 +292,11 @@ const UnitPage = () => {
             >
               Cancel
             </Button>
-            <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+            <Button
+              variant="contained"
+              sx={{ mt: 1 }}
+              onClick={handleSubmitClick}
+            >
               Submit
             </Button>
           </Grid>
@@ -307,13 +307,22 @@ const UnitPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+              <Box
+                height="300px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ m: 2 }}
+              >
                 <CircularProgress />
               </Box>
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
-                  style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
+                  style={{
+                    opacity: dataGridOpacity,
+                    pointerEvents: dataGridPointer,
+                  }}
                   rows={unitNamesList}
                   columns={unitColumns}
                   pageSize={pageSize}
@@ -322,7 +331,9 @@ const UnitPage = () => {
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...unitNamesList];
-                    let a: UnitOfSalesModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    let a: UnitOfSalesModel | undefined = arrActivity.find(
+                      (el) => el.id == param.row.id
+                    );
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
                   sx={{
@@ -337,6 +348,14 @@ const UnitPage = () => {
           </Grid>
         </Grid>
       </Container>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        message={snackMsg}
+        onClose={() => {
+          setOpen(false);
+        }}
+      />
     </Box>
   );
 };

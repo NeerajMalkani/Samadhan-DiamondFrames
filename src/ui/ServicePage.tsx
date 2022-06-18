@@ -1,4 +1,17 @@
-import { Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { KeyboardEvent, useEffect, useState } from "react";
@@ -22,65 +35,60 @@ const ServicePage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [serviceName, setServiceName] = React.useState("");
-  const [serviceNamesList, setServiceNamesList] = React.useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] =
+    React.useContext(DataContext).serviceNameList;
   const [servicenameError, setservicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
+    "auto"
+  );
   const [selectedID, setSelectedID] = React.useState<number>(0);
   const [actionStatus, setActionStatus] = React.useState<string>("new");
-
-  // useEffect(() => {
-  //   Provider.getAll("shows")
-  //     .then((response: any) => {
-  //       if (response) {
-  //         setServiceNamesList(ServiceNameDataDummy);
-  //       } else {
-  //       }
-  //       setLoading(false);
-  //     })
-  //     .catch((e: Error) => {
-  //       console.log(e);
-  //       setLoading(false);
-  //     });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  const [open, setOpen] = React.useState(false);
+  const [snackMsg, setSnackMsg] = React.useState("");
 
   useEffect(() => {
     FetchData();
   }, []);
 
-  const FetchData = () => {
+  const ResetFields = () => {
     setSelectedID(0);
     setActionStatus("new");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
+    setButtonDisplay("none");
+  };
+
+  const FetchData = () => {
+    ResetFields();
     Provider.getAll("master/getservices")
       .then((response: any) => {
-        debugger
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
-            arrList.map(function (a: any) {
+            arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
             });
             setServiceNamesList(response.data.data);
           }
         } else {
-          //Show snackbar
+          // setSnackMsg("your request cannot be processed");
+          // setOpen(true);
         }
         setLoading(false);
       })
       .catch((e) => {
-        debugger
         setLoading(false);
-        //Show snackbar
+        setSnackMsg("your request cannot be processed");
+        setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }
-
+  };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -91,17 +99,7 @@ const ServicePage = () => {
     setservicenameError(IsTextFiledError ? communication.BlankServiceName : "");
     setIsServicenameError(IsTextFiledError);
     if (!IsTextFiledError) {
-      // const arrActivity = [...serviceNamesList];
-      // arrActivity.push({
-      //   id: serviceNamesList.length + 1,
-      //   srno: serviceNamesList.length + 1,
-      //   serviceName: serviceName,
-      //   serviceDisplay: display,
-      //   action: "Edit",
-      // });
-
-     // setServiceNamesList(arrActivity);
-     InsertUpdateData(serviceName, display === "Yes");
+      InsertUpdateData(serviceName, display === "Yes");
       setDisplay("Yes");
       setServiceName("");
       setservicenameError("");
@@ -119,99 +117,94 @@ const ServicePage = () => {
     setDataGridPointer("auto");
   };
 
-  // const handelEditAndDelete = (type: string | null, a: ServiceRoleNameModel | undefined) => {
-  //   if (type?.toLowerCase() == "edit" && a !== undefined) {
-  //     setDataGridOpacity(0.3);
-  //     setDataGridPointer("none");
-  //     setDisplay(a.serviceDisplay);
-  //     setServiceName(a?.serviceName);
-  //     setservicenameError("");
-  //     setIsServicenameError(false);
-  //     setButtonDisplay("unset");
-
-  //   }
-  //   else if (type?.toLowerCase() == "delete") {
-      
-  //    }
-  // }
-
-  const handelEditAndDelete = (type: string | null, a: ServiceRoleNameModel | undefined) => {
+  const handelEditAndDelete = (
+    type: string | null,
+    a: ServiceRoleNameModel | undefined
+  ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
       setServiceName(a?.serviceName);
       setSelectedID(a.id);
-       setservicenameError("");
-       setIsServicenameError(false);
+      setservicenameError("");
+      setIsServicenameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }
-    else if (type?.toLowerCase() === "delete" && a !== undefined) {
+    } else if (type?.toLowerCase() === "delete" && a !== undefined) {
       setSelectedID(a.id);
-      Provider.deleteAllParams("master/deleteservices", { ID:selectedID })
-      .then((response) => {
-        debugger;
-        if (response.data && response.data.code === 200) {
-          FetchData();
-        } else {
-          //Show snackbar
-        }
-        //setIsLoading(false);
-      })
-      .catch((e) => {
-        debugger;
-        console.log(e);
-        //setIsLoading(false);
-        //Show snackbar
-      });
+      Provider.deleteAllParams("master/deleteservices", { ID: a.id })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
+            ResetFields();
+          }
+          //setIsLoading(false);
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
+        });
     }
-  }
+  };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      debugger;
-      Provider.create("master/insertservices", { ServiceName: paramServiceName, Display: checked })
+      Provider.create("master/insertservices", {
+        ServiceName: paramServiceName,
+        Display: checked,
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
           //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateservices", { id: selectedID, ServiceName: paramServiceName, Display: checked })
+      Provider.create("master/updateservices", {
+        id: selectedID,
+        ServiceName: paramServiceName,
+        Display: checked,
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
-          //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     }
-  }
+  };
 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid
+          container
+          spacing={{ xs: 1, md: 2 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Service</Typography>
           </Grid>
@@ -243,14 +236,19 @@ const ServicePage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+              <RadioGroup
+                row
+                name="row-radio-buttons-group"
+                value={display}
+                onChange={handleDisplayChange}
+              >
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-          <Button
+            <Button
               variant="contained"
               sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
               style={{ display: buttonDisplay }}
@@ -258,7 +256,11 @@ const ServicePage = () => {
             >
               Cancel
             </Button>
-            <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+            <Button
+              variant="contained"
+              sx={{ mt: 1 }}
+              onClick={handleSubmitClick}
+            >
               Submit
             </Button>
           </Grid>
@@ -269,13 +271,22 @@ const ServicePage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+              <Box
+                height="300px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ m: 2 }}
+              >
                 <CircularProgress />
               </Box>
             ) : (
               <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
-                  style={{ opacity: dataGridOpacity, pointerEvents: dataGridPointer }}
+                  style={{
+                    opacity: dataGridOpacity,
+                    pointerEvents: dataGridPointer,
+                  }}
                   rows={serviceNamesList}
                   columns={serviceColumns}
                   pageSize={pageSize}
@@ -284,7 +295,9 @@ const ServicePage = () => {
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...serviceNamesList];
-                    let a: ServiceRoleNameModel | undefined = arrActivity.find(el => el.id == param.row.id);
+                    let a: ServiceRoleNameModel | undefined = arrActivity.find(
+                      (el) => el.id == param.row.id
+                    );
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
                   sx={{
@@ -299,6 +312,14 @@ const ServicePage = () => {
           </Grid>
         </Grid>
       </Container>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        message={snackMsg}
+        onClose={() => {
+          setOpen(false);
+        }}
+      />
     </Box>
   );
 };

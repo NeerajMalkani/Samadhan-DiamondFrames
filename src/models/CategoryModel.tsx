@@ -4,9 +4,11 @@ export default interface CategoryModel {
   activityRoleName: string;
   serviceName: string;
   categoryName: string;
-  hsnSacCode: string;
+  hsnsacCode: string;
   gstRate: string;
-  unitName: string[];
+  unitID: string;
   display: string;
   action: string;
+  serviceID: number;
+  roleID: number;
 }

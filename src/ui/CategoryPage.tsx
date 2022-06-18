@@ -14,6 +14,7 @@ import {
   RadioGroup,
   Select,
   SelectChangeEvent,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -62,6 +63,8 @@ const CategoryPage = () => {
   const [cn, setCn] = React.useState("");
   const [hsn, setHsn] = React.useState("");
   const [gst, setGst] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [snackMsg, setSnackMsg] = React.useState("");
 
   const [unitsOfSales, setUnitsOfSales] = React.useState<string[]>([]);
   const [unitsOfSalesID, setUnitsOfSalesID] = React.useState<number[]>([]);
@@ -108,41 +111,31 @@ const CategoryPage = () => {
   const [selectedID, setSelectedID] = React.useState<number>(0);
   const theme = useTheme();
 
-  // useEffect(() => {
-  //   Provider.getAll("shows")
-  //     .then((response: any) => {
-  //       if (response) {
-  //         setCategoryList(CategoryDataDummy);
-  //         setActivityNamesList(ActivityRoleDataDummy);
-  //         setServiceNameList(ServiceNameDataDummy);
-  //         setUnitOfSalesList(UnitOfSalesDataDummy);
-  //       } else {
-  //       }
-  //       setLoading(false);
-  //     })
-  //     .catch((e: Error) => {
-  //       console.log(e);
-  //       setLoading(false);
-  //     });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   useEffect(() => {
     FetchData();
   }, []);
 
-  const FetchData = () => {
+  const ResetFields = () => {
     setSelectedID(0);
     setActionStatus("new");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
+    setButtonDisplay("none");
+  };
+
+  const FetchData = () => {
+    ResetFields();
     Provider.getAll("master/getcategory")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
-            arrList.map(function (a: any) {
+            arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+              //a.unitID = a.unitID.replace(",", "</br>");
+              return a;
             });
             setCategoryList(response.data.data);
           }
@@ -153,7 +146,8 @@ const CategoryPage = () => {
       })
       .catch((e) => {
         setLoading(false);
-        //Show snackbar
+        setSnackMsg("your request cannot be processed");
+        setOpen(true);
       });
 
     if (activityNamesList.length === 0) {
@@ -161,19 +155,15 @@ const CategoryPage = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
-              // const arrList = [...response.data.data];
-              // arrList.map(function (a: any) {
-              //   a.display = a.display ? "Yes" : "No";
-              // });
               setActivityNamesList(response.data.data);
             }
           } else {
             //Show snackbar
           }
-          setLoading(false);
+          //  setLoading(false);
         })
         .catch((e) => {
-          setLoading(false);
+          //  setLoading(false);
           //Show snackbar
         });
     }
@@ -181,23 +171,17 @@ const CategoryPage = () => {
     if (serviceNameList.length === 0) {
       Provider.getAll("master/getservices")
         .then((response: any) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
-              // const arrList = [...response.data.data];
-              // arrList.map(function (a: any) {
-              //   a.display = a.display ? "Yes" : "No";
-              // });
               setServiceNameList(response.data.data);
             }
           } else {
             //Show snackbar
           }
-          setLoading(false);
+          // setLoading(false);
         })
         .catch((e) => {
-          debugger;
-          setLoading(false);
+          // setLoading(false);
           //Show snackbar
         });
     }
@@ -207,19 +191,15 @@ const CategoryPage = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
-              // const arrList = [...response.data.data];
-              // arrList.map(function (a: any) {
-              //   a.display = a.display ? "Yes" : "No";
-              // });
               setUnitOfSalesList(response.data.data);
             }
           } else {
             //Show snackbar
           }
-          setLoading(false);
+          // setLoading(false);
         })
         .catch((e) => {
-          setLoading(false);
+          //  setLoading(false);
           //Show snackbar
         });
     }
@@ -297,7 +277,7 @@ const CategoryPage = () => {
       setHSNErrorText("Please eneter HSN / SAC Code");
     }
 
-    if (gst.trim() === "" || parseInt(gst) === 0) {
+    if (gst === "" || parseInt(gst) === 0) {
       //|| isNaN(gst)
       isValid = false;
       setGSTError(true);
@@ -305,6 +285,7 @@ const CategoryPage = () => {
     }
 
     if (isValid) {
+      InsertUpdateData();
       setSn("--Select--");
       setSnID(0);
       setArn("--Select--");
@@ -314,7 +295,6 @@ const CategoryPage = () => {
       setGst("");
       setUnitsOfSales([]);
       setUnitsOfSalesID([]);
-      InsertUpdateData();
     }
   };
 
@@ -343,80 +323,89 @@ const CategoryPage = () => {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      // setActivityName(a?.ac);
-      // setactivitynameError("");
-      // setIsActivitynameError(false);
-      // setButtonDisplay("unset");
       setSn(a.serviceName);
-      setSnID(0);
+      setSnID(a.serviceID);
       setArn(a.activityRoleName);
-      setArnID(0);
+      setArnID(a.roleID);
       setCn(a.categoryName);
-      setHsn(a.hsnSacCode);
+      setHsn(a.hsnsacCode);
       setGst(a.gstRate);
-     
+      setUnitsOfSales(a.unitID.split(","));
       setSelectedID(a.id);
       setButtonDisplay("unset");
       setActionStatus("edit");
-
     } else if (type?.toLowerCase() === "delete" && a !== undefined) {
       setSelectedID(a.id);
-      Provider.deleteAllParams("master/deletecategory", { ID:selectedID })
-      .then((response) => {
-        debugger;
-        if (response.data && response.data.code === 200) {
-          FetchData();
-        } else {
-          //Show snackbar
-        }
-        //setIsLoading(false);
-      })
-      .catch((e) => {
-        debugger;
-        console.log(e);
-        //setIsLoading(false);
-        //Show snackbar
-      });
+      Provider.deleteAllParams("master/deletecategory", { ID: a.id })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
+        });
     }
   };
 
   const InsertUpdateData = () => {
     if (actionStatus === "new") {
-      Provider.create("master/insertactivityroles", { })
+      Provider.create("master/insertcategory", {
+        CategoryName: cn,
+        RoleID: arnID,
+        ServiceID: snID,
+        HSNSACCode: hsn,
+        GSTRate: parseFloat(gst),
+        Display: display === "Yes",
+        UnitID: unitsOfSalesID.toString(),
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
-          //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateactivityroles", { })
+      Provider.create("master/updatecategory", {
+        id: selectedID,
+        CategoryName: cn,
+        RoleID: arnID,
+        ServiceID: snID,
+        HSNSACCode: hsn,
+        GSTRate: parseFloat(gst),
+        Display: display === "Yes",
+        UnitID: unitsOfSalesID.toString(),
+      })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData();
           } else {
-            //Show snackbar
+            ResetFields();
+            setSnackMsg("your request cannot be processed");
+            setOpen(true);
           }
-          //setIsLoading(false);
         })
         .catch((e) => {
-          debugger;
-          console.log(e);
-          //setIsLoading(false);
-          //Show snackbar
+          ResetFields();
+          setSnackMsg("your request cannot be processed");
+          setOpen(true);
         });
     }
-  }
+  };
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -643,7 +632,7 @@ const CategoryPage = () => {
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...categoryList];
                     let a: CategoryModel | undefined = arrActivity.find(
-                      (el) => el.id == param.row.id
+                      (el) => el.id === param.row.id
                     );
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
@@ -659,6 +648,14 @@ const CategoryPage = () => {
           </Grid>
         </Grid>
       </Container>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        message={snackMsg}
+        onClose={() => {
+          setOpen(false);
+        }}
+      />
     </Box>
   );
 };
