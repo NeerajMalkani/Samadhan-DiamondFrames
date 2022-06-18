@@ -292,8 +292,8 @@ const ProductPage = () => {
                 MenuProps={MenuProps}
               >
                 {unitOfSalesList.map((units) => (
-                  <MenuItem key={units.id} value={units.unit} style={getStyles(units.unit, unitsOfSales, theme)}>
-                    {units.unit}
+                  <MenuItem key={units.id} value={units.unitName} style={getStyles(units.unitName, unitsOfSales, theme)}>
+                    {units.unitName}
                   </MenuItem>
                 ))}
               </Select>

@@ -17,7 +17,6 @@ import React, { KeyboardEvent, useEffect, useState } from "react";
 import { GetSession } from "../utils/sessions";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
-import { ActivityRoleDataDummy } from "../utils/dummydata";
 import { DataGrid } from "@mui/x-data-grid";
 import { activityColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
@@ -62,7 +61,7 @@ const ActivityPage = () => {
             const arrList = [...response.data.data];
             arrList.map(function (a: any) {
               a.display = a.display ? "Yes" : "No";
-            })
+            });
             setActivityNamesList(response.data.data);
           }
         } else {
@@ -89,7 +88,7 @@ const ActivityPage = () => {
     );
     setIsActivitynameError(IsTextFiledError);
     if (!IsTextFiledError) {
-      InsertUpdateData(activityName, display == "Yes");
+      InsertUpdateData(activityName, display === "Yes");
       setDisplay("Yes");
       setActivityName("");
       setactivitynameError("");
@@ -109,7 +108,7 @@ const ActivityPage = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
-    if (type?.toLowerCase() == "edit" && a !== undefined) {
+    if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
@@ -120,9 +119,9 @@ const ActivityPage = () => {
       setButtonDisplay("unset");
       setActionStatus("edit");
     }
-    else if (type?.toLowerCase() == "delete" && a !== undefined) {
+    else if (type?.toLowerCase() === "delete" && a !== undefined) {
       setSelectedID(a.id);
-      Provider.delete("master/deleteactivityroles", { id:selectedID })
+      Provider.deleteAllParams("master/deleteactivityroles", { ID:selectedID })
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -142,8 +141,8 @@ const ActivityPage = () => {
   }
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
-    if (actionStatus == "new") {
-      Provider.create("master/insertactivityroles", { ActivityRoleName: activityName, Display: checked })
+    if (actionStatus === "new") {
+      Provider.create("master/insertactivityroles", { ActivityRoleName: paramActivityName, Display: checked })
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
@@ -159,8 +158,8 @@ const ActivityPage = () => {
           //setIsLoading(false);
           //Show snackbar
         });
-    } else if (actionStatus == "edit") {
-      Provider.create("master/updateactivityroles", { id: selectedID, ActivityRoleName: activityName, Display: checked })
+    } else if (actionStatus === "edit") {
+      Provider.create("master/updateactivityroles", { id: selectedID, ActivityRoleName: paramActivityName, Display: checked })
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://43.204.210.148/api";
+const BASE_URL = "https://localhost:44340/api";
 
 class Provider {
   getAll(resource: string) {
@@ -49,6 +49,16 @@ class Provider {
         "Content-Type": "application/json",
         XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
       },
+    });
+  }
+
+  deleteAllParams(resource:string, params: any) {
+    return axios.delete(`${BASE_URL}/${resource}`, {
+      headers: {
+        "Content-Type": "application/json",
+        XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
+      },
+      data: params
     });
   }
 }

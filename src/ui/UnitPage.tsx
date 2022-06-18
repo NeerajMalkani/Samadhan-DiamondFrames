@@ -33,22 +33,56 @@ const UnitPage = () => {
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
   const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
+  const [actionStatus, setActionStatus] = React.useState<string>("new");
+  const [selectedID, setSelectedID] = React.useState<number>(0);
+
+  // useEffect(() => {
+  //   Provider.getAll("shows")
+  //     .then((response: any) => {
+  //       if (response) {
+  //         setUnitNamesList(UnitOfSalesDataDummy);
+  //       } else {
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch((e: Error) => {
+  //       console.log(e);
+  //       setLoading(false);
+  //     });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
-    Provider.getAll("shows")
+    FetchData();
+  }, []);
+
+  const FetchData = () => {
+    setSelectedID(0);
+    setActionStatus("new");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+    Provider.getAll("master/getunitofsales")
       .then((response: any) => {
-        if (response) {
-          setUnitNamesList(UnitOfSalesDataDummy);
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any) {
+              a.display = a.display ? "Yes" : "No";
+            });
+            setUnitNamesList(response.data.data);
+          }
         } else {
+          //Show snackbar
         }
         setLoading(false);
       })
-      .catch((e: Error) => {
-        console.log(e);
+      .catch((e) => {
         setLoading(false);
+        //Show snackbar
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
+
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -65,16 +99,17 @@ const UnitPage = () => {
     setIsunit2Error(IsTextFiledError2);
 
     if (!IsTextFiledError1 && !IsTextFiledError2) {
-      const arrActivity = [...unitNamesList];
-      arrActivity.push({
-        id: unitNamesList.length + 1,
-        srno: unitNamesList.length + 1,
-        unit: unit1Name + " / " + unit2Name,
-        unitDisplay: display,
-        action: "Edit",
-      });
+      // const arrActivity = [...unitNamesList];
+      // arrActivity.push({
+      //   id: unitNamesList.length + 1,
+      //   srno: unitNamesList.length + 1,
+      //   unit: unit1Name + " / " + unit2Name,
+      //   unitDisplay: display,
+      //   action: "Edit",
+      // });
 
-      setUnitNamesList(arrActivity);
+      // setUnitNamesList(arrActivity);
+      InsertUpdateData((unit1Name + " / " + unit2Name), display === "Yes");
       setDisplay("Yes");
       setUnit1Name("");
       setUnit2Name("");
@@ -98,25 +133,98 @@ const UnitPage = () => {
     setDataGridPointer("auto");
   };
 
+  // const handelEditAndDelete = (type: string | null, a: UnitOfSalesModel | undefined) => {
+  //   if (type?.toLowerCase() == "edit" && a !== undefined) {
+  //     setDataGridOpacity(0.3);
+  //     setDataGridPointer("none");
+  //     setDisplay(a.unitDisplay);
+  //     setUnit1Name(a.unit.split("/")[0].trim());
+  //     setUnit2Name(a.unit.split("/")[1].trim());
+  //     setUnit1Error("");
+  //     setUnit2Error("");
+  //     setIsunit2Error(false);
+  //     setIsunit1Error(false);
+  //     setButtonDisplay("unset");
+
+  //   }
+  //   else if (type?.toLowerCase() == "delete") {
+
+  //   }
+  // }
+
   const handelEditAndDelete = (type: string | null, a: UnitOfSalesModel | undefined) => {
-    if (type?.toLowerCase() == "edit" && a !== undefined) {
+    if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.unitDisplay);
-      setUnit1Name(a.unit.split("/")[0].trim());
-      setUnit2Name(a.unit.split("/")[1].trim());
+      setDisplay(a.display);
+      setUnit1Name(a.unitName.split("/")[0].trim());
+      setUnit2Name(a.unitName.split("/")[1].trim());
+      setSelectedID(a.id);
       setUnit1Error("");
       setUnit2Error("");
       setIsunit2Error(false);
       setIsunit1Error(false);
       setButtonDisplay("unset");
-
+      setActionStatus("edit");
     }
-    else if (type?.toLowerCase() == "delete") {
-
+    else if (type?.toLowerCase() === "delete" && a !== undefined) {
+      setSelectedID(a.id);
+      Provider.deleteAllParams("master/deleteunitofsales", { ID:selectedID })
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          FetchData();
+        } else {
+          //Show snackbar
+        }
+        //setIsLoading(false);
+      })
+      .catch((e) => {
+        debugger;
+        console.log(e);
+        //setIsLoading(false);
+        //Show snackbar
+      });
     }
   }
 
+  const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
+    if (actionStatus === "new") {
+      Provider.create("master/insertunitofsales", { UnitName: paramActivityName, Display: checked })
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            //Show snackbar
+          }
+          //setIsLoading(false);
+        })
+        .catch((e) => {
+          debugger;
+          console.log(e);
+          //setIsLoading(false);
+          //Show snackbar
+        });
+    } else if (actionStatus === "edit") {
+      Provider.create("master/updateunitofsales", { id: selectedID, UnitName: paramActivityName, Display: checked })
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            FetchData();
+          } else {
+            //Show snackbar
+          }
+          //setIsLoading(false);
+        })
+        .catch((e) => {
+          debugger;
+          console.log(e);
+          //setIsLoading(false);
+          //Show snackbar
+        });
+    }
+  }
 
   return (
     <Box sx={{ mt: 11 }}>

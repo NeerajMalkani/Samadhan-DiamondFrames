@@ -1,7 +1,7 @@
 export default interface UnitOfSalesModel {
   id: number;
   srno: number;
-  unit: string;
-  unitDisplay: string;
+  unitName: string;
+  display: string;
    action: string;
 }

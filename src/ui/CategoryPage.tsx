@@ -265,8 +265,8 @@ const CategoryPage = () => {
                 MenuProps={MenuProps}
               >
                 {unitOfSalesList.map((units) => (
-                  <MenuItem selected={true} key={units.id} value={units.unit} style={getStyles(units.unit, unitsOfSales, theme)}>
-                    {units.unit}
+                  <MenuItem selected={true} key={units.id} value={units.unitName} style={getStyles(units.unitName, unitsOfSales, theme)}>
+                    {units.unitName}
                   </MenuItem>
                 ))}
               </Select>

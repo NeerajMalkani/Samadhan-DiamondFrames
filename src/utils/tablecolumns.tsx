@@ -127,7 +127,7 @@ export const serviceColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "serviceDisplay",
+    field: "display",
     headerName: "Display",
     flex: 1.8,
     minWidth: 140,
@@ -166,7 +166,7 @@ export const unitColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "unitDisplay",
+    field: "Display",
     headerName: "Display",
     flex: 1.8,
     minWidth: 140,
