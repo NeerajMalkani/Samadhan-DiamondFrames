@@ -31,4 +31,6 @@ export const ProductDataDummy: ProductModel[] = [
   // { id: 3, srno: 3,  activityRoleName: "",serviceName:"",categoryName:"",productCode:"",productName:"", hsnSacCode:"",gstRate:18, unitOfSales: "Cu.Ft / Cu.Mtr", display:"Yes", action:"Edit" }
 ];
 
-export const CategoryDataDummy: CategoryModel[] = [{ id: 1, srno: 1, activityRoleName: "Dealer", serviceName: "GYPSUM & POP", categoryName: "GI Frames", hsnSacCode: "73089090", gstRate: 18.0, unitOfSales: "Nos / Kg", display: "Yes", action: "" }];
+export const CategoryDataDummy: CategoryModel[] = [
+ // { id: 1, srno: 1, activityRoleName: "Dealer", serviceName: "GYPSUM & POP", categoryName: "GI Frames", hsnSacCode: "73089090", gstRate: 18.0, unitOfSales: "Nos / Kg", display: "Yes", action: "" }
+];

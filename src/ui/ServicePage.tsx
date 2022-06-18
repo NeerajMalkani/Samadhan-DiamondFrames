@@ -5,7 +5,6 @@ import React, { KeyboardEvent, useEffect, useState } from "react";
 import { GetSession } from "../utils/sessions";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
-import { ServiceNameDataDummy } from "../utils/dummydata";
 import { DataGrid } from "@mui/x-data-grid";
 import { serviceColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
@@ -60,6 +59,7 @@ const ServicePage = () => {
     setDataGridPointer("auto");
     Provider.getAll("master/getservices")
       .then((response: any) => {
+        debugger
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
@@ -74,6 +74,7 @@ const ServicePage = () => {
         setLoading(false);
       })
       .catch((e) => {
+        debugger
         setLoading(false);
         //Show snackbar
       });

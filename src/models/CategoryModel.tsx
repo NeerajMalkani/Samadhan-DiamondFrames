@@ -5,8 +5,8 @@ export default interface CategoryModel {
   serviceName: string;
   categoryName: string;
   hsnSacCode: string;
-  gstRate: number;
-  unitOfSales: string;
+  gstRate: string;
+  unitName: string[];
   display: string;
   action: string;
 }

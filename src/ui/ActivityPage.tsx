@@ -18,8 +18,8 @@ import { GetSession } from "../utils/sessions";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
-import { activityColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
+import { activityColumns } from "../utils/tablecolumns";
 import { theme } from "../theme/AppTheme";
 import ActivityRoleNameModel from "../models/ActivityRoleModel";
 

@@ -6,7 +6,7 @@ import { theme } from "../theme/AppTheme";
 
 export const categoryColumns: GridColDef[] = [
   {
-    field: "srno",
+    field: "id",
     headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
@@ -42,7 +42,7 @@ export const categoryColumns: GridColDef[] = [
     minWidth: 100,
   },
   {
-    field: "unitOfSales",
+    field: "unitName",
     headerName: "Unit of Sales",
     flex: 1.5,
     minWidth: 120,
@@ -115,7 +115,7 @@ export const activityColumns: GridColDef[] = [
 
 export const serviceColumns: GridColDef[] = [
   {
-    field: "srno",
+    field: "id",
     headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
@@ -154,19 +154,19 @@ export const serviceColumns: GridColDef[] = [
 
 export const unitColumns: GridColDef[] = [
   {
-    field: "srno",
+    field: "id",
     headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
   },
   {
-    field: "unit",
+    field: "unitName",
     headerName: "Unit Name",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "Display",
+    field: "display",
     headerName: "Display",
     flex: 1.8,
     minWidth: 140,
