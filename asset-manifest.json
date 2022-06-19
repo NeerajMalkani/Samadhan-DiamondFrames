@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/Samadhan-DiamondFrames/static/css/main.de4d6590.css",
-    "main.js": "/Samadhan-DiamondFrames/static/js/main.63fdd52d.js",
+    "main.js": "/Samadhan-DiamondFrames/static/js/main.af06984a.js",
     "static/js/27.3bb8cae5.chunk.js": "/Samadhan-DiamondFrames/static/js/27.3bb8cae5.chunk.js",
     "static/media/logo192.png": "/Samadhan-DiamondFrames/static/media/logo192.49ca58848b021b76a94b.png",
     "index.html": "/Samadhan-DiamondFrames/index.html"
   },
   "entrypoints": [
     "static/css/main.de4d6590.css",
-    "static/js/main.63fdd52d.js"
+    "static/js/main.af06984a.js"
   ]
 }
