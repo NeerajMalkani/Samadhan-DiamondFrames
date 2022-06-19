@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://43.204.210.148/api";
+const BASE_URL = "https://cors-anywhere.herokuapp.com/http://43.204.210.148/api"; //"http://43.204.210.148/api";
 
 class Provider {
   getAll(resource: string) {
@@ -28,12 +28,16 @@ class Provider {
     });
   }
   update(resource: string, params: any, id: any) {
-    return axios.put<any>(`${BASE_URL}/${resource}/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
+    return axios.put<any>(
+      `${BASE_URL}/${resource}/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
+        },
       },
-    }, params);
+      params
+    );
   }
   delete(resource: string, id: any) {
     return axios.delete<any>(`${BASE_URL}/${resource}/${id}`, {
@@ -52,13 +56,13 @@ class Provider {
     });
   }
 
-  deleteAllParams(resource:string, params: any) {
+  deleteAllParams(resource: string, params: any) {
     return axios.delete(`${BASE_URL}/${resource}`, {
       headers: {
         "Content-Type": "application/json",
         XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
       },
-      data: params
+      data: params,
     });
   }
 }
