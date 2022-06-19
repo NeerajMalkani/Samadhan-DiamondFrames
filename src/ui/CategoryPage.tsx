@@ -40,10 +40,7 @@ const MenuProps = {
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
-    fontWeight:
-      unitSales.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 }
 
@@ -70,33 +67,22 @@ const CategoryPage = () => {
   const [unitsOfSalesID, setUnitsOfSalesID] = React.useState<number[]>([]);
 
   const [display, setDisplay] = React.useState("Yes");
-  const [activityNamesList, setActivityNamesList] =
-    React.useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] =
-    React.useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] =
-    React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] =
-    React.useContext(DataContext).categoryList;
+  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] = React.useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
+  const [categoryList, setCategoryList] = React.useContext(DataContext).categoryList;
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
-    "auto"
-  );
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
   const [actionRoleError, setActionRoleError] = React.useState<boolean>(false);
-  const [actionRoleErrorText, setActionRoleErrorText] =
-    React.useState<string>("");
+  const [actionRoleErrorText, setActionRoleErrorText] = React.useState<string>("");
 
-  const [serviceNameError, setServiceNameError] =
-    React.useState<boolean>(false);
-  const [serviceNameErrorText, setServiceNameErrorText] =
-    React.useState<string>("");
+  const [serviceNameError, setServiceNameError] = React.useState<boolean>(false);
+  const [serviceNameErrorText, setServiceNameErrorText] = React.useState<string>("");
 
-  const [categoryNameError, setCategoryNameError] =
-    React.useState<boolean>(false);
-  const [categoryNameErrorText, setCategoryNameErrorText] =
-    React.useState<string>("");
+  const [categoryNameError, setCategoryNameError] = React.useState<boolean>(false);
+  const [categoryNameErrorText, setCategoryNameErrorText] = React.useState<string>("");
 
   const [hsnError, setHSNError] = React.useState<boolean>(false);
   const [hsnErrorText, setHSNErrorText] = React.useState<string>("");
@@ -155,6 +141,9 @@ const CategoryPage = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
+              response.data.data = response.data.data.filter((el: any) => {
+                return el.display;
+              });
               setActivityNamesList(response.data.data);
             }
           } else {
@@ -173,6 +162,9 @@ const CategoryPage = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
+              response.data.data = response.data.data.filter((el: any) => {
+                return el.display;
+              });
               setServiceNameList(response.data.data);
             }
           } else {
@@ -191,6 +183,9 @@ const CategoryPage = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
+              response.data.data = response.data.data.filter((el: any) => {
+                return el.display;
+              });
               setUnitOfSalesList(response.data.data);
             }
           } else {
@@ -207,9 +202,7 @@ const CategoryPage = () => {
 
   const handleARNChange = (event: SelectChangeEvent) => {
     let activityName: string = event.target.value;
-    let ac = activityNamesList.find(
-      (el) => el.activityRoleName === activityName
-    );
+    let ac = activityNamesList.find((el) => el.activityRoleName === activityName);
     if (ac !== undefined) {
       setArnID(ac?.id);
       setArn(activityName);
@@ -315,10 +308,7 @@ const CategoryPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (
-    type: string | null,
-    a: CategoryModel | undefined
-  ) => {
+  const handelEditAndDelete = (type: string | null, a: CategoryModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -411,11 +401,7 @@ const CategoryPage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Category</Typography>
           </Grid>
@@ -529,12 +515,7 @@ const CategoryPage = () => {
             />
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
-            <FormControl
-              fullWidth
-              size="small"
-              sx={{ paddingRight: { xs: 0, sm: 4 } }}
-              error={unitError}
-            >
+            <FormControl fullWidth size="small" sx={{ paddingRight: { xs: 0, sm: 4 } }} error={unitError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Unit of Sales</b>
                 <label style={{ color: "#ff0000" }}>*</label>
@@ -554,12 +535,7 @@ const CategoryPage = () => {
                 MenuProps={MenuProps}
               >
                 {unitOfSalesList.map((units) => (
-                  <MenuItem
-                    selected={true}
-                    key={units.id}
-                    value={units.unitName}
-                    style={getStyles(units.unitName, unitsOfSales, theme)}
-                  >
+                  <MenuItem selected={true} key={units.id} value={units.unitName} style={getStyles(units.unitName, unitsOfSales, theme)}>
                     {units.unitName}
                   </MenuItem>
                 ))}
@@ -572,31 +548,17 @@ const CategoryPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-              style={{ display: buttonDisplay }}
-              onClick={handleCancelClick}
-            >
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
               Cancel
             </Button>
-            <Button
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <Button variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </Button>
           </Grid>
@@ -607,13 +569,7 @@ const CategoryPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
@@ -631,9 +587,7 @@ const CategoryPage = () => {
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...categoryList];
-                    let a: CategoryModel | undefined = arrActivity.find(
-                      (el) => el.id === param.row.id
-                    );
+                    let a: CategoryModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
                   sx={{
