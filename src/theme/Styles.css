@@ -38,7 +38,7 @@
   align-items: flex-start;
 }
 
-.flex-jualignstify-end {
+.flex-align-end {
   display: flex;
   align-items: flex-end;
 }
@@ -46,6 +46,11 @@
 .flex-align-center {
   display: flex;
   align-items: center;
+}
+
+.flex-align-self-end {
+  display: flex;
+  align-self: flex-end;
 }
 
 .flex-1 {

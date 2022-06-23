@@ -1,4 +1,12 @@
-import { Box, Button, Paper, Typography, TextField, Link, Snackbar, Alert } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  Typography,
+  TextField,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -36,8 +44,9 @@ const LoginPage = () => {
   const [isUsernameError, setIsUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [isPasswordError, setIsPasswordError] = useState(false);
-  const [username, setusername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginType, setLoginType] = useState(false);
   /* #endregion */
 
   /* #region  Handle event and click listeners */
@@ -63,17 +72,24 @@ const LoginPage = () => {
       setIsPasswordError(!password);
     }
   };
-  const onusernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsernameError("");
-    setIsUsernameError(false);
-    setusername(event.target.value);
+
+  const onUsernameChanged = (text: string) => {
+    setUsername(text);
+    if (text.length > 0) {
+      setIsUsernameError(false);
+    }
   };
-  const onPasswordeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordError("");
-    setIsPasswordError(false);
-    setPassword(event.target.value);
+
+  const onPasswordeChange = (text: string) => {
+    setPassword(text);
+    if (text.length > 0) {
+      setIsPasswordError(false);
+    }
   };
-  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -84,28 +100,112 @@ const LoginPage = () => {
   /* #region UI Elements */
   return (
     <Box height="100vh" className="flex-center">
-      <Paper className="padding-32 flex-center flex-column" sx={{ minWidth: { sm: 480 }, width: { xs: "100%", sm: "unset" }, boxShadow: { xs: "unset", sm: "0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)" } }}>
-        <img className="margin-bottom-24" src={companyLogo} alt="Samadhan-Diamond Frames" width={128} height={128} />
-        <Typography variant="h5" className="text-align-center padding-bottom-32">
-          Login to your account
+      <Paper
+        className="padding-32 flex-center flex-column"
+        sx={{
+          minWidth: { sm: 480 },
+          width: { xs: "100%", sm: "unset" },
+          boxShadow: {
+            xs: "unset",
+            sm: "0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%)",
+          },
+        }}
+      >
+        <img
+          className="margin-bottom-24"
+          src={companyLogo}
+          alt="Samadhan-Diamond Frames"
+          width={104}
+          height={104}
+        />
+        <Typography variant="h5" className="text-align-center padding-bottom-8">
+          {!loginType ? "Login as a User" : "Login as an Admin"}
         </Typography>
-        <TextField id="username" error={isUsernameError} label="User Name" fullWidth={true} helperText={usernameError} onChange={onusernameChange} />
-        <TextField id="password" type="password" error={isPasswordError} label="Password" fullWidth={true} helperText={passwordError} style={{ marginTop: 24 }} onChange={onPasswordeChange} />
-        <Link href="#" style={{ alignSelf: "flex-end", marginTop: 16 }}>
+        <Button
+          sx={{ mb: 1 }}
+          variant="text"
+          onClick={() => setLoginType(!loginType)}
+        >
+          Switch to {loginType ? "User" : "Admin"} login
+        </Button>
+
+        <TextField
+          fullWidth
+          label={loginType ? "Username" : "Mobile number"}
+          variant="filled"
+          size="small"
+          autoComplete={loginType ? "username" : "tel"}
+          onChange={(e) => {
+            onUsernameChanged(e.target.value);
+          }}
+          error={isUsernameError}
+          helperText={usernameError}
+          value={username}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          type="password"
+          label="Password"
+          variant="filled"
+          size="small"
+          onChange={(e) => {
+            onPasswordeChange(e.target.value);
+          }}
+          error={isPasswordError}
+          helperText={passwordError}
+          value={password}
+          sx={{ mb: 1 }}
+        />
+        
+        <Button
+          sx={{ mb: 2 }}
+          variant="text"
+          // onClick={}
+          className="flex-align-self-end"
+        >
           Forgot Password?
-        </Link>
-        <LoadingButton loading={loading} type="submit" variant="contained" fullWidth={true} style={{ marginTop: 24 }} onClick={loginClick}>
+        </Button>
+
+        <LoadingButton
+          loading={loading}
+          type="submit"
+          variant="contained"
+          fullWidth={true}
+          //style={{ marginTop: 24 }}
+          onClick={loginClick}
+        >
           Login
         </LoadingButton>
-        <Typography variant="body2" color="text.secondary" style={{ marginTop: 8 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          style={{ marginTop: 24 }}
+        >
           OR
         </Typography>
-        <Button type="submit" variant="outlined" fullWidth={true} style={{ marginTop: 8 }} onClick={loginClick}>
+        {!loginType ?(
+        <Button
+          type="submit"
+          variant="outlined"
+          fullWidth={true}
+          style={{ marginTop: 24 }}
+          onClick={loginClick}
+        >
           New User
-        </Button>
+        </Button>):(<></>)
+}
       </Paper>
-      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: "100%" }}>
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+         // onClose={handleSnackbarClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
