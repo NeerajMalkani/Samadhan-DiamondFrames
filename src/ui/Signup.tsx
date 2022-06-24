@@ -144,7 +144,7 @@ const SignupPage = () => {
                 <Typography variant="h5" className="text-align-center padding-bottom-8">
                     Create New Account
                 </Typography>
-                <Grid>
+                <Grid style={{ width: "100%"}}>
                     <Grid>
                         <TextField
                             fullWidth

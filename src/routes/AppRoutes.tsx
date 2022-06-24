@@ -17,6 +17,7 @@ import HomePage from "../ui/HomePage";
 import LoginPage from "../ui/LoginPage";
 import ProductPage from "../ui/Product";
 import SignupPage from "../ui/Signup";
+import ForgotPasswordPage from "../ui/ForgotPasswordPage";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -34,6 +35,7 @@ const AppRoutes = () => {
               <Route path="/Samadhan-DiamondFrames/" element={<LoginPage />} />
               <Route path="/Samadhan-DiamondFrames/login" element={<LoginPage />} />
               <Route path="/Samadhan-DiamondFrames/signup" element={<SignupPage />} />
+              <Route path="/Samadhan-DiamondFrames/forgotpassword" element={<ForgotPasswordPage />} />
               <Route path="/Samadhan-DiamondFrames/home" element={<HomePage />} />
               <Route path="/Samadhan-DiamondFrames/dashboard" element={<DashboardPage />} />
               <Route path="/Samadhan-DiamondFrames/master/activity" element={<ActivityPage />} />

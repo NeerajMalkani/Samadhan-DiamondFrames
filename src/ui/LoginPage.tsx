@@ -161,7 +161,7 @@ const LoginPage = () => {
         <Button
           sx={{ mb: 2 }}
           variant="text"
-          // onClick={}
+          href="/Samadhan-DiamondFrames/forgotpassword"
           className="flex-align-self-end"
         >
           Forgot Password?
