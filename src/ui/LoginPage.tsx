@@ -157,7 +157,7 @@ const LoginPage = () => {
           value={password}
           sx={{ mb: 1 }}
         />
-        
+
         <Button
           sx={{ mb: 2 }}
           variant="text"
@@ -177,24 +177,26 @@ const LoginPage = () => {
         >
           Login
         </LoadingButton>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          style={{ marginTop: 24 }}
-        >
-          OR
-        </Typography>
-        {!loginType ?(
-        <Button
-          type="submit"
-          variant="outlined"
-          fullWidth={true}
-          style={{ marginTop: 24 }}
-          onClick={loginClick}
-        >
-          New User
-        </Button>):(<></>)
-}
+        {!loginType ? (
+          <div>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              style={{ marginTop: 24 }}
+            >
+              OR
+            </Typography>
+
+            <Button
+              type="submit"
+              variant="outlined"
+              fullWidth={true}
+              style={{ marginTop: 24 }}
+              href="/Samadhan-DiamondFrames/signup"
+            >
+              New User
+            </Button></div>) : null
+        }
       </Paper>
       <Snackbar
         open={isSnackbarOpen}
@@ -202,7 +204,7 @@ const LoginPage = () => {
         onClose={handleSnackbarClose}
       >
         <Alert
-         // onClose={handleSnackbarClose}
+          // onClose={handleSnackbarClose}
           severity="error"
           sx={{ width: "100%" }}
         >
