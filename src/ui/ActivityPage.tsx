@@ -14,23 +14,24 @@ import {
 } from "@mui/material";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
-import React, { KeyboardEvent, useEffect, useState } from "react";
-import { GetSession } from "../utils/sessions";
+import React, { useEffect, useState } from "react";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../utils/communication";
 import { activityColumns } from "../utils/tablecolumns";
 import { theme } from "../theme/AppTheme";
-import {ActivityRoleNameModel} from "../models/Model";
+import { ActivityRoleNameModel } from "../models/Model";
+import { useCookies } from "react-cookie";
 
 const ActivityPage = () => {
+  const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
+
   useEffect(() => {
-    if (GetSession("isLogin") !== "true") {
-      navigate(`/login`);
-    }
-  });
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
+      navigate(`/Samadhan-DiamondFrames/login`);
+  }, []);
 
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");

@@ -12,6 +12,7 @@ import { RemoveSession } from "../utils/sessions";
 import React from "react";
 import DrawerItems from "./DrawerItems";
 import { theme } from "../theme/AppTheme";
+import { useCookies } from "react-cookie";
 
 const drawerWidth = 280;
 
@@ -42,7 +43,7 @@ const Header = () => {
   const navigate = useNavigate();
   let pageSelected = "";
   const cuurURL = window.location.href;
-
+  const [cookies, setCookie, removeCookie] = useCookies(["dfc"]);
   switch (true) {
     case cuurURL.includes("home"):
       pageSelected = "Home";
@@ -70,7 +71,8 @@ const Header = () => {
       title: "Logout",
       icon: <Logout />,
       click: () => {
-        RemoveSession("isLogin");
+        debugger
+        removeCookie("dfc");
         navigate(`/Samadhan-DiamondFrames/login`);
       },
     },

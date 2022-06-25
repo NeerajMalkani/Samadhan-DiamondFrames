@@ -14,8 +14,7 @@ import LoginPage from "../ui/LoginPage";
 import ProductPage from "../ui/Product";
 import SignupPage from "../ui/Signup";
 import ForgotPasswordPage from "../ui/ForgotPasswordPage";
-import { CookiesProvider, useCookies } from 'react-cookie';
-
+import { CookiesProvider } from 'react-cookie';
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);

@@ -1,16 +1,17 @@
 import { Box } from "@mui/material";
 import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { GetSession } from "../utils/sessions";
 
 const DashboardPage = () => {
+  const [cookies, setCookie] = useCookies(["dfc"]);
+
   let navigate = useNavigate();
   useEffect(() => {
-    if (GetSession("isLogin") !== "true") {
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
       navigate(`/Samadhan-DiamondFrames/login`);
-    }
-  });
+  },[]);
   return (
     <Box height="100vh">
       <Header />

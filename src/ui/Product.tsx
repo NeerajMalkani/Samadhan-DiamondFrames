@@ -4,12 +4,11 @@ import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
-import { GetSession } from "../utils/sessions";
 import { productColumns } from "../utils/tablecolumns";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
 import {CategoryModel, ProductModel} from "../models/Model";
-
+import { useCookies } from "react-cookie";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = { PaperProps: { style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP, width: 250 } } };
@@ -20,11 +19,11 @@ function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
 
 const ProductPage = () => {
     let navigate = useNavigate();
+    const [cookies, setCookie] = useCookies(["dfc"]);
     useEffect(() => {
-      if (GetSession("isLogin") !== "true") {
+      if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
         navigate(`/Samadhan-DiamondFrames/login`);
-      }
-    });
+    }, []);
 
 
     const [loading, setLoading] = useState(true);

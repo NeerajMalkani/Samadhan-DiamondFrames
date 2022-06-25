@@ -14,26 +14,18 @@ import "../theme/Styles.css";
 import companyLogo from "../assets/logo192.png";
 import { communication } from "../utils/communication";
 import Provider from "../api/Provider";
-import {
-  restrictNumericMobile,
-  ValidateFields,
-} from "../utils/validations";
+import { restrictNumericMobile, ValidateFields } from "../utils/validations";
 import { theme } from "../theme/AppTheme";
 import { useCookies } from "react-cookie";
 import { json } from "stream/consumers";
-
 
 const LoginPage = () => {
   /* #region Check user is login and handle enter click  */
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
-    // debugger;
-    // if (cookies !== null) {
-    //   let Cookievalue:any =JSON.parse(cookies.dfc);
-
-    //   navigate(`/Samadhan-DiamondFrames/dashboard`);
-    // }
+    if (cookies && cookies.dfc && cookies.dfc.UserID)
+      navigate(`/Samadhan-DiamondFrames/dashboard`);
 
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
@@ -69,24 +61,23 @@ const LoginPage = () => {
         ValidateFields(loginType ? "fullname" : "phonenumber", username) &&
         password.length > 2
       ) {
-        
         let params = {
-          PhoneNumber: loginType?0:parseFloat(username),
-          Username : loginType?username:null,
+          PhoneNumber: loginType ? 0 : parseFloat(username),
+          Username: loginType ? username : null,
           Password: password,
-          RoleID : loginType ? 1 : 2
+          RoleID: loginType ? 1 : 2,
         };
 
-        var string_=JSON.stringify(params);
+        var string_ = JSON.stringify(params);
 
-        string_=string_.replace(/{/g, "");
-        string_=string_.replace(/}/g, "");
-        string_=string_.replace(/:/g, "=")
-        string_=string_.replace(/,/g, "&");
-        string_=string_.replace(/"/g, "");
-      
+        string_ = string_.replace(/{/g, "");
+        string_ = string_.replace(/}/g, "");
+        string_ = string_.replace(/:/g, "=");
+        string_ = string_.replace(/,/g, "&");
+        string_ = string_.replace(/"/g, "");
+
         Provider.getAll(`registration/login?${string_}`)
-          .then((response:any) => {       
+          .then((response: any) => {
             console.log(response.data);
             if (response.data && response.data.code === 200) {
               const user = {
@@ -94,7 +85,7 @@ const LoginPage = () => {
                 FullName: response.data.data[0].fullName,
               };
               setCookie("dfc", JSON.stringify(user), { path: "/" });
-
+              navigate(`/Samadhan-DiamondFrames/home`);
               //StoreUserData(user);
             } else {
               setSnackbarMessage(communication.InvalidUserNotExists);
@@ -107,8 +98,6 @@ const LoginPage = () => {
             setIsSnackbarOpen(true);
             setIsLoading(false);
           });
-
-
       } else {
         setIsLoading(false);
         setSnackbarMessage(
@@ -134,9 +123,6 @@ const LoginPage = () => {
   };
 
   const onUsernameChanged = (text: string, e: any) => {
-    if (!loginType) {
-      restrictNumericMobile(e);
-    }
     setUsername(text);
     if (text.length > 0) {
       setIsUsernameError(false);
@@ -187,7 +173,7 @@ const LoginPage = () => {
         <Button
           sx={{ mb: 1 }}
           variant="text"
-          style={{textTransform:"unset"}}
+          style={{ textTransform: "unset" }}
           onClick={() => {
             setLoginType(!loginType);
             setUsername("");
@@ -207,7 +193,14 @@ const LoginPage = () => {
           variant="filled"
           size="small"
           autoComplete={loginType ? "username" : "tel"}
-          inputProps={{ maxLength: loginType ? 50 : 10 }}
+          inputProps={{
+            maxLength: loginType ? 50 : 10,
+            onKeyDown: (e) => {
+              if (!loginType) {
+                restrictNumericMobile(e);
+              }
+            },
+          }}
           onChange={(e) => {
             onUsernameChanged(e.target.value, e);
           }}
@@ -236,7 +229,7 @@ const LoginPage = () => {
           variant="text"
           href="/Samadhan-DiamondFrames/forgotpassword"
           className="flex-align-self-end"
-          style={{textTransform:"unset"}}
+          style={{ textTransform: "unset" }}
         >
           Forgot Password?
         </Button>
@@ -258,7 +251,7 @@ const LoginPage = () => {
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",
-                marginTop:"16px"
+                marginTop: "16px",
               }}
             >
               <div

@@ -2,7 +2,6 @@ import { Box, Container, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { GetSession } from "../utils/sessions";
 import Handshake from "@mui/icons-material/Handshake";
 import Engineering from "@mui/icons-material/Engineering";
 import Group from "@mui/icons-material/Group";
@@ -13,14 +12,15 @@ import Book from "@mui/icons-material/Book";
 import Dashboard from "@mui/icons-material/Dashboard";
 import "../theme/Styles.css";
 import { CreateGeneralCards, CreateTotalUserCards } from "../components/Cards";
+import { useCookies } from "react-cookie";
 
 const HomePage = () => {
   let navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
-    if (GetSession("isLogin") !== "true") {
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
       navigate(`/Samadhan-DiamondFrames/login`);
-    }
-  });
+  }, []);
   return (
     <Box height="100vh" sx={{ mt: 7 }}>
       <Header />

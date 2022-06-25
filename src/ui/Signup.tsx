@@ -9,11 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import companyLogo from "../assets/logo192.png";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
-import { ValidateFields } from "../utils/validations";
+import { restrictNumericMobile, ValidateFields } from "../utils/validations";
+import { useCookies } from "react-cookie";
+import Provider from "../api/Provider";
 
 const SignupPage = () => {
   const [isFullNameError, setIsFullNameError] = useState<boolean>(false);
@@ -41,6 +44,13 @@ const SignupPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [cookies, setCookie] = useCookies(["dfc"]);
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    if (cookies && cookies.dfc && cookies.dfc.UserID)
+      navigate(`/Samadhan-DiamondFrames/dashboard`);
+  }, []);
 
   const onOTP1Changed = (text: string) => {
     setOTP1(text);
@@ -105,6 +115,7 @@ const SignupPage = () => {
         setIsSnackbarOpen(true);
       } else {
         //do signup, call api
+        InsertNewUser();
       }
     }
   };
@@ -112,18 +123,10 @@ const SignupPage = () => {
   const onFullNameChanged = (text: string) => {
     setFullName(text);
     setFullNameError("");
-    // if (text.length > 0) {
     setIsFullNameError(false);
-    //}
+
   };
 
-  // const onMobileChanged = (text: string) => {
-  //     setMobile(text);
-  //     setMobileError('');
-  //     //if (text.length > 0) {
-  //     setIsMobileError(false);
-  //     //}
-  // };
 
   const onMobileChanged = (text: string) => {
     setMobile(text);
@@ -141,17 +144,13 @@ const SignupPage = () => {
   const onPasswordChanged = (text: string) => {
     setPassword1(text);
     setPassword1Error("");
-    // if (text.length > 0) {
     setIsPassword1Error(false);
-    // }
   };
 
   const onConfirmPasswordChanged = (text: string) => {
     setPassword2(text);
     setPassword2Error("");
-    //if (text.length > 0) {
     setIsPassword2Error(false);
-    // }
   };
 
   const ValidateOTP = () => {
@@ -180,6 +179,39 @@ const SignupPage = () => {
       return;
     }
     setIsSnackbarOpen(false);
+  };
+
+  const InsertNewUser = () => {
+    setIsLoading(true);
+    const params = {
+      FullName: fullName,
+      Password: password1,
+      RoleID: 2,
+      OTP: parseInt(otp1 + otp2 + otp3 + otp4),
+      IsVerified: true,
+      PhoneNumber: mobile,
+      Status: 1,
+    };
+    Provider.create("registration/insertuser", params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          const user = {
+            UserID: response.data.data[0].userID,
+            FullName: response.data.data[0].fullName,
+          };
+          setCookie("dfc", JSON.stringify(user), { path: "/" });
+          navigate(`/Samadhan-DiamondFrames/home`);
+        } else {
+          setSnackbarMessage(communication.NoData);
+          setIsSnackbarOpen(true);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -229,7 +261,12 @@ const SignupPage = () => {
               label="Mobile Number"
               variant="filled"
               size="small"
-              inputProps={{ maxLength: 10 }}
+              inputProps={{
+                maxLength: 10,
+                onKeyDown: (e) => {
+                  restrictNumericMobile(e);
+                },
+              }}
               onChange={(e) => {
                 onMobileChanged(e.target.value);
               }}

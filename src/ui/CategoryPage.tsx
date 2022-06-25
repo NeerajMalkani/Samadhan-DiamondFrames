@@ -23,12 +23,12 @@ import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
-import { GetSession } from "../utils/sessions";
 import { categoryColumns } from "../utils/tablecolumns";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
 import {CategoryModel} from "../models/Model";
 import { isFocusable } from "@testing-library/user-event/dist/utils";
+import { useCookies } from "react-cookie";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -45,12 +45,13 @@ function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
 }
 
 const CategoryPage = () => {
+  const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
+
   useEffect(() => {
-    if (GetSession("isLogin") !== "true") {
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
       navigate(`/Samadhan-DiamondFrames/login`);
-    }
-  });
+  }, []);
 
   const [loading, setLoading] = useState(true);
   const [arn, setArn] = React.useState("--Select--");

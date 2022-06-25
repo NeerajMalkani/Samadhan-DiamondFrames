@@ -1,10 +1,21 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, Button, Grid, Paper, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Grid,
+  Paper,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import Provider from "../api/Provider";
 import companyLogo from "../assets/logo192.png";
 import { communication } from "../utils/communication";
-import { ValidateFields } from "../utils/validations";
+import { restrictNumericMobile, ValidateFields } from "../utils/validations";
 
 const ForgotPasswordPage = () => {
   const [isMobileError, setIsMobileError] = useState<boolean>(false);
@@ -28,6 +39,13 @@ const ForgotPasswordPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [cookies, setCookie] = useCookies(["dfc"]);
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    if (cookies && cookies.dfc && cookies.dfc.UserID)
+      navigate(`/Samadhan-DiamondFrames/dashboard`);
+  }, []);
 
   const onOTP1Changed = (text: string) => {
     setOTP1(text);
@@ -86,18 +104,10 @@ const ForgotPasswordPage = () => {
         setSnackbarMessage(communication.InvalidPasswordsMatch);
         setIsSnackbarOpen(true);
       } else {
-        //do signup, call api
+        UpdateUser();
       }
     }
   };
-
-  // const onMobileChanged = (text: string) => {
-  //   setMobile(text);
-  //   setMobileError("");
-  //   //if (text.length > 0) {
-  //   setIsMobileError(false);
-  //   //}
-  // };
 
   const onMobileChanged = (text: string) => {
     setMobile(text);
@@ -115,17 +125,13 @@ const ForgotPasswordPage = () => {
   const onPasswordChanged = (text: string) => {
     setPassword1(text);
     setPassword1Error("");
-    // if (text.length > 0) {
     setIsPassword1Error(false);
-    // }
   };
 
   const onConfirmPasswordChanged = (text: string) => {
     setPassword2(text);
     setPassword2Error("");
-    //if (text.length > 0) {
     setIsPassword2Error(false);
-    // }
   };
 
   const ValidateOTP = () => {
@@ -143,8 +149,8 @@ const ForgotPasswordPage = () => {
       setIsOTPInvalid(false);
       setOTPButtonDisabled(true);
       setIsSnackbarOpen(false);
+    }
   };
-}
 
   const handleSnackbarClose = (
     event: React.SyntheticEvent | Event,
@@ -154,6 +160,30 @@ const ForgotPasswordPage = () => {
       return;
     }
     setIsSnackbarOpen(false);
+  };
+
+  const UpdateUser = () => {
+    setIsLoading(true);
+    const params = {
+      PhoneNumber: mobile,
+      Password: password1,
+    };
+    Provider.create("registration/updateuserpassword", params)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data && response.data.code === 200) {
+          navigate(`/Samadhan-DiamondFrames/login`);
+        } else {
+          setSnackbarMessage(communication.InvalidMobileNotExists);
+          setIsSnackbarOpen(true);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -169,18 +199,29 @@ const ForgotPasswordPage = () => {
           },
         }}
       >
-        <img className="margin-bottom-24" src={companyLogo} alt="Samadhan-Diamond Frames" width={104} height={104} />
+        <img
+          className="margin-bottom-24"
+          src={companyLogo}
+          alt="Samadhan-Diamond Frames"
+          width={104}
+          height={104}
+        />
         <Typography variant="h5" className="text-align-center padding-bottom-8">
           Create New Account
         </Typography>
-        <Grid style={{ width: "100%"}}>
+        <Grid style={{ width: "100%" }}>
           <Grid>
             <TextField
               fullWidth
               label="Mobile Number"
               variant="filled"
               size="small"
-              inputProps={{ maxLength: 10 }}
+              inputProps={{
+                maxLength: 10,
+                onKeyDown: (e) => {
+                  restrictNumericMobile(e);
+                },
+              }}
               onChange={(e) => {
                 onMobileChanged(e.target.value);
               }}
@@ -192,12 +233,46 @@ const ForgotPasswordPage = () => {
           </Grid>
           <Grid sx={{ mb: 2 }}>
             <Box display="flex" flexDirection="row">
-              <TextField variant="filled" size="small" value={otp1}  disabled onChange={(e) => onOTP1Changed(e.target.value)} sx={{  width: 48, height: 48, mr: 1 }} />
-              <TextField variant="filled" size="small" value={otp2}  disabled onChange={(e) => onOTP2Changed(e.target.value)} sx={{  width: 48, height: 48, mr: 1 }} />
-              <TextField variant="filled" size="small" value={otp3}  disabled onChange={(e) => onOTP3Changed(e.target.value)} sx={{  width: 48, height: 48, mr: 1 }} />
-              <TextField variant="filled" size="small" value={otp4}  disabled onChange={(e) => onOTP4Changed(e.target.value)} sx={{ width: 48, height: 48 }} />
+              <TextField
+                variant="filled"
+                size="small"
+                value={otp1}
+                disabled
+                onChange={(e) => onOTP1Changed(e.target.value)}
+                sx={{ width: 48, height: 48, mr: 1 }}
+              />
+              <TextField
+                variant="filled"
+                size="small"
+                value={otp2}
+                disabled
+                onChange={(e) => onOTP2Changed(e.target.value)}
+                sx={{ width: 48, height: 48, mr: 1 }}
+              />
+              <TextField
+                variant="filled"
+                size="small"
+                value={otp3}
+                disabled
+                onChange={(e) => onOTP3Changed(e.target.value)}
+                sx={{ width: 48, height: 48, mr: 1 }}
+              />
+              <TextField
+                variant="filled"
+                size="small"
+                value={otp4}
+                disabled
+                onChange={(e) => onOTP4Changed(e.target.value)}
+                sx={{ width: 48, height: 48 }}
+              />
 
-              <Button variant="text" disabled={otpButtonDisabled} onClick={() => {ValidateOTP()}}>
+              <Button
+                variant="text"
+                disabled={otpButtonDisabled}
+                onClick={() => {
+                  ValidateOTP();
+                }}
+              >
                 Get OTP
               </Button>
             </Box>
