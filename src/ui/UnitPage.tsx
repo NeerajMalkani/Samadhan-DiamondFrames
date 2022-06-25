@@ -18,12 +18,11 @@ import React, { KeyboardEvent, useEffect, useState } from "react";
 import { GetSession } from "../utils/sessions";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
-import { UnitOfSalesDataDummy } from "../utils/dummydata";
 import { DataGrid } from "@mui/x-data-grid";
 import { unitColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
-import UnitOfSalesModel from "../models/UnitOfSalesModel";
+import {UnitOfSalesModel} from "../models/Model";
 
 const UnitPage = () => {
   let navigate = useNavigate();

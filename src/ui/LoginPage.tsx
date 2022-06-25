@@ -12,17 +12,22 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../theme/Styles.css";
 import companyLogo from "../assets/logo192.png";
-import { CreateSession, GetSession } from "../utils/sessions";
 import { communication } from "../utils/communication";
-import { ValidateCredentials } from "../utils/validations";
+import Provider from "../api/Provider";
+import {
+  restrictNumericMobile,
+  ValidateFields,
+} from "../utils/validations";
+import { theme } from "../theme/AppTheme";
+
 
 const LoginPage = () => {
   /* #region Check user is login and handle enter click  */
   const navigate = useNavigate();
   useEffect(() => {
-    if (GetSession("isLogin") === "true") {
-      navigate(`/Samadhan-DiamondFrames/dashboard`);
-    }
+    // if (GetSession("isLogin") === "true") {
+    //   navigate(`/Samadhan-DiamondFrames/dashboard`);
+    // }
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
@@ -53,27 +58,76 @@ const LoginPage = () => {
   const loginClick = () => {
     setIsLoading(true);
     if (username && password) {
-      if (ValidateCredentials(username, password)) {
-        setTimeout(() => {
-          setIsLoading(false);
-          CreateSession([{ key: "isLogin", value: "true" }]);
-          navigate(`/Samadhan-DiamondFrames/home`);
-        }, 1000);
+      if (
+        ValidateFields(loginType ? "fullname" : "phonenumber", username) &&
+        password.length > 2
+      ) {
+        let params = {
+          PhoneNumber: loginType?0:parseFloat(username),
+          Username : loginType?username:null,
+          Password: password,
+          RoleID : loginType ? 1 : 2
+        };
+
+        var string_=JSON.stringify(params);
+
+        string_=string_.replace(/{/g, "");
+        string_=string_.replace(/}/g, "");
+        string_=string_.replace(/:/g, "=")
+        string_=string_.replace(/,/g, "&");
+        string_=string_.replace(/"/g, "");
+      
+        Provider.getAll(`registration/login?${string_}`)
+          .then((response:any) => {
+            debugger;
+            console.log(response.data);
+            if (response.data && response.data.code === 200) {
+              const user = {
+                UserID: response.data.data[0].userID,
+                FullName: response.data.data[0].fullName,
+              };
+              //StoreUserData(user);
+            } else {
+              setSnackbarMessage(communication.InvalidUserNotExists);
+              setIsSnackbarOpen(true);
+            }
+            setIsLoading(false);
+          })
+          .catch((e) => {
+            setSnackbarMessage(e.message);
+            setIsSnackbarOpen(true);
+            setIsLoading(false);
+          });
+
+
       } else {
         setIsLoading(false);
-        setSnackbarMessage(communication.IncorrectUsernameOrPassword);
+        setSnackbarMessage(
+          loginType
+            ? communication.IncorrectUsernameOrPassword
+            : communication.IncorrectMobileOrPassword
+        );
         setIsSnackbarOpen(true);
       }
     } else {
       setIsLoading(false);
-      setUsernameError(!username ? communication.BlankUsername : "");
+      setUsernameError(
+        !username
+          ? loginType
+            ? communication.BlankUsername
+            : communication.BlankMobile
+          : ""
+      );
       setPasswordError(!password ? communication.BlankPassword : "");
       setIsUsernameError(!username);
       setIsPasswordError(!password);
     }
   };
 
-  const onUsernameChanged = (text: string) => {
+  const onUsernameChanged = (text: string, e: any) => {
+    if (!loginType) {
+      restrictNumericMobile(e);
+    }
     setUsername(text);
     if (text.length > 0) {
       setIsUsernameError(false);
@@ -124,7 +178,16 @@ const LoginPage = () => {
         <Button
           sx={{ mb: 1 }}
           variant="text"
-          onClick={() => setLoginType(!loginType)}
+          style={{textTransform:"unset"}}
+          onClick={() => {
+            setLoginType(!loginType);
+            setUsername("");
+            setPassword("");
+            setUsernameError("");
+            setPasswordError("");
+            setIsUsernameError(false);
+            setIsPasswordError(false);
+          }}
         >
           Switch to {loginType ? "User" : "Admin"} login
         </Button>
@@ -135,8 +198,9 @@ const LoginPage = () => {
           variant="filled"
           size="small"
           autoComplete={loginType ? "username" : "tel"}
+          inputProps={{ maxLength: loginType ? 50 : 10 }}
           onChange={(e) => {
-            onUsernameChanged(e.target.value);
+            onUsernameChanged(e.target.value, e);
           }}
           error={isUsernameError}
           helperText={usernameError}
@@ -163,6 +227,7 @@ const LoginPage = () => {
           variant="text"
           href="/Samadhan-DiamondFrames/forgotpassword"
           className="flex-align-self-end"
+          style={{textTransform:"unset"}}
         >
           Forgot Password?
         </Button>
@@ -178,15 +243,30 @@ const LoginPage = () => {
           Login
         </LoadingButton>
         {!loginType ? (
-          <div>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              style={{ marginTop: 24 }}
+          <div style={{ width: "100%", marginTop: "16px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                marginTop:"16px"
+              }}
             >
-              OR
-            </Typography>
-
+              <div
+                style={{
+                  width: "100%",
+                  height: "1px",
+                  backgroundColor: theme.palette.divider,
+                }}
+              ></div>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                style={{ marginTop: "-10px", backgroundColor: "#ffffff" }}
+              >
+                OR
+              </Typography>
+            </div>
             <Button
               type="submit"
               variant="outlined"
@@ -195,8 +275,9 @@ const LoginPage = () => {
               href="/Samadhan-DiamondFrames/signup"
             >
               New User
-            </Button></div>) : null
-        }
+            </Button>
+          </div>
+        ) : null}
       </Paper>
       <Snackbar
         open={isSnackbarOpen}

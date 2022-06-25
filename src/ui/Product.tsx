@@ -7,10 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { GetSession } from "../utils/sessions";
 import { productColumns } from "../utils/tablecolumns";
 import DataContext from "../contexts/DataContexts";
-import { ActivityRoleDataDummy, CategoryDataDummy, ServiceNameDataDummy, UnitOfSalesDataDummy, ProductDataDummy } from "../utils/dummydata";
 import Provider from "../api/Provider";
-import CategoryModel from "../models/CategoryModel";
-import ProductModel from "../models/ProductModel";
+import {CategoryModel, ProductModel} from "../models/Model";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -54,11 +52,11 @@ const ProductPage = () => {
     Provider.getAll("shows")
       .then((response: any) => {
         if (response) {
-          setCategoryList(CategoryDataDummy);
-          setActivityNamesList(ActivityRoleDataDummy);
-          setServiceNameList(ServiceNameDataDummy);
-          setUnitOfSalesList(UnitOfSalesDataDummy);
-          setProductList(ProductDataDummy);
+          // setCategoryList(CategoryDataDummy);
+          // setActivityNamesList(ActivityRoleDataDummy);
+          // setServiceNameList(ServiceNameDataDummy);
+          // setUnitOfSalesList(UnitOfSalesDataDummy);
+          // setProductList(ProductDataDummy);
         } else {
         }
         setLoading(false);

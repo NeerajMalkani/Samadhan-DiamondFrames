@@ -16,15 +16,43 @@ export const ValidateEmail = (email: string) => {
   return isValid;
 };
 
-export const ValidateMobile = (mobile: string) => {
-  let isValid: boolean = false;
-  const pattern = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
-  if (mobile.match(pattern)) {
-    isValid = true;
+//#region Validation regex
+const Number = /^[0-9]+$/;
+const Name = /^[a-zA-Z0-9\s]+$/;
+const Address = /^[a-zA-Z0-9\s,'-/]*$/;
+export const ValidateFields = (type: string, value: string) => {
+  let boolStatus = false;
+  switch (type.toLowerCase()) {
+    case "fullname":
+      if (!Number.test(value) && Name.test(value) && value.length > 2)
+        boolStatus = true;
+      break;
+    case "phonenumber":
+      if (Number.test(value) && value.length === 10) {
+        boolStatus = true;
+      }
+      break;
+
+    case "address":
+      if (Address.test(value) && value.length > 1) boolStatus = true;
+      break;
   }
-  return isValid;
+
+  return boolStatus;
 };
-/* #endregion */
+
+export function restrictNumericMobile(e: any) {
+  let input = null;
+  if (e.metaKey || e.ctrlKey ||e.which === 0 ||e.which < 33 || e.which < 37 || e.which < 39 || e.which < 46|| (e.which > 95 && e.which < 106))  {
+    return true;
+  }
+  
+  input = String.fromCharCode(e.which);
+  if ((e.which < 48 || e.which > 57) ||(!/[\d\s]/.test(input) && e.which !== 13) || e.shiftKey) {
+    return e.preventDefault();
+  }
+}
+//#endregion
 
 export const ValidateCategoryName = (categoryName: string) => {};
 export const ValidateHSNSACCode = (hsnsacCode: string) => {};

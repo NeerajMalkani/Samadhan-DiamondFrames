@@ -22,7 +22,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../utils/communication";
 import { activityColumns } from "../utils/tablecolumns";
 import { theme } from "../theme/AppTheme";
-import ActivityRoleNameModel from "../models/ActivityRoleModel";
+import {ActivityRoleNameModel} from "../models/Model";
 
 const ActivityPage = () => {
   let navigate = useNavigate();

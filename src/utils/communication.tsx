@@ -1,7 +1,11 @@
 export const communication = {
-  BlankUsername: "Enter User name",
+  BlankUsername: "Enter Username",
+  BlankMobile: "Enter Mobile number",
   BlankPassword: "Enter Password",
-  IncorrectUsernameOrPassword: "User name or Password are incorrect",
+  BlankFullName: "Enter Full name",
+  InvalidUserNotExists:"The credentials provided are incorrect. Try again",
+  IncorrectUsernameOrPassword: "Username or Password is incorrect",
+  IncorrectMobileOrPassword: "Mobile or Password is incorrect",
   BlankActivityName:"Enter Activity name",
   IncorrectActivityName:"Enter valid Activity name",
   BlankServiceName:"Enter Service name",
@@ -11,4 +15,21 @@ export const communication = {
   BlankUnit2Name:"Enter conversion unit",
   IncorrectUnitName:"Enter valid conversion unit",
   NetworkError: "Please check your internet connection",
+  InvalidPasswordsMatch:"Passwords do not match",
+  InvalidOTP:"Enter a valid OTP",
+  InvalidMobileBeforeOTP:"Enter mobile number to get the OTP",
+
+  // InvalidUsername: "Enter a valid username",
+  // InvalidFullname: "Enter a valid fullname",
+  // InvalidPassowrd: "Enter a valid password",
+  // InvalidConfirmPassowrd: "Enter a valid confirm password",
+  // InvalidMobileNumber: "Enter a valid mobile number",
+  // InvalidOTP: "Enter a valid OTP",
+  // InvalidMobileBeforeOTP: "Enter mobile number to get the OTP",
+  // InvalidPasswordsMatch: "Passwords do not match",
+
+  // InvalidUserNotExists: "The credentials provided are incorrect. Try again",
+
+  // NetworkError: "Please check your internet connection",
+  NoData: "No data found",
 };

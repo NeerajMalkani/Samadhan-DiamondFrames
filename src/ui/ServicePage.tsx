@@ -22,7 +22,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { serviceColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
-import ServiceRoleNameModel from "../models/ServiceNameModel";
+import {ServiceNameModel} from "../models/Model";
 
 const ServicePage = () => {
   let navigate = useNavigate();
@@ -119,7 +119,7 @@ const ServicePage = () => {
 
   const handelEditAndDelete = (
     type: string | null,
-    a: ServiceRoleNameModel | undefined
+    a: ServiceNameModel | undefined
   ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
@@ -295,7 +295,7 @@ const ServicePage = () => {
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...serviceNamesList];
-                    let a: ServiceRoleNameModel | undefined = arrActivity.find(
+                    let a: ServiceNameModel | undefined = arrActivity.find(
                       (el) => el.id == param.row.id
                     );
                     handelEditAndDelete((e.target as any).textContent, a);

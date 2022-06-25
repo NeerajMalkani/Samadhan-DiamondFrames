@@ -2,11 +2,7 @@ import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DataContextProvider } from "../contexts/DataContexts";
-import ActivityRoleNameModel from "../models/ActivityRoleModel";
-import CategoryModel from "../models/CategoryModel";
-import ServiceNameModel from "../models/ServiceNameModel";
-import UnitOfSalesModel from "../models/UnitOfSalesModel";
-import ProductModel from "../models/ProductModel";
+import{ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, UserCreds} from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/ActivityPage";
 import ServicePage from "../ui/ServicePage";
@@ -19,12 +15,14 @@ import ProductPage from "../ui/Product";
 import SignupPage from "../ui/Signup";
 import ForgotPasswordPage from "../ui/ForgotPasswordPage";
 
+
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
   const serviceNameList = useState<ServiceNameModel[]>([]);
   const unitOfSalesList = useState<UnitOfSalesModel[]>([]);
   const categoryList = useState<CategoryModel[]>([]);
   const productList = useState<ProductModel[]>([]);
+
   return (
     <ThemeProvider theme={theme}>
       <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList: productList }}>

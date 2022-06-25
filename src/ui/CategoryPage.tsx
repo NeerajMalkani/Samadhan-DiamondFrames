@@ -27,7 +27,7 @@ import { GetSession } from "../utils/sessions";
 import { categoryColumns } from "../utils/tablecolumns";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
-import CategoryModel from "../models/CategoryModel";
+import {CategoryModel} from "../models/Model";
 import { isFocusable } from "@testing-library/user-event/dist/utils";
 
 const ITEM_HEIGHT = 48;

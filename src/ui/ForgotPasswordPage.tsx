@@ -3,6 +3,8 @@ import { Alert, Button, Grid, Paper, Snackbar, TextField, Typography } from "@mu
 import { Box } from "@mui/system";
 import { useState } from "react";
 import companyLogo from "../assets/logo192.png";
+import { communication } from "../utils/communication";
+import { ValidateFields } from "../utils/validations";
 
 const ForgotPasswordPage = () => {
   const [isMobileError, setIsMobileError] = useState<boolean>(false);
@@ -24,6 +26,8 @@ const ForgotPasswordPage = () => {
   const [otp4, setOTP4] = useState<string>("");
   const [loading, setIsLoading] = useState<boolean>(false);
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const onOTP1Changed = (text: string) => {
     setOTP1(text);
@@ -50,17 +54,52 @@ const ForgotPasswordPage = () => {
     }
   };
 
-  const ForgotPasswordClick = () => {};
-
-  const onMobileChanged = (text: string) => {
-    setMobile(text);
-    setMobileError("");
-    //if (text.length > 0) {
-    setIsMobileError(false);
-    //}
+  const ForgotPasswordClick = () => {
+    let isValid = true;
+    if (mobile.length === 0 || !ValidateFields("phonenumber", mobile)) {
+      isValid = false;
+      setIsMobileError(true);
+      setMobileError(communication.BlankMobile);
+    }
+    if (
+      otp1.length === 0 &&
+      otp2.length === 0 &&
+      otp3.length === 0 &&
+      otp4.length === 0
+    ) {
+      isValid = false;
+      setIsOTPInvalid(true);
+    }
+    if (password1.length === 0) {
+      isValid = false;
+      setIsPassword1Error(true);
+      setPassword1Error(communication.BlankPassword);
+    }
+    if (password2.length === 0) {
+      isValid = false;
+      setIsPassword2Error(true);
+      setPassword2Error(communication.BlankPassword);
+    }
+    if (isValid) {
+      if (password1 !== password2) {
+        setIsPassword2Error(true);
+        setSnackbarMessage(communication.InvalidPasswordsMatch);
+        setIsSnackbarOpen(true);
+      } else {
+        //do signup, call api
+      }
+    }
   };
 
-  const onMobileNumberChanged = (text: string) => {
+  // const onMobileChanged = (text: string) => {
+  //   setMobile(text);
+  //   setMobileError("");
+  //   //if (text.length > 0) {
+  //   setIsMobileError(false);
+  //   //}
+  // };
+
+  const onMobileChanged = (text: string) => {
     setMobile(text);
     setMobileError("");
     setIsMobileError(false);
@@ -90,11 +129,11 @@ const ForgotPasswordPage = () => {
   };
 
   const ValidateOTP = () => {
-    if (mobile.length === 0) {
+    if (mobile.length === 0 || !ValidateFields("phonenumber", mobile)) {
       setIsMobileError(true);
       setIsOTPInvalid(true);
-      //setSnackbarText(communication.InvalidMobileBeforeOTP);
-      //setIsSnackbarVisible(true);
+      setSnackbarMessage(communication.InvalidMobileBeforeOTP);
+      setIsSnackbarOpen(true);
     } else {
       const random4Digits = Math.floor(1000 + Math.random() * 9000);
       setOTP1(random4Digits.toString().substring(0, 1));
@@ -103,8 +142,18 @@ const ForgotPasswordPage = () => {
       setOTP4(random4Digits.toString().substring(3, 4));
       setIsOTPInvalid(false);
       setOTPButtonDisabled(true);
-      //setIsSnackbarVisible(false);
+      setIsSnackbarOpen(false);
+  };
+}
+
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
     }
+    setIsSnackbarOpen(false);
   };
 
   return (
@@ -131,6 +180,7 @@ const ForgotPasswordPage = () => {
               label="Mobile Number"
               variant="filled"
               size="small"
+              inputProps={{ maxLength: 10 }}
               onChange={(e) => {
                 onMobileChanged(e.target.value);
               }}
@@ -140,17 +190,24 @@ const ForgotPasswordPage = () => {
               sx={{ mb: 2 }}
             />
           </Grid>
-          <Grid>
+          <Grid sx={{ mb: 2 }}>
             <Box display="flex" flexDirection="row">
-              <TextField variant="filled" size="small" value={otp1} onChange={(e) => onOTP1Changed(e.target.value)} sx={{ mb: 2, width: 48, height: 48, mr: 1 }} />
-              <TextField variant="filled" size="small" value={otp2} onChange={(e) => onOTP2Changed(e.target.value)} sx={{ mb: 2, width: 48, height: 48, mr: 1 }} />
-              <TextField variant="filled" size="small" value={otp3} onChange={(e) => onOTP3Changed(e.target.value)} sx={{ mb: 2, width: 48, height: 48, mr: 1 }} />
-              <TextField variant="filled" size="small" value={otp4} onChange={(e) => onOTP4Changed(e.target.value)} sx={{ mb: 2, width: 48, height: 48 }} />
+              <TextField variant="filled" size="small" value={otp1}  disabled onChange={(e) => onOTP1Changed(e.target.value)} sx={{  width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" value={otp2}  disabled onChange={(e) => onOTP2Changed(e.target.value)} sx={{  width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" value={otp3}  disabled onChange={(e) => onOTP3Changed(e.target.value)} sx={{  width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" value={otp4}  disabled onChange={(e) => onOTP4Changed(e.target.value)} sx={{ width: 48, height: 48 }} />
 
-              <Button variant="text" disabled={otpButtonDisabled} onClick={() => {}}>
+              <Button variant="text" disabled={otpButtonDisabled} onClick={() => {ValidateOTP()}}>
                 Get OTP
               </Button>
             </Box>
+            <Typography
+              variant="caption"
+              style={{ display: isOTPInvalid ? "block" : "none" }}
+              sx={{ pt: 0.6, pl: 1.8, color: "error.main" }}
+            >
+              {communication.InvalidOTP}
+            </Typography>
           </Grid>
           <Grid>
             <TextField
@@ -161,6 +218,7 @@ const ForgotPasswordPage = () => {
               onChange={(e) => {
                 onPasswordChanged(e.target.value);
               }}
+              type="password"
               error={isPassword1Error}
               helperText={password1Error}
               value={password1}
@@ -174,6 +232,7 @@ const ForgotPasswordPage = () => {
               label="Confirm Password"
               variant="filled"
               size="small"
+              type="password"
               onChange={(e) => {
                 onConfirmPasswordChanged(e.target.value);
               }}
@@ -197,8 +256,18 @@ const ForgotPasswordPage = () => {
           </Grid>
         </Grid>
       </Paper>
-      <Snackbar>
-        <Alert></Alert>
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          // onClose={handleSnackbarClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
       </Snackbar>
     </Box>
   );
