@@ -1,5 +1,5 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DataContextProvider } from "../contexts/DataContexts";
 import{ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, UserCreds} from "../models/Model";
@@ -14,6 +14,7 @@ import LoginPage from "../ui/LoginPage";
 import ProductPage from "../ui/Product";
 import SignupPage from "../ui/Signup";
 import ForgotPasswordPage from "../ui/ForgotPasswordPage";
+import { CookiesProvider, useCookies } from 'react-cookie';
 
 
 const AppRoutes = () => {
@@ -23,7 +24,17 @@ const AppRoutes = () => {
   const categoryList = useState<CategoryModel[]>([]);
   const productList = useState<ProductModel[]>([]);
 
+  // const [cookies, setCookie] = useCookies(["dfc"]);
+  // useEffect(() => {
+  //   debugger;
+  //   if (!cookies || !cookies.dfc || !cookies.dfc.uid)  {
+  //     Navigate(`/Samadhan-DiamondFrames/login`);
+  //   }
+  // },[]);
+
+
   return (
+    <CookiesProvider>
     <ThemeProvider theme={theme}>
       <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList: productList }}>
         <CssBaseline />
@@ -46,6 +57,7 @@ const AppRoutes = () => {
         </Box>
       </DataContextProvider>
     </ThemeProvider>
+    </CookiesProvider>
   );
 };
 

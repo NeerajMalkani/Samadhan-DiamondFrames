@@ -19,15 +19,22 @@ import {
   ValidateFields,
 } from "../utils/validations";
 import { theme } from "../theme/AppTheme";
+import { useCookies } from "react-cookie";
+import { json } from "stream/consumers";
 
 
 const LoginPage = () => {
   /* #region Check user is login and handle enter click  */
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
-    // if (GetSession("isLogin") === "true") {
+    // debugger;
+    // if (cookies !== null) {
+    //   let Cookievalue:any =JSON.parse(cookies.dfc);
+
     //   navigate(`/Samadhan-DiamondFrames/dashboard`);
     // }
+
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
         event.preventDefault();
@@ -62,6 +69,7 @@ const LoginPage = () => {
         ValidateFields(loginType ? "fullname" : "phonenumber", username) &&
         password.length > 2
       ) {
+        
         let params = {
           PhoneNumber: loginType?0:parseFloat(username),
           Username : loginType?username:null,
@@ -78,14 +86,15 @@ const LoginPage = () => {
         string_=string_.replace(/"/g, "");
       
         Provider.getAll(`registration/login?${string_}`)
-          .then((response:any) => {
-            debugger;
+          .then((response:any) => {       
             console.log(response.data);
             if (response.data && response.data.code === 200) {
               const user = {
                 UserID: response.data.data[0].userID,
                 FullName: response.data.data[0].fullName,
               };
+              setCookie("dfc", JSON.stringify(user), { path: "/" });
+
               //StoreUserData(user);
             } else {
               setSnackbarMessage(communication.InvalidUserNotExists);
