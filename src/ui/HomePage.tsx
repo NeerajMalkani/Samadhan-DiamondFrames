@@ -13,6 +13,7 @@ import Dashboard from "@mui/icons-material/Dashboard";
 import "../theme/Styles.css";
 import { CreateGeneralCards, CreateTotalUserCards } from "../components/Cards";
 import { useCookies } from "react-cookie";
+import SimpleImageSlider from "react-simple-image-slider";
 
 const HomePage = () => {
   let navigate = useNavigate();
@@ -21,6 +22,17 @@ const HomePage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
       navigate(`/Samadhan-DiamondFrames/login`);
   }, []);
+
+  const images = [
+    { url: "images/1.jpg" },
+    { url: "images/2.jpg" },
+    { url: "images/3.jpg" },
+    { url: "images/4.jpg" },
+    { url: "images/5.jpg" },
+    { url: "images/6.jpg" },
+    { url: "images/7.jpg" },
+  ];
+
   return (
     <Box height="100vh" sx={{ mt: 7 }}>
       <Header />
@@ -31,13 +43,17 @@ const HomePage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-              {CreateTotalUserCards("Dealers", 85, <Handshake sx={{ color: "#553bbf", fontSize: 36 }} />, "#f4efff", "#553bbf")}
-              {CreateTotalUserCards("Contractors", 56, <Engineering sx={{ color: "#9c33b6", fontSize: 36 }} />, "#f9e8ff", "#9c33b6")}
-              {CreateTotalUserCards("General Users", 75, <Group sx={{ color: "#43b4ca", fontSize: 36 }} />, "#e7fbff", "#43b4ca")}
-              {CreateTotalUserCards("Clients", 40, <Person sx={{ color: "#4cd2a7", fontSize: 36 }} />, "#e6fef5", "#4cd2a7")}
+              {CreateTotalUserCards("Dealers", 85, null, "#f4efff", "#553bbf")}
+              {/* <Handshake sx={{ color: "#553bbf", fontSize: 36 }} /> */}
+              {CreateTotalUserCards("Contractors", 56, null, "#f9e8ff", "#9c33b6")}
+              {/* <Engineering sx={{ color: "#9c33b6", fontSize: 36 }} /> */}
+              {CreateTotalUserCards("General Users", 75, null, "#e7fbff", "#43b4ca")}
+              {/* <Group sx={{ color: "#43b4ca", fontSize: 36 }} /> */}
+              {CreateTotalUserCards("Clients", 40, null, "#e6fef5", "#4cd2a7")}
+              {/* <Person sx={{ color: "#4cd2a7", fontSize: 36 }} /> */}
             </Grid>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          {/* <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h5" sx={{ mt: 2 }}>
               All Actions
             </Typography>
@@ -49,7 +65,19 @@ const HomePage = () => {
               {CreateGeneralCards("Pocket Diary", <Book sx={{ fontSize: 36 }} />)}
               {CreateGeneralCards("Activity", <Dashboard sx={{ fontSize: 36 }} />)}
             </Grid>
-          </Grid>
+          </Grid> */}
+<Grid>
+<div>
+      <SimpleImageSlider
+        width={896}
+        height={504}
+        images={images}
+        showBullets={true}
+        showNavs={true}
+      />
+    </div>
+</Grid>
+
         </Grid>
       </Container>
     </Box>

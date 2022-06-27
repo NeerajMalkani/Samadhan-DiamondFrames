@@ -22,9 +22,9 @@ export const CreateTotalUserCards = (title: string, value: number, icon: any, bg
     return (
       <Grid item xs={2} sm={4} md={3}>
         <Paper className="flex-column flex-center padding-16">
-          <div className="flex-center" style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: bgColor === null ? "#f2f2f2" : bgColor }}>
+          {/* <div className="flex-center" style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: bgColor === null ? "#f2f2f2" : bgColor }}>
             {icon}
-          </div>
+          </div> */}
           <Typography variant="h4" sx={{ mt: 2, color: { color } }}>
             {value}
           </Typography>
