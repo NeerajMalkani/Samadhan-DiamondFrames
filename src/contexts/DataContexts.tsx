@@ -1,10 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import {ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, UserCreds} from "../models/Model";
-import Cookies from 'universal-cookie';
-
-// const cookies = new Cookies();
-// const loginCookie: [UserCreds[], Dispatch<SetStateAction<UserCreds[]>>] = [cookies, () => {}];
-
+import {ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel} from "../models/Model";
 
 const activityNames: ActivityRoleNameModel[] = [];
 const activityNamesList: [ActivityRoleNameModel[], Dispatch<SetStateAction<ActivityRoleNameModel[]>>] = [activityNames, () => {}];

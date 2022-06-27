@@ -8,7 +8,6 @@ import Logout from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import "../theme/Styles.css";
 import { useNavigate } from "react-router-dom";
-import { RemoveSession } from "../utils/sessions";
 import React from "react";
 import DrawerItems from "./DrawerItems";
 import { theme } from "../theme/AppTheme";
@@ -66,12 +65,11 @@ const Header = () => {
       icon: <Dashboard />,
       click: () => navigate(`/Samadhan-DiamondFrames/dashboard`),
     },
-    { title: "App Admin", icon: <Person />, click: () => {} },
+    { title: "Profile", icon: <Person />, click: () => {} },
     {
       title: "Logout",
       icon: <Logout />,
-      click: () => {
-        debugger
+      click: () => {      
         removeCookie("dfc");
         navigate(`/Samadhan-DiamondFrames/login`);
       },
@@ -92,7 +90,7 @@ const Header = () => {
             <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "flex-end" }}>
               {pages.map((page) => (
                 <Box key={page.title}>
-                  <Button startIcon={page.icon} onClick={page.click} sx={{ ml: 2, color: pageSelected === page.title ? theme.palette.secondary.main : "white", display: { xs: "none", md: "flex" } }}>
+                  <Button  style={{ textTransform: "unset" }} startIcon={page.icon} onClick={page.click} sx={{ ml: 2, color: pageSelected === page.title ? theme.palette.secondary.main : "white", display: { xs: "none", md: "flex" } }}>
                     {page.title}
                   </Button>
                   <IconButton size="large" onClick={page.click} sx={{ color: pageSelected === page.title ? theme.palette.secondary.main : "white", display: { xs: "flex", md: "none" } }}>

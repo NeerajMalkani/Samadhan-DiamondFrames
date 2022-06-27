@@ -80,9 +80,11 @@ const LoginPage = () => {
           .then((response: any) => {
             console.log(response.data);
             if (response.data && response.data.code === 200) {
+              debugger;
               const user = {
                 UserID: response.data.data[0].userID,
                 FullName: response.data.data[0].fullName,
+                RoleID: response.data.data[0].roleID
               };
               setCookie("dfc", JSON.stringify(user), { path: "/" });
               navigate(`/Samadhan-DiamondFrames/home`);

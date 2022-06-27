@@ -56,3 +56,9 @@ export interface UserCreds{
   UserID:number,
   FullName:string
 }
+
+export interface RoleDetails{
+  id:number,
+  roleName:string,
+  roleCount:number
+}
