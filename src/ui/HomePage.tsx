@@ -29,7 +29,7 @@ import Provider from "../api/Provider";
 import { RoleDetails } from "../models/Model";
 import { LoadingButton } from "@mui/lab";
 import { communication } from "../utils/communication";
-import { Carousel } from "react-carousel-minimal";
+// import { Carousel } from "react-carousel-minimal";
 
 const HomePage = () => {
   let navigate = useNavigate();
@@ -261,7 +261,7 @@ const HomePage = () => {
               </Grid>
             </Grid>
             <Grid>
-              <Grid><Typography>Gallery</Typography></Grid>
+              {/* <Grid><Typography>Gallery</Typography></Grid>
               <Grid>
                 <Carousel
                   data={ImageGallery}
@@ -288,7 +288,7 @@ const HomePage = () => {
                     margin: "16px auto",
                   }}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
         )}
