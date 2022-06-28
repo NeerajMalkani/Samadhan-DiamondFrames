@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   Container,
   FormControl,
   FormHelperText,
@@ -59,27 +60,23 @@ const HomePage = () => {
     Provider.getAll("registration/getusers")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          // var res = response.data.data.map(el:any => el.roleCount);
+          let UserCount = 0;
+          response.data.data.map((item: RoleDetails, index: number) => {
+            UserCount += item.roleCount;
+          });
 
-          // setTotalUsers(
-          //   response.data.data[0].generalUsers +
-          //     response.data.data[0].dealers +
-          //     response.data.data[0].contractors +
-          //     response.data.data[0].architects
-          // );
+          setTotalUsers(UserCount);
           setUserCountData(response.data.data);
         }
-        //  setIsLoading(false);
+        setIsLoading(false);
       })
       .catch((e) => {
-        debugger;
-        // setIsLoading(false);
+        setIsLoading(false);
       });
   };
 
   const handleRoleChange = (event: SelectChangeEvent) => {
     let roleName: string = event.target.value;
-    debugger;
     let ac = userCountData.find(
       (el) => el.roleName.toLowerCase() === roleName.toLowerCase()
     );
@@ -105,66 +102,85 @@ const HomePage = () => {
     <Box height="100vh" sx={{ mt: 7 }}>
       <Header />
       <Container sx={{ padding: { xs: 2, md: 4 } }} maxWidth="xl">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
-          {CookieRoleID !== 1 ? (
-            <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
-              <FormControl fullWidth size="small" error={roleError}>
-                <Typography sx={{ mb: 1 }}>Switch Role</Typography>
-                <Select value={role} onChange={handleRoleChange}>
-                  <MenuItem disabled={true} value="--Select--">
-                    --Select--
-                  </MenuItem>
-                  {userCountData.map((item, index) => {
-                    return (
-                      <MenuItem key={item.id} value={item.roleName}>
-                        {item.roleName}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-                <FormHelperText>{roleErrorText}</FormHelperText>
-              </FormControl>
-              <Grid>
-                <LoadingButton
-                  loading={buttonLoading}
-                  type="submit"
-                  variant="contained"
-                  sx={{ mt: 2 }}
-                  //style={{ marginTop: 24 }}
-                  onClick={SwitchUserClick}
-                >
-                  Submit
-                </LoadingButton>
+        {isLoading ? (
+          <Box
+            height="300px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ m: 2 }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid
+            container
+            spacing={{ xs: 1, md: 2 }}
+            columns={{ xs: 4, sm: 8, md: 12 }}
+          >
+            {CookieRoleID !== 1 ? (
+              <Grid
+                item
+                xs={4}
+                sm={6}
+                md={6}
+                sx={{ mt: 1 }}
+              >
+                <FormControl fullWidth size="small" error={roleError}>
+                  <Typography sx={{ mb: 1 }}>Switch Role</Typography>
+                  <Select value={role} onChange={handleRoleChange}>
+                    <MenuItem disabled={true} value="--Select--">
+                      --Select--
+                    </MenuItem>
+                    {userCountData.map((item, index) => {
+                      return (
+                        <MenuItem key={item.id} value={item.roleName}>
+                          {item.roleName}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                  <FormHelperText>{roleErrorText}</FormHelperText>
+                </FormControl>
+                <Grid>
+                  <LoadingButton
+                    loading={buttonLoading}
+                    type="submit"
+                    variant="contained"
+                    sx={{ mt: 2 }}
+                    //style={{ marginTop: 24 }}
+                    onClick={SwitchUserClick}
+                  >
+                    Submit
+                  </LoadingButton>
+                </Grid>
+              </Grid>
+            ) : null}
+            <Grid item xs={4} sm={8} md={12} sx={{ mt: 2 }}>
+              <Grid item xs={4} sm={8} md={12}>
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                  Total Users ({totalUsers})
+                </Typography>
+              </Grid>
+              <Grid
+                container
+                spacing={{ xs: 1, md: 2 }}
+                columns={{ xs: 4, sm: 8, md: 12 }}
+              >
+                {userCountData.map((item, index) => {
+                  return CreateTotalUserCards(
+                    userCountData[index].roleName,
+                    userCountData[index].roleCount,
+                    null,
+                    "#f4efff",
+                    "theme.palette.primary"
+                  );
+                })}
               </Grid>
             </Grid>
-          ) : null}
-          <Grid item xs={4} sm={8} md={12} sx={{ mt: 2 }}>
-            <Grid item xs={4} sm={8} md={12}>
-              <Typography variant="h5">Total Users ({totalUsers})</Typography>
-            </Grid>
-            <Grid
-              container
-              spacing={{ xs: 1, md: 2 }}
-              columns={{ xs: 4, sm: 8, md: 12 }}
-            >
-              {userCountData.map((item, index) => {
-                return CreateTotalUserCards(
-                  userCountData[index].roleName,
-                  userCountData[index].roleCount,
-                  null,
-                  "#f4efff",
-                  "theme.palette.primary"
-                );
-              })}
-            </Grid>
+            <Grid></Grid>
           </Grid>
-
-          <Grid></Grid>
-        </Grid>
+        )}
       </Container>
     </Box>
   );

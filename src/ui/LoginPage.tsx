@@ -25,7 +25,7 @@ const LoginPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/dashboard`);
+      navigate(`/Samadhan-DiamondFrames/home`);
 
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
