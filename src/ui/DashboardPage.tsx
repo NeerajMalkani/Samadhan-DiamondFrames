@@ -12,6 +12,7 @@ const DashboardPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
       navigate(`/Samadhan-DiamondFrames/login`);
   },[]);
+  
   return (
     <Box height="100vh">
       <Header />
