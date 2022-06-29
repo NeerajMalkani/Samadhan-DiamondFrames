@@ -58,7 +58,7 @@ export interface UserCreds{
 }
 
 export interface RoleDetails{
-  id:number,
+  roleID:number,
   roleName:string,
   roleCount:number
 }
