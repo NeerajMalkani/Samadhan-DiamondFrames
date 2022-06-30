@@ -12,6 +12,7 @@ export interface CategoryModel {
   activityRoleName: string;
   serviceName: string;
   categoryName: string;
+  productName:string;
   hsnsacCode: string;
   gstRate: string;
   unitID: string;

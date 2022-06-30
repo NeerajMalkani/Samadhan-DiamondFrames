@@ -69,12 +69,12 @@ export const categoryColumns: GridColDef[] = [
           Edit
         </Button>
 
-        <Button
+        {/* <Button
           variant="contained"
           sx={{ backgroundColor: theme.palette.error.main }}
         >
           Delete
-        </Button>
+        </Button> */}
       </Grid>
     ),
   },
@@ -113,12 +113,12 @@ export const activityColumns: GridColDef[] = [
           Edit
         </Button>
 
-        <Button
+        {/* <Button
           variant="contained"
           sx={{ backgroundColor: theme.palette.error.main }}
         >
           Delete
-        </Button>
+        </Button> */}
         {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
           <EditIcon />
         </IconButton>
@@ -163,12 +163,12 @@ export const serviceColumns: GridColDef[] = [
           Edit
         </Button>
 
-        <Button
+        {/* <Button
           variant="contained"
           sx={{ backgroundColor: theme.palette.error.main }}
         >
           Delete
-        </Button>
+        </Button> */}
       </Grid>
     ),
   },
@@ -207,12 +207,12 @@ export const unitColumns: GridColDef[] = [
           Edit
         </Button>
 
-        <Button
+        {/* <Button
           variant="contained"
           sx={{ backgroundColor: theme.palette.error.main }}
         >
           Delete
-        </Button>
+        </Button> */}
       </Grid>
     ),
   },
@@ -281,12 +281,12 @@ export const productColumns: GridColDef[] = [
           Edit
         </Button>
 
-        <Button
+        {/* <Button
           variant="contained"
           sx={{ backgroundColor: theme.palette.error.main }}
         >
           Delete
-        </Button>
+        </Button> */}
       </Grid>
     ),
   },

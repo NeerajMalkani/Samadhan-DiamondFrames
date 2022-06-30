@@ -19,6 +19,8 @@ export const communication = {
   InvalidOTP:"Enter a valid OTP",
   InvalidMobileBeforeOTP:"Enter mobile number to get the OTP",
   InvalidMobileNotExists:"Mobile does not exist",
+  BlankCategoryName:"Enter Category name",
+  BlankProductName:"Enter Product name",
   // InvalidUsername: "Enter a valid username",
   // InvalidFullname: "Enter a valid fullname",
   // InvalidPassowrd: "Enter a valid password",
