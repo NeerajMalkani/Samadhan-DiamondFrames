@@ -16,6 +16,7 @@ export interface CategoryModel {
   hsnsacCode: string;
   gstRate: string;
   unitID: string;
+  unitName: string;
   display: string;
   action: string;
   serviceID: number;
@@ -32,9 +33,14 @@ export interface ProductModel {
   productName: string;
   hsnSacCode: string;
   gstRate: number;
-  unitOfSales: string;
+  unitName: string;
   display: string;
   action: string;
+  serviceID: number;
+  unitOfSalesID:number;
+  categoryID:number;
+  activityID:number;
+  productID:number;
 }
 
 export interface ServiceNameModel {

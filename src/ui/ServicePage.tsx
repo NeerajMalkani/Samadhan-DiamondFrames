@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -23,6 +24,7 @@ import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
 import {ServiceNameModel} from "../models/Model";
 import { useCookies } from "react-cookie";
+import { LoadingButton } from "@mui/lab";
 
 const ServicePage = () => {
   let navigate = useNavigate();
@@ -49,6 +51,7 @@ const ServicePage = () => {
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     FetchData();
@@ -60,6 +63,7 @@ const ServicePage = () => {
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setButtonDisplay("none");
+    setButtonLoading(false);
   };
 
   const FetchData = () => {
@@ -77,14 +81,14 @@ const ServicePage = () => {
             setServiceNamesList(response.data.data);
           }
         } else {
-          // setSnackMsg("your request cannot be processed");
-          // setOpen(true);
+           setSnackMsg(communication.Error);
+           setOpen(true);
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
-        setSnackMsg("your request cannot be processed");
+        setSnackMsg(communication.NetworkError);
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,28 +135,29 @@ const ServicePage = () => {
       setIsServicenameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    } else if (type?.toLowerCase() === "delete" && a !== undefined) {
-      setSelectedID(a.id);
-      Provider.deleteAllParams("master/deleteservices", { ID: a.id })
-        .then((response) => {
-          if (response.data && response.data.code === 200) {
-            FetchData();
-          } else {
-            setSnackMsg("your request cannot be processed");
-            setOpen(true);
-            ResetFields();
-          }
-          //setIsLoading(false);
-        })
-        .catch((e) => {
-          ResetFields();
-          setSnackMsg("your request cannot be processed");
-          setOpen(true);
-        });
-    }
+    } 
+    // else if (type?.toLowerCase() === "delete" && a !== undefined) {
+    //   setSelectedID(a.id);
+    //   Provider.deleteAllParams("master/deleteservices", { ID: a.id })
+    //     .then((response) => {
+    //       if (response.data && response.data.code === 200) {
+    //         FetchData();
+    //       } else {
+    //         setSnackMsg(communication.Error);
+    //         setOpen(true);
+    //         ResetFields();
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       ResetFields();
+    //       setSnackMsg(communication.NetworkError);
+    //       setOpen(true);
+    //     });
+    // }
   };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
+    setButtonLoading(true);
     if (actionStatus === "new") {
       Provider.create("master/insertservices", {
         ServiceName: paramServiceName,
@@ -163,14 +168,13 @@ const ServicePage = () => {
             FetchData();
           } else {
             ResetFields();
-            setSnackMsg("your request cannot be processed");
+            setSnackMsg(communication.Error);
             setOpen(true);
           }
-          //setIsLoading(false);
         })
         .catch((e) => {
           ResetFields();
-          setSnackMsg("your request cannot be processed");
+          setSnackMsg(communication.NetworkError);
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
@@ -184,16 +188,26 @@ const ServicePage = () => {
             FetchData();
           } else {
             ResetFields();
-            setSnackMsg("your request cannot be processed");
+            setSnackMsg(communication.Error);
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
-          setSnackMsg("your request cannot be processed");
+          setSnackMsg(communication.NetworkError);
           setOpen(true);
         });
     }
+  };
+  
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -256,13 +270,14 @@ const ServicePage = () => {
             >
               Cancel
             </Button>
-            <Button
+            <LoadingButton
+             loading={buttonLoading}
               variant="contained"
               sx={{ mt: 1 }}
               onClick={handleSubmitClick}
             >
               Submit
-            </Button>
+            </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
@@ -281,8 +296,10 @@ const ServicePage = () => {
                 <CircularProgress />
               </Box>
             ) : (
-              <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
-                <DataGrid
+              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
+                 {serviceNamesList.length === 0 ? (
+                  <></>
+                ) : (<DataGrid
                   style={{
                     opacity: dataGridOpacity,
                     pointerEvents: dataGridPointer,
@@ -306,7 +323,7 @@ const ServicePage = () => {
                       color: theme.palette.primary.contrastText,
                     },
                   }}
-                />
+                />)}
               </div>
             )}
           </Grid>
@@ -315,11 +332,12 @@ const ServicePage = () => {
       <Snackbar
         open={open}
         autoHideDuration={6000}
-        message={snackMsg}
-        onClose={() => {
-          setOpen(false);
-        }}
-      />
+        onClose={handleSnackbarClose}
+      >
+        <Alert severity="error" sx={{ width: "100%" }}>
+          {snackMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

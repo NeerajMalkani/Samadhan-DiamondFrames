@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -21,16 +22,17 @@ import { DataGrid } from "@mui/x-data-grid";
 import { unitColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
-import {UnitOfSalesModel} from "../models/Model";
+import { UnitOfSalesModel } from "../models/Model";
 import { useCookies } from "react-cookie";
+import { LoadingButton } from "@mui/lab";
 
 const UnitPage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
-    useEffect(() => {
-      if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-        navigate(`/Samadhan-DiamondFrames/login`);
-    }, []);
+  useEffect(() => {
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
+      navigate(`/Samadhan-DiamondFrames/login`);
+  }, []);
 
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
@@ -53,6 +55,7 @@ const UnitPage = () => {
 
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
     FetchData();
@@ -64,6 +67,7 @@ const UnitPage = () => {
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setButtonDisplay("none");
+    setButtonLoading(false);
   };
 
   const FetchData = () => {
@@ -87,7 +91,7 @@ const UnitPage = () => {
       })
       .catch((e) => {
         setLoading(false);
-        setSnackMsg("your request cannot be processed");
+        setSnackMsg(communication.NetworkError);
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,27 +153,29 @@ const UnitPage = () => {
       setIsunit1Error(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    } else if (type?.toLowerCase() === "delete" && a !== undefined) {
-      setSelectedID(a.id);
-      Provider.deleteAllParams("master/deleteunitofsales", { ID: a.id })
-        .then((response) => {
-          if (response.data && response.data.code === 200) {
-            FetchData();
-          } else {
-            ResetFields();
-            setSnackMsg("your request cannot be processed");
-            setOpen(true);
-          }
-        })
-        .catch((e) => {
-          ResetFields();
-          setSnackMsg("your request cannot be processed");
-          setOpen(true);
-        });
     }
+    // else if (type?.toLowerCase() === "delete" && a !== undefined) {
+    //   setSelectedID(a.id);
+    //   Provider.deleteAllParams("master/deleteunitofsales", { ID: a.id })
+    //     .then((response) => {
+    //       if (response.data && response.data.code === 200) {
+    //         FetchData();
+    //       } else {
+    //         ResetFields();
+    //         setSnackMsg("your request cannot be processed");
+    //         setOpen(true);
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       ResetFields();
+    //       setSnackMsg("your request cannot be processed");
+    //       setOpen(true);
+    //     });
+    // }
   };
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
+    setButtonLoading(true);
     if (actionStatus === "new") {
       Provider.create("master/insertunitofsales", {
         UnitName: paramActivityName,
@@ -180,13 +186,13 @@ const UnitPage = () => {
             FetchData();
           } else {
             ResetFields();
-            setSnackMsg("your request cannot be processed");
+            setSnackMsg(communication.Error);
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
-          setSnackMsg("your request cannot be processed");
+          setSnackMsg(communication.NetworkError);
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
@@ -200,16 +206,26 @@ const UnitPage = () => {
             FetchData();
           } else {
             ResetFields();
-            setSnackMsg("your request cannot be processed");
+            setSnackMsg(communication.Error);
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
-          setSnackMsg("your request cannot be processed");
+          setSnackMsg(communication.NetworkError);
           setOpen(true);
         });
     }
+  };
+
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -291,13 +307,14 @@ const UnitPage = () => {
             >
               Cancel
             </Button>
-            <Button
+            <LoadingButton
+              loading={buttonLoading}
               variant="contained"
               sx={{ mt: 1 }}
               onClick={handleSubmitClick}
             >
               Submit
-            </Button>
+            </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
@@ -316,32 +333,36 @@ const UnitPage = () => {
                 <CircularProgress />
               </Box>
             ) : (
-              <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
-                <DataGrid
-                  style={{
-                    opacity: dataGridOpacity,
-                    pointerEvents: dataGridPointer,
-                  }}
-                  rows={unitNamesList}
-                  columns={unitColumns}
-                  pageSize={pageSize}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                  disableSelectionOnClick
-                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                    const arrActivity = [...unitNamesList];
-                    let a: UnitOfSalesModel | undefined = arrActivity.find(
-                      (el) => el.id == param.row.id
-                    );
-                    handelEditAndDelete((e.target as any).textContent, a);
-                  }}
-                  sx={{
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: theme.palette.primary.main,
-                      color: theme.palette.primary.contrastText,
-                    },
-                  }}
-                />
+              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
+                {unitNamesList.length === 0 ? (
+                  <></>
+                ) : (
+                  <DataGrid
+                    style={{
+                      opacity: dataGridOpacity,
+                      pointerEvents: dataGridPointer,
+                    }}
+                    rows={unitNamesList}
+                    columns={unitColumns}
+                    pageSize={pageSize}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    disableSelectionOnClick
+                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                      const arrActivity = [...unitNamesList];
+                      let a: UnitOfSalesModel | undefined = arrActivity.find(
+                        (el) => el.id == param.row.id
+                      );
+                      handelEditAndDelete((e.target as any).textContent, a);
+                    }}
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+                      },
+                    }}
+                  />
+                )}
               </div>
             )}
           </Grid>
@@ -350,11 +371,12 @@ const UnitPage = () => {
       <Snackbar
         open={open}
         autoHideDuration={6000}
-        message={snackMsg}
-        onClose={() => {
-          setOpen(false);
-        }}
-      />
+        onClose={handleSnackbarClose}
+      >
+        <Alert severity="error" sx={{ width: "100%" }}>
+          {snackMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

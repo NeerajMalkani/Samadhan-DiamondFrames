@@ -6,11 +6,20 @@ export const communication = {
   InvalidUserNotExists:"The credentials provided are incorrect. Try again",
   IncorrectUsernameOrPassword: "Username or Password is incorrect",
   IncorrectMobileOrPassword: "Mobile or Password is incorrect",
+
   BlankActivityName:"Enter Activity name",
+  SelectActivityName:"Select Activity name",
+
   IncorrectActivityName:"Enter valid Activity name",
+
   BlankServiceName:"Enter Service name",
+  SelectServiceName:"Select Service name",
+
+
   IncorrectServiceName:"Enter valid Service name",
   BlankUnit1Name:"Enter Unit",
+  SelectUnitName:"Select Unit",
+
   IncorrectUnit1Name:"Enter valid Unit",
   BlankUnit2Name:"Enter conversion unit",
   IncorrectUnitName:"Enter valid conversion unit",
@@ -20,18 +29,14 @@ export const communication = {
   InvalidMobileBeforeOTP:"Enter mobile number to get the OTP",
   InvalidMobileNotExists:"Mobile does not exist",
   BlankCategoryName:"Enter Category name",
+  SelectCategoryName:"Select Category name",
+
   BlankProductName:"Enter Product name",
-  // InvalidUsername: "Enter a valid username",
-  // InvalidFullname: "Enter a valid fullname",
-  // InvalidPassowrd: "Enter a valid password",
-  // InvalidConfirmPassowrd: "Enter a valid confirm password",
-  // InvalidMobileNumber: "Enter a valid mobile number",
-  // InvalidOTP: "Enter a valid OTP",
-  // InvalidMobileBeforeOTP: "Enter mobile number to get the OTP",
-  // InvalidPasswordsMatch: "Passwords do not match",
+  SelectProductName:"select Product name",
 
-  // InvalidUserNotExists: "The credentials provided are incorrect. Try again",
+  BlankGST:"Please enter GST rate",
+  BlankHNSCode:"Please enter HSN / SAC Code",
 
-  // NetworkError: "Please check your internet connection",
+  Error:"Your request cannot be processed",
   NoData: "No data found",
 };

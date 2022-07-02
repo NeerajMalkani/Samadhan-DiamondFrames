@@ -30,6 +30,7 @@ import Provider from "../api/Provider";
 import { CategoryModel, ProductModel } from "../models/Model";
 import { useCookies } from "react-cookie";
 import { communication } from "../utils/communication";
+import { LoadingButton } from "@mui/lab";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -57,16 +58,23 @@ const ProductPage = () => {
   }, []);
 
   const [loading, setLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
+
+  const [pID, setPID] = React.useState<number>(0);
+
 
   const [arn, setArn] = React.useState("--Select--");
+  const [arnID, setArnID] = React.useState<number>(0);
   const [activitynameError, setactivitynameError] = useState("");
   const [isActivitynameError, setIsActivitynameError] = useState(false);
 
   const [sn, setSn] = React.useState("--Select--");
+  const [snID, setSnID] = React.useState<number>(0);
   const [servicenameError, setServicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
 
   const [cn, setCn] = React.useState("--Select--");
+  const [cnID, setCnID] = React.useState<number>(0);
   const [categorynameError, setCategorynameError] = useState("");
   const [isCategorynameError, setIsCategorynameError] = useState(false);
 
@@ -77,7 +85,8 @@ const ProductPage = () => {
   const [hsn, setHsn] = React.useState("");
   const [gst, setGst] = React.useState("");
 
-  const [unitsOfSales, setUnitsOfSales] = React.useState<string[]>([]);
+  const [unitsOfSales, setUnitsOfSales] = React.useState<string>("");
+  const [unitsOfSalesID, setUnitsOfSalesID] = React.useState<number>(0);
   const [unitError, setUnitError] = React.useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = React.useState<string>("");
 
@@ -100,10 +109,105 @@ const ProductPage = () => {
   );
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [actionStatus, setActionStatus] = React.useState<string>("new");
 
   const theme = useTheme();
 
+  const FetchActvityRoles = () => {
+    Provider.getAll("master/getmainactivities")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setActivityNamesList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchServicesFromActivity = (selectedID: number) => {
+    let params = {
+      ID: selectedID,
+    };
+
+    Provider.getAll(
+      `master/getservicesbyroleid?${new URLSearchParams(
+        GetStringifyJson(params)
+      )}`
+    )
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setServiceNameList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchCategoriesFromServices = (
+    selectedItem: number,
+    callbackFunction: any = null
+  ) => {
+    let params = {
+      ID: selectedItem,
+    };
+    Provider.getAll(
+      `master/getcategoriesbyserviceid?${new URLSearchParams(
+        GetStringifyJson(params)
+      )}`
+    )
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setCategoryList(response.data.data);
+            if (callbackFunction !== null) {
+              callbackFunction(response.data.data);
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchUnitsFromCategory = (selectedItem: number) => {
+    let params = {
+      ID: selectedItem,
+    };
+    Provider.getAll(
+      `master/getunitbycategoryid?${new URLSearchParams(
+        GetStringifyJson(params)
+      )}`
+    )
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setUnitOfSalesList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   useEffect(() => {
+    GetProductData();
+    FetchActvityRoles();
+  }, []);
+
+  const GetProductData = () => {
+    handleCancelClick();
     Provider.getAll("master/getproducts")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -112,51 +216,81 @@ const ProductPage = () => {
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
               let sr = { srno: index + 1 };
+              let id = { id: index + 1 };
               a = Object.assign(a, sr);
-              //a.unitID = a.unitID.replace(",", "</br>");
+              a = Object.assign(a, id);
               return a;
             });
             setProductList(response.data.data);
-
-            // setCategoryList(CategoryDataDummy);
-            // setActivityNamesList(ActivityRoleDataDummy);
-            // setServiceNameList(ServiceNameDataDummy);
-            // setUnitOfSalesList(UnitOfSalesDataDummy);
-            // setProductList(ProductDataDummy);
           }
         } else {
+          setIsSnackbarOpen(true);
+          setSnackbarMessage(communication.Error);
         }
         setLoading(false);
       })
       .catch((e: Error) => {
         setLoading(false);
+        setIsSnackbarOpen(true);
+        setSnackbarMessage(communication.NetworkError);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const handleARNChange = (event: SelectChangeEvent) => {
-    setArn(event.target.value as string);
-    setIsActivitynameError(false);
-    setactivitynameError("");
+    let activityName: string = event.target.value;
+    let ac = activityNamesList.find(
+      (el) => el.activityRoleName === activityName
+    );
+    if (ac !== undefined) {
+      setArn(activityName);
+      setArnID(ac.id);
+      SetResetActivityName(false);
+      SetResetServiceName(true);
+      SetResetCategoryName(true);
+      SetResetUnitName(true);
+     // SetResetProductName(true);
+      setGst("");
+      setHsn("");
+      FetchServicesFromActivity(ac.id);
+    }
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
-    setSn(event.target.value as string);
-    setIsServicenameError(false);
-    setServicenameError("");
+    let serviceName: string = event.target.value;
+    let ac = serviceNameList.find((el) => el.serviceName === serviceName);
+    if (ac !== undefined) {
+      setSn(event.target.value as string);
+      setSnID(ac.id);
+      SetResetServiceName(false);
+      SetResetCategoryName(true);
+      SetResetUnitName(true);
+      FetchCategoriesFromServices(ac.id);
+    }
   };
 
   const handleCNChange = (event: SelectChangeEvent) => {
-    setCn(event.target.value as string);
-    setIsCategorynameError(false);
-    setCategorynameError("");
+    let categoryName: string = event.target.value;
+    let ac = categoryList.find((el) => el.categoryName === categoryName);
+    if (ac !== undefined) {
+      setCn(event.target.value as string);
+      setCnID(ac.id);
+      SetResetCategoryName(false);
+      SetResetUnitName(true);
+      setGst(ac.gstRate + "%");
+      setHsn(ac.hsnsacCode);
+      FetchUnitsFromCategory(ac.id);
+    }
   };
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
-    const {
-      target: { value },
-    } = event;
-    setUnitsOfSales(typeof value === "string" ? value.split(",") : value);
+    let unitName: string = event.target.value;
+    let ac = unitOfSalesList.find((el) => el.unitName === unitName);
+    if (ac !== undefined) {
+      setUnitsOfSales(event.target.value as string);
+      setUnitsOfSalesID(ac.id);
+      SetResetUnitName(false);
+    }
   };
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -181,98 +315,199 @@ const ProductPage = () => {
       setIsCategorynameError(true);
       setCategorynameError(communication.BlankCategoryName);
     }
+
     if (hsn.trim() === "") {
       isValid = false;
     }
-    if (gst.trim() === "") {
+    if (gst.toString().trim() === "") {
       isValid = false;
     }
 
-    if(productName.trim()===""){
+    if (productName.trim() === "") {
       isValid = false;
       setIsProductError(true);
       setProductError(communication.BlankProductName);
     }
 
-    if (unitsOfSales.length === 0) {
+    if (unitsOfSales === "--Select--") {
       isValid = false;
       setUnitError(true);
-      setUnitErrorText("Please select Unit of Sales");
+      setUnitErrorText(communication.BlankUnit1Name);
     }
 
     if (isValid) {
-      // setSn("--Select--");
-      // setCn("--Select--");
-      // setCn("");
-      // setHsn("");
-      // setGst("");
-      //let arrCatList = [...productList];
-      // const objCat: ProductModel = {
-      //   id: productList.length + 1,
-      //   srno: productList.length + 1,
-      //   activityRoleName: arn,
-      //   serviceName: sn,
-      //   hsnSacCode: hsn,
-      //   unitOfSales: "Sq.Ft / Sq.Mtr",
-      //   gstRate: parseFloat(gst),
-      //   categoryName: cn,
-      //   display: display,
-      //   action: "",
-      // };
-      // arrCatList.push(objCat);
-      // setProductList(arrCatList);
+      setButtonLoading(true);
+      if (actionStatus === "new") {
+        InsertData();
+      } else if (actionStatus === "edit") {
+        UpdateData();
+      }
     }
   };
 
+  const InsertData = () => {
+    Provider.create("master/insertproduct", {
+      ProductName: productName,
+      ActivityID: arnID,
+      ServiceID: snID,
+      CategoryID: cnID,
+      UnitOfSalesID: unitsOfSalesID,
+      Display: display === "Yes",
+    })
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          GetProductData();
+        } else {
+          setSnackbarMessage(communication.NetworkError);
+          setIsSnackbarOpen(true);
+        }
+        setButtonLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(communication.NetworkError);
+        setIsSnackbarOpen(true);
+        setButtonLoading(false);
+      });
+  };
+
+  const UpdateData = () => {
+    Provider.create("master/updateproduct", {
+      ProductID: pID,
+      ProductName: productName,
+      ActivityID: arnID,
+      ServiceID: snID,
+      CategoryID: cnID,
+      UnitOfSalesID: unitsOfSalesID,
+      Display: display === "Yes",
+    })
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          GetProductData();
+        } else {
+          setSnackbarMessage(communication.NetworkError);
+          setIsSnackbarOpen(true);
+        }
+        setButtonLoading(false);
+      })
+      .catch((e) => {
+        setButtonLoading(false);
+        setSnackbarMessage(communication.NetworkError);
+        setIsSnackbarOpen(true);
+      });
+  };
   const handleCancelClick = () => {
     setDisplay("Yes");
 
-    setArn("");
-    setactivitynameError("");
-    setIsActivitynameError(false);
+    SetResetActivityName(true);
 
-    setSn("");
-    setIsServicenameError(false);
-    setServicenameError("");
+    SetResetServiceName(true);
 
-    setCn("");
-    setIsCategorynameError(false);
-    setCategorynameError("");
+    SetResetCategoryName(true);
+
+    SetResetProductName(true);
+
+    SetResetUnitName(true);
 
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
+    setActionStatus("new");
   };
 
   const handelEditAndDelete = (
     type: string | null,
-    a: CategoryModel | undefined
+    a: ProductModel | undefined
   ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
 
+      setPID(a.productID);
+
       setArn(a?.activityRoleName);
-      setactivitynameError("");
-      setIsActivitynameError(false);
+      setArnID(a?.activityID);
+      SetResetActivityName(false);
 
       setSn(a?.serviceName);
-      setServicenameError("");
-      setIsServicenameError(false);
+      setSnID(a?.serviceID);
+      SetResetServiceName(false);
+      FetchServicesFromActivity(a?.activityID);
 
       setCn(a?.categoryName);
-      setIsCategorynameError(false);
-      setCategorynameError("");
+      setCnID(a?.categoryID);
+
+      SetResetCategoryName(false);
+      FetchCategoriesFromServices(a?.serviceID, (acategoryList: any) => {
+        let ca: CategoryModel | undefined = acategoryList.find(
+          (el: any) => el.id === a?.categoryID
+        );
+        if (ca !== undefined) {
+          setHsn(ca.hsnsacCode);
+          setGst(ca.gstRate + "%");
+        }
+      });
 
       setProductName(a?.productName);
-      setIsProductError(false);
-      setProductError("");
+      SetResetProductName(false);
 
-      // setButtonDisplay("unset");
+      setUnitsOfSales(a?.unitName);
+      setUnitsOfSalesID(a?.unitOfSalesID);
+      SetResetUnitName(false);
+      FetchUnitsFromCategory(a?.categoryID);
+
+      setDisplay(a?.display);
+      setButtonDisplay("unset");
+      setActionStatus("edit");
     }
     //  else if (type?.toLowerCase() === "delete") {
     // }
+  };
+
+  const SetResetActivityName = (isBlank: boolean) => {
+    if (isBlank) {
+      setArn("--Select--");
+      setArnID(0);
+    }
+    setactivitynameError("");
+    setIsActivitynameError(false);
+  };
+
+  const SetResetServiceName = (isBlank: boolean) => {
+    if (isBlank) {
+      setSn("--Select--");
+      setSnID(0);
+    }
+    setServicenameError("");
+    setIsServicenameError(false);
+  };
+
+  const SetResetCategoryName = (isBlank: boolean) => {
+    if (isBlank) {
+      setCn("--Select--");
+      setCnID(0);
+      setGst("");
+      setHsn("");
+    }
+    setCategorynameError("");
+    setIsCategorynameError(false);
+  };
+
+  const SetResetUnitName = (isBlank: boolean) => {
+    if (isBlank) {
+      setUnitsOfSales("--Select--");
+      setUnitsOfSalesID(0);
+    }
+    setUnitError(false);
+    setUnitErrorText("");
+  };
+
+  const SetResetProductName = (isBlank: boolean) => {
+    if (isBlank) {
+      setProductName("");
+    }
+    setProductError("");
+    setIsProductError(false);
   };
 
   const handleSnackbarClose = (
@@ -283,6 +518,18 @@ const ProductPage = () => {
       return;
     }
     setIsSnackbarOpen(false);
+  };
+
+  const GetStringifyJson = (params: any) => {
+    var string_ = JSON.stringify(params);
+
+    string_ = string_.replace(/{/g, "");
+    string_ = string_.replace(/}/g, "");
+    string_ = string_.replace(/:/g, "=");
+    string_ = string_.replace(/,/g, "&");
+    string_ = string_.replace(/"/g, "");
+
+    return string_;
   };
 
   return (
@@ -428,30 +675,19 @@ const ProductPage = () => {
                 <b>Unit of Sales</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select
-                multiple
-                value={unitsOfSales}
-                onChange={handleUnitChange}
-                input={<OutlinedInput />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-              >
-                {unitOfSalesList.map((units) => (
-                  <MenuItem
-                    key={units.id}
-                    value={units.unitName}
-                    style={getStyles(units.unitName, unitsOfSales, theme)}
-                  >
-                    {units.unitName}
-                  </MenuItem>
-                ))}
+              <Select value={unitsOfSales} onChange={handleUnitChange}>
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {unitOfSalesList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.unitName}>
+                      {item.unitName}
+                    </MenuItem>
+                  );
+                })}
               </Select>
+
               <FormHelperText>{unitErrorText}</FormHelperText>
             </FormControl>
           </Grid>
@@ -480,13 +716,14 @@ const ProductPage = () => {
             >
               Cancel
             </Button>
-            <Button
+            <LoadingButton
+              loading={buttonLoading}
               variant="contained"
               sx={{ mt: 1 }}
               onClick={handleSubmitClick}
             >
               Submit
-            </Button>
+            </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
@@ -505,7 +742,7 @@ const ProductPage = () => {
                 <CircularProgress />
               </Box>
             ) : (
-              <div style={{ height: 400, width: "100%", marginBottom: "20px" }}>
+              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 <DataGrid
                   style={{
                     opacity: dataGridOpacity,
@@ -518,9 +755,9 @@ const ProductPage = () => {
                   onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                    const arrActivity = [...categoryList];
-                    let a: CategoryModel | undefined = arrActivity.find(
-                      (el) => el.id == param.row.id
+                    const arrActivity = [...productList];
+                    let a: ProductModel | undefined = arrActivity.find(
+                      (el) => el.id === param.row.id
                     );
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
