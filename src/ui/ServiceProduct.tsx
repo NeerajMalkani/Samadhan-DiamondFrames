@@ -1,8 +1,8 @@
+import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   Box,
   Button,
-  Chip,
   CircularProgress,
   Container,
   FormControl,
@@ -10,7 +10,6 @@ import {
   FormHelperText,
   Grid,
   MenuItem,
-  OutlinedInput,
   Radio,
   RadioGroup,
   Select,
@@ -19,25 +18,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
-import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import { useNavigate } from "react-router-dom";
-import { productColumns } from "../utils/tablecolumns";
-import DataContext from "../contexts/DataContexts";
-import Provider from "../api/Provider";
-import { CategoryModel, ProductModel } from "../models/Model";
+import { DataGrid } from "@mui/x-data-grid";
+import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import DataContext from "../contexts/DataContexts";
+import { ProductModel } from "../models/Model";
 import { communication } from "../utils/communication";
-import { LoadingButton } from "@mui/lab";
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP, width: 250 },
-  },
-};
+import { productColumns } from "../utils/tablecolumns";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
@@ -48,213 +38,86 @@ function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   };
 }
 
-const ProductPage = () => {
+const ServiceProductPage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
+  const theme = useTheme();
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/login`);
+    // if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
+    //   navigate(`/Samadhan-DiamondFrames/login`);
   }, []);
 
+  
+  const [pID, setPID] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [pID, setPID] = React.useState<number>(0);
+  const [arn, setArn] = useState("");
+  const [arnID, setArnID] = useState<number>(0);
 
-
-  const [arn, setArn] = React.useState("--Select--");
-  const [arnID, setArnID] = React.useState<number>(0);
-  const [activitynameError, setactivitynameError] = useState("");
-  const [isActivitynameError, setIsActivitynameError] = useState(false);
-
-  const [sn, setSn] = React.useState("--Select--");
-  const [snID, setSnID] = React.useState<number>(0);
+  const [sn, setSn] = useState("--Select--");
+  const [snID, setSnID] = useState<number>(0);
   const [servicenameError, setServicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
 
-  const [cn, setCn] = React.useState("--Select--");
-  const [cnID, setCnID] = React.useState<number>(0);
+  const [cn, setCn] = useState("--Select--");
+  const [cnID, setCnID] = useState<number>(0);
   const [categorynameError, setCategorynameError] = useState("");
   const [isCategorynameError, setIsCategorynameError] = useState(false);
 
-  const [productName, setProductName] = React.useState("");
+  const [pn, setPn] = useState("--Select--");
+  const [pnID, setPnID] = useState(0);
   const [productError, setProductError] = useState("");
   const [isProductError, setIsProductError] = useState(false);
 
-  const [hsn, setHsn] = React.useState("");
-  const [gst, setGst] = React.useState("");
+  const [hsn, setHsn] = useState("");
+  const [gst, setGst] = useState("");
 
-  const [unitsOfSales, setUnitsOfSales] = React.useState<string>("");
-  const [unitsOfSalesID, setUnitsOfSalesID] = React.useState<number>(0);
-  const [unitError, setUnitError] = React.useState<boolean>(false);
-  const [unitErrorText, setUnitErrorText] = React.useState<string>("");
+  const [unitsOfSales, setUnitsOfSales] = useState<string>("--Select--");
+  const [unitsOfSalesID, setUnitsOfSalesID] = useState<number>(0);
+  const [unitError, setUnitError] = useState<boolean>(false);
+  const [unitErrorText, setUnitErrorText] = useState<string>("");
 
-  const [display, setDisplay] = React.useState("Yes");
-  const [activityNamesList, setActivityNamesList] =
-    React.useContext(DataContext).activityNamesList;
+  const [rateWithMaterial, setRateWithMaterial] = useState<string>("");
+  const [isRateWithMaterialError, setIsRateWithMaterialError] =
+    useState<boolean>(false);
+  const [rateWithMaterialErrorText, setRateWithMaterialErrorText] =
+    useState<string>("Materials + Labour cost");
+
+  const [rateWithoutMaterial, setRateWithoutMaterial] = useState<string>("");
+  const [isRateWithoutMaterialError, setIsRateWithoutMaterialError] =
+    useState<boolean>(false);
+  const [rateWithoutMaterialErrorText, setRateWithoutMaterialErrorText] =
+    useState<string>("Only Labour cost");
+
+  const [alternateUnit, setAlternateUnit] = useState<string>("");
+  const [isAlternateUnitError, setIsAlternateUnitError] =
+    useState<boolean>(false);
+  const [alternateUnitErrorText, setAlternateUnitErrorText] =
+    useState<string>("");
+
+    //
+    const [specification, setSpecification] = useState<string>("");
+    const [shortSpecification, setShortSpecification] = useState<string>("");
+
+  const [display, setDisplay] = useState("Yes");
+
   const [serviceNameList, setServiceNameList] =
-    React.useContext(DataContext).serviceNameList;
+    useContext(DataContext).serviceNameList;
   const [unitOfSalesList, setUnitOfSalesList] =
-    React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] =
-    React.useContext(DataContext).categoryList;
-  const [productList, setProductList] =
-    React.useContext(DataContext).productList;
-  const [pageSize, setPageSize] = React.useState<number>(5);
-  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
-  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
+    useContext(DataContext).unitOfSalesList;
+  const [categoryList, setCategoryList] = useContext(DataContext).categoryList;
+  const [productList, setProductList] = useContext(DataContext).productList;
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">(
     "auto"
   );
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [actionStatus, setActionStatus] = React.useState<string>("new");
-
-  const theme = useTheme();
-
-  const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            setActivityNamesList(response.data.data);
-          }
-        }
-      })
-      .catch((e) => {});
-  };
-
-  const FetchServicesFromActivity = (selectedID: number) => {
-    let params = {
-      ID: selectedID,
-    };
-
-    Provider.getAll(
-      `master/getservicesbyroleid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            setServiceNameList(response.data.data);
-          }
-        }
-      })
-      .catch((e) => {});
-  };
-
-  const FetchCategoriesFromServices = (
-    selectedItem: number,
-    callbackFunction: any = null
-  ) => {
-    let params = {
-      ID: selectedItem,
-    };
-    Provider.getAll(
-      `master/getcategoriesbyserviceid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            setCategoryList(response.data.data);
-            if (callbackFunction !== null) {
-              callbackFunction(response.data.data);
-            }
-          }
-        }
-      })
-      .catch((e) => {});
-  };
-
-  const FetchUnitsFromCategory = (selectedItem: number) => {
-    let params = {
-      ID: selectedItem,
-    };
-    Provider.getAll(
-      `master/getunitbycategoryid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            setUnitOfSalesList(response.data.data);
-          }
-        }
-      })
-      .catch((e) => {});
-  };
-
-  useEffect(() => {
-    GetProductData();
-    FetchActvityRoles();
-  }, []);
-
-  const GetProductData = () => {
-    handleCancelClick();
-    Provider.getAll("master/getproducts")
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            const arrList = [...response.data.data];
-            arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
-              let sr = { srno: index + 1 };
-              let id = { id: index + 1 };
-              a = Object.assign(a, sr);
-              a = Object.assign(a, id);
-              return a;
-            });
-            setProductList(response.data.data);
-          }
-        } else {
-          setIsSnackbarOpen(true);
-          setSnackbarMessage(communication.Error);
-        }
-        setLoading(false);
-      })
-      .catch((e: Error) => {
-        setLoading(false);
-        setIsSnackbarOpen(true);
-        setSnackbarMessage(communication.NetworkError);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  };
-
-  const handleARNChange = (event: SelectChangeEvent) => {
-    let activityName: string = event.target.value;
-    let ac = activityNamesList.find(
-      (el) => el.activityRoleName === activityName
-    );
-    if (ac !== undefined) {
-      setArn(activityName);
-      setArnID(ac.id);
-      SetResetActivityName(false);
-      SetResetServiceName(true);
-      SetResetCategoryName(true);
-      SetResetUnitName(true);
-     // SetResetProductName(true);
-      setGst("");
-      setHsn("");
-      FetchServicesFromActivity(ac.id);
-    }
-  };
+  const [actionStatus, setActionStatus] = useState<string>("new");
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
@@ -262,10 +125,10 @@ const ProductPage = () => {
     if (ac !== undefined) {
       setSn(event.target.value as string);
       setSnID(ac.id);
-      SetResetServiceName(false);
-      SetResetCategoryName(true);
-      SetResetUnitName(true);
-      FetchCategoriesFromServices(ac.id);
+      //  SetResetServiceName(false);
+      //  SetResetCategoryName(true);
+      //  SetResetUnitName(true);
+      //  FetchCategoriesFromServices(ac.id);
     }
   };
 
@@ -279,9 +142,22 @@ const ProductPage = () => {
       SetResetUnitName(true);
       setGst(ac.gstRate + "%");
       setHsn(ac.hsnsacCode);
-      FetchUnitsFromCategory(ac.id);
+      //FetchUnitsFromCategory(ac.id);
     }
   };
+
+  const handlePNChnage=(event: SelectChangeEvent)=>{
+    let productName: string = event.target.value;
+    let ac = productList.find((el) => el.productName === productName);
+    if (ac !== undefined) {
+      setPn(event.target.value as string);
+      setPnID(ac.id);
+      SetResetProductName(false);
+      SetResetUnitName(true);
+     
+      //FetchUnitsFromCategory(ac.id);
+    }
+  }
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
     let unitName: string = event.target.value;
@@ -292,18 +168,23 @@ const ProductPage = () => {
       SetResetUnitName(false);
     }
   };
+
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
 
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsSnackbarOpen(false);
+  };
+
   const handleSubmitClick = () => {
     let isValid: boolean = true;
-    if (arn === "--Select--") {
-      isValid = false;
-      setIsActivitynameError(true);
-      setactivitynameError(communication.SelectActivityName);
-    }
-
     if (sn === "--Select--") {
       isValid = false;
       setIsServicenameError(true);
@@ -323,10 +204,10 @@ const ProductPage = () => {
       isValid = false;
     }
 
-    if (productName.trim() === "") {
+    if (pn.trim() === "--Select--") {
       isValid = false;
       setIsProductError(true);
-      setProductError(communication.BlankProductName);
+      setProductError(communication.SelectProductName);
     }
 
     if (unitsOfSales === "--Select--") {
@@ -335,70 +216,29 @@ const ProductPage = () => {
       setUnitErrorText(communication.SelectUnitName);
     }
 
-    if (isValid) {
-      setButtonLoading(true);
-      if (actionStatus === "new") {
-        InsertData();
-      } else if (actionStatus === "edit") {
-        UpdateData();
-      }
+    if (rateWithMaterial === "") {
+      isValid = false;
+      setIsRateWithMaterialError(true);
+      setRateWithMaterialErrorText(communication.BlankRateWithMaterial);
+    }
+
+    if (rateWithoutMaterial === "") {
+      isValid = false;
+      setIsRateWithoutMaterialError(true);
+      setRateWithoutMaterialErrorText(communication.BlankRateWithoutMaterial);
+    }
+
+    if (alternateUnit === "") {
+      isValid = false;
+      setIsAlternateUnitError(true);
+      setAlternateUnitErrorText(communication.BlankAlternateUnit);
     }
   };
 
-  const InsertData = () => {
-    Provider.create("master/insertproduct", {
-      ProductName: productName,
-      ActivityID: arnID,
-      ServiceID: snID,
-      CategoryID: cnID,
-      UnitOfSalesID: unitsOfSalesID,
-      Display: display === "Yes",
-    })
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          GetProductData();
-        } else {
-          setSnackbarMessage(communication.NetworkError);
-          setIsSnackbarOpen(true);
-        }
-        setButtonLoading(false);
-      })
-      .catch((e) => {
-        setSnackbarMessage(communication.NetworkError);
-        setIsSnackbarOpen(true);
-        setButtonLoading(false);
-      });
-  };
-
-  const UpdateData = () => {
-    Provider.create("master/updateproduct", {
-      ProductID: pID,
-      ProductName: productName,
-      ActivityID: arnID,
-      ServiceID: snID,
-      CategoryID: cnID,
-      UnitOfSalesID: unitsOfSalesID,
-      Display: display === "Yes",
-    })
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          GetProductData();
-        } else {
-          setSnackbarMessage(communication.NetworkError);
-          setIsSnackbarOpen(true);
-        }
-        setButtonLoading(false);
-      })
-      .catch((e) => {
-        setButtonLoading(false);
-        setSnackbarMessage(communication.NetworkError);
-        setIsSnackbarOpen(true);
-      });
-  };
   const handleCancelClick = () => {
     setDisplay("Yes");
 
-    SetResetActivityName(true);
+    // SetResetActivityName(true);
 
     SetResetServiceName(true);
 
@@ -407,6 +247,9 @@ const ProductPage = () => {
     SetResetProductName(true);
 
     SetResetUnitName(true);
+    SetResetRateWithMaterial(true);
+    SetResetRateWithoutMaterial(true);
+    SetResetAlternateUnit(true);
 
     setButtonDisplay("none");
     setDataGridOpacity(1);
@@ -425,53 +268,52 @@ const ProductPage = () => {
 
       setPID(a.productID);
 
-      setArn(a?.activityRoleName);
-      setArnID(a?.activityID);
-      SetResetActivityName(false);
+    //   setArn(a?.activityRoleName);
+    //   setArnID(a?.activityID);
+    //   SetResetActivityName(false);
 
       setSn(a?.serviceName);
       setSnID(a?.serviceID);
       SetResetServiceName(false);
-      FetchServicesFromActivity(a?.activityID);
+     // FetchServicesFromActivity(a?.activityID);
 
       setCn(a?.categoryName);
       setCnID(a?.categoryID);
 
       SetResetCategoryName(false);
-      FetchCategoriesFromServices(a?.serviceID, (acategoryList: any) => {
-        let ca: CategoryModel | undefined = acategoryList.find(
-          (el: any) => el.id === a?.categoryID
-        );
-        if (ca !== undefined) {
-          setHsn(ca.hsnsacCode);
-          setGst(ca.gstRate + "%");
-        }
-      });
+    //   FetchCategoriesFromServices(a?.serviceID, (acategoryList: any) => {
+    //     let ca: CategoryModel | undefined = acategoryList.find(
+    //       (el: any) => el.id === a?.categoryID
+    //     );
+    //     if (ca !== undefined) {
+    //       setHsn(ca.hsnsacCode);
+    //       setGst(ca.gstRate + "%");
+    //     }
+    //   });
 
-      setProductName(a?.productName);
+      setPn(a?.productName);
       SetResetProductName(false);
 
       setUnitsOfSales(a?.unitName);
       setUnitsOfSalesID(a?.unitOfSalesID);
       SetResetUnitName(false);
-      FetchUnitsFromCategory(a?.categoryID);
+      //FetchUnitsFromCategory(a?.categoryID);
 
       setDisplay(a?.display);
       setButtonDisplay("unset");
       setActionStatus("edit");
     }
-    //  else if (type?.toLowerCase() === "delete") {
-    // }
+
   };
 
-  const SetResetActivityName = (isBlank: boolean) => {
-    if (isBlank) {
-      setArn("--Select--");
-      setArnID(0);
-    }
-    setactivitynameError("");
-    setIsActivitynameError(false);
-  };
+  //   const SetResetActivityName = (isBlank: boolean) => {
+  //     if (isBlank) {
+  //       setArn("--Select--");
+  //       setArnID(0);
+  //     }
+  //     setactivitynameError("");
+  //     setIsActivitynameError(false);
+  //   };
 
   const SetResetServiceName = (isBlank: boolean) => {
     if (isBlank) {
@@ -504,32 +346,35 @@ const ProductPage = () => {
 
   const SetResetProductName = (isBlank: boolean) => {
     if (isBlank) {
-      setProductName("");
+      setPn("--Select--");
+      setPnID(0);
     }
     setProductError("");
     setIsProductError(false);
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
+  const SetResetRateWithMaterial = (isBlank: boolean) => {
+    if (isBlank) {
+      setRateWithMaterial("");
     }
-    setIsSnackbarOpen(false);
+    setRateWithMaterialErrorText("Materials + Labour cost");
+    setIsRateWithMaterialError(false);
   };
 
-  const GetStringifyJson = (params: any) => {
-    var string_ = JSON.stringify(params);
+  const SetResetRateWithoutMaterial = (isBlank: boolean) => {
+    if (isBlank) {
+      setRateWithoutMaterial("");
+    }
+    setRateWithoutMaterialErrorText("Only Labour cost");
+    setIsRateWithoutMaterialError(false);
+  };
 
-    string_ = string_.replace(/{/g, "");
-    string_ = string_.replace(/}/g, "");
-    string_ = string_.replace(/:/g, "=");
-    string_ = string_.replace(/,/g, "&");
-    string_ = string_.replace(/"/g, "");
-
-    return string_;
+  const SetResetAlternateUnit = (isBlank: boolean) => {
+    if (isBlank) {
+      setAlternateUnit("");
+    }
+    setAlternateUnitErrorText("");
+    setIsAlternateUnitError(false);
   };
 
   return (
@@ -542,30 +387,18 @@ const ProductPage = () => {
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Product</Typography>
+            <Typography variant="h4">Service Product</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Product</Typography>
+            <Typography variant="h6">Add Service Product</Typography>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
-            <FormControl fullWidth size="small" error={isActivitynameError}>
+            <FormControl fullWidth size="small">
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Activity Role Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select value={arn} onChange={handleARNChange}>
-                <MenuItem disabled={true} value="--Select--">
-                  --Select--
-                </MenuItem>
-                {activityNamesList.map((item, index) => {
-                  return (
-                    <MenuItem key={index} value={item.activityRoleName}>
-                      {item.activityRoleName}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{activitynameError}</FormHelperText>
+              <Select value={arn}></Select>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
@@ -645,24 +478,25 @@ const ProductPage = () => {
             />
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Product Name</b>
-              <label style={{ color: "#ff0000" }}>*</label>
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Product Name"
-              variant="outlined"
-              size="small"
-              error={isProductError}
-              helperText={productError}
-              value={productName}
-              onChange={(e) => {
-                setProductName((e.target as HTMLInputElement).value);
-                setIsProductError(false);
-                setProductError("");
-              }}
-            />
+            <FormControl fullWidth size="small" error={isProductError}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Product Name</b>
+                <label style={{ color: "#ff0000" }}>*</label>
+              </Typography>
+              <Select value={pn} onChange={handlePNChnage}>            
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {productList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.productName}>
+                      {item.productName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>{productError}</FormHelperText>
+            </FormControl>
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
             <FormControl
@@ -672,7 +506,7 @@ const ProductPage = () => {
               error={unitError}
             >
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Unit of Sales</b>
+                <b>Unit Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
               <Select value={unitsOfSales} onChange={handleUnitChange}>
@@ -687,10 +521,101 @@ const ProductPage = () => {
                   );
                 })}
               </Select>
-
               <FormHelperText>{unitErrorText}</FormHelperText>
             </FormControl>
           </Grid>
+          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Rate / Unit (with Materials)</b>
+              <label style={{ color: "#ff0000" }}>*</label>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Rate / Unit (with materials)"
+              variant="outlined"
+              size="small"
+              value={rateWithMaterial}
+              error={isRateWithMaterialError}
+              helperText={rateWithMaterialErrorText}
+              onChange={(e) => {
+                setRateWithMaterial((e.target as HTMLInputElement).value);
+                SetResetRateWithMaterial(false);
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Rate / Unit (without Materials)</b>
+              <label style={{ color: "#ff0000" }}>*</label>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Rate / Unit (without Materials)"
+              variant="outlined"
+              size="small"
+              value={rateWithoutMaterial}
+              error={isRateWithoutMaterialError}
+              helperText={rateWithoutMaterialErrorText}
+              onChange={(e) => {
+                setRateWithoutMaterial((e.target as HTMLInputElement).value);
+                SetResetRateWithoutMaterial(false);
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Alternative Unit of Sales</b>
+              <label style={{ color: "#ff0000" }}>*</label>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Alternative Unit of Sales"
+              variant="outlined"
+              size="small"
+              value={alternateUnit}
+              error={isAlternateUnitError}
+              helperText={alternateUnitErrorText}
+              onChange={(e) => {
+                setAlternateUnit((e.target as HTMLInputElement).value);
+                SetResetAlternateUnit(false);
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Short Specification</b>
+            </Typography>
+            <TextField
+              fullWidth
+              // placeholder="HSN / SAC Code"
+              variant="outlined"
+              size="small"
+              multiline
+              rows={5}
+               value={shortSpecification}
+              onChange={(e) => {
+                  setShortSpecification(e.currentTarget.value);
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Specification</b>
+            </Typography>
+            <TextField
+              fullWidth
+              //placeholder="HSN / SAC Code"
+              variant="outlined"
+              size="small"
+              multiline
+              rows={5}
+               value={specification}
+              onChange={(e) => {
+                  setSpecification(e.currentTarget.value);
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}></Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Display</b>
@@ -786,4 +711,4 @@ const ProductPage = () => {
   );
 };
 
-export default ProductPage;
+export default ServiceProductPage;

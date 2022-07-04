@@ -32,10 +32,15 @@ export const communication = {
   SelectCategoryName:"Select Category name",
 
   BlankProductName:"Enter Product name",
-  SelectProductName:"select Product name",
+  SelectProductName:"Select Product name",
 
   BlankGST:"Please enter GST rate",
   BlankHNSCode:"Please enter HSN / SAC Code",
+
+  BlankRateWithMaterial:"Please enter rate",
+  BlankRateWithoutMaterial:"Please enter rate",
+
+  BlankAlternateUnit:"Please enter alternate unit",
 
   Error:"Your request cannot be processed",
   NoData: "No data found",

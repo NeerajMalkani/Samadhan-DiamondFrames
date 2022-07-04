@@ -1,8 +1,8 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DataContextProvider } from "../contexts/DataContexts";
-import{ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, UserCreds} from "../models/Model";
+import{ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel} from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/ActivityPage";
 import ServicePage from "../ui/ServicePage";
@@ -15,6 +15,8 @@ import ProductPage from "../ui/Product";
 import SignupPage from "../ui/Signup";
 import ForgotPasswordPage from "../ui/ForgotPasswordPage";
 import { CookiesProvider } from 'react-cookie';
+import ServiceProductPage from "../ui/ServiceProduct";
+import DepartmentPage from "../ui/Department";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -22,6 +24,7 @@ const AppRoutes = () => {
   const unitOfSalesList = useState<UnitOfSalesModel[]>([]);
   const categoryList = useState<CategoryModel[]>([]);
   const productList = useState<ProductModel[]>([]);
+  const departmentNamesList = useState<DepartmentNameModel[]>([]);
 
   // const [cookies, setCookie] = useCookies(["dfc"]);
   // useEffect(() => {
@@ -35,7 +38,7 @@ const AppRoutes = () => {
   return (
     <CookiesProvider>
     <ThemeProvider theme={theme}>
-      <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList: productList }}>
+      <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList: productList, departmentNamesList:departmentNamesList }}>
         <CssBaseline />
         <Box sx={{ backgroundColor: "background.default" }}>
           <BrowserRouter>
@@ -51,6 +54,8 @@ const AppRoutes = () => {
               <Route path="/Samadhan-DiamondFrames/master/unit" element={<UnitPage />} />
               <Route path="/Samadhan-DiamondFrames/master/category" element={<CategoryPage />} />
               <Route path="/Samadhan-DiamondFrames/master/product" element={<ProductPage />} />
+              <Route path="/Samadhan-DiamondFrames/master/serviceproduct" element={<ServiceProductPage />} />
+              <Route path="/Samadhan-DiamondFrames/master/department" element={<DepartmentPage />} />
             </Routes>
           </BrowserRouter>
         </Box>

@@ -69,3 +69,11 @@ export interface RoleDetails{
   roleName:string,
   roleCount:number
 }
+
+export interface DepartmentNameModel {
+  id: number;
+  srno:number;
+ departmentName: string;
+ display: string;
+ action: string;
+}

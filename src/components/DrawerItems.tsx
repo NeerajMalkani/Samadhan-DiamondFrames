@@ -1,5 +1,15 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import Diamond from "@mui/icons-material/Diamond";
 import Group from "@mui/icons-material/Group";
 import LocalOffer from "@mui/icons-material/LocalOffer";
@@ -82,11 +92,40 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
-        { title: "Service Product", isActive: window.location.href.toLowerCase().includes("serviceproduct") },
-        { title: "Department", isActive: window.location.href.toLowerCase().includes("department") },
-        { title: "Location Type", isActive: window.location.href.toLowerCase().includes("locationtype") },
-        { title: "Designation", isActive: window.location.href.toLowerCase().includes("designation") },
-        { title: "E-Way Bill", isActive: window.location.href.toLowerCase().includes("ewaybill") },
+        {
+          title: "Service Product",
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("serviceproduct"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/Samadhan-DiamondFrames/master/serviceproduct`);
+            }, 300);
+          },
+        },
+        {
+          title: "Department",
+          isActive: window.location.href.toLowerCase().includes("department"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/Samadhan-DiamondFrames/master/department`);
+            }, 300);
+          },
+        },
+        {
+          title: "Location Type",
+          isActive: window.location.href.toLowerCase().includes("locationtype"),
+        },
+        {
+          title: "Designation",
+          isActive: window.location.href.toLowerCase().includes("designation"),
+        },
+        {
+          title: "E-Way Bill",
+          isActive: window.location.href.toLowerCase().includes("ewaybill"),
+        },
       ],
     },
     { title: "Users", icon: <Group />, expanded: false },
@@ -186,10 +225,8 @@ const DrawerItems = ({ open }: OpenObj) => {
               navigate(`/Samadhan-DiamondFrames/master/brand`);
             }, 300);
           },
-
         },
         {
-
           title: "Product",
           isActive: window.location.href.toLowerCase().includes("product"),
           navigation: () => {
@@ -198,7 +235,6 @@ const DrawerItems = ({ open }: OpenObj) => {
               navigate(`/Samadhan-DiamondFrames/master/product`);
             }, 300);
           },
-
         },
       ],
     },
@@ -208,7 +244,6 @@ const DrawerItems = ({ open }: OpenObj) => {
       expanded: true,
       items: [
         {
-
           title: "Employee New / List",
           isActive: window.location.href.toLowerCase().includes("employee"),
           navigation: () => {
@@ -220,7 +255,9 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Employee Report",
-          isActive: window.location.href.toLowerCase().includes("employeereport"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("employeereport"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -237,7 +274,9 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Add Department",
-          isActive: window.location.href.toLowerCase().includes("adddepartment"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("adddepartment"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -257,7 +296,9 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive: window.location.href.toLowerCase().includes("adddesignation"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("adddesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -291,7 +332,9 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Create Purchase Order",
-          isActive: window.location.href.toLowerCase().includes("purchaseorder"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("purchaseorder"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -348,7 +391,9 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Employee Report",
-          isActive: window.location.href.toLowerCase().includes("employeereport"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("employeereport"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -365,7 +410,9 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Add Department",
-          isActive: window.location.href.toLowerCase().includes("adddepartment"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("adddepartment"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -385,7 +432,9 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive: window.location.href.toLowerCase().includes("adddesignation"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("adddesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -402,7 +451,9 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Rate Card Setup",
-          isActive: window.location.href.toLowerCase().includes("ratecardsetup"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("ratecardsetup"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -446,7 +497,9 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "App User Enquiry Wise",
-          isActive: window.location.href.toLowerCase().includes("appuserenquirywise"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("appuserenquirywise"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -456,7 +509,9 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Contractor Design Wise",
-          isActive: window.location.href.toLowerCase().includes("contractordesignwise"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("contractordesignwise"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -466,14 +521,17 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Contractor Quotation Wise",
-          isActive: window.location.href.toLowerCase().includes("contractorquotationwise"),
+          isActive: window.location.href
+            .toLowerCase()
+            .includes("contractorquotationwise"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/contractorquotationwise`);
+              navigate(
+                `/Samadhan-DiamondFrames/master/contractorquotationwise`
+              );
             }, 300);
           },
-
         },
       ],
     },
@@ -526,19 +584,35 @@ const DrawerItems = ({ open }: OpenObj) => {
       MenuArr = [...MenuItemsGeneralUser];
       break;
     case 3:
-      MenuArr = [...MenuItemsDealer]
+      MenuArr = [...MenuItemsDealer];
       break;
     case 4:
-      MenuArr = [...MenuItemsContractor]
+      MenuArr = [...MenuItemsContractor];
       break;
   }
 
   return (
     <Box sx={{ mt: 8, width: 280 }}>
       {MenuArr.map((item, index) => (
-        <Accordion key={index} style={{ margin: 0, boxShadow: "none", border: "none", position: "unset" }} defaultExpanded={item.expanded}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={item.title} id={item.title} style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}>
-            <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>{item.icon}</ListItemIcon>
+        <Accordion
+          key={index}
+          style={{
+            margin: 0,
+            boxShadow: "none",
+            border: "none",
+            position: "unset",
+          }}
+          defaultExpanded={item.expanded}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={item.title}
+            id={item.title}
+            style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>
+              {item.icon}
+            </ListItemIcon>
             <Typography>{item.title}</Typography>
           </AccordionSummary>
           <AccordionDetails style={{ padding: 0 }}>
@@ -546,8 +620,27 @@ const DrawerItems = ({ open }: OpenObj) => {
               item.items.map((listItem: any, index: number) => {
                 return (
                   <Box key={index}>
-                    <ListItemButton selected={listItem.isActive} sx={{ minHeight: 48, justifyContent: "initial", px: 2.5, backgroundColor: listItem.isActive ? theme.palette.primary.main + " !important" : "#ededed" }} onClick={listItem.navigation}>
-                      <ListItemText primary={listItem.title} sx={{ opacity: 1, color: listItem.isActive ? theme.palette.primary.contrastText : theme.palette.text.primary }} />
+                    <ListItemButton
+                      selected={listItem.isActive}
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: "initial",
+                        px: 2.5,
+                        backgroundColor: listItem.isActive
+                          ? theme.palette.primary.main + " !important"
+                          : "#ededed",
+                      }}
+                      onClick={listItem.navigation}
+                    >
+                      <ListItemText
+                        primary={listItem.title}
+                        sx={{
+                          opacity: 1,
+                          color: listItem.isActive
+                            ? theme.palette.primary.contrastText
+                            : theme.palette.text.primary,
+                        }}
+                      />
                     </ListItemButton>
                     <Divider />
                   </Box>
