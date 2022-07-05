@@ -17,6 +17,7 @@ import ForgotPasswordPage from "../ui/ForgotPasswordPage";
 import { CookiesProvider } from 'react-cookie';
 import ServiceProductPage from "../ui/ServiceProduct";
 import DepartmentPage from "../ui/Department";
+import DesignationPage from "../ui/Designation";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -56,6 +57,7 @@ const AppRoutes = () => {
               <Route path="/Samadhan-DiamondFrames/master/product" element={<ProductPage />} />
               <Route path="/Samadhan-DiamondFrames/master/serviceproduct" element={<ServiceProductPage />} />
               <Route path="/Samadhan-DiamondFrames/master/department" element={<DepartmentPage />} />
+              <Route path="/Samadhan-DiamondFrames/master/designation" element={<DesignationPage />} />
             </Routes>
           </BrowserRouter>
         </Box>

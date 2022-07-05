@@ -341,3 +341,41 @@ export const departmentColumns: GridColDef[] = [
     ),
   },
 ];
+
+export const designationColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+  },
+  {
+    field: "designationName",
+    headerName: "Designation Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}
+        >
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+

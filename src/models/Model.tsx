@@ -77,3 +77,11 @@ export interface DepartmentNameModel {
  display: string;
  action: string;
 }
+
+export interface DesignationNameModel {
+  id: number;
+  srno:number;
+ designationName: string;
+ display: string;
+ action: string;
+}

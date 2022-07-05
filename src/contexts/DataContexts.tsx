@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import {ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel} from "../models/Model";
+import {ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel} from "../models/Model";
 
 const activityNames: ActivityRoleNameModel[] = [];
 const activityNamesList: [ActivityRoleNameModel[], Dispatch<SetStateAction<ActivityRoleNameModel[]>>] = [activityNames, () => {}];
@@ -19,7 +19,10 @@ const productList: [ProductModel[], Dispatch<SetStateAction<ProductModel[]>>] = 
 const departmentNames: DepartmentNameModel[] = [];
 const departmentNamesList: [DepartmentNameModel[], Dispatch<SetStateAction<DepartmentNameModel[]>>] = [departmentNames, () => {}];
 
-const DataContext = React.createContext({ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList:productList , departmentNamesList:departmentNamesList});
+const designationNames: DesignationNameModel[] = [];
+const designationNamesList: [DesignationNameModel[], Dispatch<SetStateAction<DesignationNameModel[]>>] = [designationNames, () => {}];
+
+const DataContext = React.createContext({ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList:productList , departmentNamesList:departmentNamesList, designationNamesList:designationNamesList});
 
 const DataContextProvider = DataContext.Provider;
 const DataContextConsumer = DataContext.Consumer;
