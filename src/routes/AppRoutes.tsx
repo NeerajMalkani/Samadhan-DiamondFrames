@@ -2,7 +2,7 @@ import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DataContextProvider } from "../contexts/DataContexts";
-import{ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel} from "../models/Model";
+import{ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel} from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/ActivityPage";
 import ServicePage from "../ui/ServicePage";
@@ -26,7 +26,7 @@ const AppRoutes = () => {
   const categoryList = useState<CategoryModel[]>([]);
   const productList = useState<ProductModel[]>([]);
   const departmentNamesList = useState<DepartmentNameModel[]>([]);
-
+  const designationNamesList = useState<DesignationNameModel[]>([]);
   // const [cookies, setCookie] = useCookies(["dfc"]);
   // useEffect(() => {
   //   debugger;
@@ -39,7 +39,7 @@ const AppRoutes = () => {
   return (
     <CookiesProvider>
     <ThemeProvider theme={theme}>
-      <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList: productList, departmentNamesList:departmentNamesList }}>
+      <DataContextProvider value={{ categoryList: categoryList, activityNamesList: activityNamesList, unitOfSalesList: unitOfSalesList, serviceNameList: serviceNameList, productList: productList, departmentNamesList:departmentNamesList, designationNamesList:designationNamesList }}>
         <CssBaseline />
         <Box sx={{ backgroundColor: "background.default" }}>
           <BrowserRouter>

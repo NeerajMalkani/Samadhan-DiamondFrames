@@ -1,28 +1,11 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import Provider from "../api/Provider";
 import Header from "../components/Header";
 import DataContext from "../contexts/DataContexts";
 import { ProductModel } from "../models/Model";
@@ -31,10 +14,7 @@ import { productColumns } from "../utils/tablecolumns";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
-    fontWeight:
-      unitSales.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 }
 
@@ -48,7 +28,6 @@ const ServiceProductPage = () => {
     //   navigate(`/Samadhan-DiamondFrames/login`);
   }, []);
 
-  
   const [pID, setPID] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -80,44 +59,145 @@ const ServiceProductPage = () => {
   const [unitErrorText, setUnitErrorText] = useState<string>("");
 
   const [rateWithMaterial, setRateWithMaterial] = useState<string>("");
-  const [isRateWithMaterialError, setIsRateWithMaterialError] =
-    useState<boolean>(false);
-  const [rateWithMaterialErrorText, setRateWithMaterialErrorText] =
-    useState<string>("Materials + Labour cost");
+  const [isRateWithMaterialError, setIsRateWithMaterialError] = useState<boolean>(false);
+  const [rateWithMaterialErrorText, setRateWithMaterialErrorText] = useState<string>("Materials + Labour cost");
 
   const [rateWithoutMaterial, setRateWithoutMaterial] = useState<string>("");
-  const [isRateWithoutMaterialError, setIsRateWithoutMaterialError] =
-    useState<boolean>(false);
-  const [rateWithoutMaterialErrorText, setRateWithoutMaterialErrorText] =
-    useState<string>("Only Labour cost");
+  const [isRateWithoutMaterialError, setIsRateWithoutMaterialError] = useState<boolean>(false);
+  const [rateWithoutMaterialErrorText, setRateWithoutMaterialErrorText] = useState<string>("Only Labour cost");
 
   const [alternateUnit, setAlternateUnit] = useState<string>("");
-  const [isAlternateUnitError, setIsAlternateUnitError] =
-    useState<boolean>(false);
-  const [alternateUnitErrorText, setAlternateUnitErrorText] =
-    useState<string>("");
+  const [isAlternateUnitError, setIsAlternateUnitError] = useState<boolean>(false);
+  const [alternateUnitErrorText, setAlternateUnitErrorText] = useState<string>("");
 
-    //
-    const [specification, setSpecification] = useState<string>("");
-    const [shortSpecification, setShortSpecification] = useState<string>("");
+  //
+  const [specification, setSpecification] = useState<string>("");
+  const [shortSpecification, setShortSpecification] = useState<string>("");
 
   const [display, setDisplay] = useState("Yes");
 
-  const [serviceNameList, setServiceNameList] =
-    useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] =
-    useContext(DataContext).unitOfSalesList;
+  const [activityNamesList, setActivityNamesList] = useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] = useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = useContext(DataContext).unitOfSalesList;
+  const [unitList, setUnitList] = useState([]);
   const [categoryList, setCategoryList] = useContext(DataContext).categoryList;
   const [productList, setProductList] = useContext(DataContext).productList;
   const [pageSize, setPageSize] = useState<number>(5);
+  const [showauos, setShowauos] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">(
-    "auto"
-  );
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [actionStatus, setActionStatus] = useState<string>("new");
+
+  const FetchActvityRoles = () => {
+    Provider.getAll("master/getmainactivities")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display && el.activityRoleName === "Contractor";
+            });
+            setActivityNamesList(response.data.data);
+            setArn(response.data.data[0].activityRoleName);
+            setArnID(response.data.data[0].id);
+            FetchServicesFromActivity(response.data.data[0].id);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchServicesFromActivity = (selectedID: number) => {
+    let params = {
+      ID: selectedID,
+    };
+
+    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setServiceNameList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
+    let params = {
+      ActivityID: selectedActivityID,
+      ServiceID: selectedServiceID,
+    };
+    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setCategoryList(response.data.data);
+            if (callbackFunction !== null) {
+              callbackFunction(response.data.data);
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
+    let params = {
+      ActivityID: selectedActivityID,
+      ServiceID: selectedServiceID,
+      CategoryID: selectedCategoryID,
+    };
+    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setProductList(response.data.data);
+            if (callbackFunction !== null) {
+              callbackFunction(response.data.data);
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchUnitsFromProduct = (selectedID: number) => {
+    let params = {
+      ProductID: selectedID,
+    };
+
+    Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setUnitOfSalesList(response.data.data);
+            setUnitsOfSalesID(response.data.data[0].id);
+            const units = response.data.data.map((data: any) => data.unitName);
+            setUnitList(units[0].split(" / "));
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  useEffect(() => {
+    FetchActvityRoles();
+  }, []);
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
@@ -125,6 +205,7 @@ const ServiceProductPage = () => {
     if (ac !== undefined) {
       setSn(event.target.value as string);
       setSnID(ac.id);
+      FetchCategoriesFromServices(arnID, ac.id);
       //  SetResetServiceName(false);
       //  SetResetCategoryName(true);
       //  SetResetUnitName(true);
@@ -139,44 +220,37 @@ const ServiceProductPage = () => {
       setCn(event.target.value as string);
       setCnID(ac.id);
       SetResetCategoryName(false);
+      SetResetProductName(true);
       SetResetUnitName(true);
       setGst(ac.gstRate + "%");
       setHsn(ac.hsnsacCode);
-      //FetchUnitsFromCategory(ac.id);
+      FetchProductsFromCategory(arnID, snID, ac.id);
     }
   };
 
-  const handlePNChnage=(event: SelectChangeEvent)=>{
+  const handlePNChnage = (event: SelectChangeEvent) => {
     let productName: string = event.target.value;
     let ac = productList.find((el) => el.productName === productName);
     if (ac !== undefined) {
       setPn(event.target.value as string);
-      setPnID(ac.id);
+      setPnID(ac.productID);
       SetResetProductName(false);
       SetResetUnitName(true);
-     
-      //FetchUnitsFromCategory(ac.id);
+      FetchUnitsFromProduct(ac.productID);
     }
-  }
+  };
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
-    let unitName: string = event.target.value;
-    let ac = unitOfSalesList.find((el) => el.unitName === unitName);
-    if (ac !== undefined) {
-      setUnitsOfSales(event.target.value as string);
-      setUnitsOfSalesID(ac.id);
-      SetResetUnitName(false);
-    }
+    setUnitsOfSales(event.target.value);
+    setShowauos(true);
+    SetResetUnitName(false);
   };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -257,10 +331,7 @@ const ServiceProductPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (
-    type: string | null,
-    a: ProductModel | undefined
-  ) => {
+  const handelEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -268,28 +339,28 @@ const ServiceProductPage = () => {
 
       setPID(a.productID);
 
-    //   setArn(a?.activityRoleName);
-    //   setArnID(a?.activityID);
-    //   SetResetActivityName(false);
+      //   setArn(a?.activityRoleName);
+      //   setArnID(a?.activityID);
+      //   SetResetActivityName(false);
 
       setSn(a?.serviceName);
       setSnID(a?.serviceID);
       SetResetServiceName(false);
-     // FetchServicesFromActivity(a?.activityID);
+      // FetchServicesFromActivity(a?.activityID);
 
       setCn(a?.categoryName);
       setCnID(a?.categoryID);
 
       SetResetCategoryName(false);
-    //   FetchCategoriesFromServices(a?.serviceID, (acategoryList: any) => {
-    //     let ca: CategoryModel | undefined = acategoryList.find(
-    //       (el: any) => el.id === a?.categoryID
-    //     );
-    //     if (ca !== undefined) {
-    //       setHsn(ca.hsnsacCode);
-    //       setGst(ca.gstRate + "%");
-    //     }
-    //   });
+      //   FetchCategoriesFromServices(a?.serviceID, (acategoryList: any) => {
+      //     let ca: CategoryModel | undefined = acategoryList.find(
+      //       (el: any) => el.id === a?.categoryID
+      //     );
+      //     if (ca !== undefined) {
+      //       setHsn(ca.hsnsacCode);
+      //       setGst(ca.gstRate + "%");
+      //     }
+      //   });
 
       setPn(a?.productName);
       SetResetProductName(false);
@@ -303,7 +374,6 @@ const ServiceProductPage = () => {
       setButtonDisplay("unset");
       setActionStatus("edit");
     }
-
   };
 
   //   const SetResetActivityName = (isBlank: boolean) => {
@@ -339,6 +409,8 @@ const ServiceProductPage = () => {
     if (isBlank) {
       setUnitsOfSales("--Select--");
       setUnitsOfSalesID(0);
+      setShowauos(false);
+      setUnitList([]);
     }
     setUnitError(false);
     setUnitErrorText("");
@@ -377,15 +449,23 @@ const ServiceProductPage = () => {
     setIsAlternateUnitError(false);
   };
 
+  const GetStringifyJson = (params: any) => {
+    var string_ = JSON.stringify(params);
+
+    string_ = string_.replace(/{/g, "");
+    string_ = string_.replace(/}/g, "");
+    string_ = string_.replace(/:/g, "=");
+    string_ = string_.replace(/,/g, "&");
+    string_ = string_.replace(/"/g, "");
+
+    return string_;
+  };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Service Product</Typography>
           </Grid>
@@ -398,7 +478,11 @@ const ServiceProductPage = () => {
                 <b>Activity Role Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select value={arn}></Select>
+              <Select value={arn}>
+                <MenuItem disabled={true} value={arn}>
+                  {arn}
+                </MenuItem>
+              </Select>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
@@ -483,7 +567,7 @@ const ServiceProductPage = () => {
                 <b>Product Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select value={pn} onChange={handlePNChnage}>            
+              <Select value={pn} onChange={handlePNChnage}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
@@ -499,12 +583,7 @@ const ServiceProductPage = () => {
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
-            <FormControl
-              fullWidth
-              size="small"
-              sx={{ paddingRight: { xs: 0, sm: 4 } }}
-              error={unitError}
-            >
+            <FormControl fullWidth size="small" error={unitError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Unit Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
@@ -513,10 +592,10 @@ const ServiceProductPage = () => {
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
-                {unitOfSalesList.map((item, index) => {
+                {unitList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.unitName}>
-                      {item.unitName}
+                    <MenuItem key={index} value={item}>
+                      {item}
                     </MenuItem>
                   );
                 })}
@@ -524,7 +603,7 @@ const ServiceProductPage = () => {
               <FormHelperText>{unitErrorText}</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Rate / Unit (with Materials)</b>
               <label style={{ color: "#ff0000" }}>*</label>
@@ -543,7 +622,7 @@ const ServiceProductPage = () => {
               }}
             />
           </Grid>
-          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Rate / Unit (without Materials)</b>
               <label style={{ color: "#ff0000" }}>*</label>
@@ -562,24 +641,32 @@ const ServiceProductPage = () => {
               }}
             />
           </Grid>
-          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Alternative Unit of Sales</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
-            <TextField
-              fullWidth
-              placeholder="Alternative Unit of Sales"
-              variant="outlined"
-              size="small"
-              value={alternateUnit}
-              error={isAlternateUnitError}
-              helperText={alternateUnitErrorText}
-              onChange={(e) => {
-                setAlternateUnit((e.target as HTMLInputElement).value);
-                SetResetAlternateUnit(false);
-              }}
-            />
+            <div style={{ display: "flex", flexDirection: "row", alignItems:"center", justifyContent: "center" }}>
+              <Typography variant="subtitle2" sx={{ width: "80px", marginRight: 1, textAlign: "left", display: showauos ? "block" : "none" }}>
+                {unitList.length > 0 && showauos ? "1 " + unitList[0] + " =" : ""}
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Alternative Unit of Sales"
+                variant="outlined"
+                size="small"
+                value={alternateUnit}
+                error={isAlternateUnitError}
+                helperText={alternateUnitErrorText}
+                onChange={(e) => {
+                  setAlternateUnit((e.target as HTMLInputElement).value);
+                  SetResetAlternateUnit(false);
+                }}
+              />
+              <Typography variant="subtitle2" sx={{ width: "64px", marginLeft: 1, textAlign: "center", display: showauos ? "block" : "none" }}>
+                {unitList.length > 0 && showauos ? unitList[1] : ""}
+              </Typography>
+            </div>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -587,14 +674,13 @@ const ServiceProductPage = () => {
             </Typography>
             <TextField
               fullWidth
-              // placeholder="HSN / SAC Code"
               variant="outlined"
               size="small"
               multiline
               rows={5}
-               value={shortSpecification}
+              value={shortSpecification}
               onChange={(e) => {
-                  setShortSpecification(e.currentTarget.value);
+                setShortSpecification(e.currentTarget.value);
               }}
             />
           </Grid>
@@ -604,14 +690,13 @@ const ServiceProductPage = () => {
             </Typography>
             <TextField
               fullWidth
-              //placeholder="HSN / SAC Code"
               variant="outlined"
               size="small"
               multiline
               rows={5}
-               value={specification}
+              value={specification}
               onChange={(e) => {
-                  setSpecification(e.currentTarget.value);
+                setSpecification(e.currentTarget.value);
               }}
             />
           </Grid>
@@ -621,32 +706,17 @@ const ServiceProductPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={5} md={8}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-              style={{ display: buttonDisplay }}
-              onClick={handleCancelClick}
-            >
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
               Cancel
             </Button>
-            <LoadingButton
-              loading={buttonLoading}
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </LoadingButton>
           </Grid>
@@ -657,13 +727,7 @@ const ServiceProductPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
@@ -681,9 +745,7 @@ const ServiceProductPage = () => {
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...productList];
-                    let a: ProductModel | undefined = arrActivity.find(
-                      (el) => el.id === param.row.id
-                    );
+                    let a: ProductModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
                   sx={{
@@ -698,11 +760,7 @@ const ServiceProductPage = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity="error" sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
