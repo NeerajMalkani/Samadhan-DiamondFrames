@@ -121,10 +121,22 @@ const DrawerItems = ({ open }: OpenObj) => {
         {
           title: "Designation",
           isActive: window.location.href.toLowerCase().includes("designation"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/Samadhan-DiamondFrames/master/designation`);
+            }, 300);
+          },
         },
         {
           title: "E-Way Bill",
           isActive: window.location.href.toLowerCase().includes("ewaybill"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/Samadhan-DiamondFrames/master/ewaybill`);
+            }, 300);
+          },
         },
       ],
     },

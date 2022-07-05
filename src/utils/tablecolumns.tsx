@@ -305,6 +305,73 @@ export const productColumns: GridColDef[] = [
   },
 ];
 
+// export const serviceProductColumns: GridColDef[] = [
+//   {
+//     field: "srno",
+//     headerName: "Sr. No.",
+//     flex: 0.8,
+//     minWidth: 60,
+//   },
+//   {
+//     field: "activityRoleName",
+//     headerName: "Activity Role Name",
+//     flex: 1,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "serviceName",
+//     headerName: "Service Name",
+//     flex: 1.8,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "categoryName",
+//     headerName: "Category Name",
+//     flex: 1.8,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "hsnsacCode",
+//     headerName: "HSN / SAC Code",
+//     flex: 1.8,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "productName",
+//     headerName: "Product Name",
+//     flex: 2.5,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "unitName",
+//     headerName: "Unit of Sale",
+//     flex: 1.8,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "display",
+//     headerName: "Display",
+//     flex: 1.8,
+//     minWidth: 140,
+//   },
+//   {
+//     field: "action",
+//     headerName: "Action",
+//     flex: 1,
+//     minWidth: 100,
+//     renderCell: (e) => (
+//       <Grid>
+//         <Button
+//           variant="contained"
+//           sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}
+//         >
+//           Edit
+//         </Button>
+//       </Grid>
+//     ),
+//   },
+// ];
+
 export const departmentColumns: GridColDef[] = [
   {
     field: "srno",
@@ -379,3 +446,51 @@ export const designationColumns: GridColDef[] = [
   },
 ];
 
+export const eWayBillColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+  },
+  {
+    field: "stateName",
+    headerName: "State",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "inStateLimit",
+    headerName: "In State Limit",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "interStateLimit",
+    headerName: "Inter State Limit",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}
+        >
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];

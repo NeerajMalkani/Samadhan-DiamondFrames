@@ -1,5 +1,23 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectChangeEvent,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
@@ -14,7 +32,10 @@ import { productColumns } from "../utils/tablecolumns";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
-    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+    fontWeight:
+      unitSales.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
   };
 }
 
@@ -24,8 +45,8 @@ const ServiceProductPage = () => {
   const theme = useTheme();
 
   useEffect(() => {
-    // if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-    //   navigate(`/Samadhan-DiamondFrames/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
+      navigate(`/Samadhan-DiamondFrames/login`);
   }, []);
 
   const [pID, setPID] = useState<number>(0);
@@ -59,16 +80,22 @@ const ServiceProductPage = () => {
   const [unitErrorText, setUnitErrorText] = useState<string>("");
 
   const [rateWithMaterial, setRateWithMaterial] = useState<string>("");
-  const [isRateWithMaterialError, setIsRateWithMaterialError] = useState<boolean>(false);
-  const [rateWithMaterialErrorText, setRateWithMaterialErrorText] = useState<string>("Materials + Labour cost");
+  const [isRateWithMaterialError, setIsRateWithMaterialError] =
+    useState<boolean>(false);
+  const [rateWithMaterialErrorText, setRateWithMaterialErrorText] =
+    useState<string>("Materials + Labour cost");
 
   const [rateWithoutMaterial, setRateWithoutMaterial] = useState<string>("");
-  const [isRateWithoutMaterialError, setIsRateWithoutMaterialError] = useState<boolean>(false);
-  const [rateWithoutMaterialErrorText, setRateWithoutMaterialErrorText] = useState<string>("Only Labour cost");
+  const [isRateWithoutMaterialError, setIsRateWithoutMaterialError] =
+    useState<boolean>(false);
+  const [rateWithoutMaterialErrorText, setRateWithoutMaterialErrorText] =
+    useState<string>("Only Labour cost");
 
   const [alternateUnit, setAlternateUnit] = useState<string>("");
-  const [isAlternateUnitError, setIsAlternateUnitError] = useState<boolean>(false);
-  const [alternateUnitErrorText, setAlternateUnitErrorText] = useState<string>("");
+  const [isAlternateUnitError, setIsAlternateUnitError] =
+    useState<boolean>(false);
+  const [alternateUnitErrorText, setAlternateUnitErrorText] =
+    useState<string>("");
 
   //
   const [specification, setSpecification] = useState<string>("");
@@ -76,9 +103,12 @@ const ServiceProductPage = () => {
 
   const [display, setDisplay] = useState("Yes");
 
-  const [activityNamesList, setActivityNamesList] = useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] = useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = useContext(DataContext).unitOfSalesList;
+  const [activityNamesList, setActivityNamesList] =
+    useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] =
+    useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] =
+    useContext(DataContext).unitOfSalesList;
   const [unitList, setUnitList] = useState([]);
   const [categoryList, setCategoryList] = useContext(DataContext).categoryList;
   const [productList, setProductList] = useContext(DataContext).productList;
@@ -86,10 +116,38 @@ const ServiceProductPage = () => {
   const [showauos, setShowauos] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">(
+    "auto"
+  );
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [actionStatus, setActionStatus] = useState<string>("new");
+
+  const FetchData = () => {
+    Provider.getAll("master/getserviceproducts")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            debugger;
+            // const lisData = [...response.data.data];
+            // lisData.map((k, i) => {
+            //   k.key = (parseInt(i) + 1).toString();
+            // });
+            // listData[1](response.data.data);
+            // listSearchData[1](response.data.data);
+          }
+        } else {
+          setSnackbarMessage("No data found");
+          setIsSnackbarOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+      });
+  };
 
   const FetchActvityRoles = () => {
     Provider.getAll("master/getmainactivities")
@@ -114,7 +172,11 @@ const ServiceProductPage = () => {
       ID: selectedID,
     };
 
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(
+      `master/getservicesbyroleid?${new URLSearchParams(
+        GetStringifyJson(params)
+      )}`
+    )
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -128,12 +190,20 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
+  const FetchCategoriesFromServices = (
+    selectedActivityID: number,
+    selectedServiceID: number,
+    callbackFunction: any = null
+  ) => {
     let params = {
       ActivityID: selectedActivityID,
       ServiceID: selectedServiceID,
     };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(
+      `master/getcategoriesbyserviceid?${new URLSearchParams(
+        GetStringifyJson(params)
+      )}`
+    )
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -150,13 +220,22 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
-  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
+  const FetchProductsFromCategory = (
+    selectedActivityID: number,
+    selectedServiceID: number,
+    selectedCategoryID: number,
+    callbackFunction: any = null
+  ) => {
     let params = {
       ActivityID: selectedActivityID,
       ServiceID: selectedServiceID,
       CategoryID: selectedCategoryID,
     };
-    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(
+      `master/getproductsbycategoryid?${new URLSearchParams(
+        GetStringifyJson(params)
+      )}`
+    )
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -178,7 +257,11 @@ const ServiceProductPage = () => {
       ProductID: selectedID,
     };
 
-    Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(
+      `master/getunitbyproductid?${new URLSearchParams(
+        GetStringifyJson(params)
+      )}`
+    )
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -196,6 +279,7 @@ const ServiceProductPage = () => {
   };
 
   useEffect(() => {
+   // FetchData();
     FetchActvityRoles();
   }, []);
 
@@ -250,7 +334,10 @@ const ServiceProductPage = () => {
     setDisplay((event.target as HTMLInputElement).value);
   };
 
-  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -307,7 +394,38 @@ const ServiceProductPage = () => {
       setIsAlternateUnitError(true);
       setAlternateUnitErrorText(communication.BlankAlternateUnit);
     }
+
+    if (isValid) {
+      UpdateData();
+    }
   };
+
+  const UpdateData = () => {
+    debugger;
+    Provider.create("master/updateproduct", {
+      ProductID: pnID,
+      RateWithMaterials: rateWithMaterial,
+      RateWithoutMaterials: rateWithoutMaterial,
+      AlternateUnitOfSales: alternateUnit,
+      ShortSpecification: shortSpecification,
+      Specification: specification,
+      ServiceDisplay: display==="Yes",
+    })
+      .then((response:any) => {
+        if (response.data && response.data.code === 200) {
+         // FetchData();
+         handleCancelClick();
+        } else {
+          setSnackbarMessage(communication.Error);
+          setIsSnackbarOpen(true);
+        }
+      })
+      .catch((e) => {       
+        setSnackbarMessage(communication.NetworkError);
+        setIsSnackbarOpen(true);
+      });
+  };
+
 
   const handleCancelClick = () => {
     setDisplay("Yes");
@@ -325,13 +443,19 @@ const ServiceProductPage = () => {
     SetResetRateWithoutMaterial(true);
     SetResetAlternateUnit(true);
 
+    setShortSpecification("");
+    setSpecification("");
+
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
+  const handelEditAndDelete = (
+    type: string | null,
+    a: ProductModel | undefined
+  ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -465,7 +589,11 @@ const ServiceProductPage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid
+          container
+          spacing={{ xs: 1, md: 2 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Service Product</Typography>
           </Grid>
@@ -646,9 +774,26 @@ const ServiceProductPage = () => {
               <b>Alternative Unit of Sales</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
-            <div style={{ display: "flex", flexDirection: "row", alignItems:"center", justifyContent: "center" }}>
-              <Typography variant="subtitle2" sx={{ width: "80px", marginRight: 1, textAlign: "left", display: showauos ? "block" : "none" }}>
-                {unitList.length > 0 && showauos ? "1 " + unitList[0] + " =" : ""}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  width: "80px",
+                  marginRight: 1,
+                  textAlign: "left",
+                  display: showauos ? "block" : "none",
+                }}
+              >
+                {unitList.length > 0 && showauos
+                  ? "1 " + unitList[0] + " ="
+                  : ""}
               </Typography>
               <TextField
                 fullWidth
@@ -663,7 +808,15 @@ const ServiceProductPage = () => {
                   SetResetAlternateUnit(false);
                 }}
               />
-              <Typography variant="subtitle2" sx={{ width: "64px", marginLeft: 1, textAlign: "center", display: showauos ? "block" : "none" }}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  width: "64px",
+                  marginLeft: 1,
+                  textAlign: "center",
+                  display: showauos ? "block" : "none",
+                }}
+              >
                 {unitList.length > 0 && showauos ? unitList[1] : ""}
               </Typography>
             </div>
@@ -706,28 +859,49 @@ const ServiceProductPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+              <RadioGroup
+                row
+                name="row-radio-buttons-group"
+                value={display}
+                onChange={handleDisplayChange}
+              >
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={5} md={8}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
+            <Button
+              variant="contained"
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+              style={{ display: buttonDisplay }}
+              onClick={handleCancelClick}
+            >
               Cancel
             </Button>
-            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+            <LoadingButton
+              loading={buttonLoading}
+              variant="contained"
+              sx={{ mt: 1 }}
+              onClick={handleSubmitClick}
+            >
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          {/* <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
               Product List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+              <Box
+                height="300px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ m: 2 }}
+              >
                 <CircularProgress />
               </Box>
             ) : (
@@ -745,7 +919,9 @@ const ServiceProductPage = () => {
                   disableSelectionOnClick
                   onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                     const arrActivity = [...productList];
-                    let a: ProductModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                    let a: ProductModel | undefined = arrActivity.find(
+                      (el) => el.id === param.row.id
+                    );
                     handelEditAndDelete((e.target as any).textContent, a);
                   }}
                   sx={{
@@ -757,10 +933,14 @@ const ServiceProductPage = () => {
                 />
               </div>
             )}
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
-      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <Alert severity="error" sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>

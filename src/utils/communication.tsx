@@ -42,6 +42,10 @@ export const communication = {
 
   BlankAlternateUnit:"Please enter alternate unit",
 
+  BlankState:"Please select state",
+  BlankInState:"Please enter In state limit",
+  BlankInterState:"Please enter Inter state limit",
+
   Error:"Your request cannot be processed",
   NoData: "No data found",
 };
