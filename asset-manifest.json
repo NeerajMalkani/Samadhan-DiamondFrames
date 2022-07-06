@@ -1,13 +1,16 @@
 {
   "files": {
-    "main.css": "/Samadhan-DiamondFrames/static/css/main.de4d6590.css",
-    "main.js": "/Samadhan-DiamondFrames/static/js/main.75ea8638.js",
-    "static/js/27.3bb8cae5.chunk.js": "/Samadhan-DiamondFrames/static/js/27.3bb8cae5.chunk.js",
+    "main.css": "/Samadhan-DiamondFrames/static/css/main.fb4534f1.css",
+    "main.js": "/Samadhan-DiamondFrames/static/js/main.d7151a9a.js",
+    "static/js/787.7a525077.chunk.js": "/Samadhan-DiamondFrames/static/js/787.7a525077.chunk.js",
     "static/media/logo192.png": "/Samadhan-DiamondFrames/static/media/logo192.49ca58848b021b76a94b.png",
-    "index.html": "/Samadhan-DiamondFrames/index.html"
+    "index.html": "/Samadhan-DiamondFrames/index.html",
+    "main.fb4534f1.css.map": "/Samadhan-DiamondFrames/static/css/main.fb4534f1.css.map",
+    "main.d7151a9a.js.map": "/Samadhan-DiamondFrames/static/js/main.d7151a9a.js.map",
+    "787.7a525077.chunk.js.map": "/Samadhan-DiamondFrames/static/js/787.7a525077.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.de4d6590.css",
-    "static/js/main.75ea8638.js"
+    "static/css/main.fb4534f1.css",
+    "static/js/main.d7151a9a.js"
   ]
 }
