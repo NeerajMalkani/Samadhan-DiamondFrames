@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
+  InputAdornment,
   MenuItem,
   OutlinedInput,
   Radio,
@@ -19,7 +20,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
@@ -111,6 +112,10 @@ const ProductPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [actionStatus, setActionStatus] = React.useState<string>("new");
 
+
+  const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const theme = useTheme();
 
   const FetchActvityRoles = () => {
@@ -125,7 +130,7 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -148,7 +153,7 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServices = (
@@ -176,7 +181,7 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchUnitsFromCategory = (selectedItem: number) => {
@@ -198,7 +203,7 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   useEffect(() => {
@@ -222,10 +227,11 @@ const ProductPage = () => {
               return a;
             });
             setProductList(response.data.data);
+            setProductListTemp(response.data.data);
           }
         } else {
           setIsSnackbarOpen(true);
-          setSnackbarMessage(communication.Error);
+          setSnackbarMessage(communication.NoData);
         }
         setLoading(false);
       })
@@ -249,7 +255,7 @@ const ProductPage = () => {
       SetResetServiceName(true);
       SetResetCategoryName(true);
       SetResetUnitName(true);
-     // SetResetProductName(true);
+      // SetResetProductName(true);
       setGst("");
       setHsn("");
       FetchServicesFromActivity(ac.id);
@@ -532,6 +538,18 @@ const ProductPage = () => {
     return string_;
   };
 
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setProductListTemp(productList);
+    } else {
+      setProductListTemp(
+        productList.filter((el: ProductModel) => {
+          return el.productName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -743,31 +761,56 @@ const ProductPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                <DataGrid
-                  style={{
-                    opacity: dataGridOpacity,
-                    pointerEvents: dataGridPointer,
-                  }}
-                  rows={productList}
-                  columns={productColumns}
-                  pageSize={pageSize}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                  disableSelectionOnClick
-                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                    const arrActivity = [...productList];
-                    let a: ProductModel | undefined = arrActivity.find(
-                      (el) => el.id === param.row.id
-                    );
-                    handelEditAndDelete((e.target as any).textContent, a);
-                  }}
-                  sx={{
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: theme.palette.primary.main,
-                      color: theme.palette.primary.contrastText,
-                    },
-                  }}
-                />
+                {productList.length === 0 ? (
+                  <></>
+                ) : (
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search Product name"
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <GridSearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
+                      }}
+                      rows={productListTemp}
+                      columns={productColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...productList];
+                        let a: ProductModel | undefined = arrActivity.find(
+                          (el) => el.id === param.row.id
+                        );
+                        handelEditAndDelete((e.target as any).textContent, a);
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
+                      }}
+                    />
+                  </>
+                )}
+
               </div>
             )}
           </Grid>

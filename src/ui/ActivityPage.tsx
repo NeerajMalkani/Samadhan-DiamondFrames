@@ -7,6 +7,7 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  InputAdornment,
   Radio,
   RadioGroup,
   Snackbar,
@@ -25,6 +26,7 @@ import { theme } from "../theme/AppTheme";
 import { ActivityRoleNameModel } from "../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
+import SearchIcon from '@mui/icons-material/Search';
 
 const ActivityPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -40,6 +42,9 @@ const ActivityPage = () => {
   const [activityName, setActivityName] = React.useState("");
   const [activityNamesList, setActivityNamesList] =
     React.useContext(DataContext).activityNamesList;
+
+  const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
+
   const [activitynameError, setactivitynameError] = useState("");
   const [isActivitynameError, setIsActivitynameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
@@ -53,6 +58,7 @@ const ActivityPage = () => {
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     FetchData();
@@ -80,6 +86,7 @@ const ActivityPage = () => {
               a = Object.assign(a, sr);
             });
             setActivityNamesList(response.data.data);
+            setActivityNamesListTemp(response.data.data);
           }
         } else {
           // setSnackMsg(communication.Error);
@@ -213,6 +220,20 @@ const ActivityPage = () => {
     setOpen(false);
   };
 
+
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setActivityNamesListTemp(activityNamesList);
+    } else {
+      setActivityNamesListTemp(
+        activityNamesList.filter((el: ActivityRoleNameModel) => {
+          return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -303,31 +324,53 @@ const ActivityPage = () => {
                 {activityNamesList.length === 0 ? (
                   <></>
                 ) : (
-                  <DataGrid
-                    style={{
-                      opacity: dataGridOpacity,
-                      pointerEvents: dataGridPointer,
-                    }}
-                    rows={activityNamesList}
-                    columns={activityColumns}
-                    pageSize={pageSize}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    disableSelectionOnClick
-                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                      const arrActivity = [...activityNamesList];
-                      let a: ActivityRoleNameModel | undefined =
-                        arrActivity.find((el) => el.id === param.row.id);
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search Activity name"
+                        variant="outlined"
+                        size="small"
+                        //sx={{justifySelf:"flex-end"}}
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              < SearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
 
-                      handelEditAndDelete((e.target as any).textContent, a);
-                    }}
-                    sx={{
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                      },
-                    }}
-                  />
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
+                      }}
+                      rows={activityNamesListTemp}
+                      columns={activityColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...activityNamesList];
+                        let a: ActivityRoleNameModel | undefined =
+                          arrActivity.find((el) => el.id === param.row.id);
+                        handelEditAndDelete((e.target as any).textContent, a);
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
+                        mb: 1
+                      }}
+                    />
+
+                  </>
                 )}
               </div>
             )}

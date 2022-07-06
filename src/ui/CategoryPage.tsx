@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
+  InputAdornment,
   MenuItem,
   OutlinedInput,
   Radio,
@@ -19,7 +20,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
@@ -83,6 +84,8 @@ const CategoryPage = () => {
     React.useContext(DataContext).unitOfSalesList;
   const [categoryList, setCategoryList] =
     React.useContext(DataContext).categoryList;
+
+  const [categoryListTemp, setCategoryListTemp] = useState<Array<CategoryModel>>([]);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
@@ -114,6 +117,7 @@ const CategoryPage = () => {
 
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [selectedID, setSelectedID] = React.useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState("");
   const theme = useTheme();
 
   useEffect(() => {
@@ -143,9 +147,11 @@ const CategoryPage = () => {
               return a;
             });
             setCategoryList(response.data.data);
+            setCategoryListTemp(response.data.data)
           }
         } else {
-          //Show snackbar
+          setSnackMsg("No data found");
+          setOpen(true);
         }
         setLoading(false);
       })
@@ -432,6 +438,19 @@ const CategoryPage = () => {
     setOpen(false);
   };
 
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setCategoryListTemp(categoryList);
+    } else {
+      setCategoryListTemp(
+        categoryList.filter((el: CategoryModel) => {
+          return el.categoryName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -647,31 +666,51 @@ const CategoryPage = () => {
                 {categoryList.length === 0 ? (
                   <></>
                 ) : (
-                  <DataGrid
-                    style={{
-                      opacity: dataGridOpacity,
-                      pointerEvents: dataGridPointer,
-                    }}
-                    rows={categoryList}
-                    columns={categoryColumns}
-                    pageSize={pageSize}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    disableSelectionOnClick
-                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                      const arrActivity = [...categoryList];
-                      let a: CategoryModel | undefined = arrActivity.find(
-                        (el) => el.id === param.row.id
-                      );
-                      handelEditAndDelete((e.target as any).textContent, a);
-                    }}
-                    sx={{
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                      },
-                    }}
-                  />
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search Category name"
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <GridSearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
+                      }}
+                      rows={categoryListTemp}
+                      columns={categoryColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...categoryList];
+                        let a: CategoryModel | undefined = arrActivity.find(
+                          (el) => el.id === param.row.id
+                        );
+                        handelEditAndDelete((e.target as any).textContent, a);
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
+                      }}
+                    />
+                  </>
                 )}
               </div>
             )}

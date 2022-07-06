@@ -36,6 +36,14 @@ const DrawerItems = ({ open }: OpenObj) => {
     }
   }, []);
 
+  const GetSearchedText = (mainStr: string, searchedText: string) => {
+    if (mainStr !== null && searchedText !== null) {
+      let arrStr = mainStr.split("/");
+      return arrStr[arrStr.length - 1] === searchedText;
+    } else
+      return false;
+  }
+
   const MenuItemsAdmin = [
     {
       title: "Master",
@@ -44,7 +52,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Activity",
-          isActive: window.location.href.toLowerCase().includes("activity"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "activity"),//.includes("activity"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -54,7 +62,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Service",
-          isActive: window.location.href.toLowerCase().includes("service"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "service"),//.includes("service"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -64,7 +72,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Unit of Sales",
-          isActive: window.location.href.toLowerCase().includes("unit"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "unit"),//.includes("unit"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -74,7 +82,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Category",
-          isActive: window.location.href.toLowerCase().includes("category"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "category"),// .includes("category"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -84,7 +92,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Products",
-          isActive: window.location.href.toLowerCase().includes("product"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "product"),//.includes("product"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -94,9 +102,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Service Product",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("serviceproduct"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "serviceproduct"),//  .includes("serviceproduct"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -106,7 +112,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Department",
-          isActive: window.location.href.toLowerCase().includes("department"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "department"),// .includes("department"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -116,11 +122,11 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Location Type",
-          isActive: window.location.href.toLowerCase().includes("locationtype"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "locationtype"),// .includes("locationtype"),
         },
         {
           title: "Designation",
-          isActive: window.location.href.toLowerCase().includes("designation"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "designation"),// .includes("designation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -130,7 +136,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "E-Way Bill",
-          isActive: window.location.href.toLowerCase().includes("ewaybill"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "ewaybill"),// includes("ewaybill"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {

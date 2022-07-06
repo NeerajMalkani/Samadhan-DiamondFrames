@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
+  InputAdornment,
   Radio,
   RadioGroup,
   Snackbar,
@@ -16,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Container } from "@mui/system";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -69,6 +70,10 @@ const EWayBillPage = () => {
   const [statesFullData, setStatesFullData] = useState([]);
   const [selectedID, setSelectedID] = useState<number>(0);
 
+  
+  const [ewayBillListTemp, setEwayBillListTemp] = useState<Array<EWayBillModel>>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
@@ -103,6 +108,7 @@ const EWayBillPage = () => {
               a = Object.assign(a, sr);
             });
             setEwayBillList(response.data.data);
+            setEwayBillListTemp(response.data.data);
           }
         } else {
           setSnackMsg("No data found");
@@ -276,6 +282,19 @@ const EWayBillPage = () => {
     setOpen(false);
   };
 
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setEwayBillListTemp(ewayBillList);
+    } else {
+      setEwayBillListTemp(
+        ewayBillList.filter((el: EWayBillModel) => {
+          return el.stateName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -286,14 +305,14 @@ const EWayBillPage = () => {
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Department</Typography>
+            <Typography variant="h4">E - Way bill</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Department</Typography>
+            <Typography variant="h6">Add E - Way bill</Typography>
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Department Name</b>
+              <b>State Name</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <Autocomplete
@@ -401,7 +420,7 @@ const EWayBillPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
-              Department List
+            E - Way bill List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -420,12 +439,31 @@ const EWayBillPage = () => {
                 {ewayBillList.length === 0 ? (
                   <></>
                 ) : (
+                  <>
+                  <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                    <TextField
+                      placeholder="Search State name"
+                      variant="outlined"
+                      size="small"
+                      onChange={(e) => {
+                        onChangeSearch((e.target as HTMLInputElement).value);
+                      }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <GridSearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+  
+                  </Grid>
                   <DataGrid
                     style={{
                       opacity: dataGridOpacity,
                       pointerEvents: dataGridPointer,
                     }}
-                    rows={ewayBillList}
+                    rows={ewayBillListTemp}
                     columns={eWayBillColumns}
                     pageSize={pageSize}
                     rowsPerPageOptions={[5, 10, 20]}
@@ -445,6 +483,7 @@ const EWayBillPage = () => {
                       },
                     }}
                   />
+                  </>
                 )}
               </div>
             )}

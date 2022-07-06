@@ -1,6 +1,6 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { Alert, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +39,8 @@ const DepartmentPage = () => {
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
-
+  const [departmentNameListTemp, setDepartmentNameListTemp] = useState<Array<DepartmentNameModel>>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     FetchData();
@@ -87,10 +88,11 @@ const DepartmentPage = () => {
               a = Object.assign(a, sr);
             });
             setDepartmentNameList(response.data.data);
+            setDepartmentNameListTemp(response.data.data);
           }
         } else {
-          // setSnackMsg(communication.Error);
-          // setOpen(true);
+          setSnackMsg("No data found");
+          setOpen(true);
         }
         setLoading(false);
       })
@@ -185,6 +187,19 @@ const DepartmentPage = () => {
     setOpen(false);
   };
 
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setDepartmentNameListTemp(departmentNameList);
+    } else {
+      setDepartmentNameListTemp(
+        departmentNameList.filter((el: DepartmentNameModel) => {
+          return el.departmentName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
+
   return (<Box sx={{ mt: 11 }}>
     <Header />
     <Container maxWidth="lg">
@@ -274,12 +289,31 @@ const DepartmentPage = () => {
               {departmentNameList.length === 0 ? (
                 <></>
               ) : (
+                <>
+                <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                  <TextField
+                    placeholder="Search Department name"
+                    variant="outlined"
+                    size="small"
+                    onChange={(e) => {
+                      onChangeSearch((e.target as HTMLInputElement).value);
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <GridSearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                </Grid>
                 <DataGrid
                   style={{
                     opacity: dataGridOpacity,
                     pointerEvents: dataGridPointer,
                   }}
-                  rows={departmentNameList}
+                  rows={departmentNameListTemp}
                   columns={departmentColumns}
                   pageSize={pageSize}
                   rowsPerPageOptions={[5, 10, 20]}
@@ -299,6 +333,7 @@ const DepartmentPage = () => {
                     },
                   }}
                 />
+                </>
               )}
             </div>
           )}
