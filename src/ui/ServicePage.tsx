@@ -7,6 +7,7 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  InputAdornment,
   Radio,
   RadioGroup,
   Snackbar,
@@ -18,21 +19,21 @@ import { useNavigate } from "react-router-dom";
 import React, { KeyboardEvent, useEffect, useState } from "react";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { serviceColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
-import {ServiceNameModel} from "../models/Model";
+import { ServiceNameModel } from "../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 
 const ServicePage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
-    useEffect(() => {
-      if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-        navigate(`/login`);
-    }, []);
+  useEffect(() => {
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
+      navigate(`/login`);
+  }, []);
 
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
@@ -52,6 +53,9 @@ const ServicePage = () => {
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
+
+  const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<ServiceNameModel>>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     FetchData();
@@ -79,10 +83,11 @@ const ServicePage = () => {
               a = Object.assign(a, sr);
             });
             setServiceNamesList(response.data.data);
+            setServiceNamesListTemp(response.data.data);
           }
         } else {
-           setSnackMsg(communication.Error);
-           setOpen(true);
+          setSnackMsg(communication.Error);
+          setOpen(true);
         }
         setLoading(false);
       })
@@ -92,6 +97,19 @@ const ServicePage = () => {
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
+
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setServiceNamesListTemp(serviceNamesList);
+    } else {
+      setServiceNamesListTemp(
+        serviceNamesList.filter((el: ServiceNameModel) => {
+          return el.serviceName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
   };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +153,7 @@ const ServicePage = () => {
       setIsServicenameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    } 
+    }
     // else if (type?.toLowerCase() === "delete" && a !== undefined) {
     //   setSelectedID(a.id);
     //   Provider.deleteAllParams("master/deleteservices", { ID: a.id })
@@ -199,7 +217,7 @@ const ServicePage = () => {
         });
     }
   };
-  
+
   const handleSnackbarClose = (
     event: React.SyntheticEvent | Event,
     reason?: string
@@ -271,7 +289,7 @@ const ServicePage = () => {
               Cancel
             </Button>
             <LoadingButton
-             loading={buttonLoading}
+              loading={buttonLoading}
               variant="contained"
               sx={{ mt: 1 }}
               onClick={handleSubmitClick}
@@ -297,33 +315,52 @@ const ServicePage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                 {serviceNamesList.length === 0 ? (
+                {serviceNamesList.length === 0 ? (
                   <></>
-                ) : (<DataGrid
-                  style={{
-                    opacity: dataGridOpacity,
-                    pointerEvents: dataGridPointer,
-                  }}
-                  rows={serviceNamesList}
-                  columns={serviceColumns}
-                  pageSize={pageSize}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                  disableSelectionOnClick
-                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                    const arrActivity = [...serviceNamesList];
-                    let a: ServiceNameModel | undefined = arrActivity.find(
-                      (el) => el.id == param.row.id
-                    );
-                    handelEditAndDelete((e.target as any).textContent, a);
-                  }}
-                  sx={{
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: theme.palette.primary.main,
-                      color: theme.palette.primary.contrastText,
-                    },
-                  }}
-                />)}
+                ) : (<>
+                  <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                    <TextField
+                      placeholder="Search Product name"
+                      variant="outlined"
+                      size="small"
+                      onChange={(e) => {
+                        onChangeSearch((e.target as HTMLInputElement).value);
+                      }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <GridSearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                  </Grid><DataGrid
+                    style={{
+                      opacity: dataGridOpacity,
+                      pointerEvents: dataGridPointer,
+                    }}
+                    rows={serviceNamesListTemp}
+                    columns={serviceColumns}
+                    pageSize={pageSize}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    disableSelectionOnClick
+                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                      const arrActivity = [...serviceNamesList];
+                      let a: ServiceNameModel | undefined = arrActivity.find(
+                        (el) => el.id == param.row.id
+                      );
+                      handelEditAndDelete((e.target as any).textContent, a);
+                    }}
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+                      },
+                    }}
+                  />
+                </>)}
               </div>
             )}
           </Grid>

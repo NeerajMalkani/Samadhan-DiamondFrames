@@ -7,6 +7,7 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  InputAdornment,
   Radio,
   RadioGroup,
   Snackbar,
@@ -18,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { unitColumns } from "../utils/tablecolumns";
 import { communication } from "../utils/communication";
 import { theme } from "../theme/AppTheme";
@@ -57,6 +58,10 @@ const UnitPage = () => {
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
+  
+  const [unitNamesListTemp, setUnitNamesListTemp] = useState<Array<UnitOfSalesModel>>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     FetchData();
   }, []);
@@ -83,9 +88,11 @@ const UnitPage = () => {
               a = Object.assign(a, sr);
             });
             setUnitNamesList(response.data.data);
+            setUnitNamesListTemp(response.data.data);
           }
         } else {
-          //Show snackbar
+          setOpen(true);
+          setSnackMsg(communication.NoData);
         }
         setLoading(false);
       })
@@ -228,6 +235,19 @@ const UnitPage = () => {
     setOpen(false);
   };
 
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setUnitNamesListTemp(unitNamesList);
+    } else {
+      setUnitNamesListTemp(
+        unitNamesList.filter((el: UnitOfSalesModel) => {
+          return el.unitName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -337,12 +357,31 @@ const UnitPage = () => {
                 {unitNamesList.length === 0 ? (
                   <></>
                 ) : (
+                  <>
+                  <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                    <TextField
+                      placeholder="Search Product name"
+                      variant="outlined"
+                      size="small"
+                      onChange={(e) => {
+                        onChangeSearch((e.target as HTMLInputElement).value);
+                      }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <GridSearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                  </Grid>
                   <DataGrid
                     style={{
                       opacity: dataGridOpacity,
                       pointerEvents: dataGridPointer,
                     }}
-                    rows={unitNamesList}
+                    rows={unitNamesListTemp}
                     columns={unitColumns}
                     pageSize={pageSize}
                     rowsPerPageOptions={[5, 10, 20]}
@@ -362,6 +401,7 @@ const UnitPage = () => {
                       },
                     }}
                   />
+                  </>
                 )}
               </div>
             )}
