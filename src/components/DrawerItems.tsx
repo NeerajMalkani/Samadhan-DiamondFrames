@@ -30,7 +30,7 @@ const DrawerItems = ({ open }: OpenObj) => {
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/login`);
+      navigate(`/login`);
     else {
       SetCookieRoleID(cookies.dfc.RoleID);
     }
@@ -56,7 +56,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/activity`);
+              navigate(`/master/activity`);
             }, 300);
           },
         },
@@ -66,7 +66,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/service`);
+              navigate(`/master/service`);
             }, 300);
           },
         },
@@ -76,7 +76,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/unit`);
+              navigate(`/master/unit`);
             }, 300);
           },
         },
@@ -86,7 +86,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/category`);
+              navigate(`/master/category`);
             }, 300);
           },
         },
@@ -96,7 +96,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/product`);
+              navigate(`/master/product`);
             }, 300);
           },
         },
@@ -106,7 +106,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/serviceproduct`);
+              navigate(`/master/serviceproduct`);
             }, 300);
           },
         },
@@ -116,7 +116,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/department`);
+              navigate(`/master/department`);
             }, 300);
           },
         },
@@ -130,7 +130,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/designation`);
+              navigate(`/master/designation`);
             }, 300);
           },
         },
@@ -140,7 +140,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/ewaybill`);
+              navigate(`/master/ewaybill`);
             }, 300);
           },
         },
@@ -163,7 +163,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/imagegallery`);
+              navigate(`/master/imagegallery`);
             }, 300);
           },
         },
@@ -173,7 +173,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/estimation`);
+              navigate(`/master/estimation`);
             }, 300);
           },
         },
@@ -193,7 +193,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/basicdetails`);
+              navigate(`/master/basicdetails`);
             }, 300);
           },
         },
@@ -203,7 +203,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/myservice`);
+              navigate(`/master/myservice`);
             }, 300);
           },
         },
@@ -213,7 +213,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/presentation`);
+              navigate(`/master/presentation`);
             }, 300);
           },
         },
@@ -230,7 +230,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/brandmaster`);
+              navigate(`/master/brandmaster`);
             }, 300);
           },
         },
@@ -240,7 +240,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/brand`);
+              navigate(`/master/brand`);
             }, 300);
           },
         },
@@ -250,7 +250,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/product`);
+              navigate(`/master/product`);
             }, 300);
           },
         },
@@ -267,7 +267,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/employee`);
+              navigate(`/master/employee`);
             }, 300);
           },
         },
@@ -279,7 +279,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/employeereport`);
+              navigate(`/master/employeereport`);
             }, 300);
           },
         },
@@ -298,7 +298,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/adddepartment`);
+              navigate(`/master/adddepartment`);
             }, 300);
           },
         },
@@ -308,7 +308,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/addbranch`);
+              navigate(`/master/addbranch`);
             }, 300);
           },
         },
@@ -320,7 +320,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/adddesignation`);
+              navigate(`/master/adddesignation`);
             }, 300);
           },
         },
@@ -337,7 +337,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/clientlist`);
+              navigate(`/master/clientlist`);
             }, 300);
           },
         },
@@ -356,7 +356,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/purchaseorder`);
+              navigate(`/master/purchaseorder`);
             }, 300);
           },
         },
@@ -376,7 +376,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/basicdetails`);
+              navigate(`/master/basicdetails`);
             }, 300);
           },
         },
@@ -386,7 +386,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/myservices`);
+              navigate(`/master/myservices`);
             }, 300);
           },
         },
@@ -403,7 +403,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/employee`);
+              navigate(`/master/employee`);
             }, 300);
           },
         },
@@ -415,7 +415,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/employeereport`);
+              navigate(`/master/employeereport`);
             }, 300);
           },
         },
@@ -434,7 +434,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/adddepartment`);
+              navigate(`/master/adddepartment`);
             }, 300);
           },
         },
@@ -444,7 +444,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/addbranch`);
+              navigate(`/master/addbranch`);
             }, 300);
           },
         },
@@ -456,7 +456,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/adddesignation`);
+              navigate(`/master/adddesignation`);
             }, 300);
           },
         },
@@ -475,7 +475,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/ratecardsetup`);
+              navigate(`/master/ratecardsetup`);
             }, 300);
           },
         },
@@ -485,7 +485,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/sendratecard`);
+              navigate(`/master/sendratecard`);
             }, 300);
           },
         },
@@ -502,7 +502,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/clientlist`);
+              navigate(`/master/clientlist`);
             }, 300);
           },
         },
@@ -521,7 +521,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/appuserenquirywise`);
+              navigate(`/master/appuserenquirywise`);
             }, 300);
           },
         },
@@ -533,7 +533,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/contractordesignwise`);
+              navigate(`/master/contractordesignwise`);
             }, 300);
           },
         },
@@ -546,7 +546,7 @@ const DrawerItems = ({ open }: OpenObj) => {
             open[1](false);
             setTimeout(() => {
               navigate(
-                `/Samadhan-DiamondFrames/master/contractorquotationwise`
+                `/master/contractorquotationwise`
               );
             }, 300);
           },
@@ -564,7 +564,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/yetstart`);
+              navigate(`/master/yetstart`);
             }, 300);
           },
         },
@@ -574,7 +574,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/ongoing`);
+              navigate(`/master/ongoing`);
             }, 300);
           },
         },
@@ -584,7 +584,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/Samadhan-DiamondFrames/master/completed`);
+              navigate(`/master/completed`);
             }, 300);
           },
         },

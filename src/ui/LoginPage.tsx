@@ -25,7 +25,7 @@ const LoginPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/home`);
+      navigate(`/home`);
 
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
@@ -88,7 +88,7 @@ const LoginPage = () => {
                 RoleName: response.data.data[0].roleName
               };
               setCookie("dfc", JSON.stringify(user), { path: "/" });
-              navigate(`/Samadhan-DiamondFrames/home`);
+              navigate(`/home`);
               //StoreUserData(user);
             } else {
               setSnackbarMessage(communication.InvalidUserNotExists);
@@ -230,7 +230,7 @@ const LoginPage = () => {
         <Button
           sx={{ mb: 2 }}
           variant="text"
-          href="/Samadhan-DiamondFrames/forgotpassword"
+          href="/forgotpassword"
           className="flex-align-self-end"
           style={{ textTransform: "unset" }}
         >
@@ -277,7 +277,7 @@ const LoginPage = () => {
               variant="outlined"
               fullWidth={true}
               style={{ marginTop: 24 }}
-              href="/Samadhan-DiamondFrames/signup"
+              href="/signup"
             >
               New User
             </Button>

@@ -44,7 +44,7 @@ const ForgotPasswordPage = () => {
 
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/dashboard`);
+      navigate(`/dashboard`);
   }, []);
 
   const onOTP1Changed = (text: string) => {
@@ -172,7 +172,7 @@ const ForgotPasswordPage = () => {
       .then((response) => {
         console.log(response.data);
         if (response.data && response.data.code === 200) {
-          navigate(`/Samadhan-DiamondFrames/login`);
+          navigate(`/login`);
         } else {
           setSnackbarMessage(communication.InvalidMobileNotExists);
           setIsSnackbarOpen(true);

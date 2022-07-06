@@ -58,12 +58,12 @@ const Header = () => {
     {
       title: "Home",
       icon: <Home />,
-      click: () => navigate(`/Samadhan-DiamondFrames/home`),
+      click: () => navigate(`/home`),
     },
     {
       title: "Dashboard",
       icon: <Dashboard />,
-      click: () => navigate(`/Samadhan-DiamondFrames/dashboard`),
+      click: () => navigate(`/dashboard`),
     },
     { title: "Profile", icon: <Person />, click: () => {} },
     {
@@ -71,7 +71,7 @@ const Header = () => {
       icon: <Logout />,
       click: () => {      
         removeCookie("dfc");
-        navigate(`/Samadhan-DiamondFrames/login`);
+        navigate(`/login`);
       },
     },
   ];

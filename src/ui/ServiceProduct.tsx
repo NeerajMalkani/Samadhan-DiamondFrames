@@ -46,7 +46,7 @@ const ServiceProductPage = () => {
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/login`);
+      navigate(`/login`);
   }, []);
 
   const [pID, setPID] = useState<number>(0);

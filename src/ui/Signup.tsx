@@ -49,7 +49,7 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/dashboard`);
+      navigate(`/dashboard`);
   }, []);
 
   const onOTP1Changed = (text: string) => {
@@ -202,7 +202,7 @@ const SignupPage = () => {
             RoleName: response.data.data[0].roleName
           };
           setCookie("dfc", JSON.stringify(user), { path: "/" });
-          navigate(`/Samadhan-DiamondFrames/home`);
+          navigate(`/home`);
         } else {
           setSnackbarMessage(communication.NoData);
           setIsSnackbarOpen(true);

@@ -34,7 +34,7 @@ const ActivityPage = () => {
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/login`);
+      navigate(`/login`);
   }, []);
 
   const [loading, setLoading] = useState(true);

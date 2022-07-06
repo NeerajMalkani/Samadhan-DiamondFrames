@@ -34,7 +34,7 @@ const HomePage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/Samadhan-DiamondFrames/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
     else {
       SetCookieRoleID(cookies.dfc.RoleID);
       SetCookieRolName(cookies.dfc.RoleName);

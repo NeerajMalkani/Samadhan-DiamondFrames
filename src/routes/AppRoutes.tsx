@@ -42,7 +42,7 @@ const AppRoutes = () => {
   // useEffect(() => {
   //   debugger;
   //   if (!cookies || !cookies.dfc || !cookies.dfc.uid)  {
-  //     Navigate(`/Samadhan-DiamondFrames/login`);
+  //     Navigate(`/login`);
   //   }
   // },[]);
 
@@ -66,63 +66,63 @@ const AppRoutes = () => {
             <BrowserRouter>
               <Routes>
                 <Route
-                  path="/Samadhan-DiamondFrames/"
+                  path="/"
                   element={<LoginPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/login"
+                  path="/login"
                   element={<LoginPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/signup"
+                  path="/signup"
                   element={<SignupPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/forgotpassword"
+                  path="/forgotpassword"
                   element={<ForgotPasswordPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/home"
+                  path="/home"
                   element={<HomePage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/dashboard"
+                  path="/dashboard"
                   element={<DashboardPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/activity"
+                  path="/master/activity"
                   element={<ActivityPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/service"
+                  path="/master/service"
                   element={<ServicePage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/unit"
+                  path="/master/unit"
                   element={<UnitPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/category"
+                  path="/master/category"
                   element={<CategoryPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/product"
+                  path="/master/product"
                   element={<ProductPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/serviceproduct"
+                  path="/master/serviceproduct"
                   element={<ServiceProductPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/department"
+                  path="/master/department"
                   element={<DepartmentPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/designation"
+                  path="/master/designation"
                   element={<DesignationPage />}
                 />
                 <Route
-                  path="/Samadhan-DiamondFrames/master/ewaybill"
+                  path="/master/ewaybill"
                   element={<EWayBillPage />}
                 />
               </Routes>

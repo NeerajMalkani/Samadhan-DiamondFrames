@@ -10,7 +10,7 @@ const DashboardPage = () => {
   let navigate = useNavigate();
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/Samadhan-DiamondFrames/login`);
+      navigate(`/login`);
   },[]);
   
   return (
