@@ -2,7 +2,8 @@
   "name": "samadhan",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://NeerajMalkani.github.io/Samadhan-DiamondFrames/",
+  "proxy": "https://master.d1rvwpbezmb1rs.amplifyapp.com",
+  "homepage": "https://master.d1rvwpbezmb1rs.amplifyapp.com/Samadhan-DiamondFrames/",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
