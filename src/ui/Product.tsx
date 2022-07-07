@@ -226,8 +226,8 @@ const ProductPage = () => {
               a = Object.assign(a, id);
               return a;
             });
-            setProductList(response.data.data);
-            setProductListTemp(response.data.data);
+            setProductList(arrList);
+            setProductListTemp(arrList);
           }
         } else {
           setIsSnackbarOpen(true);

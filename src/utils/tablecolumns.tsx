@@ -237,6 +237,11 @@ export const productColumns: GridColDef[] = [
     headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
+  }, {
+    field: "productName",
+    headerName: "Product Name",
+    flex: 2.5,
+    minWidth: 140,
   },
   {
     field: "activityRoleName",
@@ -262,12 +267,7 @@ export const productColumns: GridColDef[] = [
     flex: 1.8,
     minWidth: 140,
   },
-  {
-    field: "productName",
-    headerName: "Product Name",
-    flex: 2.5,
-    minWidth: 140,
-  },
+
   {
     field: "unitName",
     headerName: "Unit of Sale",
@@ -293,84 +293,75 @@ export const productColumns: GridColDef[] = [
         >
           Edit
         </Button>
-
-        {/* <Button
-          variant="contained"
-          sx={{ backgroundColor: theme.palette.error.main }}
-        >
-          Delete
-        </Button> */}
       </Grid>
     ),
   },
 ];
 
-// export const serviceProductColumns: GridColDef[] = [
-//   {
-//     field: "srno",
-//     headerName: "Sr. No.",
-//     flex: 0.8,
-//     minWidth: 60,
-//   },
-//   {
-//     field: "activityRoleName",
-//     headerName: "Activity Role Name",
-//     flex: 1,
-//     minWidth: 140,
-//   },
-//   {
-//     field: "serviceName",
-//     headerName: "Service Name",
-//     flex: 1.8,
-//     minWidth: 140,
-//   },
-//   {
-//     field: "categoryName",
-//     headerName: "Category Name",
-//     flex: 1.8,
-//     minWidth: 140,
-//   },
-//   {
-//     field: "hsnsacCode",
-//     headerName: "HSN / SAC Code",
-//     flex: 1.8,
-//     minWidth: 140,
-//   },
-//   {
-//     field: "productName",
-//     headerName: "Product Name",
-//     flex: 2.5,
-//     minWidth: 140,
-//   },
-//   {
-//     field: "unitName",
-//     headerName: "Unit of Sale",
-//     flex: 1.8,
-//     minWidth: 140,
-//   },
-//   {
-//     field: "display",
-//     headerName: "Display",
-//     flex: 1.8,
-//     minWidth: 140,
-//   },
-//   {
-//     field: "action",
-//     headerName: "Action",
-//     flex: 1,
-//     minWidth: 100,
-//     renderCell: (e) => (
-//       <Grid>
-//         <Button
-//           variant="contained"
-//           sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}
-//         >
-//           Edit
-//         </Button>
-//       </Grid>
-//     ),
-//   },
-// ];
+export const serviceProductColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+  }, {
+    field: "productName",
+    headerName: "Product Name / Specification",
+    flex: 2.5,
+    minWidth: 140,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "rateWithMaterials",
+    headerName: "Rate (with material)",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "rateWithoutMaterials",
+    headerName: "Rate (without material)",
+    flex: 1.8,
+    minWidth: 140,
+  }, {
+    field: "alternateUnitOfSales",
+    headerName: "Alternate Unit of Sale",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}
+        >
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
 
 export const departmentColumns: GridColDef[] = [
   {

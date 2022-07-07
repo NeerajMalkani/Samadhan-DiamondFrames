@@ -28,7 +28,7 @@ import Header from "../components/Header";
 import DataContext from "../contexts/DataContexts";
 import { ProductModel } from "../models/Model";
 import { communication } from "../utils/communication";
-import { productColumns } from "../utils/tablecolumns";
+import { serviceProductColumns } from "../utils/tablecolumns";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
@@ -112,6 +112,7 @@ const ServiceProductPage = () => {
   const [unitList, setUnitList] = useState([]);
   const [categoryList, setCategoryList] = useContext(DataContext).categoryList;
   const [productList, setProductList] = useContext(DataContext).productList;
+  const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   const [pageSize, setPageSize] = useState<number>(5);
   const [showauos, setShowauos] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
@@ -128,13 +129,17 @@ const ServiceProductPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
-            // const lisData = [...response.data.data];
-            // lisData.map((k, i) => {
-            //   k.key = (parseInt(i) + 1).toString();
-            // });
-            // listData[1](response.data.data);
-            // listSearchData[1](response.data.data);
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              let id = { id: index + 1 };
+              a = Object.assign(a, sr);
+              a = Object.assign(a, id);
+              return a;
+            });
+            setProductList(arrList);
+            setProductListTemp(arrList);
           }
         } else {
           setSnackbarMessage("No data found");
@@ -888,7 +893,7 @@ const ServiceProductPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          {/* <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
               Product List
             </Typography>
@@ -911,8 +916,8 @@ const ServiceProductPage = () => {
                     opacity: dataGridOpacity,
                     pointerEvents: dataGridPointer,
                   }}
-                  rows={productList}
-                  columns={productColumns}
+                  rows={productListTemp}
+                  columns={serviceProductColumns}
                   pageSize={pageSize}
                   rowsPerPageOptions={[5, 10, 20]}
                   onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -933,7 +938,7 @@ const ServiceProductPage = () => {
                 />
               </div>
             )}
-          </Grid> */}
+          </Grid>
         </Grid>
       </Container>
       <Snackbar
