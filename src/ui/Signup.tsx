@@ -202,7 +202,7 @@ const SignupPage = () => {
             RoleName: response.data.data[0].roleName
           };
           setCookie("dfc", JSON.stringify(user), { path: "/" });
-          navigate(`/home`);
+          navigate(`/dashboard`);
         } else {
           setSnackbarMessage(communication.NoData);
           setIsSnackbarOpen(true);

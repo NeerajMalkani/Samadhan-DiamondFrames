@@ -2,23 +2,13 @@ import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DataContextProvider } from "../contexts/DataContexts";
-import {
-  ActivityRoleNameModel,
-  CategoryModel,
-  ServiceNameModel,
-  UnitOfSalesModel,
-  ProductModel,
-  DepartmentNameModel,
-  DesignationNameModel,
-  EWayBillModel,
-} from "../models/Model";
+import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel } from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/ActivityPage";
 import ServicePage from "../ui/ServicePage";
 import UnitPage from "../ui/UnitPage";
 import CategoryPage from "../ui/CategoryPage";
 import DashboardPage from "../ui/DashboardPage";
-import HomePage from "../ui/HomePage";
 import LoginPage from "../ui/LoginPage";
 import ProductPage from "../ui/Product";
 import SignupPage from "../ui/Signup";
@@ -65,66 +55,24 @@ const AppRoutes = () => {
           <Box sx={{ backgroundColor: "background.default" }}>
             <BrowserRouter>
               <Routes>
-                <Route
-                  path="/"
-                  element={<LoginPage />}
-                />
-                <Route
-                  path="/login"
-                  element={<LoginPage />}
-                />
-                <Route
-                  path="/signup"
-                  element={<SignupPage />}
-                />
-                <Route
-                  path="/forgotpassword"
-                  element={<ForgotPasswordPage />}
-                />
-                <Route
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
+                {/* <Route
                   path="/home"
                   element={<HomePage />}
-                />
-                <Route
-                  path="/dashboard"
-                  element={<DashboardPage />}
-                />
-                <Route
-                  path="/master/activity"
-                  element={<ActivityPage />}
-                />
-                <Route
-                  path="/master/service"
-                  element={<ServicePage />}
-                />
-                <Route
-                  path="/master/unit"
-                  element={<UnitPage />}
-                />
-                <Route
-                  path="/master/category"
-                  element={<CategoryPage />}
-                />
-                <Route
-                  path="/master/product"
-                  element={<ProductPage />}
-                />
-                <Route
-                  path="/master/serviceproduct"
-                  element={<ServiceProductPage />}
-                />
-                <Route
-                  path="/master/department"
-                  element={<DepartmentPage />}
-                />
-                <Route
-                  path="/master/designation"
-                  element={<DesignationPage />}
-                />
-                <Route
-                  path="/master/ewaybill"
-                  element={<EWayBillPage />}
-                />
+                /> */}
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/master/activity" element={<ActivityPage />} />
+                <Route path="/master/service" element={<ServicePage />} />
+                <Route path="/master/unit" element={<UnitPage />} />
+                <Route path="/master/category" element={<CategoryPage />} />
+                <Route path="/master/product" element={<ProductPage />} />
+                <Route path="/master/serviceproduct" element={<ServiceProductPage />} />
+                <Route path="/master/department" element={<DepartmentPage />} />
+                <Route path="/master/designation" element={<DesignationPage />} />
+                <Route path="/master/ewaybill" element={<EWayBillPage />} />
               </Routes>
             </BrowserRouter>
           </Box>

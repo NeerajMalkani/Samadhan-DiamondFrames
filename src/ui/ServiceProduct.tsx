@@ -38,10 +38,7 @@ import { serviceProductColumns } from "../utils/tablecolumns";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
-    fontWeight:
-      unitSales.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 }
 
@@ -51,8 +48,7 @@ const ServiceProductPage = () => {
   const theme = useTheme();
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
   const [pID, setPID] = useState<number>(0);
@@ -86,22 +82,16 @@ const ServiceProductPage = () => {
   const [unitErrorText, setUnitErrorText] = useState<string>("");
 
   const [rateWithMaterial, setRateWithMaterial] = useState<string>("");
-  const [isRateWithMaterialError, setIsRateWithMaterialError] =
-    useState<boolean>(false);
-  const [rateWithMaterialErrorText, setRateWithMaterialErrorText] =
-    useState<string>("Materials + Labour cost");
+  const [isRateWithMaterialError, setIsRateWithMaterialError] = useState<boolean>(false);
+  const [rateWithMaterialErrorText, setRateWithMaterialErrorText] = useState<string>("Materials + Labour cost");
 
   const [rateWithoutMaterial, setRateWithoutMaterial] = useState<string>("");
-  const [isRateWithoutMaterialError, setIsRateWithoutMaterialError] =
-    useState<boolean>(false);
-  const [rateWithoutMaterialErrorText, setRateWithoutMaterialErrorText] =
-    useState<string>("Only Labour cost");
+  const [isRateWithoutMaterialError, setIsRateWithoutMaterialError] = useState<boolean>(false);
+  const [rateWithoutMaterialErrorText, setRateWithoutMaterialErrorText] = useState<string>("Only Labour cost");
 
   const [alternateUnit, setAlternateUnit] = useState<string>("");
-  const [isAlternateUnitError, setIsAlternateUnitError] =
-    useState<boolean>(false);
-  const [alternateUnitErrorText, setAlternateUnitErrorText] =
-    useState<string>("");
+  const [isAlternateUnitError, setIsAlternateUnitError] = useState<boolean>(false);
+  const [alternateUnitErrorText, setAlternateUnitErrorText] = useState<string>("");
 
   //
   const [specification, setSpecification] = useState<string>("");
@@ -109,12 +99,9 @@ const ServiceProductPage = () => {
 
   const [display, setDisplay] = useState("Yes");
 
-  const [activityNamesList, setActivityNamesList] =
-    useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] =
-    useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] =
-    useContext(DataContext).unitOfSalesList;
+  const [activityNamesList, setActivityNamesList] = useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] = useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = useContext(DataContext).unitOfSalesList;
   const [unitList, setUnitList] = useState([]);
   const [categoryList, setCategoryList] = useContext(DataContext).categoryList;
   const [productList, setProductList] = useContext(DataContext).productList;
@@ -123,15 +110,21 @@ const ServiceProductPage = () => {
   const [showauos, setShowauos] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">(
-    "auto"
-  );
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [actionStatus, setActionStatus] = useState<string>("new");
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogHeader, setDialogHeader] = useState<string>("");
   const [dialogText, setDialogText] = useState<string>("");
+
+  const [categoryListFilter, setCategoryListFilter] = useContext(DataContext).categoryList;
+  const [snFilter, setSnFilter] = useState("--Select--");
+  const [snIDFilter, setSnIDFilter] = useState<number>(0);
+
+  const [cnFilter, setCnFilter] = useState("--Select--");
+  const [cnIDFilter, setCnIDFilter] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const FetchData = () => {
     Provider.getAll("master/getserviceproducts")
@@ -178,7 +171,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -186,11 +179,7 @@ const ServiceProductPage = () => {
       ID: selectedID,
     };
 
-    Provider.getAll(
-      `master/getservicesbyroleid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
+    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -201,23 +190,16 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (
-    selectedActivityID: number,
-    selectedServiceID: number,
-    callbackFunction: any = null
-  ) => {
+  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number) => {
+    //, callbackFunction: any = null
     let params = {
       ActivityID: selectedActivityID,
       ServiceID: selectedServiceID,
     };
-    Provider.getAll(
-      `master/getcategoriesbyserviceid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
+    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -225,31 +207,45 @@ const ServiceProductPage = () => {
               return el.display;
             });
             setCategoryList(response.data.data);
-            if (callbackFunction !== null) {
-              callbackFunction(response.data.data);
-            }
+            // if (callbackFunction !== null) {
+            //   callbackFunction(response.data.data);
+            // }
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
-  const FetchProductsFromCategory = (
-    selectedActivityID: number,
-    selectedServiceID: number,
-    selectedCategoryID: number,
-    callbackFunction: any = null
-  ) => {
+  const FetchCategoriesFromServicesFilter = (selectedActivityID: number, selectedServiceID: number) => {
+    //, callbackFunction: any = null
+    let params = {
+      ActivityID: selectedActivityID,
+      ServiceID: selectedServiceID,
+    };
+    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setCategoryListFilter(response.data.data);
+            // if (callbackFunction !== null) {
+            //   callbackFunction(response.data.data);
+            // }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
     let params = {
       ActivityID: selectedActivityID,
       ServiceID: selectedServiceID,
       CategoryID: selectedCategoryID,
     };
-    Provider.getAll(
-      `master/getproductsbycategoryid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
+    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -263,7 +259,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchUnitsFromProduct = (selectedID: number) => {
@@ -271,11 +267,7 @@ const ServiceProductPage = () => {
       ProductID: selectedID,
     };
 
-    Provider.getAll(
-      `master/getunitbyproductid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
+    Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -289,7 +281,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   useEffect(() => {
@@ -311,6 +303,17 @@ const ServiceProductPage = () => {
     }
   };
 
+  const handleSNChangeFilter = (event: SelectChangeEvent) => {
+    let serviceName: string = event.target.value;
+    let ac = serviceNameList.find((el) => el.serviceName === serviceName);
+    if (ac !== undefined) {
+      setSnFilter(event.target.value as string);
+      //setSnIDFilter(ac.id);
+      SetFilters();
+      FetchCategoriesFromServicesFilter(arnID, ac.id);
+    }
+  };
+
   const handleCNChange = (event: SelectChangeEvent) => {
     let categoryName: string = event.target.value;
     let ac = categoryList.find((el) => el.categoryName === categoryName);
@@ -323,6 +326,16 @@ const ServiceProductPage = () => {
       setGst(ac.gstRate + "%");
       setHsn(ac.hsnsacCode);
       FetchProductsFromCategory(arnID, snID, ac.id);
+    }
+  };
+
+  const handleCNChangeFilter = (event: SelectChangeEvent) => {
+    let categoryName: string = event.target.value;
+    let ac = categoryListFilter.find((el) => el.categoryName === categoryName);
+    if (ac !== undefined) {
+      setCnFilter(event.target.value as string);
+      // setCnIDFilter(ac.id);
+      SetFilters();
     }
   };
 
@@ -348,10 +361,7 @@ const ServiceProductPage = () => {
     setDisplay((event.target as HTMLInputElement).value);
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -440,7 +450,6 @@ const ServiceProductPage = () => {
       });
   };
 
-
   const handleCancelClick = () => {
     setDisplay("Yes");
 
@@ -466,10 +475,7 @@ const ServiceProductPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (
-    type: string | null,
-    a: ProductModel | undefined
-  ) => {
+  const handelEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -599,6 +605,56 @@ const ServiceProductPage = () => {
     return string_;
   };
 
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    SetFilters();
+    // if (query === "") {
+    //   setProductListTemp(productList);
+    // } else {
+    //   setProductListTemp(
+    //     productList.filter((el: ProductModel) => {
+    //       return el.productName.toString().toLowerCase().includes(query.toLowerCase());
+    //     })
+    //   );
+    // }
+  };
+
+  const SetFilters = () => {
+    if (snFilter === "--Select--" && cnFilter === "--Select--" && searchQuery === "") {
+      setProductListTemp(productList);
+    }
+    if (snFilter !== "--Select--") {
+      setProductListTemp(
+        productList.filter((el: ProductModel) => {
+          return el.serviceName.toString().toLowerCase().includes(snFilter.toLowerCase());
+        })
+      );
+    }
+
+    if (cnFilter !== "--Select--") {
+      setProductListTemp(
+        productListTemp.filter((el: ProductModel) => {
+          return el.categoryName.toString().toLowerCase().includes(cnFilter.toLowerCase());
+        })
+      );
+    }
+
+    if (searchQuery !== "") {
+      if (snFilter === "--Select--" || cnFilter === "--Select--") {
+        setProductListTemp(
+          productList.filter((el: ProductModel) => {
+            return el.productName.toString().toLowerCase().includes(searchQuery.toLowerCase());
+          })
+        );
+      } else {
+        setProductListTemp(
+          productListTemp.filter((el: ProductModel) => {
+            return el.productName.toString().toLowerCase().includes(searchQuery.toLowerCase());
+          })
+        );
+      }
+    }
+  };
 
   const handleClose = () => {
     setOpenDialog(false);
@@ -608,11 +664,7 @@ const ServiceProductPage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Service Product</Typography>
           </Grid>
@@ -810,9 +862,7 @@ const ServiceProductPage = () => {
                   display: showauos ? "block" : "none",
                 }}
               >
-                {unitList.length > 0 && showauos
-                  ? "1 " + unitList[0] + " ="
-                  : ""}
+                {unitList.length > 0 && showauos ? "1 " + unitList[0] + " =" : ""}
               </Typography>
               <TextField
                 fullWidth
@@ -878,32 +928,17 @@ const ServiceProductPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={5} md={8}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-              style={{ display: buttonDisplay }}
-              onClick={handleCancelClick}
-            >
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
               Cancel
             </Button>
-            <LoadingButton
-              loading={buttonLoading}
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </LoadingButton>
           </Grid>
@@ -914,13 +949,7 @@ const ServiceProductPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
@@ -933,10 +962,9 @@ const ServiceProductPage = () => {
                       <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Service Name</b>
-                          <label style={{ color: "#ff0000" }}>*</label>
                         </Typography>
-                        <Select value={sn} onChange={handleSNChange}>
-                          <MenuItem disabled={true} value="--Select--">
+                        <Select value={snFilter} onChange={handleSNChangeFilter}>
+                          <MenuItem value="--Select--">
                             --Select--
                           </MenuItem>
                           {serviceNameList.map((item, index) => {
@@ -952,13 +980,12 @@ const ServiceProductPage = () => {
                       <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Category Name</b>
-                          <label style={{ color: "#ff0000" }}>*</label>
                         </Typography>
-                        <Select value={cn} onChange={handleCNChange}>
-                          <MenuItem disabled={true} value="--Select--">
+                        <Select value={cnFilter} onChange={handleCNChangeFilter}>
+                          <MenuItem value="--Select--">
                             --Select--
                           </MenuItem>
-                          {categoryList.map((item, index) => {
+                          {categoryListFilter.map((item, index) => {
                             return (
                               <MenuItem key={index} value={item.categoryName}>
                                 {item.categoryName}
@@ -973,7 +1000,7 @@ const ServiceProductPage = () => {
                           variant="outlined"
                           size="small"
                           onChange={(e) => {
-                            // onChangeSearch((e.target as HTMLInputElement).value);
+                            onChangeSearch((e.target as HTMLInputElement).value);
                           }}
                           InputProps={{
                             startAdornment: (
@@ -998,14 +1025,11 @@ const ServiceProductPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...productList];
-                        let a: ProductModel | undefined = arrActivity.find(
-                          (el) => el.id === param.row.id
-                        );
+                        let a: ProductModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         if (a) {
                           const clickType = (e.target as any).textContent;
 
-                          if (clickType.toLowerCase() === "edit")
-                            handelEditAndDelete(clickType, a);
+                          if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
 
                           if (clickType.toLowerCase() === "specification") {
                             setDialogText(a.specification);
@@ -1014,7 +1038,7 @@ const ServiceProductPage = () => {
                           }
 
                           if (clickType.toLowerCase() === "shortspecification") {
-                             setDialogText(a.shortSpecification);
+                            setDialogText(a.shortSpecification);
                             setDialogHeader("Short Specification");
                             setOpenDialog(true);
                           }
@@ -1034,27 +1058,16 @@ const ServiceProductPage = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity="error" sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
 
-      <Dialog
-        open={openDialog}
-        onClose={handleClose}
-      >
-        <DialogTitle>
-          {dialogHeader}
-        </DialogTitle>
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogTitle>{dialogHeader}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {dialogText}
-          </DialogContentText>
+          <DialogContentText>{dialogText}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

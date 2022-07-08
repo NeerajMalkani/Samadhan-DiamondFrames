@@ -44,9 +44,9 @@ const Header = () => {
   const cuurURL = window.location.href;
   const [cookies, setCookie, removeCookie] = useCookies(["dfc"]);
   switch (true) {
-    case cuurURL.includes("home"):
-      pageSelected = "Home";
-      break;
+    // case cuurURL.includes("home"):
+    //   pageSelected = "Home";
+    //   break;
     case cuurURL.includes("dashboard"):
       pageSelected = "Dashboard";
       break;
@@ -55,11 +55,11 @@ const Header = () => {
       break;
   }
   const pages = [
-    {
-      title: "Home",
-      icon: <Home />,
-      click: () => navigate(`/home`),
-    },
+    // {
+    //   title: "Home",
+    //   icon: <Home />,
+    //   click: () => navigate(`/home`),
+    // },
     {
       title: "Dashboard",
       icon: <Dashboard />,
@@ -69,7 +69,7 @@ const Header = () => {
     {
       title: "Logout",
       icon: <Logout />,
-      click: () => {      
+      click: () => {
         removeCookie("dfc");
         navigate(`/login`);
       },
@@ -81,16 +81,21 @@ const Header = () => {
       <AppBar position="fixed">
         <Box sx={{ paddingLeft: 2, paddingRight: 2 }}>
           <Toolbar disableGutters>
-            <IconButton size="large" sx={{ mr: 2, color: "white", display: pageSelected === "" || pageSelected === "Dashboard" ? "flex" : "none" }} onClick={() => objOpen[1](!objOpen[0])}>
+            <IconButton size="large" sx={{ mr: 2, color: "white", display: "flex" }} onClick={() => objOpen[1](!objOpen[0])}>
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap letterSpacing=".2rem" sx={{ color: "white", mr: 2, display: { xs: pageSelected === "" || pageSelected === "Dashboard" ? "none" : "flex", md: "flex" } }}>
+            <Typography variant="h6" noWrap letterSpacing=".2rem" sx={{ color: "white", mr: 2, display: "flex" }}>
               Samadhan
             </Typography>
             <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "flex-end" }}>
               {pages.map((page) => (
                 <Box key={page.title}>
-                  <Button  style={{ textTransform: "unset" }} startIcon={page.icon} onClick={page.click} sx={{ ml: 2, color: pageSelected === page.title ? theme.palette.secondary.main : "white", display: { xs: "none", md: "flex" } }}>
+                  <Button
+                    style={{ textTransform: "unset" }}
+                    startIcon={page.icon}
+                    onClick={page.click}
+                    sx={{ ml: 2, color: pageSelected === page.title ? theme.palette.secondary.main : "white", display: { xs: "none", md: "flex" } }}
+                  >
                     {page.title}
                   </Button>
                   <IconButton size="large" onClick={page.click} sx={{ color: pageSelected === page.title ? theme.palette.secondary.main : "white", display: { xs: "flex", md: "none" } }}>

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Typography,
-  TextField,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Box, Button, Paper, Typography, TextField, Snackbar, Alert } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -24,8 +16,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
-    if (cookies && cookies.dfc && cookies.dfc.UserID)
-      navigate(`/home`);
+    if (cookies && cookies.dfc && cookies.dfc.UserID) navigate(`/home`);
 
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
@@ -57,10 +48,7 @@ const LoginPage = () => {
   const loginClick = () => {
     setIsLoading(true);
     if (username && password) {
-      if (
-        ValidateFields("fullname", username) &&
-        password.length > 2
-      ) {
+      if (ValidateFields("fullname", username) && password.length > 2) {
         let params = {
           // PhoneNumber: loginType ? 0 : parseFloat(username),
           Username: username,
@@ -85,10 +73,10 @@ const LoginPage = () => {
                 UserID: response.data.data[0].userID,
                 FullName: response.data.data[0].fullName,
                 RoleID: response.data.data[0].roleID,
-                RoleName: response.data.data[0].roleName
+                RoleName: response.data.data[0].roleName,
               };
               setCookie("dfc", JSON.stringify(user), { path: "/" });
-              navigate(`/home`);
+              navigate(`/dashboard`);
               //StoreUserData(user);
             } else {
               setSnackbarMessage(communication.InvalidUserNotExists);
@@ -128,10 +116,7 @@ const LoginPage = () => {
       setIsPasswordError(false);
     }
   };
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -153,13 +138,7 @@ const LoginPage = () => {
           },
         }}
       >
-        <img
-          className="margin-bottom-24"
-          src={companyLogo}
-          alt="Samadhan-Diamond Frames"
-          width={104}
-          height={104}
-        />
+        <img className="margin-bottom-24" src={companyLogo} alt="Samadhan-Diamond Frames" width={104} height={104} />
         {/* <Typography variant="h5" className="text-align-center padding-bottom-8">
           {!loginType ? "Login as a User" : "Login as an Admin"}
         </Typography> */}
@@ -217,13 +196,7 @@ const LoginPage = () => {
           sx={{ mb: 1 }}
         />
 
-        <Button
-          sx={{ mb: 2 }}
-          variant="text"
-          href="/forgotpassword"
-          className="flex-align-self-end"
-          style={{ textTransform: "unset" }}
-        >
+        <Button sx={{ mb: 2 }} variant="text" href="/forgotpassword" className="flex-align-self-end" style={{ textTransform: "unset" }}>
           Forgot Password?
         </Button>
 
@@ -254,31 +227,16 @@ const LoginPage = () => {
                 backgroundColor: theme.palette.divider,
               }}
             ></div>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              style={{ marginTop: "-10px", backgroundColor: "#ffffff" }}
-            >
+            <Typography variant="body2" color="text.secondary" style={{ marginTop: "-10px", backgroundColor: "#ffffff" }}>
               OR
             </Typography>
           </div>
-          <Button
-            type="submit"
-            variant="outlined"
-            fullWidth={true}
-            style={{ marginTop: 24 }}
-            href="/signup"
-          >
+          <Button type="submit" variant="outlined" fullWidth={true} style={{ marginTop: 24 }} href="/signup">
             New User
           </Button>
         </div>
-
       </Paper>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert
           // onClose={handleSnackbarClose}
           severity="error"
