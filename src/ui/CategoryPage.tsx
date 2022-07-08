@@ -256,6 +256,9 @@ const CategoryPage = () => {
     let a: any = unitOfSalesList.filter((el) => {
       return un.indexOf(el.unitName) !== -1;
     });
+    if (un === "Unit Of Sales") {
+      navigate(`/master/unit`);
+    }
     const unitID = a.map((data: any) => data.id);
     setUnitsOfSales(typeof value === "string" ? value.split(",") : value);
     setUnitsOfSalesID(unitID.join(","));
@@ -597,6 +600,14 @@ const CategoryPage = () => {
                 )}
                 MenuProps={MenuProps}
               >
+                <MenuItem
+                  //selected={true}
+                  key="0"
+                  value="Add Unit Of Sales"
+                  style={getStyles(" Add Unit Of Sales", unitsOfSales, theme)}
+                >
+                  Add Unit Of Sales
+                </MenuItem>
                 {unitOfSalesList.map((units) => (
                   <MenuItem
                     selected={true}

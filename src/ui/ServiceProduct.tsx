@@ -5,10 +5,16 @@ import {
   Button,
   CircularProgress,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
+  InputAdornment,
   MenuItem,
   Radio,
   RadioGroup,
@@ -19,7 +25,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -123,6 +129,9 @@ const ServiceProductPage = () => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [actionStatus, setActionStatus] = useState<string>("new");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogHeader, setDialogHeader] = useState<string>("");
+  const [dialogText, setDialogText] = useState<string>("");
 
   const FetchData = () => {
     Provider.getAll("master/getserviceproducts")
@@ -169,7 +178,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -192,7 +201,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServices = (
@@ -222,7 +231,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchProductsFromCategory = (
@@ -254,7 +263,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchUnitsFromProduct = (selectedID: number) => {
@@ -280,11 +289,11 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   useEffect(() => {
-   // FetchData();
+    // FetchData();
     FetchActvityRoles();
   }, []);
 
@@ -414,18 +423,18 @@ const ServiceProductPage = () => {
       AlternateUnitOfSales: alternateUnit,
       ShortSpecification: shortSpecification,
       Specification: specification,
-      ServiceDisplay: display==="Yes",
+      ServiceDisplay: display === "Yes",
     })
-      .then((response:any) => {
+      .then((response: any) => {
         if (response.data && response.data.code === 200) {
-         // FetchData();
-         handleCancelClick();
+          // FetchData();
+          handleCancelClick();
         } else {
           setSnackbarMessage(communication.Error);
           setIsSnackbarOpen(true);
         }
       })
-      .catch((e) => {       
+      .catch((e) => {
         setSnackbarMessage(communication.NetworkError);
         setIsSnackbarOpen(true);
       });
@@ -588,6 +597,11 @@ const ServiceProductPage = () => {
     string_ = string_.replace(/"/g, "");
 
     return string_;
+  };
+
+
+  const handleClose = () => {
+    setOpenDialog(false);
   };
 
   return (
@@ -911,31 +925,110 @@ const ServiceProductPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                <DataGrid
-                  style={{
-                    opacity: dataGridOpacity,
-                    pointerEvents: dataGridPointer,
-                  }}
-                  rows={productListTemp}
-                  columns={serviceProductColumns}
-                  pageSize={pageSize}
-                  rowsPerPageOptions={[5, 10, 20]}
-                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                  disableSelectionOnClick
-                  onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                    const arrActivity = [...productList];
-                    let a: ProductModel | undefined = arrActivity.find(
-                      (el) => el.id === param.row.id
-                    );
-                    handelEditAndDelete((e.target as any).textContent, a);
-                  }}
-                  sx={{
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: theme.palette.primary.main,
-                      color: theme.palette.primary.contrastText,
-                    },
-                  }}
-                />
+                {productListTemp.length === 0 ? (
+                  <></>
+                ) : (
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                          <b>Service Name</b>
+                          <label style={{ color: "#ff0000" }}>*</label>
+                        </Typography>
+                        <Select value={sn} onChange={handleSNChange}>
+                          <MenuItem disabled={true} value="--Select--">
+                            --Select--
+                          </MenuItem>
+                          {serviceNameList.map((item, index) => {
+                            return (
+                              <MenuItem key={index} value={item.serviceName}>
+                                {item.serviceName}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </Grid>
+
+                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                          <b>Category Name</b>
+                          <label style={{ color: "#ff0000" }}>*</label>
+                        </Typography>
+                        <Select value={cn} onChange={handleCNChange}>
+                          <MenuItem disabled={true} value="--Select--">
+                            --Select--
+                          </MenuItem>
+                          {categoryList.map((item, index) => {
+                            return (
+                              <MenuItem key={index} value={item.categoryName}>
+                                {item.categoryName}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </Grid>
+                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+                        <TextField
+                          placeholder="Search Product name"
+                          variant="outlined"
+                          size="small"
+                          onChange={(e) => {
+                            // onChangeSearch((e.target as HTMLInputElement).value);
+                          }}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <GridSearchIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
+                      }}
+                      rows={productListTemp}
+                      columns={serviceProductColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...productList];
+                        let a: ProductModel | undefined = arrActivity.find(
+                          (el) => el.id === param.row.id
+                        );
+                        if (a) {
+                          const clickType = (e.target as any).textContent;
+
+                          if (clickType.toLowerCase() === "edit")
+                            handelEditAndDelete(clickType, a);
+
+                          if (clickType.toLowerCase() === "specification") {
+                            setDialogText(a.specification);
+                            setDialogHeader("Specification");
+                            setOpenDialog(true);
+                          }
+
+                          if (clickType.toLowerCase() === "shortspecification") {
+                             setDialogText(a.shortSpecification);
+                            setDialogHeader("Short Specification");
+                            setOpenDialog(true);
+                          }
+                        }
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
+                      }}
+                    />
+                  </>
+                )}
               </div>
             )}
           </Grid>
@@ -950,6 +1043,23 @@ const ServiceProductPage = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          {dialogHeader}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {dialogText}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

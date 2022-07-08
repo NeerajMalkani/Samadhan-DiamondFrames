@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Typography } from "@mui/material";
+import { Button, Grid, IconButton, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import DataContexts from "../contexts/DataContexts";
@@ -54,7 +54,6 @@ export const categoryColumns: GridColDef[] = [
         return (
           <div>
             {a.map((k: string) => {
-              debugger;
               return <Typography color="textSecondary">{k.trim()}</Typography>;
             })}
           </div>
@@ -309,6 +308,17 @@ export const serviceProductColumns: GridColDef[] = [
     headerName: "Product Name / Specification",
     flex: 2.5,
     minWidth: 140,
+    renderCell: (params) => {
+      if (params.value !== null && params.value !== undefined) {
+        return (
+          <div>
+            <Typography>params.value</Typography>
+            <Link>View Short Specification</Link>
+            <Link>View Specification</Link>
+          </div>
+        );
+      }
+    },
   },
   {
     field: "serviceName",

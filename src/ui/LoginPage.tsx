@@ -50,7 +50,7 @@ const LoginPage = () => {
   const [isPasswordError, setIsPasswordError] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginType, setLoginType] = useState(false);
+  // const [loginType, setLoginType] = useState(false);
   /* #endregion */
 
   /* #region  Handle event and click listeners */
@@ -58,14 +58,14 @@ const LoginPage = () => {
     setIsLoading(true);
     if (username && password) {
       if (
-        ValidateFields(loginType ? "fullname" : "phonenumber", username) &&
+        ValidateFields("fullname", username) &&
         password.length > 2
       ) {
         let params = {
-          PhoneNumber: loginType ? 0 : parseFloat(username),
-          Username: loginType ? username : null,
+          // PhoneNumber: loginType ? 0 : parseFloat(username),
+          Username: username,
           Password: password,
-          RoleID: loginType ? 1 : 2,
+          //  RoleID: loginType ? 1 : 2,
         };
 
         var string_ = JSON.stringify(params);
@@ -103,22 +103,12 @@ const LoginPage = () => {
           });
       } else {
         setIsLoading(false);
-        setSnackbarMessage(
-          loginType
-            ? communication.IncorrectUsernameOrPassword
-            : communication.IncorrectMobileOrPassword
-        );
+        setSnackbarMessage(communication.IncorrectUsernameOrPassword);
         setIsSnackbarOpen(true);
       }
     } else {
       setIsLoading(false);
-      setUsernameError(
-        !username
-          ? loginType
-            ? communication.BlankUsername
-            : communication.BlankMobile
-          : ""
-      );
+      setUsernameError(communication.BlankUsername);
       setPasswordError(!password ? communication.BlankPassword : "");
       setIsUsernameError(!username);
       setIsPasswordError(!password);
@@ -170,10 +160,10 @@ const LoginPage = () => {
           width={104}
           height={104}
         />
-        <Typography variant="h5" className="text-align-center padding-bottom-8">
+        {/* <Typography variant="h5" className="text-align-center padding-bottom-8">
           {!loginType ? "Login as a User" : "Login as an Admin"}
-        </Typography>
-        <Button
+        </Typography> */}
+        {/* <Button
           sx={{ mb: 1 }}
           variant="text"
           style={{ textTransform: "unset" }}
@@ -188,20 +178,20 @@ const LoginPage = () => {
           }}
         >
           Switch to {loginType ? "User" : "Admin"} login
-        </Button>
+        </Button> */}
 
         <TextField
           fullWidth
-          label={loginType ? "Username" : "Mobile number"}
+          label="Username"
           variant="filled"
           size="small"
-          autoComplete={loginType ? "username" : "tel"}
+          // autoComplete={loginType ? "username" : "tel"}
           inputProps={{
-            maxLength: loginType ? 50 : 10,
+            maxLength: 50,
             onKeyDown: (e) => {
-              if (!loginType) {
-                restrictNumericMobile(e);
-              }
+              // if (!loginType) {
+              //   restrictNumericMobile(e);
+              // }
             },
           }}
           onChange={(e) => {
@@ -247,42 +237,42 @@ const LoginPage = () => {
         >
           Login
         </LoadingButton>
-        {!loginType ? (
-          <div style={{ width: "100%", marginTop: "16px" }}>
+        {/* {!loginType ? ( */}
+        <div style={{ width: "100%", marginTop: "16px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              marginTop: "16px",
+            }}
+          >
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-                marginTop: "16px",
+                width: "100%",
+                height: "1px",
+                backgroundColor: theme.palette.divider,
               }}
+            ></div>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              style={{ marginTop: "-10px", backgroundColor: "#ffffff" }}
             >
-              <div
-                style={{
-                  width: "100%",
-                  height: "1px",
-                  backgroundColor: theme.palette.divider,
-                }}
-              ></div>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                style={{ marginTop: "-10px", backgroundColor: "#ffffff" }}
-              >
-                OR
-              </Typography>
-            </div>
-            <Button
-              type="submit"
-              variant="outlined"
-              fullWidth={true}
-              style={{ marginTop: 24 }}
-              href="/signup"
-            >
-              New User
-            </Button>
+              OR
+            </Typography>
           </div>
-        ) : null}
+          <Button
+            type="submit"
+            variant="outlined"
+            fullWidth={true}
+            style={{ marginTop: 24 }}
+            href="/signup"
+          >
+            New User
+          </Button>
+        </div>
+
       </Paper>
       <Snackbar
         open={isSnackbarOpen}
