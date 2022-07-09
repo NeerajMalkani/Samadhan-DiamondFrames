@@ -24,8 +24,7 @@ export const ValidateFields = (type: string, value: string) => {
   let boolStatus = false;
   switch (type.toLowerCase()) {
     case "fullname":
-      if (!Number.test(value) && Name.test(value) && value.length > 2)
-        boolStatus = true;
+      if (!Number.test(value) && Name.test(value) && value.length > 2) boolStatus = true;
       break;
     case "phonenumber":
       if (Number.test(value) && value.length === 10) {
@@ -43,17 +42,22 @@ export const ValidateFields = (type: string, value: string) => {
 
 export function restrictNumericMobile(e: any) {
   let input = null;
-  if (e.metaKey || e.ctrlKey ||e.which === 0 ||e.which < 33 || e.which < 37 || e.which < 39 || e.which < 46|| (e.which > 95 && e.which < 106))  {
+  if (e.metaKey || e.ctrlKey || e.which === 0 || e.which < 33 || e.which < 37 || e.which < 39 || e.which < 46 || (e.which > 95 && e.which < 106)) {
     return true;
   }
-  
+
   input = String.fromCharCode(e.which);
-  if ((e.which < 48 || e.which > 57) ||(!/[\d\s]/.test(input) && e.which !== 13) || e.shiftKey) {
+  if (e.which < 48 || e.which > 57 || (!/[\d\s]/.test(input) && e.which !== 13) || e.shiftKey) {
     return e.preventDefault();
   }
 }
 //#endregion
 
 export const ValidateCategoryName = (categoryName: string) => {};
-export const ValidateHSNSACCode = (hsnsacCode: string) => {};
-export const ValidateGSTRate = (gstRate: string) => {};
+export const ValidateStringNumber = (hsnsacCode: string) => {
+  return ValidateFields("fullname", hsnsacCode);
+};
+export const ValidateGSTRate = (gstRate: string) => {
+  var rgx = /^[0-9]*\.?[0-9]*$/;
+  return gstRate.match(rgx);
+};

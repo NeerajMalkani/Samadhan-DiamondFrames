@@ -32,7 +32,7 @@ import { useNavigate } from "react-router-dom";
 import Provider from "../api/Provider";
 import Header from "../components/Header";
 import DataContext from "../contexts/DataContexts";
-import { ProductModel } from "../models/Model";
+import { CategoryModel, ProductModel } from "../models/Model";
 import { communication } from "../utils/communication";
 import { serviceProductColumns } from "../utils/tablecolumns";
 
@@ -193,7 +193,7 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number) => {
+  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
     //, callbackFunction: any = null
     let params = {
       ActivityID: selectedActivityID,
@@ -207,9 +207,9 @@ const ServiceProductPage = () => {
               return el.display;
             });
             setCategoryList(response.data.data);
-            // if (callbackFunction !== null) {
-            //   callbackFunction(response.data.data);
-            // }
+            if (callbackFunction !== null) {
+              callbackFunction(response.data.data);
+            }
           }
         }
       })
@@ -263,6 +263,7 @@ const ServiceProductPage = () => {
   };
 
   const FetchUnitsFromProduct = (selectedID: number) => {
+
     let params = {
       ProductID: selectedID,
     };
@@ -285,7 +286,7 @@ const ServiceProductPage = () => {
   };
 
   useEffect(() => {
-    // FetchData();
+    FetchData();
     FetchActvityRoles();
   }, []);
 
@@ -307,10 +308,15 @@ const ServiceProductPage = () => {
     let serviceName: string = event.target.value;
     let ac = serviceNameList.find((el) => el.serviceName === serviceName);
     if (ac !== undefined) {
-      setSnFilter(event.target.value as string);
+      setSnFilter(serviceName);
       //setSnIDFilter(ac.id);
-      SetFilters();
+      SetFilters(serviceName, cnFilter, searchQuery);
       FetchCategoriesFromServicesFilter(arnID, ac.id);
+    }else{
+      setSnFilter("--Select--");
+      setCategoryListFilter([]);
+      setCnFilter("--Select--");
+      SetFilters(serviceName, "--Select--", searchQuery);
     }
   };
 
@@ -333,9 +339,12 @@ const ServiceProductPage = () => {
     let categoryName: string = event.target.value;
     let ac = categoryListFilter.find((el) => el.categoryName === categoryName);
     if (ac !== undefined) {
-      setCnFilter(event.target.value as string);
+      setCnFilter(categoryName);
       // setCnIDFilter(ac.id);
-      SetFilters();
+      SetFilters(snFilter, categoryName, searchQuery);
+    }else{
+      setCnFilter("--Select--");
+      SetFilters(snFilter, categoryName, searchQuery);
     }
   };
 
@@ -425,7 +434,6 @@ const ServiceProductPage = () => {
   };
 
   const UpdateData = () => {
-    debugger;
     Provider.create("master/updateproduct", {
       ProductID: pnID,
       RateWithMaterials: rateWithMaterial,
@@ -437,7 +445,7 @@ const ServiceProductPage = () => {
     })
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          // FetchData();
+          FetchData();
           handleCancelClick();
         } else {
           setSnackbarMessage(communication.Error);
@@ -496,15 +504,13 @@ const ServiceProductPage = () => {
       setCnID(a?.categoryID);
 
       SetResetCategoryName(false);
-      //   FetchCategoriesFromServices(a?.serviceID, (acategoryList: any) => {
-      //     let ca: CategoryModel | undefined = acategoryList.find(
-      //       (el: any) => el.id === a?.categoryID
-      //     );
-      //     if (ca !== undefined) {
-      //       setHsn(ca.hsnsacCode);
-      //       setGst(ca.gstRate + "%");
-      //     }
-      //   });
+      FetchCategoriesFromServices(arnID, a?.serviceID, (acategoryList: any) => {
+        let ca: CategoryModel | undefined = acategoryList.find((el: any) => el.id === a?.categoryID);
+        if (ca !== undefined) {
+          setHsn(ca.hsnsacCode);
+          setGst(parseFloat(ca.gstRate).toFixed(2) + "%");
+        }
+      });
 
       setPn(a?.productName);
       SetResetProductName(false);
@@ -607,7 +613,7 @@ const ServiceProductPage = () => {
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
-    SetFilters();
+    SetFilters(snFilter, cnFilter, query);
     // if (query === "") {
     //   setProductListTemp(productList);
     // } else {
@@ -619,37 +625,40 @@ const ServiceProductPage = () => {
     // }
   };
 
-  const SetFilters = () => {
-    if (snFilter === "--Select--" && cnFilter === "--Select--" && searchQuery === "") {
+  const SetFilters = (snText: string, cnText: string, searcText: string) => {
+    setProductListTemp(productList);
+
+    if (snText === "--Select--" && cnText === "--Select--" && searcText === "") {
       setProductListTemp(productList);
     }
-    if (snFilter !== "--Select--") {
+
+    if (snText !== "--Select--") {
       setProductListTemp(
         productList.filter((el: ProductModel) => {
-          return el.serviceName.toString().toLowerCase().includes(snFilter.toLowerCase());
+          return el.serviceName.toString().toLowerCase().includes(snText.toLowerCase());
         })
       );
     }
 
-    if (cnFilter !== "--Select--") {
+    if (cnText !== "--Select--") {
       setProductListTemp(
         productListTemp.filter((el: ProductModel) => {
-          return el.categoryName.toString().toLowerCase().includes(cnFilter.toLowerCase());
+          return el.categoryName.toString().toLowerCase().includes(cnText.toLowerCase());
         })
       );
     }
 
     if (searchQuery !== "") {
-      if (snFilter === "--Select--" || cnFilter === "--Select--") {
+      if (snText === "--Select--" || cnText === "--Select--") {
         setProductListTemp(
           productList.filter((el: ProductModel) => {
-            return el.productName.toString().toLowerCase().includes(searchQuery.toLowerCase());
+            return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
           })
         );
       } else {
         setProductListTemp(
           productListTemp.filter((el: ProductModel) => {
-            return el.productName.toString().toLowerCase().includes(searchQuery.toLowerCase());
+            return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
           })
         );
       }
@@ -732,6 +741,7 @@ const ServiceProductPage = () => {
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              sx={{ background: "#e5e5e5" }}
               disabled
               fullWidth
               placeholder="HSN / SAC Code"
@@ -749,6 +759,7 @@ const ServiceProductPage = () => {
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              sx={{ background: "#e5e5e5" }}
               fullWidth
               disabled
               placeholder="GST Rate (%)"
@@ -954,19 +965,17 @@ const ServiceProductPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {productListTemp.length === 0 ? (
+                {productList.length === 0 ? (
                   <></>
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Service Name</b>
                         </Typography>
-                        <Select value={snFilter} onChange={handleSNChangeFilter}>
-                          <MenuItem value="--Select--">
-                            --Select--
-                          </MenuItem>
+                        <Select fullWidth value={snFilter} onChange={handleSNChangeFilter}>
+                          <MenuItem key={0} value="--Select--">--Select--</MenuItem>
                           {serviceNameList.map((item, index) => {
                             return (
                               <MenuItem key={index} value={item.serviceName}>
@@ -977,14 +986,12 @@ const ServiceProductPage = () => {
                         </Select>
                       </Grid>
 
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Category Name</b>
                         </Typography>
-                        <Select value={cnFilter} onChange={handleCNChangeFilter}>
-                          <MenuItem value="--Select--">
-                            --Select--
-                          </MenuItem>
+                        <Select fullWidth value={cnFilter} onChange={handleCNChangeFilter}>
+                          <MenuItem key={0} value="--Select--">--Select--</MenuItem>
                           {categoryListFilter.map((item, index) => {
                             return (
                               <MenuItem key={index} value={item.categoryName}>
@@ -994,11 +1001,15 @@ const ServiceProductPage = () => {
                           })}
                         </Select>
                       </Grid>
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                          <b>Product Name</b>
+                        </Typography>
                         <TextField
+                          fullWidth
                           placeholder="Search Product name"
                           variant="outlined"
-                          size="small"
+                          size="medium"
                           onChange={(e) => {
                             onChangeSearch((e.target as HTMLInputElement).value);
                           }}
@@ -1017,6 +1028,8 @@ const ServiceProductPage = () => {
                         opacity: dataGridOpacity,
                         pointerEvents: dataGridPointer,
                       }}
+                      autoHeight={true}
+                      rowHeight={80}
                       rows={productListTemp}
                       columns={serviceProductColumns}
                       pageSize={pageSize}
@@ -1031,13 +1044,13 @@ const ServiceProductPage = () => {
 
                           if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
 
-                          if (clickType.toLowerCase() === "specification") {
+                          if (clickType.toLowerCase() === "view specification" && a.specification !== "") {
                             setDialogText(a.specification);
                             setDialogHeader("Specification");
                             setOpenDialog(true);
                           }
 
-                          if (clickType.toLowerCase() === "shortspecification") {
+                          if (clickType.toLowerCase() === "view short specification" && a.specification !== "") {
                             setDialogText(a.shortSpecification);
                             setDialogHeader("Short Specification");
                             setOpenDialog(true);

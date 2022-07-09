@@ -313,6 +313,7 @@ const DepartmentPage = () => {
                     opacity: dataGridOpacity,
                     pointerEvents: dataGridPointer,
                   }}
+                  autoHeight={true}
                   rows={departmentNameListTemp}
                   columns={departmentColumns}
                   pageSize={pageSize}

@@ -349,6 +349,7 @@ const ActivityPage = () => {
                         opacity: dataGridOpacity,
                         pointerEvents: dataGridPointer,
                       }}
+                      autoHeight={true}
                       rows={activityNamesListTemp}
                       columns={activityColumns}
                       pageSize={pageSize}

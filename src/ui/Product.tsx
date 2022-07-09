@@ -42,10 +42,7 @@ const MenuProps = {
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
-    fontWeight:
-      unitSales.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 }
 
@@ -54,15 +51,13 @@ const ProductPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const [pID, setPID] = React.useState<number>(0);
-
 
   const [arn, setArn] = React.useState("--Select--");
   const [arnID, setArnID] = React.useState<number>(0);
@@ -92,26 +87,18 @@ const ProductPage = () => {
   const [unitErrorText, setUnitErrorText] = React.useState<string>("");
 
   const [display, setDisplay] = React.useState("Yes");
-  const [activityNamesList, setActivityNamesList] =
-    React.useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] =
-    React.useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] =
-    React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] =
-    React.useContext(DataContext).categoryList;
-  const [productList, setProductList] =
-    React.useContext(DataContext).productList;
+  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] = React.useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
+  const [categoryList, setCategoryList] = React.useContext(DataContext).categoryList;
+  const [productList, setProductList] = React.useContext(DataContext).productList;
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
-    "auto"
-  );
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [actionStatus, setActionStatus] = React.useState<string>("new");
-
 
   const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -130,7 +117,7 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -138,11 +125,7 @@ const ProductPage = () => {
       ID: selectedID,
     };
 
-    Provider.getAll(
-      `master/getservicesbyroleid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
+    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -153,21 +136,15 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (
-    selectedItem: number,
-    callbackFunction: any = null
-  ) => {
+  const FetchCategoriesFromServices = (activityID: number, selectedItem: number, callbackFunction: any = null) => {
     let params = {
-      ID: selectedItem,
+      ActivityID: activityID,
+      ServiceID: selectedItem,
     };
-    Provider.getAll(
-      `master/getcategoriesbyserviceid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
+    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -181,18 +158,14 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchUnitsFromCategory = (selectedItem: number) => {
     let params = {
       ID: selectedItem,
     };
-    Provider.getAll(
-      `master/getunitbycategoryid?${new URLSearchParams(
-        GetStringifyJson(params)
-      )}`
-    )
+    Provider.getAll(`master/getunitbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -203,7 +176,7 @@ const ProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   useEffect(() => {
@@ -245,9 +218,7 @@ const ProductPage = () => {
 
   const handleARNChange = (event: SelectChangeEvent) => {
     let activityName: string = event.target.value;
-    let ac = activityNamesList.find(
-      (el) => el.activityRoleName === activityName
-    );
+    let ac = activityNamesList.find((el) => el.activityRoleName === activityName);
     if (ac !== undefined) {
       setArn(activityName);
       setArnID(ac.id);
@@ -271,7 +242,7 @@ const ProductPage = () => {
       SetResetServiceName(false);
       SetResetCategoryName(true);
       SetResetUnitName(true);
-      FetchCategoriesFromServices(ac.id);
+      FetchCategoriesFromServices(arnID, ac.id);
     }
   };
 
@@ -283,7 +254,7 @@ const ProductPage = () => {
       setCnID(ac.id);
       SetResetCategoryName(false);
       SetResetUnitName(true);
-      setGst(ac.gstRate + "%");
+      setGst(parseFloat(ac.gstRate).toFixed(2) + "%");
       setHsn(ac.hsnsacCode);
       FetchUnitsFromCategory(ac.id);
     }
@@ -291,7 +262,7 @@ const ProductPage = () => {
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
     let unitName: string = event.target.value;
-    let ac = unitOfSalesList.find((el) => el.unitName === unitName);
+    let ac = unitOfSalesList.find((el) => el.displayUnit === unitName);
     if (ac !== undefined) {
       setUnitsOfSales(event.target.value as string);
       setUnitsOfSalesID(ac.id);
@@ -420,10 +391,7 @@ const ProductPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (
-    type: string | null,
-    a: ProductModel | undefined
-  ) => {
+  const handelEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -444,13 +412,11 @@ const ProductPage = () => {
       setCnID(a?.categoryID);
 
       SetResetCategoryName(false);
-      FetchCategoriesFromServices(a?.serviceID, (acategoryList: any) => {
-        let ca: CategoryModel | undefined = acategoryList.find(
-          (el: any) => el.id === a?.categoryID
-        );
+      FetchCategoriesFromServices(a?.activityID, a?.serviceID, (acategoryList: any) => {
+        let ca: CategoryModel | undefined = acategoryList.find((el: any) => el.id === a?.categoryID);
         if (ca !== undefined) {
           setHsn(ca.hsnsacCode);
-          setGst(ca.gstRate + "%");
+          setGst(parseFloat(ca.gstRate).toFixed(2) + "%");
         }
       });
 
@@ -482,6 +448,7 @@ const ProductPage = () => {
   const SetResetServiceName = (isBlank: boolean) => {
     if (isBlank) {
       setSn("--Select--");
+      setServiceNameList([]);
       setSnID(0);
     }
     setServicenameError("");
@@ -491,6 +458,7 @@ const ProductPage = () => {
   const SetResetCategoryName = (isBlank: boolean) => {
     if (isBlank) {
       setCn("--Select--");
+      setCategoryList([]);
       setCnID(0);
       setGst("");
       setHsn("");
@@ -502,6 +470,7 @@ const ProductPage = () => {
   const SetResetUnitName = (isBlank: boolean) => {
     if (isBlank) {
       setUnitsOfSales("--Select--");
+      setUnitOfSalesList([]);
       setUnitsOfSalesID(0);
     }
     setUnitError(false);
@@ -516,10 +485,7 @@ const ProductPage = () => {
     setIsProductError(false);
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -554,11 +520,7 @@ const ProductPage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Product</Typography>
           </Grid>
@@ -634,6 +596,7 @@ const ProductPage = () => {
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              sx={{ background: "#e5e5e5" }}
               disabled
               fullWidth
               placeholder="HSN / SAC Code"
@@ -651,6 +614,7 @@ const ProductPage = () => {
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              sx={{ background: "#e5e5e5" }}
               fullWidth
               disabled
               placeholder="GST Rate (%)"
@@ -683,12 +647,7 @@ const ProductPage = () => {
             />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
-            <FormControl
-              fullWidth
-              size="small"
-              sx={{ paddingRight: { xs: 0, sm: 4 } }}
-              error={unitError}
-            >
+            <FormControl fullWidth size="small" sx={{ paddingRight: { xs: 0, sm: 4 } }} error={unitError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Unit of Sales</b>
                 <label style={{ color: "#ff0000" }}>*</label>
@@ -699,8 +658,8 @@ const ProductPage = () => {
                 </MenuItem>
                 {unitOfSalesList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.unitName}>
-                      {item.unitName}
+                    <MenuItem key={index} value={item.displayUnit}>
+                      {item.displayUnit}
                     </MenuItem>
                   );
                 })}
@@ -714,32 +673,17 @@ const ProductPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={5} md={8}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-              style={{ display: buttonDisplay }}
-              onClick={handleCancelClick}
-            >
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
               Cancel
             </Button>
-            <LoadingButton
-              loading={buttonLoading}
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </LoadingButton>
           </Grid>
@@ -750,13 +694,7 @@ const ProductPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
@@ -781,13 +719,13 @@ const ProductPage = () => {
                           ),
                         }}
                       />
-
                     </Grid>
                     <DataGrid
                       style={{
                         opacity: dataGridOpacity,
                         pointerEvents: dataGridPointer,
                       }}
+                      autoHeight={true}
                       rows={productListTemp}
                       columns={productColumns}
                       pageSize={pageSize}
@@ -796,9 +734,7 @@ const ProductPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...productList];
-                        let a: ProductModel | undefined = arrActivity.find(
-                          (el) => el.id === param.row.id
-                        );
+                        let a: ProductModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -810,17 +746,12 @@ const ProductPage = () => {
                     />
                   </>
                 )}
-
               </div>
             )}
           </Grid>
         </Grid>
       </Container>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity="error" sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>

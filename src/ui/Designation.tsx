@@ -314,6 +314,7 @@ const DesignationPage = () => {
                       opacity: dataGridOpacity,
                       pointerEvents: dataGridPointer,
                     }}
+                    autoHeight={true}
                     rows={designationNameListTemp}
                     columns={designationColumns}
                     pageSize={pageSize}

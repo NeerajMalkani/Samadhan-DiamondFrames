@@ -6,7 +6,7 @@ import "../theme/Styles.css";
 import companyLogo from "../assets/logo192.png";
 import { communication } from "../utils/communication";
 import Provider from "../api/Provider";
-import { restrictNumericMobile, ValidateFields } from "../utils/validations";
+import { ValidateFields } from "../utils/validations";
 import { theme } from "../theme/AppTheme";
 import { useCookies } from "react-cookie";
 import { json } from "stream/consumers";
@@ -16,7 +16,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
-    if (cookies && cookies.dfc && cookies.dfc.UserID) navigate(`/home`);
+    if (cookies && cookies.dfc && cookies.dfc.UserID) navigate(`/dashboard`);
 
     const listener = (event: KeyboardEvent) => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {

@@ -80,9 +80,13 @@ export interface ServiceNameModel {
 export interface UnitOfSalesModel {
   id: number;
   srno: number;
-  unitName: string;
   display: string;
   action: string;
+  displayUnit:string;
+  unit1Name:string;
+  unit1ID:number;
+  unit2Name:string;
+  unit2ID:number;
 }
 
 export interface UserCreds {

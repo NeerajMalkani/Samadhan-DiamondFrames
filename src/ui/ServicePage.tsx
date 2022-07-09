@@ -340,6 +340,7 @@ const ServicePage = () => {
                       opacity: dataGridOpacity,
                       pointerEvents: dataGridPointer,
                     }}
+                    autoHeight={true}
                     rows={serviceNamesListTemp}
                     columns={serviceColumns}
                     pageSize={pageSize}

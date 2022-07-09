@@ -87,8 +87,8 @@ const UnitPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setUnitNamesList(response.data.data);
-            setUnitNamesListTemp(response.data.data);
+            setUnitNamesList(arrList);
+            setUnitNamesListTemp(arrList);
           }
         } else {
           setOpen(true);
@@ -119,7 +119,7 @@ const UnitPage = () => {
     setIsunit2Error(IsTextFiledError2);
 
     if (!IsTextFiledError1 && !IsTextFiledError2) {
-      InsertUpdateData(unit1Name + " / " + unit2Name, display === "Yes");
+      InsertUpdateData(unit1Name , unit2Name, display === "Yes");
       setDisplay("Yes");
       setUnit1Name("");
       setUnit2Name("");
@@ -151,8 +151,8 @@ const UnitPage = () => {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      setUnit1Name(a.unitName.split("/")[0].trim());
-      setUnit2Name(a.unitName.split("/")[1].trim());
+      setUnit1Name(a.displayUnit.split("/")[0].trim());
+      setUnit2Name(a.displayUnit.split("/")[1].trim());
       setSelectedID(a.id);
       setUnit1Error("");
       setUnit2Error("");
@@ -181,11 +181,12 @@ const UnitPage = () => {
     // }
   };
 
-  const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
+  const InsertUpdateData = (unit1: string, unit2: string,  checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
       Provider.create("master/insertunitofsales", {
-        UnitName: paramActivityName,
+        Unit1Name: unit1,
+        Unit2Name:unit2,
         Display: checked,
       })
         .then((response) => {
@@ -205,7 +206,8 @@ const UnitPage = () => {
     } else if (actionStatus === "edit") {
       Provider.create("master/updateunitofsales", {
         id: selectedID,
-        UnitName: paramActivityName,
+        Unit1Name: unit1,
+        Unit2Name:unit2,
         Display: checked,
       })
         .then((response) => {
@@ -242,7 +244,7 @@ const UnitPage = () => {
     } else {
       setUnitNamesListTemp(
         unitNamesList.filter((el: UnitOfSalesModel) => {
-          return el.unitName.toString().toLowerCase().includes(query.toLowerCase());
+          return el.displayUnit.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -360,7 +362,7 @@ const UnitPage = () => {
                   <>
                   <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                     <TextField
-                      placeholder="Search Product name"
+                      placeholder="Search unit name"
                       variant="outlined"
                       size="small"
                       onChange={(e) => {
@@ -382,6 +384,7 @@ const UnitPage = () => {
                       pointerEvents: dataGridPointer,
                     }}
                     rows={unitNamesListTemp}
+                    autoHeight={true}
                     columns={unitColumns}
                     pageSize={pageSize}
                     rowsPerPageOptions={[5, 10, 20]}

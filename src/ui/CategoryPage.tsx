@@ -33,6 +33,7 @@ import { isFocusable } from "@testing-library/user-event/dist/utils";
 import { useCookies } from "react-cookie";
 import { communication } from "../utils/communication";
 import { LoadingButton } from "@mui/lab";
+import { ValidateGSTRate, ValidateStringNumber } from "../utils/validations";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -44,10 +45,7 @@ const MenuProps = {
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
-    fontWeight:
-      unitSales.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 }
 
@@ -56,8 +54,7 @@ const CategoryPage = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
   const [loading, setLoading] = useState(true);
@@ -76,35 +73,24 @@ const CategoryPage = () => {
   const [unitsOfSalesID, setUnitsOfSalesID] = React.useState<number[]>([]);
 
   const [display, setDisplay] = React.useState("Yes");
-  const [activityNamesList, setActivityNamesList] =
-    React.useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] =
-    React.useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] =
-    React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] =
-    React.useContext(DataContext).categoryList;
+  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] = React.useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
+  const [categoryList, setCategoryList] = React.useContext(DataContext).categoryList;
 
   const [categoryListTemp, setCategoryListTemp] = useState<Array<CategoryModel>>([]);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
-    "auto"
-  );
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
   const [actionRoleError, setActionRoleError] = React.useState<boolean>(false);
-  const [actionRoleErrorText, setActionRoleErrorText] =
-    React.useState<string>("");
+  const [actionRoleErrorText, setActionRoleErrorText] = React.useState<string>("");
 
-  const [serviceNameError, setServiceNameError] =
-    React.useState<boolean>(false);
-  const [serviceNameErrorText, setServiceNameErrorText] =
-    React.useState<string>("");
+  const [serviceNameError, setServiceNameError] = React.useState<boolean>(false);
+  const [serviceNameErrorText, setServiceNameErrorText] = React.useState<string>("");
 
-  const [categoryNameError, setCategoryNameError] =
-    React.useState<boolean>(false);
-  const [categoryNameErrorText, setCategoryNameErrorText] =
-    React.useState<string>("");
+  const [categoryNameError, setCategoryNameError] = React.useState<boolean>(false);
+  const [categoryNameErrorText, setCategoryNameErrorText] = React.useState<string>("");
 
   const [hsnError, setHSNError] = React.useState<boolean>(false);
   const [hsnErrorText, setHSNErrorText] = React.useState<string>("");
@@ -146,8 +132,8 @@ const CategoryPage = () => {
               a = Object.assign(a, sr);
               return a;
             });
-            setCategoryList(response.data.data);
-            setCategoryListTemp(response.data.data)
+            setCategoryList(arrList);
+            setCategoryListTemp(arrList);
           }
         } else {
           setSnackMsg("No data found");
@@ -227,9 +213,7 @@ const CategoryPage = () => {
 
   const handleARNChange = (event: SelectChangeEvent) => {
     let activityName: string = event.target.value;
-    let ac = activityNamesList.find(
-      (el) => el.activityRoleName === activityName
-    );
+    let ac = activityNamesList.find((el) => el.activityRoleName === activityName);
     if (ac !== undefined) {
       setArnID(ac?.id);
       setArn(activityName);
@@ -253,12 +237,15 @@ const CategoryPage = () => {
       target: { value },
     } = event;
     let un: any = event.target.value;
-    let a: any = unitOfSalesList.filter((el) => {
-      return un.indexOf(el.unitName) !== -1;
-    });
-    if (un === "Unit Of Sales") {
+
+    if (un[0].toLowerCase() === "add unit of sales") {
       navigate(`/master/unit`);
     }
+
+    let a: any = unitOfSalesList.filter((el) => {
+      return un.indexOf(el.displayUnit) !== -1;
+    });
+
     const unitID = a.map((data: any) => data.id);
     setUnitsOfSales(typeof value === "string" ? value.split(",") : value);
     setUnitsOfSalesID(unitID.join(","));
@@ -283,24 +270,29 @@ const CategoryPage = () => {
       setServiceNameError(true);
       setServiceNameErrorText(communication.SelectServiceName);
     }
+
     if (unitsOfSales.length === 0) {
       isValid = false;
       setUnitError(true);
       setUnitErrorText(communication.SelectUnitName);
+    } else if (unitsOfSales.length > 3) {
+      isValid = false;
+      setUnitError(true);
+      setUnitErrorText(communication.SelectUnitOnly3);
     }
+
     if (cn.trim() === "") {
       isValid = false;
       setCategoryNameError(true);
       setCategoryNameErrorText(communication.BlankCategoryName);
     }
 
-    if (hsn.trim() === "") {
+    if (hsn.trim() === "" || !ValidateStringNumber(hsn)) {
       isValid = false;
       setHSNError(true);
       setHSNErrorText(communication.BlankHNSCode);
     }
-
-    if (gst === "" || parseInt(gst) === 0) {
+    if (gst === "" || !ValidateGSTRate(gst)) {
       //|| isNaN(gst)
       isValid = false;
       setGSTError(true);
@@ -338,10 +330,7 @@ const CategoryPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (
-    type: string | null,
-    a: CategoryModel | undefined
-  ) => {
+  const handelEditAndDelete = (type: string | null, a: CategoryModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -353,7 +342,11 @@ const CategoryPage = () => {
       setCn(a.categoryName);
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
-      setUnitsOfSales(a.unitID.split(","));
+      let arrUnits=a.unitName.split(",");
+      const results = arrUnits.map(element => {
+        return element.trim();
+      });
+      setUnitsOfSales(results);
       setSelectedID(a.id);
       setButtonDisplay("unset");
       setActionStatus("edit");
@@ -431,10 +424,7 @@ const CategoryPage = () => {
     }
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -458,11 +448,7 @@ const CategoryPage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Category</Typography>
           </Grid>
@@ -576,12 +562,7 @@ const CategoryPage = () => {
             />
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
-            <FormControl
-              fullWidth
-              size="small"
-              sx={{ paddingRight: { xs: 0, sm: 4 } }}
-              error={unitError}
-            >
+            <FormControl fullWidth size="small" sx={{ paddingRight: { xs: 0, sm: 4 } }} error={unitError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Unit of Sales</b>
                 <label style={{ color: "#ff0000" }}>*</label>
@@ -609,13 +590,8 @@ const CategoryPage = () => {
                   Add Unit Of Sales
                 </MenuItem>
                 {unitOfSalesList.map((units) => (
-                  <MenuItem
-                    selected={true}
-                    key={units.id}
-                    value={units.unitName}
-                    style={getStyles(units.unitName, unitsOfSales, theme)}
-                  >
-                    {units.unitName}
+                  <MenuItem selected={true} key={units.id} value={units.displayUnit} style={getStyles(units.displayUnit, unitsOfSales, theme)}>
+                    {units.displayUnit}
                   </MenuItem>
                 ))}
               </Select>
@@ -627,32 +603,17 @@ const CategoryPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-              style={{ display: buttonDisplay }}
-              onClick={handleCancelClick}
-            >
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
               Cancel
             </Button>
-            <LoadingButton
-              loading={buttonLoading}
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </LoadingButton>
           </Grid>
@@ -663,13 +624,7 @@ const CategoryPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
@@ -694,7 +649,6 @@ const CategoryPage = () => {
                           ),
                         }}
                       />
-
                     </Grid>
                     <DataGrid
                       style={{
@@ -703,15 +657,15 @@ const CategoryPage = () => {
                       }}
                       rows={categoryListTemp}
                       columns={categoryColumns}
+                      rowHeight={80}
+                      autoHeight={true}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...categoryList];
-                        let a: CategoryModel | undefined = arrActivity.find(
-                          (el) => el.id === param.row.id
-                        );
+                        let a: CategoryModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -728,11 +682,7 @@ const CategoryPage = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity="error" sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>

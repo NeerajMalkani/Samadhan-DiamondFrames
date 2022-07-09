@@ -463,6 +463,7 @@ const EWayBillPage = () => {
                       opacity: dataGridOpacity,
                       pointerEvents: dataGridPointer,
                     }}
+                    autoHeight={true}
                     rows={ewayBillListTemp}
                     columns={eWayBillColumns}
                     pageSize={pageSize}

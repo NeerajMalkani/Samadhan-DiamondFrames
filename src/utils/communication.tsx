@@ -19,6 +19,7 @@ export const communication = {
   IncorrectServiceName:"Enter valid Service name",
   BlankUnit1Name:"Enter Unit",
   SelectUnitName:"Select Unit",
+  SelectUnitOnly3:"Select upto 3 units",
 
   IncorrectUnit1Name:"Enter valid Unit",
   BlankUnit2Name:"Enter conversion unit",
