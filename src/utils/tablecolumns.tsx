@@ -5,6 +5,7 @@ import DataContexts from "../contexts/DataContexts";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { theme } from "../theme/AppTheme";
+import { PanoramaSharp } from "@mui/icons-material";
 
 export const categoryColumns: GridColDef[] = [
   {
@@ -353,17 +354,38 @@ export const serviceProductColumns: GridColDef[] = [
     headerName: "Rate (with material)",
     flex: 1.8,
     //  minWidth: 140,
+    renderCell: (params) => {
+      if (params.row.selectedUnitID === params.row.unit1ID) {
+        return params.value + " / " + params.row.unit1Name;
+      } else {
+        return params.value + " / " + params.row.unit2Name;
+      }
+    },
   },
   {
     field: "rateWithoutMaterials",
     headerName: "Rate (without material)",
     flex: 1.8,
+    renderCell: (params) => {
+      if (params.row.selectedUnitID === params.row.unit1ID) {
+        return params.value + " / " + params.row.unit1Name;
+      } else {
+        return params.value + " / " + params.row.unit2Name;
+      }
+    },
     //  minWidth: 140,
   },
   {
     field: "alternateUnitOfSales",
     headerName: "Alternate Unit of Sale",
     flex: 1.8,
+    renderCell: (params) => {
+      if (params.row.selectedUnitID === params.row.unit1ID) {
+        return params.row.unit2Name;
+      } else {
+        return params.row.unit1Name;
+      }
+    },
     //  minWidth: 140,
   },
   {

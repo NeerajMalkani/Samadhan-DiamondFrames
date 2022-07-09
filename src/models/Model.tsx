@@ -47,6 +47,11 @@ export interface ProductModel {
   serviceDisplay: string;
   shortSpecification: string;
   specification: string;
+  unit1ID: number;
+  unit1Name: string;
+  unit2ID: number;
+  unit2Name: string;
+  selectedUnitID:number;
 }
 //  {
 //   id: number;
@@ -82,11 +87,11 @@ export interface UnitOfSalesModel {
   srno: number;
   display: string;
   action: string;
-  displayUnit:string;
-  unit1Name:string;
-  unit1ID:number;
-  unit2Name:string;
-  unit2ID:number;
+  displayUnit: string;
+  unit1Name: string;
+  unit1ID: number;
+  unit2Name: string;
+  unit2ID: number;
 }
 
 export interface UserCreds {
