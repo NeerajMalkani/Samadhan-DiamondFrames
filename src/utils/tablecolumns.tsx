@@ -533,3 +533,55 @@ export const eWayBillColumns: GridColDef[] = [
     ),
   },
 ];
+
+export const locationTypeColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "locationType",
+    headerName: "Location Type",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "activityName",
+    headerName: "Activity Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        {/* <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+          Edit
+        </Button> */}
+        <IconButton color="primary" aria-label="Edit">
+          <EditIcon />
+        </IconButton>
+      </Grid>
+    ),
+  },
+];

@@ -657,7 +657,7 @@ const CategoryPage = () => {
                       }}
                       rows={categoryListTemp}
                       columns={categoryColumns}
-                      rowHeight={80}
+                      getRowHeight={() => 'auto'}
                       autoHeight={true}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}

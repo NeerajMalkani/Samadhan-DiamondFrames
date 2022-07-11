@@ -2,7 +2,7 @@ import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DataContextProvider } from "../contexts/DataContexts";
-import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel } from "../models/Model";
+import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/ActivityPage";
 import ServicePage from "../ui/ServicePage";
@@ -18,6 +18,7 @@ import ServiceProductPage from "../ui/ServiceProduct";
 import DepartmentPage from "../ui/Department";
 import DesignationPage from "../ui/Designation";
 import EWayBillPage from "../ui/EWayBill";
+import LocationTypePage from "../ui/LocationType";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -28,6 +29,7 @@ const AppRoutes = () => {
   const departmentNamesList = useState<DepartmentNameModel[]>([]);
   const designationNamesList = useState<DesignationNameModel[]>([]);
   const eWayBillList = useState<EWayBillModel[]>([]);
+  const locationTypeList = useState<LocationTypeModel[]>([]);
   // const [cookies, setCookie] = useCookies(["dfc"]);
   // useEffect(() => {
   //   debugger;
@@ -49,6 +51,7 @@ const AppRoutes = () => {
             departmentNamesList: departmentNamesList,
             designationNamesList: designationNamesList,
             eWayBillList: eWayBillList,
+            locationTypeList: locationTypeList,
           }}
         >
           <CssBaseline />
@@ -73,6 +76,7 @@ const AppRoutes = () => {
                 <Route path="/master/department" element={<DepartmentPage />} />
                 <Route path="/master/designation" element={<DesignationPage />} />
                 <Route path="/master/ewaybill" element={<EWayBillPage />} />
+                <Route path="/master/locationtype" element={<LocationTypePage/>} />
               </Routes>
             </BrowserRouter>
           </Box>

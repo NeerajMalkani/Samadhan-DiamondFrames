@@ -15,6 +15,7 @@ import {
   FormHelperText,
   Grid,
   InputAdornment,
+  Link,
   MenuItem,
   Radio,
   RadioGroup,
@@ -997,7 +998,7 @@ const ServiceProductPage = () => {
                   <></>
                 ) : (
                   <>
-                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1, borderWidth:1, borderColor:theme.palette.divider }}>
                       <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Service Name</b>
@@ -1054,6 +1055,18 @@ const ServiceProductPage = () => {
                           }}
                         />
                       </Grid>
+                      <Link
+                        sx={{ mt: 1 }}
+                        onClick={() => {
+                          setSnFilter("--Select--");
+                          setCategoryListFilter([]);
+                          setCnFilter("--Select--");
+                          setSearchQuery("");
+                          SetFilters("--Select--", "--Select--", "");
+                        }}
+                      >
+                        Clear Filter
+                      </Link>
                     </Grid>
                     <DataGrid
                       style={{
@@ -1061,7 +1074,7 @@ const ServiceProductPage = () => {
                         pointerEvents: dataGridPointer,
                       }}
                       autoHeight={true}
-                      rowHeight={80}
+                      getRowHeight={() => "auto"}
                       rows={productListTemp}
                       columns={serviceProductColumns}
                       pageSize={pageSize}

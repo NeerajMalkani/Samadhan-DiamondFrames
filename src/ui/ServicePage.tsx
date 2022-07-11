@@ -86,7 +86,7 @@ const ServicePage = () => {
             setServiceNamesListTemp(response.data.data);
           }
         } else {
-          setSnackMsg(communication.Error);
+          setSnackMsg(communication.NoData);
           setOpen(true);
         }
         setLoading(false);

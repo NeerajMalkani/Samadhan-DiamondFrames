@@ -8,6 +8,7 @@ import {
   DepartmentNameModel,
   DesignationNameModel,
   EWayBillModel,
+  LocationTypeModel
 } from "../models/Model";
 
 const activityNames: ActivityRoleNameModel[] = [];
@@ -56,6 +57,12 @@ const eWayBillList: [
   Dispatch<SetStateAction<EWayBillModel[]>>
 ] = [eWayBill, () => {}];
 
+const locationType: LocationTypeModel[] = [];
+const locationTypeList: [
+  LocationTypeModel[],
+  Dispatch<SetStateAction<LocationTypeModel[]>>
+] = [locationType, () => {}];
+
 const DataContext = React.createContext({
   categoryList: categoryList,
   activityNamesList: activityNamesList,
@@ -65,6 +72,7 @@ const DataContext = React.createContext({
   departmentNamesList: departmentNamesList,
   designationNamesList: designationNamesList,
   eWayBillList: eWayBillList,
+  locationTypeList:locationTypeList
 });
 
 const DataContextProvider = DataContext.Provider;

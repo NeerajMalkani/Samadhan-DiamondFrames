@@ -51,7 +51,7 @@ export interface ProductModel {
   unit1Name: string;
   unit2ID: number;
   unit2Name: string;
-  selectedUnitID:number;
+  selectedUnitID: number;
 }
 //  {
 //   id: number;
@@ -127,6 +127,16 @@ export interface EWayBillModel {
   stateName: string;
   inStateLimit: number;
   interStateLimit: number;
+  display: string;
+  action: string;
+}
+
+export interface LocationTypeModel {
+  id: number;
+  srno: number;
+  serviceName: string;
+  activityName: string;
+  branchType: string;
   display: string;
   action: string;
 }
