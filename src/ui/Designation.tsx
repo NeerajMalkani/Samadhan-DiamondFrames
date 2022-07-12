@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -42,9 +42,10 @@ const DesignationPage = () => {
 
   const [designationNameListTemp, setDesignationNameListTemp] = useState<Array<DesignationNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   useEffect(() => {
-    FetchData();
+    FetchData("");
   }, []);
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +77,7 @@ const DesignationPage = () => {
     setButtonLoading(false);
   };
 
-  const FetchData = () => {
+  const FetchData = (type:string) => {
     ResetFields();
     Provider.getAll("master/getdesignations")
       .then((response: any) => {
@@ -90,10 +91,16 @@ const DesignationPage = () => {
             });
             setDesignationNameList(response.data.data);
             setDesignationNameListTemp(response.data.data);
+            if (type !== "") {
+              setSnackMsg("Designation " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
-          setSnackMsg("No data found");
+          setSnackMsg(communication.NoData);
           setOpen(true);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
@@ -101,6 +108,7 @@ const DesignationPage = () => {
         setLoading(false);
         setSnackMsg(communication.NetworkError);
         setOpen(true);
+        setSnackbarType("error");
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
@@ -156,16 +164,18 @@ const DesignationPage = () => {
       })
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
@@ -176,16 +186,18 @@ const DesignationPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("updated");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     }
@@ -347,7 +359,7 @@ const DesignationPage = () => {
       autoHideDuration={6000}
       onClose={handleSnackbarClose}
     >
-      <Alert severity="error" sx={{ width: "100%" }}>
+      <Alert severity={snackbarType} sx={{ width: "100%" }}>
         {snackMsg}
       </Alert>
     </Snackbar>

@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertColor,
   Box,
   Button,
   Chip,
@@ -90,14 +91,15 @@ const LocationTypePage = () => {
 
   const [activitySelectAll, setActivitySelectAll] = useState<string>("Select All");
   const [serviceSelectAll, setServiceSelectAll] = useState<string>("Select All");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   useEffect(() => {
-    FetchLocationType();
+    FetchLocationType("");
     FetchActivity();
     FetchService();
   }, []);
 
-  const FetchLocationType = () => {
+  const FetchLocationType = (type: string) => {
     handleCancelClick();
     Provider.getAll("master/getlocationtypes")
       .then((response: any) => {
@@ -111,9 +113,15 @@ const LocationTypePage = () => {
             });
             setLocationTypeList(arrList);
             setLocationTypeListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Location type " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
           setSnackMsg(communication.NoData);
+          setSnackbarType("info");
           setOpen(true);
         }
         setLoading(false);
@@ -121,6 +129,7 @@ const LocationTypePage = () => {
       .catch((e) => {
         setLoading(false);
         setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,11 +148,13 @@ const LocationTypePage = () => {
           }
         } else {
           setSnackMsg(communication.NoData);
+          setSnackbarType("info");
           setOpen(true);
         }
       })
       .catch((e) => {
         setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -162,11 +173,13 @@ const LocationTypePage = () => {
           }
         } else {
           setSnackMsg(communication.Error);
+          setSnackbarType("error");
           setOpen(true);
         }
       })
       .catch((e) => {
         setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -300,9 +313,10 @@ const LocationTypePage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchLocationType();
+            FetchLocationType("added");
           } else {
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
           setButtonLoading(false);
@@ -311,6 +325,7 @@ const LocationTypePage = () => {
           // console.log(e);
           setButtonLoading(false);
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     } else if (actionStatus.toLocaleLowerCase() === "edit") {
@@ -323,9 +338,10 @@ const LocationTypePage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchLocationType();
+            FetchLocationType("updated");
           } else {
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
           setButtonLoading(false);
@@ -333,6 +349,7 @@ const LocationTypePage = () => {
         .catch((e) => {
           setButtonLoading(false);
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     }
@@ -351,6 +368,12 @@ const LocationTypePage = () => {
         arrAct.push(a.activityRoleName);
       });
       setActivityList(arrAct);
+      let aID: any = activityNamesList.filter((el: ActivityRoleNameModel) => {
+        return arrAct.indexOf(el.activityRoleName) !== -1;
+      });
+
+      const unitID = aID.map((data: any) => data.id);
+      setActivityListID(unitID.join(","));
       setActivitySelectAll("Unselect All");
     } else if (un.indexOf("Unselect All") !== -1) {
       setActivityList([]);
@@ -364,10 +387,10 @@ const LocationTypePage = () => {
       const unitID = a.map((data: any) => data.id);
       setActivityList(typeof value === "string" ? value.split(",") : value);
       setActivityListID(unitID.join(","));
-      setActivityError(false);
-      setActivityErrorText("");
       setActivitySelectAll("Select All");
     }
+    setActivityError(false);
+    setActivityErrorText("");
   };
 
   const handleServiceChange = (event: SelectChangeEvent<typeof serviceList>) => {
@@ -381,12 +404,19 @@ const LocationTypePage = () => {
         arrAct.push(a.serviceName);
       });
       setServiceList(arrAct);
+      let aID1: any = serviceNamesList.filter((el: ServiceNameModel) => {
+        return arrAct.indexOf(el.serviceName) !== -1;
+      });
+
+      const unitID1 = aID1.map((data: any) => data.id);
+      setServiceListID(unitID1.join(","));
+
       setServiceSelectAll("Unselect All");
     } else if (un.indexOf("Unselect All") !== -1) {
       setServiceList([]);
       setServiceListID([]);
       setServiceSelectAll("Select All");
-    }else {
+    } else {
       let a: any = serviceNamesList.filter((el: ServiceNameModel) => {
         return un.indexOf(el.serviceName) !== -1;
       });
@@ -394,10 +424,11 @@ const LocationTypePage = () => {
       const unitID = a.map((data: any) => data.id);
       setServiceList(typeof value === "string" ? value.split(",") : value);
       setServiceListID(unitID.join(","));
-      setServiceError(false);
-      setServiceErrorText("");
+
       setServiceSelectAll("Select All");
     }
+    setServiceError(false);
+    setServiceErrorText("");
   };
 
   return (
@@ -410,6 +441,26 @@ const LocationTypePage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6">Add Location Type</Typography>
+          </Grid>
+          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Location Type</b>
+              <label style={{ color: "#ff0000" }}>*</label>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Location Name"
+              variant="outlined"
+              size="small"
+              onChange={(e) => {
+                setLocation(e.currentTarget.value);
+                setLocationError(false);
+                setLocationErrorText("");
+              }}
+              error={locationError}
+              helperText={locationErrorText}
+              value={location}
+            />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" sx={{ paddingRight: { xs: 0, sm: 4 } }} error={activityError}>
@@ -485,26 +536,7 @@ const LocationTypePage = () => {
               <FormHelperText>{serviceErrorText}</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Location Type</b>
-              <label style={{ color: "#ff0000" }}>*</label>
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Location Name"
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setLocation(e.currentTarget.value);
-                setLocationError(false);
-                setLocationErrorText("");
-              }}
-              error={locationError}
-              helperText={locationErrorText}
-              value={location}
-            />
-          </Grid>
+
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Display</b>
@@ -590,7 +622,7 @@ const LocationTypePage = () => {
         </Grid>
       </Container>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>
       </Snackbar>

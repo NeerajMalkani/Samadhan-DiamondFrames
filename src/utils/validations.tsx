@@ -59,5 +59,5 @@ export const ValidateStringNumber = (hsnsacCode: string) => {
 };
 export const ValidateGSTRate = (gstRate: string) => {
   var rgx = /^[0-9]*\.?[0-9]*$/;
-  return gstRate.match(rgx);
+  return gstRate.toString().match(rgx);
 };

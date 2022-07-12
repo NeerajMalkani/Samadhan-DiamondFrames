@@ -1,6 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,
+  AlertColor,
   Autocomplete,
   Box,
   Button,
@@ -73,13 +74,14 @@ const EWayBillPage = () => {
   
   const [ewayBillListTemp, setEwayBillListTemp] = useState<Array<EWayBillModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
 
   useEffect(() => {
-    FetchData();
+    FetchData("");
     FetchStates();
   }, []);
 
@@ -95,7 +97,7 @@ const EWayBillPage = () => {
 
   };
 
-  const FetchData = () => {
+  const FetchData = (type:string) => {
     ResetFields();
     Provider.getAll("master/getewaybills")
       .then((response: any) => {
@@ -109,16 +111,23 @@ const EWayBillPage = () => {
             });
             setEwayBillList(response.data.data);
             setEwayBillListTemp(response.data.data);
+            if (type !== "") {
+              setSnackMsg("EWayBill " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
-          setSnackMsg("No data found");
+          setSnackMsg(communication.NoData);
           setOpen(true);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
         setSnackMsg(e.message);
+        setSnackbarType("error");
         setOpen(true);
       });
   };
@@ -235,16 +244,18 @@ const EWayBillPage = () => {
       })
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
@@ -257,16 +268,18 @@ const EWayBillPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("updated");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     }
@@ -496,7 +509,7 @@ const EWayBillPage = () => {
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
       >
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>
       </Snackbar>
