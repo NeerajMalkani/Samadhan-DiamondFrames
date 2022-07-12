@@ -70,11 +70,11 @@ const LocationTypePage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [locationTypeList, setLocationTypeList] = useContext(DataContext).locationTypeList;
-  const [locationTypeListTemp, setLocationTypeListTemp] = useContext(DataContext).locationTypeList;
-  const [activityNamesList, setActivityNamesList] = useState<any>([]);
+  const [locationTypeListTemp, setLocationTypeListTemp] = useState<Array<LocationTypeModel>>([]);
+  const [activityNamesList, setActivityNamesList] = useContext(DataContext).activityNamesList;
   //const activityFields: object = { text: "activityRoleName", value: "id" };
 
-  const [serviceNamesList, setServiceNamesList] = useState<any>([]);
+  const [serviceNamesList, setServiceNamesList] = useContext(DataContext).serviceNameList;
   //const serviceFields: object = { text: "serviceName", value: "id" };
 
   const [activityList, setActivityList] = useState<string[]>([]);
@@ -183,7 +183,6 @@ const LocationTypePage = () => {
   };
 
   const onChangeSearch = (query: string) => {
-    debugger;
     setSearchQuery(query);
     if (query === "") {
       setLocationTypeListTemp(locationTypeList);
@@ -250,6 +249,13 @@ const LocationTypePage = () => {
         return element.trim();
       });
       setActivityList(results);
+      let aID: any = activityNamesList.filter((el: ActivityRoleNameModel) => {
+        return results.indexOf(el.activityRoleName) !== -1;
+      });
+
+      const unitID = aID.map((data: any) => data.id);
+      setActivityListID(unitID.join(","));
+
       setActivityError(false);
       setActivityErrorText("");
 
@@ -257,7 +263,16 @@ const LocationTypePage = () => {
       const resultsSer = arrSer.map((element) => {
         return element.trim();
       });
+
       setServiceList(resultsSer);
+
+      let aID1: any = serviceNamesList.filter((el: ServiceNameModel) => {
+        return resultsSer.indexOf(el.serviceName) !== -1;
+      });
+
+      const unitID1 = aID1.map((data: any) => data.id);
+      setServiceListID(unitID1.join(","));
+
       setServiceError(false);
       setServiceErrorText("");
 
@@ -299,6 +314,27 @@ const LocationTypePage = () => {
           setOpen(true);
         });
     } else if (actionStatus.toLocaleLowerCase() === "edit") {
+      Provider.create("master/updatelocationtype", {
+        ID: selectedID,
+        BranchType: location,
+        ActivityID: activityListID.toString(),
+        ServiceID: serviceListID.toString(),
+        Display: display === "Yes",
+      })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchLocationType();
+          } else {
+            setSnackMsg(communication.Error);
+            setOpen(true);
+          }
+          setButtonLoading(false);
+        })
+        .catch((e) => {
+          setButtonLoading(false);
+          setSnackMsg(communication.NetworkError);
+          setOpen(true);
+        });
     }
   };
 
@@ -308,7 +344,7 @@ const LocationTypePage = () => {
     } = event;
     let un: any = event.target.value;
 
-    if (un[0].toLowerCase() === "select all") {
+    if (un.indexOf("Select All") !== -1) {
       //navigate(`/master/unit`);
       let arrAct: any = [];
       activityNamesList.map(function (a: ActivityRoleNameModel) {
@@ -333,7 +369,6 @@ const LocationTypePage = () => {
       target: { value },
     } = event;
     let un: any = event.target.value;
-    debugger;
     if (un[0].toLowerCase() === "select all") {
       let arrAct: any = [];
       serviceNamesList.map(function (a: ServiceNameModel) {
@@ -359,10 +394,10 @@ const LocationTypePage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Activity</Typography>
+            <Typography variant="h4">Location Type</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Activity</Typography>
+            <Typography variant="h6">Add Location Type</Typography>
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" sx={{ paddingRight: { xs: 0, sm: 4 } }} error={activityError}>
@@ -481,7 +516,7 @@ const LocationTypePage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
-              Service List
+              Location Type List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
