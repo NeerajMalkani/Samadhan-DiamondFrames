@@ -238,7 +238,7 @@ const CategoryPage = () => {
     } = event;
     let un: any = event.target.value;
 
-    if (un[0].toLowerCase() === "add unit of sales") {
+    if (un.indexOf("Add Unit Of Sales") !== -1) {
       navigate(`/master/unit`);
     }
 
@@ -342,8 +342,8 @@ const CategoryPage = () => {
       setCn(a.categoryName);
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
-      let arrUnits=a.unitName.split(",");
-      const results = arrUnits.map(element => {
+      let arrUnits = a.unitName.split(",");
+      const results = arrUnits.map((element) => {
         return element.trim();
       });
       setUnitsOfSales(results);
@@ -587,7 +587,7 @@ const CategoryPage = () => {
                   value="Add Unit Of Sales"
                   style={getStyles(" Add Unit Of Sales", unitsOfSales, theme)}
                 >
-                  Add Unit Of Sales
+                  <b> Add Unit Of Sales</b>
                 </MenuItem>
                 {unitOfSalesList.map((units) => (
                   <MenuItem selected={true} key={units.id} value={units.displayUnit} style={getStyles(units.displayUnit, unitsOfSales, theme)}>
@@ -657,7 +657,7 @@ const CategoryPage = () => {
                       }}
                       rows={categoryListTemp}
                       columns={categoryColumns}
-                      getRowHeight={() => 'auto'}
+                      getRowHeight={() => "auto"}
                       autoHeight={true}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}

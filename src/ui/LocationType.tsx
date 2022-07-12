@@ -27,7 +27,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import DataContext from "../contexts/DataContexts";
 import { ActivityRoleNameModel, LocationTypeModel, ServiceNameModel } from "../models/Model";
-// import { MultiSelectComponent } from "@syncfusion/ej2-react-dropdowns";
 import Provider from "../api/Provider";
 import { communication } from "../utils/communication";
 import { LoadingButton } from "@mui/lab";
@@ -72,10 +71,8 @@ const LocationTypePage = () => {
   const [locationTypeList, setLocationTypeList] = useContext(DataContext).locationTypeList;
   const [locationTypeListTemp, setLocationTypeListTemp] = useState<Array<LocationTypeModel>>([]);
   const [activityNamesList, setActivityNamesList] = useContext(DataContext).activityNamesList;
-  //const activityFields: object = { text: "activityRoleName", value: "id" };
 
   const [serviceNamesList, setServiceNamesList] = useContext(DataContext).serviceNameList;
-  //const serviceFields: object = { text: "serviceName", value: "id" };
 
   const [activityList, setActivityList] = useState<string[]>([]);
   const [activityListID, setActivityListID] = useState<number[]>([]);
@@ -90,6 +87,9 @@ const LocationTypePage = () => {
   const [locationError, setLocationError] = useState<boolean>(false);
   const [locationErrorText, setLocationErrorText] = useState<string>("");
   const [location, setLocation] = useState<string>("");
+
+  const [activitySelectAll, setActivitySelectAll] = useState<string>("Select All");
+  const [serviceSelectAll, setServiceSelectAll] = useState<string>("Select All");
 
   useEffect(() => {
     FetchLocationType();
@@ -351,6 +351,11 @@ const LocationTypePage = () => {
         arrAct.push(a.activityRoleName);
       });
       setActivityList(arrAct);
+      setActivitySelectAll("Unselect All");
+    } else if (un.indexOf("Unselect All") !== -1) {
+      setActivityList([]);
+      setActivityListID([]);
+      setActivitySelectAll("Select All");
     } else {
       let a: any = activityNamesList.filter((el: ActivityRoleNameModel) => {
         return un.indexOf(el.activityRoleName) !== -1;
@@ -361,6 +366,7 @@ const LocationTypePage = () => {
       setActivityListID(unitID.join(","));
       setActivityError(false);
       setActivityErrorText("");
+      setActivitySelectAll("Select All");
     }
   };
 
@@ -369,13 +375,18 @@ const LocationTypePage = () => {
       target: { value },
     } = event;
     let un: any = event.target.value;
-    if (un[0].toLowerCase() === "select all") {
+    if (un.indexOf("Select All") !== -1) {
       let arrAct: any = [];
       serviceNamesList.map(function (a: ServiceNameModel) {
         arrAct.push(a.serviceName);
       });
       setServiceList(arrAct);
-    } else {
+      setServiceSelectAll("Unselect All");
+    } else if (un.indexOf("Unselect All") !== -1) {
+      setServiceList([]);
+      setServiceListID([]);
+      setServiceSelectAll("Select All");
+    }else {
       let a: any = serviceNamesList.filter((el: ServiceNameModel) => {
         return un.indexOf(el.serviceName) !== -1;
       });
@@ -385,6 +396,7 @@ const LocationTypePage = () => {
       setServiceListID(unitID.join(","));
       setServiceError(false);
       setServiceErrorText("");
+      setServiceSelectAll("Select All");
     }
   };
 
@@ -404,7 +416,6 @@ const LocationTypePage = () => {
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Activity Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
-                {/* <MultiSelectComponent dataSource={activityNamesList} mode="Default" fields={activityFields} placeholder="Select Activity name" /> */}
               </Typography>
               <Select
                 multiple
@@ -423,10 +434,10 @@ const LocationTypePage = () => {
                 <MenuItem
                   //selected={true}
                   key="0"
-                  value="Select All"
-                  style={getStyles("Select All", activityList, theme)}
+                  value={activitySelectAll}
+                  style={getStyles(activitySelectAll, activityList, theme)}
                 >
-                  Select All
+                  <b>{activitySelectAll}</b>
                 </MenuItem>
                 {activityNamesList.map((units: ActivityRoleNameModel) => (
                   <MenuItem selected={true} key={units.id} value={units.activityRoleName} style={getStyles(units.activityRoleName, activityList, theme)}>
@@ -442,7 +453,6 @@ const LocationTypePage = () => {
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Service Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
-                {/* <MultiSelectComponent dataSource={serviceNamesList} mode="Default" fields={serviceFields} placeholder="Select Service name" /> */}
               </Typography>
               <Select
                 multiple
@@ -461,10 +471,10 @@ const LocationTypePage = () => {
                 <MenuItem
                   //selected={true}
                   key="0"
-                  value="Select All"
-                  style={getStyles("Select All", activityList, theme)}
+                  value={serviceSelectAll}
+                  style={getStyles(serviceSelectAll, activityList, theme)}
                 >
-                  Select All
+                  <b>{serviceSelectAll}</b>
                 </MenuItem>
                 {serviceNamesList.map((units: ServiceNameModel) => (
                   <MenuItem selected={true} key={units.id} value={units.serviceName} style={getStyles(units.serviceName, serviceList, theme)}>
