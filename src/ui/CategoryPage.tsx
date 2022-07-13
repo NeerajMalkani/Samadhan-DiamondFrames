@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertColor,
   Box,
   Button,
   Chip,
@@ -104,10 +105,11 @@ const CategoryPage = () => {
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [selectedID, setSelectedID] = React.useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const theme = useTheme();
 
   useEffect(() => {
-    FetchData();
+    FetchData("");
   }, []);
 
   const ResetFields = () => {
@@ -119,7 +121,7 @@ const CategoryPage = () => {
     setButtonLoading(false);
   };
 
-  const FetchData = () => {
+  const FetchData = (type: string) => {
     ResetFields();
     Provider.getAll("master/getcategory")
       .then((response: any) => {
@@ -134,10 +136,17 @@ const CategoryPage = () => {
             });
             setCategoryList(arrList);
             setCategoryListTemp(arrList);
+
+            if (type !== "") {
+              setSnackMsg("Category " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
-          setSnackMsg("No data found");
+          setSnackMsg(communication.NoData);
           setOpen(true);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
@@ -145,6 +154,7 @@ const CategoryPage = () => {
         setLoading(false);
         setSnackMsg(communication.NetworkError);
         setOpen(true);
+        setSnackbarType("error");
       });
 
     if (activityNamesList.length === 0) {
@@ -238,7 +248,7 @@ const CategoryPage = () => {
     } = event;
     let un: any = event.target.value;
 
-    if (un[0].toLowerCase() === "add unit of sales") {
+    if (un.indexOf("Add Unit Of Sales") !== -1) {
       navigate(`/master/unit`);
     }
 
@@ -287,7 +297,8 @@ const CategoryPage = () => {
       setCategoryNameErrorText(communication.BlankCategoryName);
     }
 
-    if (hsn.trim() === "" || !ValidateStringNumber(hsn)) {
+    if (hsn.trim() === "") {
+      //|| !ValidateStringNumber(hsn)
       isValid = false;
       setHSNError(true);
       setHSNErrorText(communication.BlankHNSCode);
@@ -342,11 +353,21 @@ const CategoryPage = () => {
       setCn(a.categoryName);
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
-      let arrUnits=a.unitName.split(",");
-      const results = arrUnits.map(element => {
-        return element.trim();
-      });
-      setUnitsOfSales(results);
+
+      if (a.unitName !== null) {
+        let arrUnits = a.unitName.split(",");
+        const results = arrUnits.map((element) => {
+          return element.trim();
+        });
+        setUnitsOfSales(results);
+
+        let a1: any = unitOfSalesList.filter((el) => {
+          return results.indexOf(el.displayUnit) !== -1;
+        });
+
+        const unitID = a1.map((data: any) => data.id);
+        setUnitsOfSalesID(unitID.join(","));
+      }
       setSelectedID(a.id);
       setButtonDisplay("unset");
       setActionStatus("edit");
@@ -384,17 +405,19 @@ const CategoryPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
             setOpen(true);
+            setSnackbarType("error");
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
           setOpen(true);
+          setSnackbarType("error");
         });
     } else if (actionStatus === "edit") {
       Provider.create("master/updatecategory", {
@@ -409,16 +432,18 @@ const CategoryPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("updated");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     }
@@ -587,7 +612,7 @@ const CategoryPage = () => {
                   value="Add Unit Of Sales"
                   style={getStyles(" Add Unit Of Sales", unitsOfSales, theme)}
                 >
-                  Add Unit Of Sales
+                  <b> Add Unit Of Sales</b>
                 </MenuItem>
                 {unitOfSalesList.map((units) => (
                   <MenuItem selected={true} key={units.id} value={units.displayUnit} style={getStyles(units.displayUnit, unitsOfSales, theme)}>
@@ -657,7 +682,7 @@ const CategoryPage = () => {
                       }}
                       rows={categoryListTemp}
                       columns={categoryColumns}
-                      getRowHeight={() => 'auto'}
+                      getRowHeight={() => "auto"}
                       autoHeight={true}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
@@ -683,7 +708,7 @@ const CategoryPage = () => {
         </Grid>
       </Container>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>
       </Snackbar>

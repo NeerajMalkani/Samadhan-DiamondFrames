@@ -85,7 +85,7 @@ export const categoryColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
 
@@ -129,7 +129,7 @@ export const activityColumns: GridColDef[] = [
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
 
@@ -179,7 +179,7 @@ export const serviceColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
 
@@ -223,7 +223,7 @@ export const unitColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
 
@@ -298,7 +298,7 @@ export const productColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -403,7 +403,7 @@ export const serviceProductColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -440,7 +440,7 @@ export const departmentColumns: GridColDef[] = [
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -477,7 +477,7 @@ export const designationColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -526,7 +526,7 @@ export const eWayBillColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{  mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -543,7 +543,7 @@ export const locationTypeColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "locationType",
+    field: "branchType",
     headerName: "Location Type",
     flex: 1.8,
     minWidth: 140,
@@ -553,18 +553,42 @@ export const locationTypeColumns: GridColDef[] = [
     headerName: "Activity Name",
     flex: 1.8,
     minWidth: 140,
+    renderCell: (params) => {
+      if (params.value !== null && params.value !== undefined) {
+        const a = params.value.split(",");
+        return (
+          <div>
+            {a.map((k: string) => {
+              return <Typography color="textSecondary">{k.trim()}</Typography>;
+            })}
+          </div>
+        );
+      }
+    },
   },
   {
     field: "serviceName",
     headerName: "Service Name",
     flex: 1.8,
     minWidth: 140,
+    renderCell: (params) => {
+      if (params.value !== null && params.value !== undefined) {
+        const a = params.value.split(",");
+        return (
+          <div>
+            {a.map((k: string) => {
+              return <Typography color="textSecondary">{k.trim()}</Typography>;
+            })}
+          </div>
+        );
+      }
+    },
   },
   {
     field: "display",
     headerName: "Display",
     flex: 1.8,
-    minWidth: 140,
+    maxWidth: 100,
     sortable: false,
   },
   {
@@ -572,15 +596,15 @@ export const locationTypeColumns: GridColDef[] = [
     headerName: "Action",
     sortable: false,
     flex: 1,
-    minWidth: 100,
+    maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        {/* <Button variant="contained" sx={{ backgroundColor: theme.palette.success.main, mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
-        </Button> */}
-        <IconButton color="primary" aria-label="Edit">
+        </Button>
+        {/* <IconButton color="primary" aria-label="Edit">
           <EditIcon />
-        </IconButton>
+        </IconButton> */}
       </Grid>
     ),
   },

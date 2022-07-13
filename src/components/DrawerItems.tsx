@@ -1,15 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Divider,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import Diamond from "@mui/icons-material/Diamond";
 import Group from "@mui/icons-material/Group";
 import LocalOffer from "@mui/icons-material/LocalOffer";
@@ -29,8 +19,7 @@ const DrawerItems = ({ open }: OpenObj) => {
   const [CookieRoleID, SetCookieRoleID] = useState(0);
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
     else {
       SetCookieRoleID(cookies.dfc.RoleID);
     }
@@ -40,9 +29,8 @@ const DrawerItems = ({ open }: OpenObj) => {
     if (mainStr !== null && searchedText !== null) {
       let arrStr = mainStr.split("/");
       return arrStr[arrStr.length - 1] === searchedText;
-    } else
-      return false;
-  }
+    } else return false;
+  };
 
   const MenuItemsAdmin = [
     {
@@ -52,7 +40,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Activity",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "activity"),//.includes("activity"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "activity"), //.includes("activity"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -62,7 +50,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Service",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "service"),//.includes("service"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "service"), //.includes("service"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -72,7 +60,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Unit of Sales",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "unit"),//.includes("unit"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "unit"), //.includes("unit"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -82,7 +70,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Category",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "category"),// .includes("category"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "category"), // .includes("category"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -92,7 +80,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Products",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "product"),//.includes("product"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "product"), //.includes("product"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -102,7 +90,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Service Product",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "serviceproduct"),//  .includes("serviceproduct"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "serviceproduct"), //  .includes("serviceproduct"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -112,7 +100,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Department",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "department"),// .includes("department"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "department"), // .includes("department"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -122,11 +110,17 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Location Type",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "locationtype"),// .includes("locationtype"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "locationtype"), // .includes("locationtype"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/master/locationtype`);
+            }, 300);
+          },
         },
         {
           title: "Designation",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "designation"),// .includes("designation"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "designation"), // .includes("designation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -136,7 +130,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "E-Way Bill",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "ewaybill"),// includes("ewaybill"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "ewaybill"), // includes("ewaybill"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -273,9 +267,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Employee Report",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("employeereport"),
+          isActive: window.location.href.toLowerCase().includes("employeereport"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -292,9 +284,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Add Department",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("adddepartment"),
+          isActive: window.location.href.toLowerCase().includes("adddepartment"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -314,9 +304,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("adddesignation"),
+          isActive: window.location.href.toLowerCase().includes("adddesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -350,9 +338,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Create Purchase Order",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("purchaseorder"),
+          isActive: window.location.href.toLowerCase().includes("purchaseorder"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -409,9 +395,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Employee Report",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("employeereport"),
+          isActive: window.location.href.toLowerCase().includes("employeereport"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -428,9 +412,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Add Department",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("adddepartment"),
+          isActive: window.location.href.toLowerCase().includes("adddepartment"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -450,9 +432,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("adddesignation"),
+          isActive: window.location.href.toLowerCase().includes("adddesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -469,9 +449,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Rate Card Setup",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("ratecardsetup"),
+          isActive: window.location.href.toLowerCase().includes("ratecardsetup"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -515,9 +493,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "App User Enquiry Wise",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("appuserenquirywise"),
+          isActive: window.location.href.toLowerCase().includes("appuserenquirywise"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -527,9 +503,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Contractor Design Wise",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("contractordesignwise"),
+          isActive: window.location.href.toLowerCase().includes("contractordesignwise"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -539,15 +513,11 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Contractor Quotation Wise",
-          isActive: window.location.href
-            .toLowerCase()
-            .includes("contractorquotationwise"),
+          isActive: window.location.href.toLowerCase().includes("contractorquotationwise"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(
-                `/master/contractorquotationwise`
-              );
+              navigate(`/master/contractorquotationwise`);
             }, 300);
           },
         },
@@ -622,15 +592,8 @@ const DrawerItems = ({ open }: OpenObj) => {
           }}
           defaultExpanded={item.expanded}
         >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={item.title}
-            id={item.title}
-            style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}
-          >
-            <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>
-              {item.icon}
-            </ListItemIcon>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={item.title} id={item.title} style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}>
+            <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>{item.icon}</ListItemIcon>
             <Typography>{item.title}</Typography>
           </AccordionSummary>
           <AccordionDetails style={{ padding: 0 }}>
@@ -644,9 +607,7 @@ const DrawerItems = ({ open }: OpenObj) => {
                         minHeight: 48,
                         justifyContent: "initial",
                         px: 2.5,
-                        backgroundColor: listItem.isActive
-                          ? theme.palette.primary.main + " !important"
-                          : "#ededed",
+                        backgroundColor: listItem.isActive ? theme.palette.primary.main + " !important" : "#ededed",
                       }}
                       onClick={listItem.navigation}
                     >
@@ -654,9 +615,7 @@ const DrawerItems = ({ open }: OpenObj) => {
                         primary={listItem.title}
                         sx={{
                           opacity: 1,
-                          color: listItem.isActive
-                            ? theme.palette.primary.contrastText
-                            : theme.palette.text.primary,
+                          color: listItem.isActive ? theme.palette.primary.contrastText : theme.palette.text.primary,
                         }}
                       />
                     </ListItemButton>

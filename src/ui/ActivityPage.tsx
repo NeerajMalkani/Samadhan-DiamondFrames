@@ -1,4 +1,4 @@
-import { Alert, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import { ActivityRoleNameModel } from "../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
+import ListIcon from '@mui/icons-material/List';
 
 const ActivityPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -40,9 +41,10 @@ const ActivityPage = () => {
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   useEffect(() => {
-    FetchData();
+    FetchData("");
   }, []);
 
   const ResetFields = () => {
@@ -54,7 +56,7 @@ const ActivityPage = () => {
     setButtonLoading(false);
   };
 
-  const FetchData = () => {
+  const FetchData = (type: string) => {
     ResetFields();
     Provider.getAll("master/getactivityroles")
       .then((response: any) => {
@@ -68,15 +70,22 @@ const ActivityPage = () => {
             });
             setActivityNamesList(arrList);
             setActivityNamesListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Activity role " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
-           setSnackMsg(communication.NoData);
-           setOpen(true);
+          setSnackbarType("info");
+          setSnackMsg(communication.NoData);
+          setOpen(true);
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
+        setSnackbarType("error");
         setSnackMsg(communication.NetworkError);
         setOpen(true);
       });
@@ -151,16 +160,18 @@ const ActivityPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
@@ -171,16 +182,18 @@ const ActivityPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("updated");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     }
@@ -269,6 +282,10 @@ const ActivityPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {activityNamesList.length === 0 ? (
+                  // <Grid>
+                  //   <Icon fontSize="inherit"><ListIcon/></Icon>
+                  //   <Typography>No records found.</Typography>
+                  // </Grid>
                   <></>
                 ) : (
                   <>
@@ -323,7 +340,7 @@ const ActivityPage = () => {
         </Grid>
       </Container>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>
       </Snackbar>

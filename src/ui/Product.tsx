@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertColor,
   Box,
   Button,
   Chip,
@@ -102,6 +103,7 @@ const ProductPage = () => {
 
   const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   const theme = useTheme();
 
@@ -180,11 +182,11 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
-    GetProductData();
+    GetProductData("");
     FetchActvityRoles();
   }, []);
 
-  const GetProductData = () => {
+  const GetProductData = (type:string) => {
     handleCancelClick();
     Provider.getAll("master/getproducts")
       .then((response: any) => {
@@ -201,10 +203,16 @@ const ProductPage = () => {
             });
             setProductList(arrList);
             setProductListTemp(arrList);
+            if (type !== "") {
+              setSnackbarMessage("Product " + type);
+              setIsSnackbarOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
           setIsSnackbarOpen(true);
           setSnackbarMessage(communication.NoData);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
@@ -212,6 +220,7 @@ const ProductPage = () => {
         setLoading(false);
         setIsSnackbarOpen(true);
         setSnackbarMessage(communication.NetworkError);
+        setSnackbarType("error");
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
@@ -333,15 +342,17 @@ const ProductPage = () => {
     })
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          GetProductData();
+          GetProductData("added");
         } else {
-          setSnackbarMessage(communication.NetworkError);
+          setSnackbarMessage(communication.Error);
+          setSnackbarType("error");
           setIsSnackbarOpen(true);
         }
         setButtonLoading(false);
       })
       .catch((e) => {
         setSnackbarMessage(communication.NetworkError);
+        setSnackbarType("error");
         setIsSnackbarOpen(true);
         setButtonLoading(false);
       });
@@ -359,9 +370,10 @@ const ProductPage = () => {
     })
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          GetProductData();
+          GetProductData("updated");
         } else {
-          setSnackbarMessage(communication.NetworkError);
+          setSnackbarMessage(communication.Error);
+          setSnackbarType("error");
           setIsSnackbarOpen(true);
         }
         setButtonLoading(false);
@@ -369,6 +381,7 @@ const ProductPage = () => {
       .catch((e) => {
         setButtonLoading(false);
         setSnackbarMessage(communication.NetworkError);
+        setSnackbarType("error");
         setIsSnackbarOpen(true);
       });
   };
@@ -752,7 +765,7 @@ const ProductPage = () => {
         </Grid>
       </Container>
       <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

@@ -1,6 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,
+  AlertColor,
   Box,
   Button,
   CircularProgress,
@@ -53,7 +54,7 @@ const ServiceProductPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
-  const [pID, setPID] = useState<number>(0);
+  //const [pID, setPID] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -79,7 +80,7 @@ const ServiceProductPage = () => {
   const [gst, setGst] = useState("");
 
   const [unitsOfSales, setUnitsOfSales] = useState<string>("--Select--");
-  const [unitsOfSalesID, setUnitsOfSalesID] = useState<number>(0);
+  //const [unitsOfSalesID, setUnitsOfSalesID] = useState<number>(0);
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
 
@@ -107,6 +108,7 @@ const ServiceProductPage = () => {
   const [unitList, setUnitList] = useState<string[]>([]);
   const [categoryList, setCategoryList] = useContext(DataContext).categoryList;
   const [productList, setProductList] = useContext(DataContext).productList;
+  const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
   const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   const [pageSize, setPageSize] = useState<number>(5);
   const [showauos, setShowauos] = useState(false);
@@ -122,16 +124,15 @@ const ServiceProductPage = () => {
 
   const [categoryListFilter, setCategoryListFilter] = useContext(DataContext).categoryList;
   const [snFilter, setSnFilter] = useState("--Select--");
-  // const [snIDFilter, setSnIDFilter] = useState<number>(0);
 
   const [cnFilter, setCnFilter] = useState("--Select--");
-  //const [cnIDFilter, setCnIDFilter] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedUnit, setSelectedUnit] = useState<string>("");
   const [selectedUnitID, setSelectedUnitID] = useState<number>(0);
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
-  const FetchData = () => {
+  const FetchData = (type: string) => {
     Provider.getAll("master/getserviceproducts")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -145,18 +146,25 @@ const ServiceProductPage = () => {
               a = Object.assign(a, id);
               return a;
             });
-            setProductList(arrList);
+            setServiceProductList(arrList);
             setProductListTemp(arrList);
+            if (type !== "") {
+              setSnackbarMessage("Service product " + type);
+              setIsSnackbarOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
-          setSnackbarMessage("No data found");
+          setSnackbarMessage(communication.NoData);
           setIsSnackbarOpen(true);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
         setSnackbarMessage(e.message);
+        setSnackbarType("error");
         setIsSnackbarOpen(true);
       });
   };
@@ -289,7 +297,7 @@ const ServiceProductPage = () => {
   };
 
   useEffect(() => {
-    FetchData();
+    FetchData("");
     FetchActvityRoles();
   }, []);
 
@@ -445,6 +453,8 @@ const ServiceProductPage = () => {
   };
 
   const UpdateData = () => {
+    debugger;
+    setButtonLoading(true);
     Provider.create("master/updateproduct", {
       ProductID: pnID,
       RateWithMaterials: rateWithMaterial,
@@ -457,22 +467,27 @@ const ServiceProductPage = () => {
     })
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          FetchData();
+          FetchData("updated");
           handleCancelClick();
         } else {
           setSnackbarMessage(communication.Error);
+          setSnackbarType("error");
           setIsSnackbarOpen(true);
         }
+        setButtonLoading(false);
       })
       .catch((e) => {
         setSnackbarMessage(communication.NetworkError);
+        setSnackbarType("error");
         setIsSnackbarOpen(true);
+        setButtonLoading(false);
       });
   };
 
   const handleCancelClick = () => {
+    debugger;
     setDisplay("Yes");
-
+    setButtonLoading(false);
     // SetResetActivityName(true);
 
     SetResetServiceName(true);
@@ -504,7 +519,7 @@ const ServiceProductPage = () => {
       setDataGridPointer("none");
       setDisplay(a.display);
 
-      setPID(a.productID);
+      setPnID(a.productID);
 
       //   setArn(a?.activityRoleName);
       //   setArnID(a?.activityID);
@@ -592,7 +607,7 @@ const ServiceProductPage = () => {
   const SetResetUnitName = (isBlank: boolean) => {
     if (isBlank) {
       setUnitsOfSales("--Select--");
-      setUnitsOfSalesID(0);
+      //  setUnitsOfSalesID(0);
       setShowauos(false);
       setUnitList([]);
     }
@@ -660,15 +675,15 @@ const ServiceProductPage = () => {
   };
 
   const SetFilters = (snText: string, cnText: string, searcText: string) => {
-    setProductListTemp(productList);
+    setProductListTemp(serviceProductList);
     let ArrOfData: any = [];
 
     if (snText === "--Select--" && cnText === "--Select--" && searcText === "") {
-      ArrOfData = productList;
+      ArrOfData = serviceProductList;
     }
 
     if (snText !== "--Select--") {
-      ArrOfData = productList.filter((el: ProductModel) => {
+      ArrOfData = serviceProductList.filter((el: ProductModel) => {
         return el.serviceName.toString().toLowerCase().includes(snText.toLowerCase());
       });
     }
@@ -681,7 +696,7 @@ const ServiceProductPage = () => {
 
     if (searchQuery !== "") {
       if (snText === "--Select--" || cnText === "--Select--") {
-        ArrOfData = productList.filter((el: ProductModel) => {
+        ArrOfData = serviceProductList.filter((el: ProductModel) => {
           return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
         });
       } else {
@@ -994,11 +1009,11 @@ const ServiceProductPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {productList.length === 0 ? (
+                {serviceProductList.length === 0 ? (
                   <></>
                 ) : (
                   <>
-                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1, borderWidth:1, borderColor:theme.palette.divider }}>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1, borderWidth: 1, borderColor: theme.palette.divider }}>
                       <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Service Name</b>
@@ -1043,6 +1058,7 @@ const ServiceProductPage = () => {
                           placeholder="Search Product name"
                           variant="outlined"
                           size="medium"
+                          value={searchQuery}
                           onChange={(e) => {
                             onChangeSearch((e.target as HTMLInputElement).value);
                           }}
@@ -1055,8 +1071,9 @@ const ServiceProductPage = () => {
                           }}
                         />
                       </Grid>
-                      <Link
-                        sx={{ mt: 1 }}
+                      <Button
+                        // sx={{ mt: 0.5 }}
+                        variant="text"
                         onClick={() => {
                           setSnFilter("--Select--");
                           setCategoryListFilter([]);
@@ -1065,8 +1082,8 @@ const ServiceProductPage = () => {
                           SetFilters("--Select--", "--Select--", "");
                         }}
                       >
-                        Clear Filter
-                      </Link>
+                        Clear
+                      </Button>
                     </Grid>
                     <DataGrid
                       style={{
@@ -1082,7 +1099,7 @@ const ServiceProductPage = () => {
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...productList];
+                        const arrActivity = [...serviceProductList];
                         let a: ProductModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         if (a) {
                           const clickType = (e.target as any).textContent;
@@ -1117,7 +1134,7 @@ const ServiceProductPage = () => {
         </Grid>
       </Container>
       <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

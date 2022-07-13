@@ -1,19 +1,4 @@
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputAdornment,
-  Radio,
-  RadioGroup,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { KeyboardEvent, useEffect, useState } from "react";
@@ -31,23 +16,19 @@ const ServicePage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [serviceName, setServiceName] = React.useState("");
-  const [serviceNamesList, setServiceNamesList] =
-    React.useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] = React.useContext(DataContext).serviceNameList;
   const [servicenameError, setservicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
-    "auto"
-  );
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
   const [selectedID, setSelectedID] = React.useState<number>(0);
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [open, setOpen] = React.useState(false);
@@ -56,9 +37,10 @@ const ServicePage = () => {
 
   const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<ServiceNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   useEffect(() => {
-    FetchData();
+    FetchData("");
   }, []);
 
   const ResetFields = () => {
@@ -70,7 +52,7 @@ const ServicePage = () => {
     setButtonLoading(false);
   };
 
-  const FetchData = () => {
+  const FetchData = (type: string) => {
     ResetFields();
     Provider.getAll("master/getservices")
       .then((response: any) => {
@@ -82,18 +64,25 @@ const ServicePage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setServiceNamesList(response.data.data);
-            setServiceNamesListTemp(response.data.data);
+            setServiceNamesList(arrList);
+            setServiceNamesListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Service " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
           setSnackMsg(communication.NoData);
           setOpen(true);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
         setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,10 +128,7 @@ const ServicePage = () => {
     setDataGridPointer("auto");
   };
 
-  const handelEditAndDelete = (
-    type: string | null,
-    a: ServiceNameModel | undefined
-  ) => {
+  const handelEditAndDelete = (type: string | null, a: ServiceNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -183,16 +169,18 @@ const ServicePage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error")
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error")
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
@@ -203,25 +191,24 @@ const ServicePage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("updated");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error")
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error")
           setOpen(true);
         });
     }
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -232,11 +219,7 @@ const ServicePage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Service</Typography>
           </Grid>
@@ -268,32 +251,17 @@ const ServicePage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-              style={{ display: buttonDisplay }}
-              onClick={handleCancelClick}
-            >
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
               Cancel
             </Button>
-            <LoadingButton
-              loading={buttonLoading}
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </LoadingButton>
           </Grid>
@@ -304,75 +272,65 @@ const ServicePage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {serviceNamesList.length === 0 ? (
                   <></>
-                ) : (<>
-                  <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                    <TextField
-                      placeholder="Search Product name"
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        onChangeSearch((e.target as HTMLInputElement).value);
+                ) : (
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search Product name"
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <GridSearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
                       }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <GridSearchIcon />
-                          </InputAdornment>
-                        ),
+                      autoHeight={true}
+                      rows={serviceNamesListTemp}
+                      columns={serviceColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...serviceNamesList];
+                        let a: ServiceNameModel | undefined = arrActivity.find((el) => el.id == param.row.id);
+                        handelEditAndDelete((e.target as any).textContent, a);
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
                       }}
                     />
-
-                  </Grid><DataGrid
-                    style={{
-                      opacity: dataGridOpacity,
-                      pointerEvents: dataGridPointer,
-                    }}
-                    autoHeight={true}
-                    rows={serviceNamesListTemp}
-                    columns={serviceColumns}
-                    pageSize={pageSize}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    disableSelectionOnClick
-                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                      const arrActivity = [...serviceNamesList];
-                      let a: ServiceNameModel | undefined = arrActivity.find(
-                        (el) => el.id == param.row.id
-                      );
-                      handelEditAndDelete((e.target as any).textContent, a);
-                    }}
-                    sx={{
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                      },
-                    }}
-                  />
-                </>)}
+                  </>
+                )}
               </div>
             )}
           </Grid>
         </Grid>
       </Container>
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert severity="error" sx={{ width: "100%" }}>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>
       </Snackbar>

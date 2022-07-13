@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertColor,
   Box,
   Button,
   CircularProgress,
@@ -61,9 +62,10 @@ const UnitPage = () => {
   
   const [unitNamesListTemp, setUnitNamesListTemp] = useState<Array<UnitOfSalesModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   useEffect(() => {
-    FetchData();
+    FetchData("");
   }, []);
 
   const ResetFields = () => {
@@ -75,7 +77,7 @@ const UnitPage = () => {
     setButtonLoading(false);
   };
 
-  const FetchData = () => {
+  const FetchData = (type:string) => {
     ResetFields();
     Provider.getAll("master/getunitofsales")
       .then((response: any) => {
@@ -89,16 +91,23 @@ const UnitPage = () => {
             });
             setUnitNamesList(arrList);
             setUnitNamesListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Unit " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
           setOpen(true);
           setSnackMsg(communication.NoData);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
         setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
         setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -191,16 +200,18 @@ const UnitPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
@@ -212,16 +223,18 @@ const UnitPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("updated");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
+            setSnackbarType("error");
             setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
           setOpen(true);
         });
     }
@@ -416,7 +429,7 @@ const UnitPage = () => {
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
       >
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>
       </Snackbar>
