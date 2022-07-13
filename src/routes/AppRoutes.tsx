@@ -59,24 +59,20 @@ const AppRoutes = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<LoginPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
-                {/* <Route
-                  path="/home"
-                  element={<HomePage />}
-                /> */}
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/master/activity" element={<ActivityPage />} />
-                <Route path="/master/service" element={<ServicePage />} />
-                <Route path="/master/unit" element={<UnitPage />} />
-                <Route path="/master/category" element={<CategoryPage />} />
-                <Route path="/master/product" element={<ProductPage />} />
-                <Route path="/master/serviceproduct" element={<ServiceProductPage />} />
-                <Route path="/master/department" element={<DepartmentPage />} />
-                <Route path="/master/designation" element={<DesignationPage />} />
-                <Route path="/master/ewaybill" element={<EWayBillPage />} />
-                <Route path="/master/locationtype" element={<LocationTypePage/>} />
+                <Route path="login" element={<LoginPage />} />
+                <Route path="signup" element={<SignupPage />} />
+                <Route path="forgotpassword" element={<ForgotPasswordPage />} />
+                <Route path="dashboard" element={<DashboardPage />} />
+                <Route path="master/activity" element={<ActivityPage />} />
+                <Route path="master/service" element={<ServicePage />} />
+                <Route path="master/unit" element={<UnitPage />} />
+                <Route path="master/category" element={<CategoryPage />} />
+                <Route path="master/product" element={<ProductPage />} />
+                <Route path="master/serviceproduct" element={<ServiceProductPage />} />
+                <Route path="master/department" element={<DepartmentPage />} />
+                <Route path="master/designation" element={<DesignationPage />} />
+                <Route path="master/ewaybill" element={<EWayBillPage />} />
+                <Route path="master/locationtype" element={<LocationTypePage/>} />
               </Routes>
             </BrowserRouter>
           </Box>
