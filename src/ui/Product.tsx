@@ -535,10 +535,10 @@ const ProductPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Product</Typography>
+            <Typography variant="h4">Product List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Product</Typography>
+            <Typography variant="h6">Add/Edit Product</Typography>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" error={isActivitynameError}>
@@ -718,8 +718,9 @@ const ProductPage = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Product name"
+                        placeholder="Search Product Name"
                         variant="outlined"
+                        value={searchQuery}
                         size="small"
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);

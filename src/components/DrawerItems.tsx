@@ -17,6 +17,7 @@ const DrawerItems = ({ open }: OpenObj) => {
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieRoleID, SetCookieRoleID] = useState(0);
+  const [expanded, setExpanded] = useState<string | false>(false);
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
@@ -30,6 +31,10 @@ const DrawerItems = ({ open }: OpenObj) => {
       let arrStr = mainStr.split("/");
       return arrStr[arrStr.length - 1] === searchedText;
     } else return false;
+  };
+
+  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
   };
 
   const MenuItemsAdmin = [
@@ -141,7 +146,33 @@ const DrawerItems = ({ open }: OpenObj) => {
       ],
     },
     { title: "Users", icon: <Group />, expanded: false },
-    { title: "Service Catalogue", icon: <LocalOffer />, expanded: false },
+    {
+      title: "Service Catalogue",
+      icon: <LocalOffer />,
+      expanded: false,
+      items: [
+        {
+          title: "WorkFloor",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "workfloor"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/servicecatalogue/workfloor`);
+            }, 300);
+          },
+        },
+        {
+          title: "WorkLocation",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "worklocation"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/servicecatalogue/worklocation`);
+            }, 300);
+          },
+        },
+      ],
+    },
     { title: "Enquiries & Status", icon: <InsertComment />, expanded: false },
   ];
 
@@ -591,6 +622,8 @@ const DrawerItems = ({ open }: OpenObj) => {
             position: "unset",
           }}
           defaultExpanded={item.expanded}
+          expanded={expanded === "panel" + index.toString()}
+          onChange={handleChange("panel" + index.toString())}
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={item.title} id={item.title} style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}>
             <ListItemIcon sx={{ minWidth: 0, mr: 3, justifyContent: "center" }}>{item.icon}</ListItemIcon>

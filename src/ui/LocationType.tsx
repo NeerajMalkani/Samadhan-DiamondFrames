@@ -440,7 +440,7 @@ const LocationTypePage = () => {
             <Typography variant="h4">Location Type</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Location Type</Typography>
+            <Typography variant="h6">Add/Edit Location Type</Typography>
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -577,6 +577,7 @@ const LocationTypePage = () => {
                         placeholder="Search Location Type"
                         variant="outlined"
                         size="small"
+                        value={searchQuery}
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}

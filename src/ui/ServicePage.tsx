@@ -224,7 +224,7 @@ const ServicePage = () => {
             <Typography variant="h4">Service</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Service</Typography>
+            <Typography variant="h6">Add/Edit Service</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -283,9 +283,10 @@ const ServicePage = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Product name"
+                        placeholder="Search Service Name"
                         variant="outlined"
                         size="small"
+                        value={searchQuery}
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}

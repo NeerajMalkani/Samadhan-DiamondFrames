@@ -140,3 +140,20 @@ export interface LocationTypeModel {
   display: string;
   action: string;
 }
+
+
+export interface WorkfloorNameModel {
+  id: number;
+  srno: number;
+  workFloorName: string;
+  display: string;
+  action: string;
+}
+
+export interface WorkLocationNameModel {
+  id: number;
+  srno: number;
+  workLocationName: string;
+  display: string;
+  action: string;
+}

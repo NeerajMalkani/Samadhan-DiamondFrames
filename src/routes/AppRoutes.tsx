@@ -19,6 +19,8 @@ import DepartmentPage from "../ui/Department";
 import DesignationPage from "../ui/Designation";
 import EWayBillPage from "../ui/EWayBill";
 import LocationTypePage from "../ui/LocationType";
+import WorkFloorPage from "../ui/WorkFloorPage"
+import WorkLocationPage from "../ui/WorkLocationPage";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -73,6 +75,9 @@ const AppRoutes = () => {
                 <Route path="master/designation" element={<DesignationPage />} />
                 <Route path="master/ewaybill" element={<EWayBillPage />} />
                 <Route path="master/locationtype" element={<LocationTypePage/>} />
+                <Route path="servicecatalogue/workfloor" element={<WorkFloorPage/>} />
+                <Route path="servicecatalogue/worklocation" element={<WorkLocationPage/>} />
+                
               </Routes>
             </BrowserRouter>
           </Box>

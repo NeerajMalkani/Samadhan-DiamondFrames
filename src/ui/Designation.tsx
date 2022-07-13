@@ -222,10 +222,10 @@ const DesignationPage = () => {
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
         <Grid item xs={4} sm={8} md={12}>
-          <Typography variant="h4">Designation</Typography>
+          <Typography variant="h4">Designation Name</Typography>
         </Grid>
         <Grid item xs={4} sm={8} md={12}>
-          <Typography variant="h6">Add Designation</Typography>
+          <Typography variant="h6">Add/Edit Designation</Typography>
         </Grid>
         <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
           <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -305,9 +305,10 @@ const DesignationPage = () => {
                 <>
                   <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                     <TextField
-                      placeholder="Search Designation"
+                      placeholder="Search Designation Name"
                       variant="outlined"
                       size="small"
+                      value={searchQuery}
                       onChange={(e) => {
                         onChangeSearch((e.target as HTMLInputElement).value);
                       }}

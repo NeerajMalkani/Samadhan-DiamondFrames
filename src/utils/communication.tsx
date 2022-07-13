@@ -47,6 +47,10 @@ export const communication = {
   BlankInState:"Please enter In state limit",
   BlankInterState:"Please enter Inter state limit",
 
+  BlankWorkfloorName:"Please enter Work Floor name",
+  BlankWorklocationName:"Please enter Work Location name",
+
+
   Error:"Your request cannot be processed",
   NoData: "No data found",
 };

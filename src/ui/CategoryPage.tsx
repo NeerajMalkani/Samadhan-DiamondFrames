@@ -475,10 +475,10 @@ const CategoryPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Category</Typography>
+            <Typography variant="h4">Category Name</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Category</Typography>
+            <Typography variant="h6">Add/Edit Category Name</Typography>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" error={actionRoleError}>
@@ -644,7 +644,7 @@ const CategoryPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
-              Category List
+              Category Name List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -660,7 +660,7 @@ const CategoryPage = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Category name"
+                        placeholder="Search Category Name"
                         variant="outlined"
                         size="small"
                         onChange={(e) => {

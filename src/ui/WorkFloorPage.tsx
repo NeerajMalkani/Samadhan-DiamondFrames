@@ -2,19 +2,18 @@ import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormContro
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import DataContext from "../contexts/DataContexts";
 import Provider from "../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../utils/communication";
-import { activityColumns } from "../utils/tablecolumns";
+import { workFloorColumns } from "../utils/tablecolumns";
 import { theme } from "../theme/AppTheme";
-import { ActivityRoleNameModel } from "../models/Model";
+import { WorkfloorNameModel } from "../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
-import ListIcon from '@mui/icons-material/List';
 
-const ActivityPage = () => {
+
+const WorkFloorPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
@@ -24,13 +23,13 @@ const ActivityPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
-  const [activityName, setActivityName] = React.useState("");
-  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
+  const [workfloorName, setWorkfloorName] = React.useState("");
+  const [workfloorNamesList, setWorkfloorNamesList] = React.useState<Array<WorkfloorNameModel>>([]);
 
-  const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
+  const [workfloorNamesListTemp, setWorkfloorNamesListTemp] = React.useState<Array<WorkfloorNameModel>>([]);
 
-  const [activitynameError, setactivitynameError] = useState("");
-  const [isActivitynameError, setIsActivitynameError] = useState(false);
+  const [workfloornameError, setworkfloornameError] = useState("");
+  const [isWorkfloornameError, setIsWorkfloornameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
@@ -58,8 +57,9 @@ const ActivityPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("master/getactivityroles")
+    Provider.getAll("servicecatalogue/getworkfloors")
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
@@ -68,10 +68,10 @@ const ActivityPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setActivityNamesList(arrList);
-            setActivityNamesListTemp(arrList);
+            setWorkfloorNamesList(arrList);
+            setWorkfloorNamesListTemp(arrList);
             if (type !== "") {
-              setSnackMsg("Activity role " + type);
+              setSnackMsg("Work Floor " + type);
               setOpen(true);
               setSnackbarType("success");
             }
@@ -97,65 +97,48 @@ const ActivityPage = () => {
   };
 
   const handleSubmitClick = () => {
-    const IsTextFiledError = activityName.trim() === "";
-    setactivitynameError(IsTextFiledError ? communication.BlankActivityName : "");
-    setIsActivitynameError(IsTextFiledError);
+    const IsTextFiledError = workfloorName.trim() === "";
+    setworkfloornameError(IsTextFiledError ? communication.BlankWorkfloorName : "");
+    setIsWorkfloornameError(IsTextFiledError);
     if (!IsTextFiledError) {
       setButtonLoading(true);
-      InsertUpdateData(activityName, display === "Yes");
+      InsertUpdateData(workfloorName, display === "Yes");
       setDisplay("Yes");
-      setActivityName("");
-      setactivitynameError("");
-      setIsActivitynameError(false);
+      setWorkfloorName("");
+      setworkfloornameError("");
+      setIsWorkfloornameError(false);
     }
   };
 
   const handleCancelClick = () => {
     setDisplay("Yes");
-    setActivityName("");
-    setactivitynameError("");
-    setIsActivitynameError(false);
+    setWorkfloorName("");
+    setworkfloornameError("");
+    setIsWorkfloornameError(false);
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: WorkfloorNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      setActivityName(a?.activityRoleName);
+      setWorkfloorName(a?.workFloorName);
       setSelectedID(a.id);
-      setactivitynameError("");
-      setIsActivitynameError(false);
+      setworkfloornameError("");
+      setIsWorkfloornameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }
-    // else if (type?.toLowerCase() === "delete" && a !== undefined) {
-    //   setSelectedID(a.id);
-    //   Provider.deleteAllParams("master/deleteactivityroles", { ID: a.id })
-    //     .then((response) => {
-    //       if (response.data && response.data.code === 200) {
-    //         FetchData();
-    //       } else {
-    //         setSnackMsg("your request cannot be processed");
-    //         setOpen(true);
-    //       }
-    //     })
-    //     .catch((e) => {
-    //       console.log(e);
-    //       setSnackMsg("your request cannot be processed");
-    //       setOpen(true);
-    //     });
-    // }
+    }   
   };
 
-  const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
+  const InsertUpdateData = (paramWorkfloorName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertactivityroles", {
-        ActivityRoleName: paramActivityName,
+      Provider.create("servicecatalogue/insertworkfloor", {
+        WorkFloorName: paramWorkfloorName,
         Display: checked,
       })
         .then((response) => {
@@ -175,9 +158,9 @@ const ActivityPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateactivityroles", {
-        id: selectedID,
-        ActivityRoleName: paramActivityName,
+      Provider.create("servicecatalogue/updateworkfloor", {
+        ID: selectedID,
+        WorkFloorName: paramWorkfloorName,
         Display: checked,
       })
         .then((response) => {
@@ -209,11 +192,11 @@ const ActivityPage = () => {
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setActivityNamesListTemp(activityNamesList);
+      setWorkfloorNamesListTemp(workfloorNamesList);
     } else {
-      setActivityNamesListTemp(
-        activityNamesList.filter((el: ActivityRoleNameModel) => {
-          return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
+      setWorkfloorNamesListTemp(
+        workfloorNamesList.filter((el: WorkfloorNameModel) => {
+          return el.workFloorName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -225,29 +208,29 @@ const ActivityPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Activity</Typography>
+            <Typography variant="h4">Work Floor</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add/Edit Activity Name</Typography>
+            <Typography variant="h6">Add/Edit Work Floor</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Activity Name</b>
+              <b>Work Floor Name</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
               fullWidth
-              placeholder="Activity Name"
+              placeholder="Work Floor Name"
               variant="outlined"
               size="small"
               onChange={(e) => {
-                setActivityName((e.target as HTMLInputElement).value);
-                setIsActivitynameError(false);
-                setactivitynameError("");
+                setWorkfloorName((e.target as HTMLInputElement).value);
+                setIsWorkfloornameError(false);
+                setworkfloornameError("");
               }}
-              error={isActivitynameError}
-              helperText={activitynameError}
-              value={activityName}
+              error={isWorkfloornameError}
+              helperText={workfloornameError}
+              value={workfloorName}
             />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
@@ -271,7 +254,7 @@ const ActivityPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
-              Activity List
+              Work Floor List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -281,24 +264,19 @@ const ActivityPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {activityNamesList.length === 0 ? (
-                  // <Grid>
-                  //   <Icon fontSize="inherit"><ListIcon/></Icon>
-                  //   <Typography>No records found.</Typography>
-                  // </Grid>
+                {workfloorNamesList.length === 0 ? (
                   <></>
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Activity Name"
+                        placeholder="Search Work Floor Name"
                         variant="outlined"
                         size="small"
-                        //sx={{justifySelf:"flex-end"}}
+                        value={searchQuery}
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}
-                        value={searchQuery}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -314,15 +292,15 @@ const ActivityPage = () => {
                         pointerEvents: dataGridPointer,
                       }}
                       autoHeight={true}
-                      rows={activityNamesListTemp}
-                      columns={activityColumns}
+                      rows={workfloorNamesListTemp}
+                      columns={workFloorColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...activityNamesList];
-                        let a: ActivityRoleNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        const arrWorkfloor = [...workfloorNamesList];
+                        let a: WorkfloorNameModel | undefined = arrWorkfloor.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -349,4 +327,4 @@ const ActivityPage = () => {
   );
 };
 
-export default ActivityPage;
+export default WorkFloorPage;

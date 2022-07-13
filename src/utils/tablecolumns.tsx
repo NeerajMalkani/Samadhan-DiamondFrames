@@ -1,10 +1,8 @@
 import { Button, Grid, IconButton, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
-import DataContexts from "../contexts/DataContexts";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { theme } from "../theme/AppTheme";
 import { PanoramaSharp } from "@mui/icons-material";
 
 export const categoryColumns: GridColDef[] = [
@@ -605,6 +603,81 @@ export const locationTypeColumns: GridColDef[] = [
         {/* <IconButton color="primary" aria-label="Edit">
           <EditIcon />
         </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+
+export const workFloorColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "workFloorName",
+    headerName: "Work Floor Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{  mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const workLocationColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "workLocationName",
+    headerName: "Work Location Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{  mr: 1 }}>
+          Edit
+        </Button>
       </Grid>
     ),
   },

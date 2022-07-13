@@ -276,7 +276,7 @@ const UnitPage = () => {
             <Typography variant="h4">Unit of Sale</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Unit</Typography>
+            <Typography variant="h6">Add/Edit Unit</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
             <Typography variant="subtitle2">
@@ -375,9 +375,10 @@ const UnitPage = () => {
                   <>
                   <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                     <TextField
-                      placeholder="Search unit name"
+                      placeholder="Search Unit Name"
                       variant="outlined"
                       size="small"
+                      value={searchQuery}
                       onChange={(e) => {
                         onChangeSearch((e.target as HTMLInputElement).value);
                       }}

@@ -722,7 +722,7 @@ const ServiceProductPage = () => {
             <Typography variant="h4">Service Product</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Service Product</Typography>
+            <Typography variant="h6">Add/Edit Service Product</Typography>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small">
@@ -999,7 +999,7 @@ const ServiceProductPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6" sx={{ mt: 2 }}>
-              Product List
+              Service Product List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -1055,7 +1055,7 @@ const ServiceProductPage = () => {
                         </Typography>
                         <TextField
                           fullWidth
-                          placeholder="Search Product name"
+                          placeholder="Search Product Name"
                           variant="outlined"
                           size="medium"
                           value={searchQuery}

@@ -204,10 +204,10 @@ const DepartmentPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Department</Typography>
+            <Typography variant="h4">Department Name</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add Department</Typography>
+            <Typography variant="h6">Add/Edit Department Name</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -266,12 +266,13 @@ const DepartmentPage = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Department name"
+                        placeholder="Search Department Name"
                         variant="outlined"
                         size="small"
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}
+                        value={searchQuery}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
