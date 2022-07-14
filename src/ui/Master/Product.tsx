@@ -3,7 +3,6 @@ import {
   AlertColor,
   Box,
   Button,
-  Chip,
   CircularProgress,
   Container,
   FormControl,
@@ -12,7 +11,6 @@ import {
   Grid,
   InputAdornment,
   MenuItem,
-  OutlinedInput,
   Radio,
   RadioGroup,
   Select,
@@ -24,28 +22,14 @@ import {
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
-import { productColumns } from "../utils/tablecolumns";
-import DataContext from "../contexts/DataContexts";
-import Provider from "../api/Provider";
-import { CategoryModel, ProductModel } from "../models/Model";
+import { productColumns } from "../../utils/tablecolumns";
+import Provider from "../../api/Provider";
+import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
 import { useCookies } from "react-cookie";
-import { communication } from "../utils/communication";
+import { communication } from "../../utils/communication";
 import { LoadingButton } from "@mui/lab";
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP, width: 250 },
-  },
-};
-
-function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
-  return {
-    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
-  };
-}
 
 const ProductPage = () => {
   let navigate = useNavigate();
@@ -88,11 +72,11 @@ const ProductPage = () => {
   const [unitErrorText, setUnitErrorText] = React.useState<string>("");
 
   const [display, setDisplay] = React.useState("Yes");
-  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] = React.useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] = React.useContext(DataContext).categoryList;
-  const [productList, setProductList] = React.useContext(DataContext).productList;
+  const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);// React.useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);//React.useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);//React.useContext(DataContext).unitOfSalesList;
+  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);//React.useContext(DataContext).categoryList;
+  const [productList, setProductList] = useState<Array<ProductModel>>([]);//React.useContext(DataContext).productList;
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
@@ -701,7 +685,7 @@ const ProductPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
               Product List
             </Typography>
           </Grid>

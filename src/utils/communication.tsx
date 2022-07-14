@@ -49,7 +49,7 @@ export const communication = {
 
   BlankWorkfloorName:"Please enter Work Floor name",
   BlankWorklocationName:"Please enter Work Location name",
-
+  BlankDesignType:"Please enter Design Type name",
 
   Error:"Your request cannot be processed",
   NoData: "No data found",

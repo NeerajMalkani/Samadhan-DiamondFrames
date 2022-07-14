@@ -1,13 +1,13 @@
 import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Provider from "../api/Provider";
+import Provider from "../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
-import { communication } from "../utils/communication";
-import { workLocationColumns } from "../utils/tablecolumns";
-import { theme } from "../theme/AppTheme";
-import { WorkLocationNameModel } from "../models/Model";
+import { communication } from "../../utils/communication";
+import { workLocationColumns } from "../../utils/tablecolumns";
+import { theme } from "../../theme/AppTheme";
+import { WorkLocationNameModel } from "../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
@@ -253,7 +253,7 @@ const WorkLocationPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
               Work Location List
             </Typography>
           </Grid>

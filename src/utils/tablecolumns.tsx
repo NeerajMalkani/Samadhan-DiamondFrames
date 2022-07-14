@@ -1,4 +1,4 @@
-import { Button, Grid, IconButton, Link, Typography } from "@mui/material";
+import { Button, Grid,  Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,41 +10,37 @@ export const categoryColumns: GridColDef[] = [
     field: "srno",
     headerName: "Sr. No.",
     flex: 0.5,
-    //  minWidth: 60,
     sortable: false,
   },
   {
     field: "categoryName",
     headerName: "Category Name",
     flex: 1.5,
-    // minWidth: 120,
   },
   {
     field: "activityRoleName",
     headerName: "Activity Role Name",
     flex: 1.8,
-    maxWidth: 140,
   },
   {
     field: "serviceName",
     headerName: "Service Name",
     flex: 1.8,
-    //  minWidth: 140,
   },
 
   {
     field: "hsnsacCode",
     headerName: "HSN / SAC Code",
     flex: 1,
-    maxWidth: 150,
     sortable: false,
+    maxWidth:150
   },
   {
     field: "gstRate",
     headerName: "GST Rate",
     flex: 0.5,
-    maxWidth: 150,
     sortable: false,
+    minWidth:100,
     renderCell: (params) => {
       return params.value.toFixed(2) + "%";
     },
@@ -54,7 +50,6 @@ export const categoryColumns: GridColDef[] = [
     headerName: "Unit of Sales",
     flex: 1.5,
     sortable: false,
-    //  minWidth: 120,
     renderCell: (params) => {
       if (params.value !== null && params.value !== undefined) {
         const a = params.value.split(",");
@@ -673,6 +668,57 @@ export const workLocationColumns: GridColDef[] = [
     flex: 1,
     minWidth: 100,
     sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{  mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+
+export const designTypeColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    sortable: false,
+  },
+  {
+    field: "designTypeName",
+    headerName: "Design Type Name",
+    flex: 2.5,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+  },
+  {
+    field: "productName",
+    headerName: "Product Name",
+    flex: 1.8,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    maxWidth: 100,
     renderCell: (e) => (
       <Grid>
         <Button variant="text" sx={{  mr: 1 }}>

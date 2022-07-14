@@ -15,16 +15,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import DataContext from "../contexts/DataContexts";
-import Provider from "../api/Provider";
+import Provider from "../../api/Provider";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { unitColumns } from "../utils/tablecolumns";
-import { communication } from "../utils/communication";
-import { theme } from "../theme/AppTheme";
-import { UnitOfSalesModel } from "../models/Model";
+import { unitColumns } from "../../utils/tablecolumns";
+import { communication } from "../../utils/communication";
+import { theme } from "../../theme/AppTheme";
+import { UnitOfSalesModel } from "../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 
@@ -40,8 +39,8 @@ const UnitPage = () => {
   const [display, setDisplay] = React.useState("Yes");
   const [unit1Name, setUnit1Name] = React.useState("");
   const [unit2Name, setUnit2Name] = React.useState("");
-  const [unitNamesList, setUnitNamesList] =
-    React.useContext(DataContext).unitOfSalesList;
+  const [unitNamesList, setUnitNamesList] = useState<Array<UnitOfSalesModel>>([])
+   // React.useContext(DataContext).unitOfSalesList;
   const [unit1Error, setUnit1Error] = useState("");
   const [isUnit1Error, setIsunit1Error] = useState(false);
   const [unit2Error, setUnit2Error] = useState("");
@@ -104,7 +103,7 @@ const UnitPage = () => {
         }
         setLoading(false);
       })
-      .catch((e) => {
+      .catch((e:any) => {
         setLoading(false);
         setSnackMsg(communication.NetworkError);
         setSnackbarType("error");
@@ -198,7 +197,7 @@ const UnitPage = () => {
         Unit2Name:unit2,
         Display: checked,
       })
-        .then((response) => {
+        .then((response:any) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else {
@@ -208,7 +207,7 @@ const UnitPage = () => {
             setOpen(true);
           }
         })
-        .catch((e) => {
+        .catch((e:any) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
@@ -221,7 +220,7 @@ const UnitPage = () => {
         Unit2Name:unit2,
         Display: checked,
       })
-        .then((response) => {
+        .then((response:any) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
           } else {
@@ -231,7 +230,7 @@ const UnitPage = () => {
             setOpen(true);
           }
         })
-        .catch((e) => {
+        .catch((e:any) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
@@ -352,7 +351,7 @@ const UnitPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
               Unit List
             </Typography>
           </Grid>

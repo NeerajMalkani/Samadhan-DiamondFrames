@@ -16,7 +16,6 @@ import {
   FormHelperText,
   Grid,
   InputAdornment,
-  Link,
   MenuItem,
   Radio,
   RadioGroup,
@@ -31,13 +30,12 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Provider from "../api/Provider";
-import Header from "../components/Header";
-import DataContext from "../contexts/DataContexts";
-import { CategoryModel, ProductModel } from "../models/Model";
-import { communication } from "../utils/communication";
-import { serviceProductColumns } from "../utils/tablecolumns";
-import { ValidateGSTRate } from "../utils/validations";
+import Provider from "../../api/Provider";
+import Header from "../../components/Header";
+import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
+import { communication } from "../../utils/communication";
+import { serviceProductColumns } from "../../utils/tablecolumns";
+import { ValidateGSTRate } from "../../utils/validations";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
@@ -102,12 +100,12 @@ const ServiceProductPage = () => {
 
   const [display, setDisplay] = useState("Yes");
 
-  const [activityNamesList, setActivityNamesList] = useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] = useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = useContext(DataContext).unitOfSalesList;
+  const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);// useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] =useState<Array<ServiceNameModel>>([]);// useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);//useContext(DataContext).unitOfSalesList;
   const [unitList, setUnitList] = useState<string[]>([]);
-  const [categoryList, setCategoryList] = useContext(DataContext).categoryList;
-  const [productList, setProductList] = useContext(DataContext).productList;
+  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);//useContext(DataContext).categoryList;
+  const [productList, setProductList] =useState<Array<ProductModel>>([]);// useContext(DataContext).productList;
   const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
   const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -122,7 +120,7 @@ const ServiceProductPage = () => {
   const [dialogHeader, setDialogHeader] = useState<string>("");
   const [dialogText, setDialogText] = useState<string>("");
 
-  const [categoryListFilter, setCategoryListFilter] = useContext(DataContext).categoryList;
+  const [categoryListFilter, setCategoryListFilter] = useState<Array<CategoryModel>>([]);// useContext(DataContext).categoryList;
   const [snFilter, setSnFilter] = useState("--Select--");
 
   const [cnFilter, setCnFilter] = useState("--Select--");
@@ -453,7 +451,6 @@ const ServiceProductPage = () => {
   };
 
   const UpdateData = () => {
-    debugger;
     setButtonLoading(true);
     Provider.create("master/updateproduct", {
       ProductID: pnID,
@@ -485,7 +482,6 @@ const ServiceProductPage = () => {
   };
 
   const handleCancelClick = () => {
-    debugger;
     setDisplay("Yes");
     setButtonLoading(false);
     // SetResetActivityName(true);
@@ -998,7 +994,7 @@ const ServiceProductPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
               Service Product List
             </Typography>
           </Grid>

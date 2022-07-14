@@ -1,14 +1,13 @@
 import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import DataContext from "../contexts/DataContexts";
-import Provider from "../api/Provider";
+import Provider from "../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
-import { communication } from "../utils/communication";
-import { activityColumns } from "../utils/tablecolumns";
-import { theme } from "../theme/AppTheme";
-import { ActivityRoleNameModel } from "../models/Model";
+import { communication } from "../../utils/communication";
+import { activityColumns } from "../../utils/tablecolumns";
+import { theme } from "../../theme/AppTheme";
+import { ActivityRoleNameModel } from "../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
@@ -25,7 +24,7 @@ const ActivityPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [activityName, setActivityName] = React.useState("");
-  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);//React.useContext(DataContext).activityNamesList;
 
   const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
 
@@ -270,7 +269,7 @@ const ActivityPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
               Activity List
             </Typography>
           </Grid>
@@ -294,7 +293,6 @@ const ActivityPage = () => {
                         placeholder="Search Activity Name"
                         variant="outlined"
                         size="small"
-                        //sx={{justifySelf:"flex-end"}}
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}

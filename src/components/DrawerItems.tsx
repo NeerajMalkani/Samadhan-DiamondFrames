@@ -170,6 +170,15 @@ const DrawerItems = ({ open }: OpenObj) => {
               navigate(`/servicecatalogue/worklocation`);
             }, 300);
           },
+        },{
+          title: "DesignType",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "designtype"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/servicecatalogue/designtype`);
+            }, 300);
+          },
         },
       ],
     },

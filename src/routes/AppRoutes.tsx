@@ -4,23 +4,24 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DataContextProvider } from "../contexts/DataContexts";
 import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
 import { theme } from "../theme/AppTheme";
-import ActivityPage from "../ui/ActivityPage";
-import ServicePage from "../ui/ServicePage";
-import UnitPage from "../ui/UnitPage";
-import CategoryPage from "../ui/CategoryPage";
+import ActivityPage from "../ui/Master/ActivityPage";
+import ServicePage from "../ui/Master/ServicePage";
+import UnitPage from "../ui/Master/UnitPage";
+import CategoryPage from "../ui/Master/CategoryPage";
 import DashboardPage from "../ui/DashboardPage";
 import LoginPage from "../ui/LoginPage";
-import ProductPage from "../ui/Product";
+import ProductPage from "../ui/Master/Product";
 import SignupPage from "../ui/Signup";
 import ForgotPasswordPage from "../ui/ForgotPasswordPage";
 import { CookiesProvider } from "react-cookie";
-import ServiceProductPage from "../ui/ServiceProduct";
-import DepartmentPage from "../ui/Department";
-import DesignationPage from "../ui/Designation";
-import EWayBillPage from "../ui/EWayBill";
-import LocationTypePage from "../ui/LocationType";
-import WorkFloorPage from "../ui/WorkFloorPage"
-import WorkLocationPage from "../ui/WorkLocationPage";
+import ServiceProductPage from "../ui/Master/ServiceProduct";
+import DepartmentPage from "../ui/Master/Department";
+import DesignationPage from "../ui/Master/Designation";
+import EWayBillPage from "../ui/Master/EWayBill";
+import LocationTypePage from "../ui/Master/LocationType";
+import WorkFloorPage from "../ui/ServiceCatalogue/WorkFloorPage"
+import WorkLocationPage from "../ui/ServiceCatalogue/WorkLocationPage";
+import DesignTypePage from "../ui/ServiceCatalogue/DesignTypePage";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -77,6 +78,7 @@ const AppRoutes = () => {
                 <Route path="master/locationtype" element={<LocationTypePage/>} />
                 <Route path="servicecatalogue/workfloor" element={<WorkFloorPage/>} />
                 <Route path="servicecatalogue/worklocation" element={<WorkLocationPage/>} />
+                <Route path="servicecatalogue/designtype" element={<DesignTypePage/>} />
                 
               </Routes>
             </BrowserRouter>

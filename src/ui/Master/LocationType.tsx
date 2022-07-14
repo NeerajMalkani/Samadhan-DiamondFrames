@@ -25,15 +25,14 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import DataContext from "../contexts/DataContexts";
-import { ActivityRoleNameModel, LocationTypeModel, ServiceNameModel } from "../models/Model";
-import Provider from "../api/Provider";
-import { communication } from "../utils/communication";
+import Header from "../../components/Header";
+import { ActivityRoleNameModel, LocationTypeModel, ServiceNameModel } from "../../models/Model";
+import Provider from "../../api/Provider";
+import { communication } from "../../utils/communication";
 import { LoadingButton } from "@mui/lab";
-import { theme } from "../theme/AppTheme";
+import { theme } from "../../theme/AppTheme";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { locationTypeColumns } from "../utils/tablecolumns";
+import { locationTypeColumns } from "../../utils/tablecolumns";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -69,11 +68,11 @@ const LocationTypePage = () => {
   const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [locationTypeList, setLocationTypeList] = useContext(DataContext).locationTypeList;
+  const [locationTypeList, setLocationTypeList] = useState<Array<LocationTypeModel>>([]);//useContext(DataContext).locationTypeList;
   const [locationTypeListTemp, setLocationTypeListTemp] = useState<Array<LocationTypeModel>>([]);
-  const [activityNamesList, setActivityNamesList] = useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);//useContext(DataContext).activityNamesList;
 
-  const [serviceNamesList, setServiceNamesList] = useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] =useState<Array<ServiceNameModel>>([]);// useContext(DataContext).serviceNameList;
 
   const [activityList, setActivityList] = useState<string[]>([]);
   const [activityListID, setActivityListID] = useState<number[]>([]);
@@ -470,6 +469,7 @@ const LocationTypePage = () => {
               </Typography>
               <Select
                 multiple
+                fullWidth
                 value={activityList}
                 onChange={handleActivityChange}
                 input={<OutlinedInput />}
@@ -507,6 +507,7 @@ const LocationTypePage = () => {
               </Typography>
               <Select
                 multiple
+                fullWidth
                 value={serviceList}
                 onChange={handleServiceChange}
                 input={<OutlinedInput />}
@@ -557,7 +558,7 @@ const LocationTypePage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
               Location Type List
             </Typography>
           </Grid>

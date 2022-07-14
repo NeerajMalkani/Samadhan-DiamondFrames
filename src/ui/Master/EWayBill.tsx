@@ -8,7 +8,6 @@ import {
   CircularProgress,
   FormControl,
   FormControlLabel,
-  FormHelperText,
   Grid,
   InputAdornment,
   Radio,
@@ -22,13 +21,12 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Provider from "../api/Provider";
-import Header from "../components/Header";
-import DataContext from "../contexts/DataContexts";
-import { EWayBillModel } from "../models/Model";
-import { theme } from "../theme/AppTheme";
-import { communication } from "../utils/communication";
-import { eWayBillColumns } from "../utils/tablecolumns";
+import Provider from "../../api/Provider";
+import Header from "../../components/Header";
+import { EWayBillModel } from "../../models/Model";
+import { theme } from "../../theme/AppTheme";
+import { communication } from "../../utils/communication";
+import { eWayBillColumns } from "../../utils/tablecolumns";
 
 const EWayBillPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -41,7 +39,8 @@ const EWayBillPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
 
-  const [ewayBillList, setEwayBillList] = useContext(DataContext).eWayBillList;
+  const [ewayBillList, setEwayBillList] = useState<Array<EWayBillModel>>([]);
+  //useContext(DataContext).eWayBillList;
 
   const [pageSize, setPageSize] = useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
@@ -331,7 +330,6 @@ const EWayBillPage = () => {
             <Autocomplete
               disablePortal
               fullWidth
-              // id="combo-box-demo"
               options={statesFullData}
               sx={{ width: 300 }}
               onChange={(event: React.SyntheticEvent, value: any) => {
@@ -432,7 +430,7 @@ const EWayBillPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
             E-Way bill List
             </Typography>
           </Grid>

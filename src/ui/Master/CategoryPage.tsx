@@ -24,17 +24,15 @@ import {
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
-import { categoryColumns } from "../utils/tablecolumns";
-import DataContext from "../contexts/DataContexts";
-import Provider from "../api/Provider";
-import { CategoryModel } from "../models/Model";
-import { isFocusable } from "@testing-library/user-event/dist/utils";
+import { categoryColumns } from "../../utils/tablecolumns";
+import Provider from "../../api/Provider";
+import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
 import { useCookies } from "react-cookie";
-import { communication } from "../utils/communication";
+import { communication } from "../../utils/communication";
 import { LoadingButton } from "@mui/lab";
-import { ValidateGSTRate, ValidateStringNumber } from "../utils/validations";
+import { ValidateGSTRate, ValidateStringNumber } from "../../utils/validations";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -74,10 +72,10 @@ const CategoryPage = () => {
   const [unitsOfSalesID, setUnitsOfSalesID] = React.useState<number[]>([]);
 
   const [display, setDisplay] = React.useState("Yes");
-  const [activityNamesList, setActivityNamesList] = React.useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] = React.useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] = React.useContext(DataContext).categoryList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);//React.useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] =useState<Array<ServiceNameModel>>([]);// React.useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);//React.useContext(DataContext).unitOfSalesList;
+  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);//React.useContext(DataContext).categoryList;
 
   const [categoryListTemp, setCategoryListTemp] = useState<Array<CategoryModel>>([]);
   const [pageSize, setPageSize] = React.useState<number>(5);
@@ -643,7 +641,7 @@ const CategoryPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
               Category Name List
             </Typography>
           </Grid>

@@ -4,13 +4,12 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Provider from "../api/Provider";
-import Header from "../components/Header";
-import { DesignationNameModel } from "../models/Model";
-import { theme } from "../theme/AppTheme";
-import { communication } from "../utils/communication";
-import DataContext from "../contexts/DataContexts";
-import { designationColumns } from "../utils/tablecolumns";
+import Provider from "../../api/Provider";
+import Header from "../../components/Header";
+import { DesignationNameModel } from "../../models/Model";
+import { theme } from "../../theme/AppTheme";
+import { communication } from "../../utils/communication";
+import { designationColumns } from "../../utils/tablecolumns";
 
 const DesignationPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -24,8 +23,8 @@ const DesignationPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [designationName, setDesignationName] = useState("");
-  const [designationNameList, setDesignationNameList] =
-    useContext(DataContext).designationNamesList;
+  const [designationNameList, setDesignationNameList] = useState<Array<DesignationNameModel>>([]);
+  //  useContext(DataContext).designationNamesList;
   const [designationNameError, setDesignationNameError] = useState("");
   const [isDesignationNameError, setIsDesignationNameError] = useState(false);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -282,7 +281,7 @@ const DesignationPage = () => {
           </LoadingButton>
         </Grid>
         <Grid item xs={4} sm={8} md={12}>
-          <Typography variant="h6" sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
             Designation List
           </Typography>
         </Grid>
