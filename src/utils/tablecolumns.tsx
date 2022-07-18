@@ -4,6 +4,7 @@ import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { PanoramaSharp } from "@mui/icons-material";
+import { AWSImagePath } from "./paths";
 
 export const categoryColumns: GridColDef[] = [
   {
@@ -705,6 +706,83 @@ export const designTypeColumns: GridColDef[] = [
     field: "productName",
     headerName: "Product Name",
     flex: 1.8,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    maxWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{  mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const postNewDesignColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    sortable: false,
+  },
+  {
+    field: "designTypeName",
+    headerName: "Design Type Name",
+    flex: 2,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name / Product Name",
+    flex: 2.3,
+    renderCell: (params) => {
+      return (<div>
+        <Typography noWrap={false}>{params.value}</Typography>
+        <Typography noWrap={false}>{params.row.productName}</Typography>
+      </div>);
+    },
+  },
+  {
+    field: "workLocationName",
+    headerName: "Work Location Name",
+    flex: 1.8,
+  },
+  {
+    field: "designNumber",
+    headerName: "Design No.",
+    flex: 1.8,
+  },
+  {
+    field: "labourCost",
+    headerName: "Labour Cost",
+    flex: 1.8,
+    renderCell: (params) => {
+      return params.value.toFixed(2);
+    },
+  },
+  {
+    field: "designImage",
+    headerName: "Design Image",
+    flex: 1.8,
+    renderCell: (params) => {
+      return <img src={params.value} alt="" style={{width:"98px", height:"96px"}}/>;
+    },
   },
   {
     field: "display",

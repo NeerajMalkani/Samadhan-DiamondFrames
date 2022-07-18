@@ -174,3 +174,19 @@ export interface DesignTypeModel {
   productID: number;
   serviceDisplay: string;
 }
+
+export interface PostNewDesignModel {
+  id: number;
+  srno: number;
+  serviceName: string;
+  categoryName: string;
+  productName: string;
+  designTypeName:string;
+  display: string;
+  action: string;
+  serviceID: number;
+  categoryID: number;
+  activityID: number;
+  productID: number;
+  serviceDisplay: string;
+}

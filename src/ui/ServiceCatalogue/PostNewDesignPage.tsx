@@ -1,9 +1,8 @@
-import { SignalCellularConnectedNoInternet2BarRounded } from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   AlertColor,
-  Box,
   Button,
   CircularProgress,
   Container,
@@ -21,18 +20,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box } from "@mui/system";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Provider from "../../api/Provider";
 import Header from "../../components/Header";
-import { CategoryModel, DesignTypeModel, ProductModel, ServiceNameModel } from "../../models/Model";
+import { CategoryModel, DesignTypeModel, PostNewDesignModel, ProductModel, ServiceNameModel, WorkLocationNameModel } from "../../models/Model";
+import { postNewDesignColumns } from "../../utils/tablecolumns";
 import { communication } from "../../utils/communication";
-import { designTypeColumns } from "../../utils/tablecolumns";
+import { AWSImagePath } from "../../utils/paths";
+import Provider from "../../api/Provider";
+import { ValidateGSTRate } from "../../utils/validations";
+import { awsCreds } from "../../utils/credentials";
+import S3 from "react-aws-s3";
 
-const DesignTypePage = () => {
+
+const PostNewDesignPage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
   const theme = useTheme();
@@ -44,9 +48,6 @@ const DesignTypePage = () => {
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [arnID, setArnID] = useState<number>(0);
-
-  const [dtID, setdtID] = useState<number>(0);
-
   const [sn, setSn] = useState("--Select--");
   const [snID, setSnID] = useState<number>(0);
   const [servicenameError, setServicenameError] = useState("");
@@ -62,35 +63,68 @@ const DesignTypePage = () => {
   const [productError, setProductError] = useState("");
   const [isProductError, setIsProductError] = useState(false);
 
-  const [display, setDisplay] = useState("Yes");
+  const [pdt, setPdt] = useState("--Select--");
+  const [pdtID, setPdtID] = useState(0);
+  const [productDesignTypeError, setProductDesignTypeError] = useState("");
+  const [isProductDesignTypeError, setIsProductDesignTypeError] = useState(false);
+
+  const [wl, setWl] = useState("--Select--");
+  const [wlID, setWlID] = useState(0);
+  const [workLocationError, setWorkLocationError] = useState("");
+  const [isWorkLocationError, setIsWorkLocationError] = useState(false);
 
   const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
   const [productList, setProductList] = useState<Array<ProductModel>>([]);
-  const [designTypeList, setDesignTypeListList] = useState<Array<DesignTypeModel>>([]);
-  const [designTypeListTemp, setDesignTypeListTemp] = useState<Array<DesignTypeModel>>([]);
+  const [productDesignTypeList, setProductDesignTypeList] = useState<Array<DesignTypeModel>>([]);
+  const [workLocationList, setWorkLocationList] = useState<Array<WorkLocationNameModel>>([]);
+  const [postNewDesign, setPostNewDesign] = useState<Array<PostNewDesignModel>>([]);
+  const [postNewDesignTemp, setPostNewDesignTemp] = useState<Array<PostNewDesignModel>>([]);
 
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+
+  const [designNo, setDesignNo] = useState("");
+  const [designNoError, setDesignNoError] = useState<boolean>(false);
+  const [designNoErrorText, setDesignNoErrorText] = useState<string>("");
+
+  const [labourCost, setLabourCost] = useState("");
+  const [labourCostError, setLabourCostError] = useState<boolean>(false);
+  const [labourCostTextError, setLabourCostTextError] = useState<string>("");
+  //
   const [pageSize, setPageSize] = useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
   const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [actionStatus, setActionStatus] = useState<string>("new");
   const [searchQuery, setSearchQuery] = useState("");
-  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  const [display, setDisplay] = useState("Yes");
 
-  const [isDesignTypeError, setIsDesignTypeError] = useState(false);
-  const [designTypeError, setDesignTypeError] = useState<string>("");
-  const [designTypeName, setDesignTypeName] = useState<string>("");
+  const [image, setImage] = useState(AWSImagePath + "placeholder-image.png");
+  const [filePath, setFilePath] = useState(null);
+  const [errorDI, setDIError] = useState(false);
+  const [errorDIText, setDIErrorText] = useState("");
+  const [designButtonText, setDesignButtonText] = useState("Upload Design");
+  const [isImageReplaced, setIsImageReplaced] = useState(false);
+  const fileInput = useRef();
+
+  const config = {
+    bucketName: awsCreds.awsBucket,
+    // dirName: 'media', /* optional */
+    region: awsCreds.awsRegion,
+    accessKeyId: awsCreds.awsAccessKey,
+    secretAccessKey: awsCreds.awsSecretKey   
+}
 
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
+    FetchWorkLocation();
   }, []);
 
   const FetchData = (type: string) => {
-    Provider.getAll("servicecatalogue/getdesigntypes")
+    Provider.getAll("servicecatalogue/getpostnewdesigntypes")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -101,8 +135,9 @@ const DesignTypePage = () => {
               a = Object.assign(a, sr);
               return a;
             });
-            setDesignTypeListList(arrList);
-            setDesignTypeListTemp(arrList);
+            setPostNewDesign(arrList);
+            setPostNewDesignTemp(arrList);
+            setDesignNo("DS-" + (arrList.length + 1).toString());
 
             if (type !== "") {
               setSnackbarMessage("Design Type " + type);
@@ -199,6 +234,43 @@ const DesignTypePage = () => {
       .catch((e) => {});
   };
 
+  const FetchDesignTypeFromProductID = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, selectedProductID: number) => {
+    let params = {
+      ActivityID: selectedActivityID,
+      ServiceID: selectedServiceID,
+      CategoryID: selectedCategoryID,
+      ProductID: selectedProductID,
+    };
+    Provider.getAll(`master/getdesigntypebyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setProductDesignTypeList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchWorkLocation = () => {
+    Provider.getAll("servicecatalogue/getworklocations")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setWorkLocationList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
     let ac = serviceNameList.find((el) => el.serviceName === serviceName);
@@ -224,161 +296,36 @@ const DesignTypePage = () => {
     }
   };
 
-  const handlePNChnage = (event: SelectChangeEvent) => {
+  const handlePNChange = (event: SelectChangeEvent) => {
     let productName: string = event.target.value;
     let ac = productList.find((el) => el.productName === productName);
     if (ac !== undefined) {
       setPn(event.target.value as string);
       setPnID(ac.productID);
       SetResetProductName(false);
+      SetResetProductDesignType(true);
+      FetchDesignTypeFromProductID(arnID, snID, cnID, ac.id);
     }
   };
 
-  const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDisplay((event.target as HTMLInputElement).value);
-  };
-
-  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setIsSnackbarOpen(false);
-  };
-
-  const handleSubmitClick = () => {
-    let isValid: boolean = true;
-    if (sn === "--Select--") {
-      isValid = false;
-      setIsServicenameError(true);
-      setServicenameError(communication.SelectServiceName);
-    }
-
-    if (cn.trim() === "--Select--") {
-      isValid = false;
-      setIsCategorynameError(true);
-      setCategorynameError(communication.SelectCategoryName);
-    }
-
-    if (pn.trim() === "--Select--") {
-      isValid = false;
-      setIsProductError(true);
-      setProductError(communication.SelectProductName);
-    }
-
-    if (designTypeName.trim() === "") {
-      isValid = false;
-      setIsDesignTypeError(true);
-      setDesignTypeError(communication.BlankDesignType);
-    }
-
-    if (isValid) {
-      UpdateData();
+  const handlePDTChange = (event: SelectChangeEvent) => {
+    let productName: string = event.target.value;
+    let ac = productDesignTypeList.find((el) => el.designTypeName === productName);
+    if (ac !== undefined) {
+      setPdt(event.target.value as string);
+      setPdtID(ac.id);
+      SetResetProductDesignType(false);
     }
   };
 
-  const UpdateData = () => {
-    setButtonLoading(true);
-    if (actionStatus === "new") {
-      Provider.create("servicecatalogue/insertdesigntype", {
-        DesignTypeName: designTypeName,
-        ServiceID: snID,
-        CategoryID: cnID,
-        ProductID: pnID,
-        Display: display === "Yes",
-      })
-        .then((response: any) => {
-          if (response.data && response.data.code === 200) {
-            FetchData("added");
-            handleCancelClick();
-          } else {
-            setSnackbarMessage(communication.Error);
-            setSnackbarType("error");
-            setIsSnackbarOpen(true);
-          }
-          setButtonLoading(false);
-        })
-        .catch((e) => {
-          setSnackbarMessage(communication.NetworkError);
-          setSnackbarType("error");
-          setIsSnackbarOpen(true);
-          setButtonLoading(false);
-        });
-    } else if (actionStatus === "edit") {
-      Provider.create("servicecatalogue/updatedesigntype", {
-        ID: dtID,
-        DesignTypeName: designTypeName,
-        ServiceID: snID,
-        CategoryID: cnID,
-        ProductID: pnID,
-        Display: display === "Yes",
-      })
-        .then((response: any) => {
-          if (response.data && response.data.code === 200) {
-            FetchData("updated");
-            handleCancelClick();
-          } else {
-            setSnackbarMessage(communication.Error);
-            setSnackbarType("error");
-            setIsSnackbarOpen(true);
-          }
-          setButtonLoading(false);
-        })
-        .catch((e) => {
-          setSnackbarMessage(communication.NetworkError);
-          setSnackbarType("error");
-          setIsSnackbarOpen(true);
-          setButtonLoading(false);
-        });
-    }
-  };
-
-  const handleCancelClick = () => {
-    setDisplay("Yes");
-    setButtonLoading(false);
-
-    SetResetServiceName(true);
-
-    SetResetCategoryName(true);
-    setCategoryList([]);
-
-    SetResetProductName(true);
-    setProductList([]);
-
-    setDesignTypeError("");
-    setIsDesignTypeError(false);
-    setDesignTypeName("");
-
-    setButtonDisplay("none");
-    setDataGridOpacity(1);
-    setDataGridPointer("auto");
-    setActionStatus("new");
-  };
-
-  const handelEditAndDelete = (type: string | null, a: DesignTypeModel | undefined) => {
-    if (type?.toLowerCase() === "edit" && a !== undefined) {
-      setDataGridOpacity(0.3);
-      setDataGridPointer("none");
-      setDisplay(a.display);
-      setdtID(a.id);
-      setSn(a?.serviceName);
-      setSnID(a?.serviceID);
-      SetResetServiceName(false);
-
-      setCn(a?.categoryName);
-      setCnID(a?.categoryID);
-
-      SetResetCategoryName(false);
-      FetchCategoriesFromServices(arnID, a?.serviceID);
-
-      setPn(a?.productName);
-      setPnID(a?.productID);
-      SetResetProductName(false);
-      FetchProductsFromCategory(arnID, a.serviceID, a.categoryID);
-      setDesignTypeName(a.designTypeName);
-
-      setDisplay(a?.display);
-      setButtonDisplay("unset");
-      setActionStatus("edit");
+  const handleWLChange = (event: SelectChangeEvent) => {
+    debugger;
+    let productName: string = event.target.value;
+    let ac = workLocationList.find((el) => el.workLocationName === productName);
+    if (ac !== undefined) {
+      setWl(event.target.value as string);
+      setWlID(ac.id);
+      SetResetworkLocation(false);
     }
   };
 
@@ -409,6 +356,133 @@ const DesignTypePage = () => {
     setIsProductError(false);
   };
 
+  const SetResetProductDesignType = (isBlank: boolean) => {
+    if (isBlank) {
+      setPdt("--Select--");
+      setPdtID(0);
+    }
+    setProductDesignTypeError("");
+    setIsProductDesignTypeError(false);
+  };
+
+  const SetResetworkLocation = (isBlank: boolean) => {
+    if (isBlank) {
+      setWl("--Select--");
+      setWlID(0);
+    }
+    setWorkLocationError("");
+    setIsWorkLocationError(false);
+  };
+
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsSnackbarOpen(false);
+  };
+
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setPostNewDesignTemp(postNewDesign);
+    } else {
+      setPostNewDesignTemp(
+        postNewDesign.filter((el: PostNewDesignModel) => {
+          return el.designTypeName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
+
+  const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDisplay((event.target as HTMLInputElement).value);
+  };
+
+  const handleSubmitClick = () => {
+    let isValid: boolean = true;
+    if (sn === "--Select--") {
+      isValid = false;
+      setIsServicenameError(true);
+      setServicenameError(communication.SelectServiceName);
+    }
+
+    if (cn.trim() === "--Select--") {
+      isValid = false;
+      setIsCategorynameError(true);
+      setCategorynameError(communication.SelectCategoryName);
+    }
+
+    if (pn.trim() === "--Select--") {
+      isValid = false;
+      setIsProductError(true);
+      setProductError(communication.SelectProductName);
+    }
+
+    if (pdt.trim() === "--Select--") {
+      isValid = false;
+      setIsProductDesignTypeError(true);
+      setProductDesignTypeError(communication.SelectProductName);
+    }
+    if (wl.trim() === "--Select--") {
+      isValid = false;
+      setIsWorkLocationError(true);
+      setWorkLocationError(communication.SelectProductName);
+    }
+    if (designNo.trim() === "") {
+      isValid = false;
+      setDesignNoError(true);
+      setDesignNoErrorText(communication.SelectProductName);
+    }
+
+    if (labourCost.trim() === "" || !ValidateGSTRate(labourCost)) {
+      isValid = false;
+      setLabourCostError(true);
+      setLabourCostTextError(communication.SelectProductName);
+    }
+
+    if (image.trim() === AWSImagePath + "placeholder-image.png") {
+      isValid = false;
+      setDIError(true);
+      setDIErrorText(communication.SelectProductName);
+    }
+
+    if (isValid) {
+      // UpdateData();
+    }
+  };
+
+  const handleCancelClick = () => {
+    setDisplay("Yes");
+    setButtonLoading(false);
+
+    SetResetServiceName(true);
+
+    SetResetCategoryName(true);
+    setCategoryList([]);
+
+    SetResetProductName(true);
+    setProductList([]);
+
+    setButtonDisplay("none");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+    setActionStatus("new");
+  };
+
+  const UploadFile = () => {
+    // if (fileInput != null && fileInput.current != null && fileInput.current.files != null) {
+    //   let file = fileInput.current.files[0];
+    //   let fileName = fileInput.current.files[0].name;
+     // let newFileName=uuid();
+
+      const ReactS3Client = new S3(config);
+    //   ReactS3Client
+    // .uploadFile(file, newFileName)
+    // .then(data => console.log(data))
+    // .catch(err => console.error(err))
+    // }
+  };
+
   const GetStringifyJson = (params: any) => {
     var string_ = JSON.stringify(params);
 
@@ -421,32 +495,21 @@ const DesignTypePage = () => {
     return string_;
   };
 
-  const onChangeSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query === "") {
-      setDesignTypeListTemp(designTypeList);
-    } else {
-      setDesignTypeListTemp(
-        designTypeList.filter((el: DesignTypeModel) => {
-          return el.designTypeName.toString().toLowerCase().includes(query.toLowerCase());
-        })
-      );
-    }
-  };
-
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Design Type</Typography>
+            <Typography variant="h4">Post New Design</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6">Add/Edit Design Type</Typography>
+            <Typography variant="h6" sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+              Add/Edit Post New Design
+            </Typography>
           </Grid>
 
-          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" error={isServicenameError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Service Name</b>
@@ -467,7 +530,8 @@ const DesignTypePage = () => {
               <FormHelperText>{servicenameError}</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
+
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" error={isCategorynameError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Category Name</b>
@@ -489,13 +553,13 @@ const DesignTypePage = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" error={isProductError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Product Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select value={pn} onChange={handlePNChnage}>
+              <Select value={pn} onChange={handlePNChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
@@ -510,27 +574,125 @@ const DesignTypePage = () => {
               <FormHelperText>{productError}</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
+
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+            <FormControl fullWidth size="small" error={isProductDesignTypeError}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Product Design Type</b>
+                <label style={{ color: "#ff0000" }}>*</label>
+              </Typography>
+              <Select value={pn} onChange={handlePDTChange}>
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {productDesignTypeList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.productName}>
+                      {item.productName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>{productDesignTypeError}</FormHelperText>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+            <FormControl fullWidth size="small" error={isWorkLocationError}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Working Location Name</b>
+                <label style={{ color: "#ff0000" }}>*</label>
+              </Typography>
+              <Select value={pn} onChange={handleWLChange}>
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {workLocationList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.workLocationName}>
+                      {item.workLocationName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>{workLocationError}</FormHelperText>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Design Type Name</b>
+              <b>Design No.</b>
+              <label style={{ color: "#ff0000" }}>*</label>
+            </Typography>
+            <TextField
+              sx={{ background: "#e5e5e5" }}
+              fullWidth
+              disabled
+              placeholder="Design No"
+              variant="outlined"
+              size="small"
+              value={designNo}
+              error={designNoError}
+              helperText={designNoErrorText}
+              onChange={(e) => {
+                setDesignNo(e.currentTarget.value);
+                setDesignNoError(false);
+                setDesignNoErrorText("");
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Labour Cost</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
               fullWidth
-              placeholder="Design Type Name"
+              placeholder="Labour Cost"
               variant="outlined"
               size="small"
-              error={isDesignTypeError}
-              helperText={designTypeError}
-              value={designTypeName}
+              value={labourCost}
+              error={labourCostError}
+              helperText={labourCostTextError}
               onChange={(e) => {
-                setDesignTypeName((e.target as HTMLInputElement).value);
-                setIsDesignTypeError(false);
-                setDesignTypeError("");
+                setLabourCost(e.currentTarget.value);
+                setLabourCostError(false);
+                setLabourCostTextError("");
               }}
             />
           </Grid>
-          <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b> Upload Design</b>
+              <label style={{ color: "#ff0000" }}>*</label>
+            </Typography>
+            <FormControl fullWidth size="small" error={errorDI}>
+              <Grid style={{ display: "flex" }}>
+                <Button size="small" variant="contained" component="label" sx={{ mr: 2 }}>
+                  {designButtonText}
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    // ref={fileInput}
+                    onChange={(e) => {
+                      if (e.currentTarget !== null && e.currentTarget.files !== null) {
+                        debugger;
+                        let FileName = e.currentTarget.files[0].name;
+                        if (FileName !== undefined) setDIErrorText(FileName.trim());
+                        setDesignButtonText("Change");
+                        setImage(e.target.value);
+                      }
+                    }}
+                  />
+                </Button>
+                <img alt="" src={image} style={{ width: "48px", height: "36px", border: "1px solid rgba(0,0,0,0.12)", borderRadius: "4px" }} />
+              </Grid>
+              <FormHelperText>{errorDIText}</FormHelperText>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Display</b>
             </Typography>
@@ -550,8 +712,8 @@ const DesignTypePage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
-              Design Type Product List
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+              Post New Design List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -561,7 +723,7 @@ const DesignTypePage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%" }}>
-                {designTypeList.length === 0 ? (
+                {postNewDesign.length === 0 ? (
                   <></>
                 ) : (
                   <>
@@ -593,19 +755,19 @@ const DesignTypePage = () => {
                       }}
                       autoHeight={true}
                       getRowHeight={() => "auto"}
-                      rows={designTypeListTemp}
-                      columns={designTypeColumns}
+                      rows={postNewDesignTemp}
+                      columns={postNewDesignColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...designTypeList];
-                        let a: DesignTypeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        if (a) {
-                          const clickType = (e.target as any).textContent;
-                          if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
-                        }
+                        // const arrActivity = [...designTypeList];
+                        // let a: DesignTypeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        // if (a) {
+                        //   const clickType = (e.target as any).textContent;
+                        //   if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
+                        // }
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {
@@ -630,4 +792,4 @@ const DesignTypePage = () => {
   );
 };
 
-export default DesignTypePage;
+export default PostNewDesignPage;

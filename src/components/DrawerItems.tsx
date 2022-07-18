@@ -171,7 +171,7 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },{
-          title: "DesignType",
+          title: "Design Type",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "designtype"), //.includes("activity"),
           navigation: () => {
             open[1](false);
@@ -179,7 +179,16 @@ const DrawerItems = ({ open }: OpenObj) => {
               navigate(`/servicecatalogue/designtype`);
             }, 300);
           },
-        },
+        },{
+          title: "Post New Design",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "postnewdesign"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/servicecatalogue/postnewdesign`);
+            }, 300);
+          },
+        }
       ],
     },
     { title: "Enquiries & Status", icon: <InsertComment />, expanded: false },
