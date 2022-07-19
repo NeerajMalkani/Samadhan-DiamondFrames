@@ -51,6 +51,8 @@ export const communication = {
   BlankWorklocationName:"Please enter Work Location name",
   BlankDesignType:"Please enter Design Type name",
 
+  BlankBrandName:"Please enter Brand name",
+
   Error:"Your request cannot be processed",
   NoData: "No data found",
 };

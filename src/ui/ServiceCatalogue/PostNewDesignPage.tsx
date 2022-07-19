@@ -33,8 +33,8 @@ import { AWSImagePath } from "../../utils/paths";
 import Provider from "../../api/Provider";
 import { ValidateGSTRate } from "../../utils/validations";
 import { awsCreds } from "../../utils/credentials";
-import S3 from "react-aws-s3";
-
+import ReactS3Client from "react-aws-s3-typescript";
+import uuid from "react-uuid";
 
 const PostNewDesignPage = () => {
   let navigate = useNavigate();
@@ -103,19 +103,20 @@ const PostNewDesignPage = () => {
 
   const [image, setImage] = useState(AWSImagePath + "placeholder-image.png");
   const [filePath, setFilePath] = useState(null);
+  const [uploadFileUpload, setUploadFileUpload] = useState<any>();
   const [errorDI, setDIError] = useState(false);
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Design");
   const [isImageReplaced, setIsImageReplaced] = useState(false);
-  const fileInput = useRef();
+  //const fileInput = useRef();
 
   const config = {
     bucketName: awsCreds.awsBucket,
     // dirName: 'media', /* optional */
     region: awsCreds.awsRegion,
     accessKeyId: awsCreds.awsAccessKey,
-    secretAccessKey: awsCreds.awsSecretKey   
-}
+    secretAccessKey: awsCreds.awsSecretKey,
+  };
 
   useEffect(() => {
     FetchData("");
@@ -469,18 +470,24 @@ const PostNewDesignPage = () => {
     setActionStatus("new");
   };
 
-  const UploadFile = () => {
-    // if (fileInput != null && fileInput.current != null && fileInput.current.files != null) {
-    //   let file = fileInput.current.files[0];
-    //   let fileName = fileInput.current.files[0].name;
-     // let newFileName=uuid();
+  const UploadFileToS3 = async () => {
+    if (uploadFileUpload != null && uploadFileUpload != undefined) {
+      try {
+        //  let fileObj = fileInput?.current?.files[0];
+        //let fileName = fileInput.current.files[0].name;
+        let newFileName = uuid();
+        const s3 = new ReactS3Client(config);
+        const res = await s3.uploadFile(uploadFileUpload, newFileName);
 
-      const ReactS3Client = new S3(config);
-    //   ReactS3Client
-    // .uploadFile(file, newFileName)
-    // .then(data => console.log(data))
-    // .catch(err => console.error(err))
-    // }
+        console.log(res);
+
+        //   const ReactS3Client = new S3(config);
+        //    ReactS3Client
+        // .uploadFile(fileObj, newFileName)
+        //  .then(data => console.log(data))
+        //  .catch(err => console.error(err))
+      } catch (e) {}
+    }
   };
 
   const GetStringifyJson = (params: any) => {
@@ -674,10 +681,11 @@ const PostNewDesignPage = () => {
                     type="file"
                     hidden
                     accept="image/*"
-                    // ref={fileInput}
+                    //ref={fileInput}
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
                         debugger;
+                        setUploadFileUpload(e.currentTarget.files[0]);
                         let FileName = e.currentTarget.files[0].name;
                         if (FileName !== undefined) setDIErrorText(FileName.trim());
                         setDesignButtonText("Change");

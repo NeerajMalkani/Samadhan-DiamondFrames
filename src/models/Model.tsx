@@ -190,3 +190,12 @@ export interface PostNewDesignModel {
   productID: number;
   serviceDisplay: string;
 }
+
+
+export interface BrandNameModel {
+  id: number;
+  srno: number;
+  brandName: string;
+  display: string;
+  action: string;
+}
