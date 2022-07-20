@@ -100,12 +100,12 @@ const ServiceProductPage = () => {
 
   const [display, setDisplay] = useState("Yes");
 
-  const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);// useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] =useState<Array<ServiceNameModel>>([]);// useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);//useContext(DataContext).unitOfSalesList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); // useContext(DataContext).activityNamesList;
+  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]); // useContext(DataContext).serviceNameList;
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]); //useContext(DataContext).unitOfSalesList;
   const [unitList, setUnitList] = useState<string[]>([]);
-  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);//useContext(DataContext).categoryList;
-  const [productList, setProductList] =useState<Array<ProductModel>>([]);// useContext(DataContext).productList;
+  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]); //useContext(DataContext).categoryList;
+  const [productList, setProductList] = useState<Array<ProductModel>>([]); // useContext(DataContext).productList;
   const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
   const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -120,7 +120,7 @@ const ServiceProductPage = () => {
   const [dialogHeader, setDialogHeader] = useState<string>("");
   const [dialogText, setDialogText] = useState<string>("");
 
-  const [categoryListFilter, setCategoryListFilter] = useState<Array<CategoryModel>>([]);// useContext(DataContext).categoryList;
+  const [categoryListFilter, setCategoryListFilter] = useState<Array<CategoryModel>>([]); // useContext(DataContext).categoryList;
   const [snFilter, setSnFilter] = useState("--Select--");
 
   const [cnFilter, setCnFilter] = useState("--Select--");
