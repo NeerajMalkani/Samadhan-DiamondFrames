@@ -273,7 +273,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/brandmaster`);
+              navigate(`/dealer/brandmaster`);
             }, 300);
           },
         },
@@ -283,7 +283,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/brand`);
+              navigate(`/dealer/brand`);
             }, 300);
           },
         },
@@ -293,7 +293,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/product`);
+              navigate(`/dealer/product`);
             }, 300);
           },
         },

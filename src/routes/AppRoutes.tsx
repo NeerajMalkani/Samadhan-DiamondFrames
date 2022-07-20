@@ -23,6 +23,8 @@ import WorkFloorPage from "../ui/ServiceCatalogue/WorkFloorPage"
 import WorkLocationPage from "../ui/ServiceCatalogue/WorkLocationPage";
 import DesignTypePage from "../ui/ServiceCatalogue/DesignTypePage";
 import PostNewDesignPage from "../ui/ServiceCatalogue/PostNewDesignPage";
+import BrandMasterPage from "../ui/Dealer/BrandMaster";
+import BrandPage from "../ui/Dealer/Brand";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -81,6 +83,8 @@ const AppRoutes = () => {
                 <Route path="servicecatalogue/worklocation" element={<WorkLocationPage/>} />
                 <Route path="servicecatalogue/designtype" element={<DesignTypePage/>} />
                 <Route path="servicecatalogue/postnewdesign" element={<PostNewDesignPage/>} />
+                <Route path="dealer/brandmaster" element={<BrandMasterPage/>} />
+                <Route path="dealer/brand" element={<BrandPage/>} />
                 
               </Routes>
             </BrowserRouter>
