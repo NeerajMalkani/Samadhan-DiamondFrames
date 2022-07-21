@@ -1,14 +1,18 @@
-import { Alert, AlertColor, FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Alert, AlertColor, Button, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import { BrandNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
+import { Theme, useTheme } from "@mui/material/styles";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 
 const BrandPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
+  const theme = useTheme();
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
@@ -18,6 +22,11 @@ const BrandPage = () => {
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
 
+  const [buttonDisplay, setButtonDisplay] = useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
+  const [actionStatus, setActionStatus] = useState<string>("new");
+  const [pageSize, setPageSize] = useState<number>(5);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [arnID, setArnID] = useState<number>(0);
@@ -34,6 +43,7 @@ const BrandPage = () => {
   const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
   const [brandList, setBrandList] = useState<Array<BrandNameModel>>([]);
+  const [brandListTemp, setBrandListTemp] = useState<Array<BrandNameModel>>([]);
   const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);
   const [hsn, setHsn] = useState("");
   const [gst, setGst] = useState("");
@@ -73,6 +83,22 @@ const BrandPage = () => {
   const [cdError, setCDError] = useState("");
   const [isCDError, setIsCDError] = useState(false);
 
+  const [gold, setGold] = useState("");
+  const [goldError, setGoldError] = useState("");
+  const [isGoldError, setIsGoldError] = useState(false);
+
+  const [silver, setSilver] = useState("");
+  const [silverError, setSilverError] = useState("");
+  const [isSilverError, setIsSilverError] = useState(false);
+
+  const [platinum, setPlatinum] = useState("");
+  const [platinumError, setPlatinumError] = useState("");
+  const [isPlatinumError, setIsPlatinumError] = useState(false);
+
+  const [contractor, setContractor] = useState("");
+  const [contractorError, setContractorError] = useState("");
+  const [isContractorError, setIsContractorError] = useState(false);
+
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
     let ac = serviceNameList.find((el) => el.serviceName === serviceName);
@@ -109,6 +135,7 @@ const BrandPage = () => {
       //   FetchProductsFromCategory(arnID, snID, ac.id);
     }
   };
+  
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
     setUnitsOfSales(event.target.value);
@@ -121,6 +148,22 @@ const BrandPage = () => {
     }   
   };
 
+  const handleCancelClick = () => {};
+
+  const handleSubmitClick = () => {};
+
+  const handelEditAndDelete = (type: string | null, a: BrandNameModel | undefined) => {
+    if (type?.toLowerCase() === "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.display);
+     
+
+
+      setButtonDisplay("unset");
+      setActionStatus("edit");
+    }
+  };
 
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
@@ -378,6 +421,157 @@ const BrandPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h6">Buyer Category Discount (%)</Typography>
+          </Grid>
+          <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Gold (%)</b>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="0.00"
+              variant="outlined"
+              size="small"
+              error={isGoldError}
+              helperText={goldError}
+              value={gold}
+              onChange={(e) => {
+                setGold((e.target as HTMLInputElement).value);
+                setIsGoldError(false);
+                setGoldError("");
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Silver (%)</b>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="0.00"
+              variant="outlined"
+              size="small"
+              error={isSilverError}
+              helperText={silverError}
+              value={silver}
+              onChange={(e) => {
+                setSilver((e.target as HTMLInputElement).value);
+                setIsSilverError(false);
+                setSilverError("");
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Platinum (%)</b>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="0.00"
+              variant="outlined"
+              size="small"
+              error={isPlatinumError}
+              helperText={platinumError}
+              value={platinum}
+              onChange={(e) => {
+                setPlatinum((e.target as HTMLInputElement).value);
+                setIsPlatinumError(false);
+                setPlatinumError("");
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b>Contractor (%)</b>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="0.00"
+              variant="outlined"
+              size="small"
+              error={isContractorError}
+              helperText={contractorError}
+              value={contractor}
+              onChange={(e) => {
+                setContractor((e.target as HTMLInputElement).value);
+                setIsContractorError(false);
+                setContractorError("");
+              }}
+            />
+          </Grid>
+          <Grid item xs={4} sm={5} md={8}>
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
+              Cancel
+            </Button>
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+              Submit
+            </LoadingButton>
+          </Grid>
+          <Grid item xs={4} sm={8} md={12}>
+            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
+              Brand List
+            </Typography>
+          </Grid>
+          <Grid item xs={4} sm={8} md={12}>
+            {loading ? (
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
+                {brandList.length === 0 ? (
+                  <></>
+                ) : (
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search Department Name"
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        value={searchQuery}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <GridSearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
+                      }}
+                      autoHeight={true}
+                      getRowHeight={() => "auto"}
+                      rows={brandListTemp}
+                      columns={serviceProductColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...brandList];
+                        let a: BrandNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        if (a) {
+                          const clickType = (e.target as any).textContent;
+                          if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
+                        }
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            )}
           </Grid>
         </Grid>
       </Container>
