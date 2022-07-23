@@ -1,4 +1,4 @@
-import { Button, Grid,  Link, Typography } from "@mui/material";
+import { Button, Grid, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,14 +34,14 @@ export const categoryColumns: GridColDef[] = [
     headerName: "HSN / SAC Code",
     flex: 1,
     sortable: false,
-    maxWidth:150
+    maxWidth: 150,
   },
   {
     field: "gstRate",
     headerName: "GST Rate",
     flex: 0.5,
     sortable: false,
-    minWidth:100,
+    minWidth: 100,
     renderCell: (params) => {
       return params.value.toFixed(2) + "%";
     },
@@ -79,7 +79,7 @@ export const categoryColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
 
@@ -123,7 +123,7 @@ export const activityColumns: GridColDef[] = [
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
 
@@ -173,7 +173,7 @@ export const serviceColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
 
@@ -217,7 +217,7 @@ export const unitColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
 
@@ -292,7 +292,7 @@ export const productColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -397,7 +397,7 @@ export const serviceProductColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -434,7 +434,7 @@ export const departmentColumns: GridColDef[] = [
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -471,7 +471,7 @@ export const designationColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -520,7 +520,7 @@ export const eWayBillColumns: GridColDef[] = [
     minWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -604,7 +604,6 @@ export const locationTypeColumns: GridColDef[] = [
   },
 ];
 
-
 export const workFloorColumns: GridColDef[] = [
   {
     field: "srno",
@@ -634,7 +633,7 @@ export const workFloorColumns: GridColDef[] = [
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -671,14 +670,13 @@ export const workLocationColumns: GridColDef[] = [
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
     ),
   },
 ];
-
 
 export const designTypeColumns: GridColDef[] = [
   {
@@ -722,7 +720,7 @@ export const designTypeColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -752,10 +750,12 @@ export const postNewDesignColumns: GridColDef[] = [
     headerName: "Category Name / Product Name",
     flex: 2.3,
     renderCell: (params) => {
-      return (<div>
-        <Typography noWrap={false}>{params.value}</Typography>
-        <Typography noWrap={false}>{params.row.productName}</Typography>
-      </div>);
+      return (
+        <div>
+          <Typography noWrap={false}>{params.value}</Typography>
+          <Typography noWrap={false}>{params.row.productName}</Typography>
+        </div>
+      );
     },
   },
   {
@@ -781,7 +781,7 @@ export const postNewDesignColumns: GridColDef[] = [
     headerName: "Design Image",
     flex: 1.8,
     renderCell: (params) => {
-      return <img src={params.value} alt="" style={{width:"98px", height:"96px"}}/>;
+      return <img src={params.value} alt="" style={{ width: "98px", height: "96px" }} />;
     },
   },
   {
@@ -799,7 +799,7 @@ export const postNewDesignColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
       </Grid>
@@ -807,7 +807,7 @@ export const postNewDesignColumns: GridColDef[] = [
   },
 ];
 
-export const brandColumns: GridColDef[] = [
+export const brandNameColumns: GridColDef[] = [
   {
     field: "srno",
     headerName: "Sr. No.",
@@ -836,9 +836,98 @@ export const brandColumns: GridColDef[] = [
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{  mr: 1 }}>
+        <Button variant="text" sx={{ mr: 1 }}>
           Edit
-        </Button>        
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const brandColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    sortable: false,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.5,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.5,
+  },
+  {
+    field: "brandPrefix",
+    headerName: "Brand Prefix",
+    flex: 1,
+  },
+  {
+    field: "brandName",
+    headerName: "Brand Name",
+    flex: 1.8,
+  },
+  {
+    field: "Unit of Sale",
+    headerName: "unitOfSale.",
+    flex: 1.8,
+  },
+  {
+    field: "generalDiscount",
+    headerName: "General Discount (%)",
+    flex: 1,
+  },
+  {
+    field: "contractorDiscount",
+    headerName: "Contractor Discount (%)",
+    flex: 1,
+  },
+  {
+    field: "appProviderPromotion",
+    headerName: "App Provider Promotion (%)",
+    flex: 1,
+  },
+  {
+    field: "referralPoints",
+    headerName: "Referral Points (%)",
+    flex: 1,
+  },
+  {
+    field: "approve",
+    headerName: "Approve",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    maxWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
       </Grid>
     ),
   },

@@ -1,4 +1,25 @@
-import { Alert, Avatar, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormHelperText, Grid, MenuItem, Select, SelectChangeEvent, Snackbar, Typography } from "@mui/material";
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  FormHelperText,
+  Grid,
+  IconButton,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
@@ -9,7 +30,11 @@ import Provider from "../api/Provider";
 import { RoleDetails } from "../models/Model";
 import { LoadingButton } from "@mui/lab";
 import { communication } from "../utils/communication";
-// import { Carousel } from "react-carousel-minimal";
+import SimpleImageSlider from "react-simple-image-slider";
+import TitlebarBelowImageList from "../components/ImageGallery";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import { theme } from "../theme/AppTheme";
 
 const DashboardPage = () => {
   let navigate = useNavigate();
@@ -45,13 +70,29 @@ const DashboardPage = () => {
 
   const ImageGallery = [
     {
-      image: "https://www.homepictures.in/wp-content/uploads/2019/10/False-Ceiling-Gypsum-Designs-For-Hall-and-Bedrooms-1.jpg",
+      url: "https://www.homepictures.in/wp-content/uploads/2019/10/False-Ceiling-Gypsum-Designs-For-Hall-and-Bedrooms-1.jpg",
+      id: 0,
+      title: "Suraj",
     },
     {
-      image: "https://macj-abuyerschoice.com/wp-content/uploads/2019/10/Blog-Images.jpg",
+      url: "https://macj-abuyerschoice.com/wp-content/uploads/2019/10/Blog-Images.jpg",
+      id: 1,
+      title: "Suraj",
     },
     {
-      image: "https://static.wixstatic.com/media/e5df22_7e8607574d1e4d949a1b45e6f7c2d50c~mv2.jpg/v1/fill/w_600,h_358,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/e5df22_7e8607574d1e4d949a1b45e6f7c2d50c~mv2.jpg",
+      id: 2,
+      title: "Suraj",
+      url: "https://static.wixstatic.com/media/e5df22_7e8607574d1e4d949a1b45e6f7c2d50c~mv2.jpg/v1/fill/w_600,h_358,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/e5df22_7e8607574d1e4d949a1b45e6f7c2d50c~mv2.jpg",
+    },
+    {
+      url: "https://www.homepictures.in/wp-content/uploads/2019/10/False-Ceiling-Gypsum-Designs-For-Hall-and-Bedrooms-1.jpg",
+      id: 0,
+      title: "Suraj",
+    },
+    {
+      url: "https://macj-abuyerschoice.com/wp-content/uploads/2019/10/Blog-Images.jpg",
+      id: 1,
+      title: "Suraj",
     },
   ];
 
@@ -81,7 +122,7 @@ const DashboardPage = () => {
   const handleRoleChange = (event: SelectChangeEvent) => {
     let roleNameOnClick: string = event.target.value;
     let ac = userCountData.find((el) => el.roleName.toLowerCase() === roleNameOnClick.toLowerCase());
-    debugger
+    debugger;
     if (ac !== undefined) {
       setRole(ac?.roleName);
       setRoleID(ac?.roleID);
@@ -152,12 +193,24 @@ const DashboardPage = () => {
           </Box>
         ) : (
           <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-            <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }} display="flex" flexDirection="row">
-              <Avatar alt="" src="/src/assets/avtar.png" sx={{mt: 1}}/>
-              <Box sx={{ ml: 2 }}>
-                <Typography variant="h6">{CookieUserName}</Typography>
-                <Typography color="text.secondary" variant="body2">{CookieRoleName}</Typography>
-              </Box>
+            <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
+              <Grid item xs={4} sm={5} md={8} display="flex" flexDirection="row">
+                <Avatar alt="" src="/src/assets/avtar.png" sx={{ mt: 1 }} />
+                <Box sx={{ ml: 2 }}>
+                  <Typography variant="h6">{CookieUserName}</Typography>
+                  <Typography color="text.secondary" variant="body2">
+                    {CookieRoleName}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={4} sm={4} md={4}>
+                <Button sx={{ color: "#fff", backgroundColor: "#4cb5ff" }} variant="contained" startIcon={<CalculateIcon />}>
+                  Pocket Diary
+                </Button>
+                <Button sx={{ color: "#fff", backgroundColor: "#4cb5ff" }} variant="contained" startIcon={<AnnouncementIcon />}>
+                  Feedbacks
+                </Button>
+              </Grid>
             </Grid>
 
             {CookieRoleID === 2 ? (
@@ -194,6 +247,53 @@ const DashboardPage = () => {
                 </Grid>
               </Grid>
             ) : null}
+            {/*  */}
+            <Grid xs={4} sm={8} md={12} sx={{ mt: 2, p: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>
+              <Grid item xs={4} sm={8} md={12} sx={{ mt: 1, ml: 1 }}>
+                <Typography variant="h5">Gallery</Typography>
+              </Grid>
+              <Grid xs={4} sm={8} md={12} sx={{ mt: 1 }} style={{ display: "flex", justifyContent: "center" }} onClick={(e)=>{debugger}}>
+                <TitlebarBelowImageList itemData={ImageGallery}/>
+              </Grid>
+            </Grid>
+            <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>
+              <Grid item xs={4} sm={8} md={12} sx={{ mt: 1, ml: 1 }}>
+                <Typography variant="h5">Gallery</Typography>
+              </Grid>
+              <Grid xs={4} sm={8} md={12} sx={{ mt: 1, display: "flex", justifyContent: "center" }}>
+                <SimpleImageSlider
+                  slideDuration={1}
+                  loop={true}
+                  width={896}
+                  height={504}
+                  images={ImageGallery}
+                  showBullets={true}
+                  showNavs={true}
+                  onClick={(index: number, e: any) => {
+                    console.log(e);
+                  }}
+                />
+              </Grid>
+            </Grid>
+            <Grid
+              xs={4}
+              sm={8}
+              md={12}
+              sx={{
+                position: "relative",
+                mt: 2,
+                p: 1,
+                display: "flex",
+                justifyContent: "center",
+                border: 1,
+                borderRadius: "4px",
+                borderColor: "rgba(0, 0, 0, 0.12)",
+                backgroundColor: "rgba(0, 102, 193, 0.04)",
+              }}
+            >
+              <img alt="" style={{ height: 148 }} src="https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-ncino.jpg" />
+              <Typography sx={{ position: "absolute", bottom: "8px", right: "16px" }}>Sponsered Ads</Typography>
+            </Grid>
             <Grid item xs={4} sm={8} md={12} sx={{ mt: 2 }}>
               <Grid item xs={4} sm={8} md={12}>
                 <Typography variant="h5" sx={{ mb: 2 }}>
@@ -205,36 +305,6 @@ const DashboardPage = () => {
                   return CreateTotalUserCards(userCountData[index].roleName, userCountData[index].roleCount, null, "#f4efff", "theme.palette.primary");
                 })}
               </Grid>
-            </Grid>
-            <Grid>
-              {/* <Grid><Typography>Gallery</Typography></Grid>
-              <Grid>
-                <Carousel
-                  data={ImageGallery}
-                  time={10000}
-                  width="960px"
-                  height="480px"
-                  captionStyle={captionStyle}
-                  radius="4px"
-                  slideNumber={false}
-                  slideNumberStyle={slideNumberStyle}
-                  captionPosition="bottom"
-                  automatic={true}
-                  dots={true}
-                  pauseIconColor="white"
-                  pauseIconSize="40px"
-                  slideBackgroundColor="darkgrey"
-                  slideImageFit="cover"
-                  thumbnails={false}
-                  thumbnailWidth="98px"
-                  style={{
-                    textAlign: "center",
-                    maxWidth: "960px",
-                    maxHeight: "480px",
-                    margin: "16px auto",
-                  }}
-                />
-              </Grid> */}
             </Grid>
           </Grid>
         )}

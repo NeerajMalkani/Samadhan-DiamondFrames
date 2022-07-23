@@ -59,7 +59,6 @@ const WorkFloorPage = () => {
     ResetFields();
     Provider.getAll("servicecatalogue/getworkfloors")
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
@@ -210,7 +209,7 @@ const WorkFloorPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Work Floor</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Add/Edit Work Floor</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
@@ -252,8 +251,8 @@ const WorkFloorPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">
               Work Floor List
             </Typography>
           </Grid>

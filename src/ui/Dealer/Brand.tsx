@@ -1,13 +1,34 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, AlertColor, Button, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Button,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  InputAdornment,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectChangeEvent,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
-import { BrandNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
+import { BrandModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
 import { Theme, useTheme } from "@mui/material/styles";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
+import { brandColumns } from "../../utils/tablecolumns";
+import { communication } from "../../utils/communication";
+import { ValidateGSTRate } from "../../utils/validations";
 
 const BrandPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -42,8 +63,8 @@ const BrandPage = () => {
 
   const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
-  const [brandList, setBrandList] = useState<Array<BrandNameModel>>([]);
-  const [brandListTemp, setBrandListTemp] = useState<Array<BrandNameModel>>([]);
+  const [brandList, setBrandList] = useState<Array<BrandModel>>([]);
+  const [brandListTemp, setBrandListTemp] = useState<Array<BrandModel>>([]);
   const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);
   const [hsn, setHsn] = useState("");
   const [gst, setGst] = useState("");
@@ -61,11 +82,11 @@ const BrandPage = () => {
   const [unitList, setUnitList] = useState<string[]>([]);
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
-  const [selectedUnit, setSelectedUnit] = useState<string>("");
+  // const [selectedUnit, setSelectedUnit] = useState<string>("");
   const [selectedUnitID, setSelectedUnitID] = useState<number>(0);
 
   const [display, setDisplay] = useState("Yes");
-
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [gd, setGD] = useState("");
   const [gdError, setGDError] = useState("");
@@ -105,10 +126,9 @@ const BrandPage = () => {
     if (ac !== undefined) {
       setSn(event.target.value as string);
       setSnID(ac.id);
-      //   SetResetServiceName(false);
-      //   SetResetCategoryName(true);
-      //   SetResetProductName(true);
-      //   FetchCategoriesFromServices(arnID, ac.id);
+      SetResetServiceName(false);
+      SetResetCategoryName(true);
+      SetResetUnit(true);
     }
   };
 
@@ -118,9 +138,8 @@ const BrandPage = () => {
     if (ac !== undefined) {
       setCn(event.target.value as string);
       setCnID(ac.id);
-      //   SetResetCategoryName(false);
-      //   SetResetProductName(true);
-      //   FetchProductsFromCategory(arnID, snID, ac.id);
+      SetResetCategoryName(false);
+      SetResetUnit(true);
     }
   };
 
@@ -130,38 +149,241 @@ const BrandPage = () => {
     if (ac !== undefined) {
       setBn(event.target.value as string);
       setBnID(ac.id);
-      //   SetResetCategoryName(false);
-      //   SetResetProductName(true);
-      //   FetchProductsFromCategory(arnID, snID, ac.id);
     }
   };
-  
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
     setUnitsOfSales(event.target.value);
     if (unitOfSalesList[0].unit1Name === event.target.value) {
-      setSelectedUnit(unitOfSalesList[0].unit2Name);
+      setUnitsOfSales(unitOfSalesList[0].unit2Name);
       setSelectedUnitID(unitOfSalesList[0].unit1ID);
     } else {
-      setSelectedUnit(unitOfSalesList[0].unit1Name);
+      setUnitsOfSales(unitOfSalesList[0].unit1Name);
       setSelectedUnitID(unitOfSalesList[0].unit2ID);
-    }   
+    }
   };
 
-  const handleCancelClick = () => {};
+  const handleCancelClick = () => {
+    setDisplay("Yes");
+    setButtonDisplay("none");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+    setActionStatus("new");
+    setButtonLoading(false);
+    SetResetServiceName(true);
+    SetResetCategoryName(true);
+    SetResetBrandName(true);
+    setHsn("");
+    setGst("");
+    setBrandPrefix("");
+    setIsBrandPrefixError(false);
+    setBrandPrefixError("");
+    SetResetUnit(true);
+    setGD("");
+    setIsGDError(false);
+    setGDError("");
+    setAPD("");
+    setIsAPDError(false);
+    setAPDError("");
+    setRP("");
+    setIsRPError(false);
+    setRPError("");
+    setCD("");
+    setIsCDError(false);
+    setCDError("");
+    setGold("");
+    setIsGoldError(false);
+    setGoldError("");
+    setSilver("");
+    setIsSilverError(false);
+    setSilverError("");
+    setPlatinum("");
+    setIsPlatinumError(false);
+    setPlatinumError("");
+    setContractor("");
+    setIsContractorError(false);
+    setContractorError("");
+  };
 
-  const handleSubmitClick = () => {};
+  const handleSubmitClick = () => {
+    let isValid: Boolean = true;
 
-  const handelEditAndDelete = (type: string | null, a: BrandNameModel | undefined) => {
+    if (sn.trim() === "--Select--") {
+      isValid = false;
+      setIsServicenameError(true);
+      setServicenameError(communication.SelectServiceName);
+    }
+
+    if (cn.trim() === "--Select--") {
+      isValid = false;
+      setIsCategorynameError(true);
+      setCategorynameError(communication.SelectCategoryName);
+    }
+
+    if (hsn.trim() === "" || gst.trim() === "") {
+      isValid = false;
+    }
+
+    if (brandPrefix.trim() === "") {
+      isValid = false;
+      setIsBrandPrefixError(true);
+      setBrandPrefixError(communication.BlankBrandPrefix);
+    }
+
+    if (bn.trim() === "--Select--") {
+      isValid = false;
+      setIsBrandError(true);
+      setbrandError(communication.SelectBrandName);
+    }
+
+    if (unitsOfSales.trim() === "--Select--") {
+      isValid = false;
+      setUnitError(true);
+      setUnitErrorText(communication.SelectUnitName);
+    }
+
+    if (gd.trim() === "" || !ValidateGSTRate(gd)) {
+      isValid = false;
+      setIsGDError(true);
+      setGDError(communication.BlankGeneralDiscount);
+    }
+
+    if (apd.trim() === "" || !ValidateGSTRate(apd)) {
+      isValid = false;
+      setIsAPDError(true);
+      setAPDError(communication.BlankAppProviderDiscount);
+    }
+
+    if (rp.trim() === "" || !ValidateGSTRate(rp)) {
+      isValid = false;
+      setIsRPError(true);
+      setRPError(communication.BlankReferralPoint);
+    }
+    if (cd.trim() === "" || !ValidateGSTRate(cd)) {
+      isValid = false;
+      setIsCDError(true);
+      setCDError(communication.BlankContractorDiscount);
+    }
+
+    if (gold.trim() !== "" && !ValidateGSTRate(gold)) {
+      isValid = false;
+      setIsGoldError(true);
+      setGoldError(communication.BlankGoldValue);
+    }
+    if (silver.trim() !== "" && !ValidateGSTRate(silver)) {
+      isValid = false;
+      setIsSilverError(true);
+      setSilverError(communication.BlankSilverValue);
+    }
+
+    if (platinum.trim() !== "" && !ValidateGSTRate(platinum)) {
+      isValid = false;
+      setIsPlatinumError(true);
+      setPlatinumError(communication.BlankPlatinumValue);
+    }
+
+    if (contractor.trim() !== "" && !ValidateGSTRate(contractor)) {
+      isValid = false;
+      setIsContractorError(true);
+      setContractorError(communication.BlankContractordValue);
+    }
+
+    if (isValid) {
+    }
+  };
+
+  const SetResetServiceName = (isBlank: boolean) => {
+    if (isBlank) {
+      setSn("--Select--");
+      setSnID(0);
+    }
+    setServicenameError("");
+    setIsServicenameError(false);
+  };
+
+  const SetResetCategoryName = (isBlank: boolean) => {
+    if (isBlank) {
+      setCn("--Select--");
+      setCnID(0);
+      setGst("");
+      setHsn("");
+      setCategoryList([]);
+    }
+    setCategorynameError("");
+    setIsCategorynameError(false);
+  };
+
+  const SetResetBrandName = (isBlank: boolean) => {
+    if (isBlank) {
+      setBn("--Select--");
+      setBnID(0);
+    }
+    setbrandError("");
+    setIsBrandError(false);
+  };
+
+  const SetResetUnit = (isBlank: boolean) => {
+    if (isBlank) {
+      setUnitsOfSales("--Select--");
+      setSelectedUnitID(0);
+      setUnitOfSalesList([]);
+    }
+    setUnitErrorText("");
+    setUnitError(false);
+  };
+
+  const handelEditAndDelete = (type: string | null, a: BrandModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-     
-
 
       setButtonDisplay("unset");
       setActionStatus("edit");
+
+      setSn(a.serviceName);
+      setSnID(a.serviceID);
+      SetResetServiceName(false);
+
+      setCn(a.categoryName);
+      setCnID(a.categoryID);
+      SetResetCategoryName(false);
+
+      setHsn(a.hsnCode);
+      setGst(a.gst);
+      setBrandPrefix(a.brandPrefix);
+      setIsBrandPrefixError(false);
+      setBrandPrefixError("");
+      setBn(a.brandName);
+      setBnID(a.brandID);
+      SetResetBrandName(false);
+      setUnitsOfSales(a.unitOfSale);
+      setSelectedUnitID(a.unitID);
+      SetResetUnit(false);
+      setGD(a.generalDiscount);
+      setIsGDError(false);
+      setGDError("");
+      setAPD(a.appProviderPromotion);
+      setAPDError("");
+      setIsAPDError(false);
+      setRP(a.referralPoint);
+      setIsRPError(false);
+      setRPError("");
+      setCD(a.contractorDiscount);
+      setCDError("");
+      setIsCDError(false);
+      setGold(a.gold);
+      setIsGoldError(false);
+      setGoldError("");
+      setSilver(a.silver);
+      setIsSilverError(false);
+      setSilverError("");
+      setPlatinum(a.platinum);
+      setIsPlatinumError(false);
+      setPlatinumError("");
+      setContractor(a.contractor);
+      setIsContractorError(false);
+      setContractorError("");
     }
   };
 
@@ -176,6 +398,19 @@ const BrandPage = () => {
     setDisplay((event.target as HTMLInputElement).value);
   };
 
+  const onChangeSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setBrandListTemp(brandList);
+    } else {
+      setBrandListTemp(
+        brandList.filter((el: BrandModel) => {
+          return el.brandName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
+    }
+  };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -184,7 +419,7 @@ const BrandPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Brand</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Add/Edit Brand</Typography>
           </Grid>
           <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
@@ -307,7 +542,7 @@ const BrandPage = () => {
               <FormHelperText>{brandError}</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={4} sm={2} md={3} sx={{ mt: 1 }}>
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small" error={unitError}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Unit Name</b>
@@ -419,7 +654,7 @@ const BrandPage = () => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Buyer Category Discount (%)</Typography>
           </Grid>
           <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
@@ -506,8 +741,8 @@ const BrandPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">
               Brand List
             </Typography>
           </Grid>
@@ -524,7 +759,7 @@ const BrandPage = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Department Name"
+                        placeholder="Search Brand Name"
                         variant="outlined"
                         size="small"
                         onChange={(e) => {
@@ -548,14 +783,14 @@ const BrandPage = () => {
                       autoHeight={true}
                       getRowHeight={() => "auto"}
                       rows={brandListTemp}
-                      columns={serviceProductColumns}
+                      columns={brandColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...brandList];
-                        let a: BrandNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: BrandModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         if (a) {
                           const clickType = (e.target as any).textContent;
                           if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);

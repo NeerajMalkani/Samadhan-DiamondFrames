@@ -319,7 +319,7 @@ const EWayBillPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">E-Way bill</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Add/Edit E-Way bill</Typography>
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
@@ -429,8 +429,8 @@ const EWayBillPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">
             E-Way bill List
             </Typography>
           </Grid>

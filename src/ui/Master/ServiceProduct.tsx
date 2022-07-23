@@ -717,7 +717,7 @@ const ServiceProductPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Service Product</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Add/Edit Service Product</Typography>
           </Grid>
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
@@ -993,8 +993,8 @@ const ServiceProductPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6" sx={{ mt: 2 }}>
               Service Product List
             </Typography>
           </Grid>

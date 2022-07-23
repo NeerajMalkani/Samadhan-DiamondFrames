@@ -141,7 +141,6 @@ export interface LocationTypeModel {
   action: string;
 }
 
-
 export interface WorkfloorNameModel {
   id: number;
   srno: number;
@@ -158,14 +157,13 @@ export interface WorkLocationNameModel {
   action: string;
 }
 
-
 export interface DesignTypeModel {
   id: number;
   srno: number;
   serviceName: string;
   categoryName: string;
   productName: string;
-  designTypeName:string;
+  designTypeName: string;
   display: string;
   action: string;
   serviceID: number;
@@ -181,7 +179,7 @@ export interface PostNewDesignModel {
   serviceName: string;
   categoryName: string;
   productName: string;
-  designTypeName:string;
+  designTypeName: string;
   display: string;
   action: string;
   serviceID: number;
@@ -191,11 +189,42 @@ export interface PostNewDesignModel {
   serviceDisplay: string;
 }
 
-
 export interface BrandNameModel {
   id: number;
   srno: number;
   brandName: string;
   display: string;
   action: string;
+}
+
+export interface BrandModel {
+  id: number;
+  srno: number;
+  brandName: string;
+  serviceName: string;
+  serviceID: number;
+  categoryName: string;
+  categoryID: number;
+  hsnCode: string;
+  gst: string;
+  brandPrefix: string;
+  brandID: number;
+  unitOfSale: string;
+  unitID: number;
+  generalDiscount: string;
+  appProviderPromotion: string;
+  referralPoint: string;
+  contractorDiscount: string;
+  gold: string;
+  silver: string;
+  platinum: string;
+  contractor: string;
+  display: string;
+  action: string;
+}
+
+export interface ImageDataModel {
+  id: number;
+  url: string;
+  title: string;
 }

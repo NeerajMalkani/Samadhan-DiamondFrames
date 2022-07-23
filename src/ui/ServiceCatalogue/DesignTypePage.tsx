@@ -442,7 +442,7 @@ const DesignTypePage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Design Type</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Add/Edit Design Type</Typography>
           </Grid>
 
@@ -549,8 +549,8 @@ const DesignTypePage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">
               Design Type Product List
             </Typography>
           </Grid>

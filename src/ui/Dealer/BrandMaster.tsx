@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Provider from "../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../utils/communication";
-import { brandColumns } from "../../utils/tablecolumns";
+import { brandNameColumns } from "../../utils/tablecolumns";
 import { theme } from "../../theme/AppTheme";
 import { BrandNameModel } from "../../models/Model";
 import { useCookies } from "react-cookie";
@@ -208,7 +208,7 @@ const BrandMasterPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Brand</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Add/Edit Brand Name</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
@@ -250,8 +250,8 @@ const BrandMasterPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">
               Brand List
             </Typography>
           </Grid>
@@ -292,7 +292,7 @@ const BrandMasterPage = () => {
                       }}
                       autoHeight={true}
                       rows={brandNamesListTemp}
-                      columns={brandColumns}
+                      columns={brandNameColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

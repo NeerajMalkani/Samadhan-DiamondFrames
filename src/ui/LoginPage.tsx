@@ -48,13 +48,14 @@ const LoginPage = () => {
   const loginClick = () => {
     setIsLoading(true);
     if (username && password) {
-      if (ValidateFields("fullname", username) && password.length > 2) {
+      if (password.length > 2) {
         let params = {
           // PhoneNumber: loginType ? 0 : parseFloat(username),
           Username: username,
           Password: password,
           //  RoleID: loginType ? 1 : 2,
         };
+        debugger;
 
         var string_ = JSON.stringify(params);
 

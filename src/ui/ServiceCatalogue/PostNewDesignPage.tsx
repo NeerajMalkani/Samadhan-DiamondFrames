@@ -510,8 +510,8 @@ const PostNewDesignPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Post New Design</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">
               Add/Edit Post New Design
             </Typography>
           </Grid>
@@ -720,7 +720,7 @@ const PostNewDesignPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h6" sx={{ mt: 2, borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6" sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
               Post New Design List
             </Typography>
           </Grid>
