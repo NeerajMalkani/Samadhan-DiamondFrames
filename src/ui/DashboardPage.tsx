@@ -13,7 +13,6 @@ import {
   FormControl,
   FormHelperText,
   Grid,
-  IconButton,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -34,6 +33,8 @@ import SimpleImageSlider from "react-simple-image-slider";
 import TitlebarBelowImageList from "../components/ImageGallery";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
+import Icon from "@mui/material/Icon";
+import PrismaZoom from "react-prismazoom";
 import { theme } from "../theme/AppTheme";
 
 const DashboardPage = () => {
@@ -57,6 +58,17 @@ const DashboardPage = () => {
   const [open, setOpen] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
+  const [imageOpen, setImageOpen] = useState(false);
+
+  const [catalogueFullData, setCatalogueFullData] = useState([]);
+  const [catalogueCategoryImages, setCatalogueCategoryImages] = useState([]);
+  const [catalogueImages, setCatalogueImages] = useState([]);
+
+  const arrQuickLinks = [
+    { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
+    { title: "Feedbacks", icon: "AnnouncementIcon", backgroundColor: "" },
+  ];
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
@@ -86,18 +98,18 @@ const DashboardPage = () => {
     },
     {
       url: "https://www.homepictures.in/wp-content/uploads/2019/10/False-Ceiling-Gypsum-Designs-For-Hall-and-Bedrooms-1.jpg",
-      id: 0,
+      id: 3,
       title: "Suraj",
     },
     {
       url: "https://macj-abuyerschoice.com/wp-content/uploads/2019/10/Blog-Images.jpg",
-      id: 1,
+      id: 4,
       title: "Suraj",
     },
   ];
 
   useEffect(() => {
-    GetUserCount();
+    GetServiceCatalogue();
   }, []);
 
   const GetUserCount = () => {
@@ -116,6 +128,43 @@ const DashboardPage = () => {
       })
       .catch((e) => {
         setIsLoading(false);
+      });
+  };
+
+  const GetServiceCatalogue = () => {
+    Provider.getAll("servicecatalogue/getpostnewdesigntypes")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setCatalogueFullData(response.data.data);
+            const categoryImageData = [];
+            const sliderImageData = [];
+            response.data.data.map((data, index: number) => {
+              categoryImageData.push({
+                url: data.designImage,
+                title: data.categoryName,
+                id: index,
+              });
+              sliderImageData.push({
+                url: data.designImage,
+              });
+              // sliderImageZoomData.push({
+              //   url: data.designImage,
+              // });
+            });
+            setCatalogueCategoryImages(categoryImageData);
+            setCatalogueImages(sliderImageData);
+          }
+        } else {
+          setSnackbarMessage("No data found");
+          setIsSnackbarOpen(true);
+        }
+        GetUserCount();
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
       });
   };
 
@@ -169,6 +218,10 @@ const DashboardPage = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleImageClose = () => {
+    setImageOpen(false);
+  };
+
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
@@ -194,7 +247,7 @@ const DashboardPage = () => {
         ) : (
           <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
             <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
-              <Grid item xs={4} sm={5} md={8} display="flex" flexDirection="row">
+              <Grid style={{ float: "left" }} item xs={4} sm={5} md={8} display="flex" flexDirection="row">
                 <Avatar alt="" src="/src/assets/avtar.png" sx={{ mt: 1 }} />
                 <Box sx={{ ml: 2 }}>
                   <Typography variant="h6">{CookieUserName}</Typography>
@@ -203,11 +256,11 @@ const DashboardPage = () => {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={4} sm={4} md={4}>
-                <Button sx={{ color: "#fff", backgroundColor: "#4cb5ff" }} variant="contained" startIcon={<CalculateIcon />}>
+              <Grid item xs={4} sm={5} md={4} style={{ float: "right" }}>
+                <Button variant="contained" startIcon={<CalculateIcon />}>
                   Pocket Diary
                 </Button>
-                <Button sx={{ color: "#fff", backgroundColor: "#4cb5ff" }} variant="contained" startIcon={<AnnouncementIcon />}>
+                <Button sx={{ ml: 1 }} variant="contained" startIcon={<AnnouncementIcon />}>
                   Feedbacks
                 </Button>
               </Grid>
@@ -222,7 +275,7 @@ const DashboardPage = () => {
                       --Select--
                     </MenuItem>
                     {userCountData.map((item) => {
-                      if (item.roleID != 2) {
+                      if (item.roleID !== 2) {
                         return (
                           <MenuItem key={item.roleID} value={item.roleName}>
                             {item.roleName}
@@ -234,14 +287,7 @@ const DashboardPage = () => {
                   <FormHelperText>{roleErrorText}</FormHelperText>
                 </FormControl>
                 <Grid>
-                  <LoadingButton
-                    loading={buttonLoading}
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 2 }}
-                    //style={{ marginTop: 24 }}
-                    onClick={SwitchUserClick}
-                  >
+                  <LoadingButton loading={buttonLoading} type="submit" variant="contained" sx={{ mt: 2 }} onClick={SwitchUserClick}>
                     Submit
                   </LoadingButton>
                 </Grid>
@@ -252,8 +298,13 @@ const DashboardPage = () => {
               <Grid item xs={4} sm={8} md={12} sx={{ mt: 1, ml: 1 }}>
                 <Typography variant="h5">Gallery</Typography>
               </Grid>
-              <Grid xs={4} sm={8} md={12} sx={{ mt: 1 }} style={{ display: "flex", justifyContent: "center" }} onClick={(e)=>{debugger}}>
-                <TitlebarBelowImageList itemData={ImageGallery}/>
+              <Grid xs={4} sm={8} md={12} sx={{ mt: 1 }} style={{ display: "flex", justifyContent: "center" }}>
+                <TitlebarBelowImageList
+                  itemData={catalogueCategoryImages}
+                  callback={(index: number) => {
+                    console.log(index);
+                  }}
+                />
               </Grid>
             </Grid>
             <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>
@@ -262,15 +313,17 @@ const DashboardPage = () => {
               </Grid>
               <Grid xs={4} sm={8} md={12} sx={{ mt: 1, display: "flex", justifyContent: "center" }}>
                 <SimpleImageSlider
-                  slideDuration={1}
+                  slideDuration={3}
                   loop={true}
+                  autoPlay={true}
                   width={896}
                   height={504}
-                  images={ImageGallery}
+                  images={catalogueImages}
                   showBullets={true}
                   showNavs={true}
                   onClick={(index: number, e: any) => {
-                    console.log(e);
+                    setSelectedImage(catalogueImages[index].url);
+                    setImageOpen(true);
                   }}
                 />
               </Grid>
@@ -325,6 +378,19 @@ const DashboardPage = () => {
             >
               OK
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={imageOpen} onClose={handleImageClose} fullScreen={true}>
+          <DialogTitle>Catalogue Images</DialogTitle>
+          <DialogContent>
+            <PrismaZoom allowPan={false} style={{ height: 640, display: "flex", justifyContent: "center" }}>
+              <img alt="" style={{ height: 640 }} src={selectedImage} />
+              {/* {selectedImage} */}
+            </PrismaZoom>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleImageClose}>Cancel</Button>
           </DialogActions>
         </Dialog>
       </div>

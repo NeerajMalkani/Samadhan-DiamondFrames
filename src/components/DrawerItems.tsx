@@ -5,6 +5,12 @@ import Group from "@mui/icons-material/Group";
 import LocalOffer from "@mui/icons-material/LocalOffer";
 import InsertComment from "@mui/icons-material/InsertComment";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import BusinessIcon from '@mui/icons-material/Business';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import HailIcon from '@mui/icons-material/Hail';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
+import ShopIcon from '@mui/icons-material/Shop';
 import { useNavigate } from "react-router-dom";
 import { theme } from "../theme/AppTheme";
 import { useCookies } from "react-cookie";
@@ -227,12 +233,12 @@ const DrawerItems = ({ open }: OpenObj) => {
   const MenuItemsDealer = [
     {
       title: "Company Profile",
-      icon: "gift-outline",
+      icon: <BusinessIcon/>,
       expanded: true,
       items: [
         {
           title: "Basic Details",
-          isActive: window.location.href.toLowerCase().includes("basicdetails"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "basicdetails"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -242,7 +248,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "My Services",
-          isActive: window.location.href.toLowerCase().includes("myservice"),
+          isActive:GetSearchedText(window.location.href.toLowerCase(),"myservice"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -252,7 +258,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Presentation",
-          isActive: window.location.href.toLowerCase().includes("presentation"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(),"presentation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -264,12 +270,12 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Brand & Product",
-      icon: "gift-outline",
+      icon: <Inventory2Icon/>,
       expanded: true,
       items: [
         {
           title: "Brand Master",
-          isActive: window.location.href.toLowerCase().includes("brandmaster"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "brandmaster"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -279,7 +285,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Brand",
-          isActive: window.location.href.toLowerCase().includes("brand"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(),"brand"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -289,7 +295,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Product",
-          isActive: window.location.href.toLowerCase().includes("product"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "product"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -301,12 +307,12 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Employee",
-      icon: "gift-outline",
+      icon: <HailIcon/>,
       expanded: true,
       items: [
         {
           title: "Employee New / List",
-          isActive: window.location.href.toLowerCase().includes("employee"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(),"employee"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -316,7 +322,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Employee Report",
-          isActive: window.location.href.toLowerCase().includes("employeereport"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "employeereport"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -328,12 +334,12 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Organization",
-      icon: "gift-outline",
+      icon: <CorporateFareIcon/>,
       expanded: true,
       items: [
         {
           title: "Add Department",
-          isActive: window.location.href.toLowerCase().includes("adddepartment"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "adddepartment"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -343,7 +349,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Branch",
-          isActive: window.location.href.toLowerCase().includes("addbranch"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "addbranch"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -353,7 +359,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive: window.location.href.toLowerCase().includes("adddesignation"),
+          isActive:GetSearchedText(window.location.href.toLowerCase(),"adddesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -365,12 +371,12 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Client",
-      icon: "gift-outline",
+      icon:<AirlineSeatReclineNormalIcon/>,
       expanded: true,
       items: [
         {
           title: "Client List",
-          isActive: window.location.href.toLowerCase().includes("clientlist"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(),"clientlist"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -382,12 +388,12 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Purchase",
-      icon: "gift-outline",
+      icon: <ShopIcon/>,
       expanded: true,
       items: [
         {
           title: "Create Purchase Order",
-          isActive: window.location.href.toLowerCase().includes("purchaseorder"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "purchaseorder"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
