@@ -21,22 +21,22 @@ const BrandMasterPage = () => {
   }, []);
 
   const [loading, setLoading] = useState(true);
-  const [display, setDisplay] = React.useState("Yes");
-  const [brandName, setBrandName] = React.useState("");
+  const [display, setDisplay] = useState("Yes");
+  const [brandName, setBrandName] = useState("");
   const [brandNamesList, setBrandNamesList] =useState<Array<BrandNameModel>>([]);
 
-  const [brandNamesListTemp, setBrandNamesListTemp] = React.useState<Array<any>>([]);
+  const [brandNamesListTemp, setBrandNamesListTemp] = useState<Array<any>>([]);
 
   const [brandnameError, setbrandnameError] = useState("");
   const [isBrandnameError, setIsBrandnameError] = useState(false);
-  const [pageSize, setPageSize] = React.useState<number>(5);
-  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
-  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
-  const [actionStatus, setActionStatus] = React.useState<string>("new");
-  const [selectedID, setSelectedID] = React.useState<number>(0);
-  const [open, setOpen] = React.useState(false);
-  const [snackMsg, setSnackMsg] = React.useState("");
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
+  const [actionStatus, setActionStatus] = useState<string>("new");
+  const [selectedID, setSelectedID] = useState<number>(0);
+  const [open, setOpen] = useState(false);
+  const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");

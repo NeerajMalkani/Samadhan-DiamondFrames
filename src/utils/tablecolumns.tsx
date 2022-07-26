@@ -911,6 +911,59 @@ export const brandColumns: GridColDef[] = [
     maxWidth: 100,
   },
   {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    maxWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const productSetupColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    sortable: false,
+  },
+  {
+    field: "productName",
+    headerName: "Product Name >> Brand",
+    flex: 1.5,
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    flex: 1.5,
+  },
+  {
+    field: "unitOfSale",
+    headerName: "Unit of Sale",
+    flex: 1,
+  },
+  {
+    field: "price",
+    headerName: "Price",
+    flex: 1.8,
+  },
+  {
+    field: "unitOfSale",
+    headerName: "Unit of Sale",
+    flex: 1.8,
+  },
+  {
+    field: "conversionPrice",
+    headerName: "Converted Unit",
+    flex: 1,
+  },
+  {
     field: "display",
     headerName: "Display",
     flex: 1.8,

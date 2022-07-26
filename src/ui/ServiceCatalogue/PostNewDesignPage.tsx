@@ -444,7 +444,7 @@ const PostNewDesignPage = () => {
     if (image.trim() === AWSImagePath + "placeholder-image.png") {
       isValid = false;
       setDIError(true);
-      setDIErrorText(communication.SelectProductName);
+      setDIErrorText(communication.SelectImage);
     }
 
     if (isValid) {

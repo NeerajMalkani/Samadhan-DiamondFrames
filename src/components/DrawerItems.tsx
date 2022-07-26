@@ -295,11 +295,11 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Product",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "product"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "productlisting"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/dealer/product`);
+              navigate(`/dealer/productlisting`);
             }, 300);
           },
         },

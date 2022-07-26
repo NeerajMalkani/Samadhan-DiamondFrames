@@ -62,7 +62,11 @@ export const communication = {
   BlankSilverValue:"Please enter valid Silver value",
   BlankPlatinumValue:"Please enter valid Platinum value",
   BlankContractordValue:"Please enter valid Contractor value",
-
+  SelectImage:"Please select Image",
+  BlankPrice:"Please enter Price",
+  BlankConversionRate:"Please enter Conversion rate",
+  BlankDescription:"Please enter Description",
+  
   Error:"Your request cannot be processed",
   NoData: "No data found",
 };

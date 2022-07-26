@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../api/Provider";

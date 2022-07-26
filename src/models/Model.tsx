@@ -228,3 +228,20 @@ export interface ImageDataModel {
   url: string;
   title: string;
 }
+
+export interface ProductSetupModel {
+  id: number;
+  srno: number;
+  brandName: string;
+  productName: string;
+  brandID: number;
+  productID: number;
+  imageName: string;
+  description: string;
+  unitOfSale: string;
+  unitID: number;
+  price: string;
+  conversionPrice: string;
+  display: string;
+  action: string;
+}
