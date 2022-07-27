@@ -985,3 +985,40 @@ export const productSetupColumns: GridColDef[] = [
     ),
   },
 ];
+
+export const BuyerCategoryColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "buyerName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];

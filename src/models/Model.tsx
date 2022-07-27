@@ -245,3 +245,12 @@ export interface ProductSetupModel {
   display: string;
   action: string;
 }
+
+
+export interface BuyerCategoryModel {
+  id: number;
+  srno: number;
+  BuyerType: string;
+  display: string;
+  action: string;
+}

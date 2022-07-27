@@ -22,13 +22,14 @@ import { Box, Container } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import { BrandModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
+import Header from "../../../components/Header";
+import { BrandModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../../models/Model";
 import { Theme, useTheme } from "@mui/material/styles";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { brandColumns } from "../../utils/tablecolumns";
-import { communication } from "../../utils/communication";
-import { ValidateGSTRate } from "../../utils/validations";
+import { brandColumns } from "../../../utils/tablecolumns";
+import { communication } from "../../../utils/communication";
+import { ValidateGSTRate } from "../../../utils/validations";
+import Provider from "../../../api/Provider";
 
 const BrandPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -42,7 +43,7 @@ const BrandPage = () => {
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
-
+  const [selectedID, setSelectedID] = useState(0);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
   const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
@@ -119,6 +120,46 @@ const BrandPage = () => {
   const [contractor, setContractor] = useState("");
   const [contractorError, setContractorError] = useState("");
   const [isContractorError, setIsContractorError] = useState(false);
+
+  useEffect(() => {
+    FetchData("");
+  }, []);
+
+  const FetchData = (type: string) => {
+    handleCancelClick();
+    Provider.getAll("master/getbrand")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+            setBrandList(arrList);
+            setBrandListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Brand " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
+          }
+        } else {
+          setSnackbarType("info");
+          setSnackMsg(communication.NoData);
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackbarType("error");
+        setSnackMsg(communication.NetworkError);
+        setOpen(true);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
@@ -289,6 +330,78 @@ const BrandPage = () => {
     }
 
     if (isValid) {
+      InsertUpdateData();
+    }
+  };
+
+  const InsertUpdateData = () => {
+    if (actionStatus === "new") {
+      Provider.create("master/insertbrand", {
+        BrandID: bnID,
+        ServiceID:snID,
+        CategoryID:cnID,
+        BrandPrefix:brandPrefix,
+        UnitID:selectedUnitID,
+        GeneralDiscount:gd,
+        AppProviderPromotion:apd,
+        ReferralPoint:rp,
+        ContractorDiscount:cd,
+        Gold:gold,
+        Silver:silver,
+        Platinum:platinum,
+        Contractor:contractor,
+        Display: display === "Yes",
+      })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData("added");
+          } else {
+            handleCancelClick();
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          handleCancelClick();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
+    } else if (actionStatus === "edit") {
+      Provider.create("master/updatebrand", {
+        ID: selectedID,
+        BrandID: bnID,
+        ServiceID:snID,
+        CategoryID:cnID,
+        BrandPrefix:brandPrefix,
+        UnitID:selectedUnitID,
+        GeneralDiscount:gd,
+        AppProviderPromotion:apd,
+        ReferralPoint:rp,
+        ContractorDiscount:cd,
+        Gold:gold,
+        Silver:silver,
+        Platinum:platinum,
+        Contractor:contractor,
+        Display: display === "Yes",
+      })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData("updated");
+          } else {
+            handleCancelClick();
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          handleCancelClick();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
     }
   };
 
@@ -340,7 +453,7 @@ const BrandPage = () => {
 
       setButtonDisplay("unset");
       setActionStatus("edit");
-
+      setSelectedID(a.id);
       setSn(a.serviceName);
       setSnID(a.serviceID);
       SetResetServiceName(false);
@@ -742,9 +855,7 @@ const BrandPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Brand List
-            </Typography>
+            <Typography variant="h6">Brand List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

@@ -57,51 +57,51 @@ const CategoryPage = () => {
   }, []);
 
   const [loading, setLoading] = useState(true);
-  const [arn, setArn] = React.useState("--Select--");
-  const [arnID, setArnID] = React.useState<number>(0);
-  const [sn, setSn] = React.useState("--Select--");
-  const [snID, setSnID] = React.useState<number>(0);
-  const [cn, setCn] = React.useState("");
-  const [hsn, setHsn] = React.useState("");
-  const [gst, setGst] = React.useState("");
-  const [open, setOpen] = React.useState(false);
-  const [snackMsg, setSnackMsg] = React.useState("");
+  const [arn, setArn] = useState("--Select--");
+  const [arnID, setArnID] = useState<number>(0);
+  const [sn, setSn] = useState("--Select--");
+  const [snID, setSnID] = useState<number>(0);
+  const [cn, setCn] = useState("");
+  const [hsn, setHsn] = useState("");
+  const [gst, setGst] = useState("");
+  const [open, setOpen] = useState(false);
+  const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [unitsOfSales, setUnitsOfSales] = React.useState<string[]>([]);
-  const [unitsOfSalesID, setUnitsOfSalesID] = React.useState<number[]>([]);
+  const [unitsOfSales, setUnitsOfSales] = useState<string[]>([]);
+  const [unitsOfSalesID, setUnitsOfSalesID] = useState<number[]>([]);
 
-  const [display, setDisplay] = React.useState("Yes");
+  const [display, setDisplay] = useState("Yes");
   const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);//React.useContext(DataContext).activityNamesList;
   const [serviceNameList, setServiceNameList] =useState<Array<ServiceNameModel>>([]);// React.useContext(DataContext).serviceNameList;
   const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);//React.useContext(DataContext).unitOfSalesList;
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);//React.useContext(DataContext).categoryList;
 
   const [categoryListTemp, setCategoryListTemp] = useState<Array<CategoryModel>>([]);
-  const [pageSize, setPageSize] = React.useState<number>(5);
-  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
-  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
-  const [actionRoleError, setActionRoleError] = React.useState<boolean>(false);
-  const [actionRoleErrorText, setActionRoleErrorText] = React.useState<string>("");
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
+  const [actionRoleError, setActionRoleError] = useState<boolean>(false);
+  const [actionRoleErrorText, setActionRoleErrorText] = useState<string>("");
 
-  const [serviceNameError, setServiceNameError] = React.useState<boolean>(false);
-  const [serviceNameErrorText, setServiceNameErrorText] = React.useState<string>("");
+  const [serviceNameError, setServiceNameError] = useState<boolean>(false);
+  const [serviceNameErrorText, setServiceNameErrorText] = useState<string>("");
 
-  const [categoryNameError, setCategoryNameError] = React.useState<boolean>(false);
-  const [categoryNameErrorText, setCategoryNameErrorText] = React.useState<string>("");
+  const [categoryNameError, setCategoryNameError] = useState<boolean>(false);
+  const [categoryNameErrorText, setCategoryNameErrorText] = useState<string>("");
 
-  const [hsnError, setHSNError] = React.useState<boolean>(false);
-  const [hsnErrorText, setHSNErrorText] = React.useState<string>("");
+  const [hsnError, setHSNError] = useState<boolean>(false);
+  const [hsnErrorText, setHSNErrorText] = useState<string>("");
 
-  const [gstError, setGSTError] = React.useState<boolean>(false);
-  const [gstErrorText, setGSTErrorText] = React.useState<string>("");
+  const [gstError, setGSTError] = useState<boolean>(false);
+  const [gstErrorText, setGSTErrorText] = useState<string>("");
 
-  const [unitError, setUnitError] = React.useState<boolean>(false);
-  const [unitErrorText, setUnitErrorText] = React.useState<string>("");
+  const [unitError, setUnitError] = useState<boolean>(false);
+  const [unitErrorText, setUnitErrorText] = useState<string>("");
 
-  const [actionStatus, setActionStatus] = React.useState<string>("new");
-  const [selectedID, setSelectedID] = React.useState<number>(0);
+  const [actionStatus, setActionStatus] = useState<string>("new");
+  const [selectedID, setSelectedID] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const theme = useTheme();

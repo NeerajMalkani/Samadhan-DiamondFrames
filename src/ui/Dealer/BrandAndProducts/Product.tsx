@@ -23,16 +23,16 @@ import {
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import { BrandModel, ProductModel, ProductSetupModel } from "../../models/Model";
-import { AWSImagePath } from "../../utils/paths";
+import Header from "../../../components/Header";
+import { BrandModel, ProductModel, ProductSetupModel } from "../../../models/Model";
+import { AWSImagePath } from "../../../utils/paths";
 import { useTheme } from "@mui/material/styles";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { productSetupColumns } from "../../utils/tablecolumns";
-import { communication } from "../../utils/communication";
-import { ValidateGSTRate } from "../../utils/validations";
+import { productSetupColumns } from "../../../utils/tablecolumns";
+import { communication } from "../../../utils/communication";
+import { ValidateGSTRate } from "../../../utils/validations";
 import uuid from "react-uuid";
-import { UploadImageToS3WithNativeSdk } from "../../utils/AWSFileUpload";
+import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 
 const ProductListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -92,7 +92,6 @@ const ProductListPage = () => {
   const [isDescriptionError, setIsDescriptionError] = useState<boolean>(false);
   const [descriptionErrorText, setDescriptionErrorText] = useState<string>("");
 
-  //
   const [saleUnitwith1, setSaleUnitwith1] = useState<string>("");
   const [saleUnit, setSaleUnit] = useState<string>("");
   const [otherSaleUnit, setOtherSaleUnit] = useState<string>("");

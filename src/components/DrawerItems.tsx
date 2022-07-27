@@ -5,12 +5,12 @@ import Group from "@mui/icons-material/Group";
 import LocalOffer from "@mui/icons-material/LocalOffer";
 import InsertComment from "@mui/icons-material/InsertComment";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import BusinessIcon from '@mui/icons-material/Business';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
-import HailIcon from '@mui/icons-material/Hail';
-import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
-import ShopIcon from '@mui/icons-material/Shop';
+import BusinessIcon from "@mui/icons-material/Business";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import HailIcon from "@mui/icons-material/Hail";
+import CorporateFareIcon from "@mui/icons-material/CorporateFare";
+import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
+import ShopIcon from "@mui/icons-material/Shop";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../theme/AppTheme";
 import { useCookies } from "react-cookie";
@@ -176,7 +176,8 @@ const DrawerItems = ({ open }: OpenObj) => {
               navigate(`/servicecatalogue/worklocation`);
             }, 300);
           },
-        },{
+        },
+        {
           title: "Design Type",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "designtype"), //.includes("activity"),
           navigation: () => {
@@ -185,7 +186,8 @@ const DrawerItems = ({ open }: OpenObj) => {
               navigate(`/servicecatalogue/designtype`);
             }, 300);
           },
-        },{
+        },
+        {
           title: "Post New Design",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "postnewdesign"), //.includes("activity"),
           navigation: () => {
@@ -194,7 +196,7 @@ const DrawerItems = ({ open }: OpenObj) => {
               navigate(`/servicecatalogue/postnewdesign`);
             }, 300);
           },
-        }
+        },
       ],
     },
     { title: "Enquiries & Status", icon: <InsertComment />, expanded: false },
@@ -233,7 +235,7 @@ const DrawerItems = ({ open }: OpenObj) => {
   const MenuItemsDealer = [
     {
       title: "Company Profile",
-      icon: <BusinessIcon/>,
+      icon: <BusinessIcon />,
       expanded: true,
       items: [
         {
@@ -248,21 +250,31 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "My Services",
-          isActive:GetSearchedText(window.location.href.toLowerCase(),"myservice"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "myservices"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/myservice`);
+              navigate(`/dealer/myservices`);
             }, 300);
           },
         },
         {
           title: "Presentation",
-          isActive: GetSearchedText(window.location.href.toLowerCase(),"presentation"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "presentation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/presentation`);
+              navigate(`/dealer/presentation`);
+            }, 300);
+          },
+        },
+        {
+          title: "Buyer Category",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "buyercategory"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/dealer/buyercategory`);
             }, 300);
           },
         },
@@ -270,7 +282,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Brand & Product",
-      icon: <Inventory2Icon/>,
+      icon: <Inventory2Icon />,
       expanded: true,
       items: [
         {
@@ -285,7 +297,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Brand",
-          isActive: GetSearchedText(window.location.href.toLowerCase(),"brand"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "brand"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -307,12 +319,12 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Employee",
-      icon: <HailIcon/>,
+      icon: <HailIcon />,
       expanded: true,
       items: [
         {
           title: "Employee New / List",
-          isActive: GetSearchedText(window.location.href.toLowerCase(),"employee"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "employee"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -334,7 +346,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Organization",
-      icon: <CorporateFareIcon/>,
+      icon: <CorporateFareIcon />,
       expanded: true,
       items: [
         {
@@ -359,7 +371,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive:GetSearchedText(window.location.href.toLowerCase(),"adddesignation"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "adddesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -371,12 +383,12 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Client",
-      icon:<AirlineSeatReclineNormalIcon/>,
+      icon: <AirlineSeatReclineNormalIcon />,
       expanded: true,
       items: [
         {
           title: "Client List",
-          isActive: GetSearchedText(window.location.href.toLowerCase(),"clientlist"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "clientlist"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -388,7 +400,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Purchase",
-      icon: <ShopIcon/>,
+      icon: <ShopIcon />,
       expanded: true,
       items: [
         {
