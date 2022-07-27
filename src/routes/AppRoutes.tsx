@@ -27,6 +27,7 @@ import BrandMasterPage from "../ui/Dealer/BrandAndProducts/BrandMaster";
 import BrandPage from "../ui/Dealer/BrandAndProducts/Brand";
 import ProductListPage from "../ui/Dealer/BrandAndProducts/Product";
 import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
+import BuyerCategory from "../ui/Dealer/CompanyProfile/BuyerCategory";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -89,6 +90,7 @@ const AppRoutes = () => {
                 <Route path="dealer/brand" element={<BrandPage/>} />
                 <Route path="dealer/productlisting" element={<ProductListPage/>} />
                 <Route path="dealer/myservices" element={<MyServices/>} />
+                <Route path="dealer/buyercategory" element={<BuyerCategory/>} />
                 
               </Routes>
             </BrowserRouter>
