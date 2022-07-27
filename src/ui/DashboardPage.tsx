@@ -80,33 +80,6 @@ const DashboardPage = () => {
     }
   }, []);
 
-  const ImageGallery = [
-    {
-      url: "https://www.homepictures.in/wp-content/uploads/2019/10/False-Ceiling-Gypsum-Designs-For-Hall-and-Bedrooms-1.jpg",
-      id: 0,
-      title: "Suraj",
-    },
-    {
-      url: "https://macj-abuyerschoice.com/wp-content/uploads/2019/10/Blog-Images.jpg",
-      id: 1,
-      title: "Suraj",
-    },
-    {
-      id: 2,
-      title: "Suraj",
-      url: "https://static.wixstatic.com/media/e5df22_7e8607574d1e4d949a1b45e6f7c2d50c~mv2.jpg/v1/fill/w_600,h_358,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/e5df22_7e8607574d1e4d949a1b45e6f7c2d50c~mv2.jpg",
-    },
-    {
-      url: "https://www.homepictures.in/wp-content/uploads/2019/10/False-Ceiling-Gypsum-Designs-For-Hall-and-Bedrooms-1.jpg",
-      id: 3,
-      title: "Suraj",
-    },
-    {
-      url: "https://macj-abuyerschoice.com/wp-content/uploads/2019/10/Blog-Images.jpg",
-      id: 4,
-      title: "Suraj",
-    },
-  ];
 
   useEffect(() => {
     GetServiceCatalogue();

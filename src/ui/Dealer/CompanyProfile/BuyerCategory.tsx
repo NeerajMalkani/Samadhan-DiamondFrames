@@ -49,7 +49,7 @@ const BuyerCategory = () => {
 
   const FetchData = (type: string) => {
     handleCancelClick();
-    Provider.getAll("master/getservices")
+    Provider.getAll("companyprofiledealer/getbuyercategory")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -59,6 +59,7 @@ const BuyerCategory = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
+            debugger;
             setBuyerCategoryList(arrList);
             setBuyerCategoryListTemp(arrList);
             if (type !== "") {
@@ -94,7 +95,7 @@ const BuyerCategory = () => {
     } else {
       setBuyerCategoryListTemp(
         buyerCategoryList.filter((el: BuyerCategoryModel) => {
-          return el.BuyerType.toString().toLowerCase().includes(query.toLowerCase());
+          return el.buyerCategoryName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -126,7 +127,7 @@ const BuyerCategory = () => {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      setBc(a.BuyerType);
+      setBc(a.buyerCategoryName);
       setBcID(a.id);
       setSelectedID(a.id);
       setButtonDisplay("unset");
@@ -148,17 +149,22 @@ const BuyerCategory = () => {
     }
   };
 
-  const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
+  const InsertUpdateData = (buyerCategoryName: string, checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("master/insertservices", {
-        BuyerType: paramServiceName,
+      Provider.create("companyprofiledealer/insertbuyercategory", {
+        BuyerCategoryName: buyerCategoryName,
         Display: checked,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
-          } else {
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            handleCancelClick();
+          }else {
             handleCancelClick();
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -172,14 +178,17 @@ const BuyerCategory = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateservices", {
-        id: selectedID,
-        BuyerType: paramServiceName,
-        Display: checked,
+      Provider.create("companyprofiledealer/updatebuyercategory", {
+        ID: selectedID, BuyerCategoryName: buyerCategoryName, Display: checked   
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            handleCancelClick();
           } else {
             handleCancelClick();
             setSnackMsg(communication.Error);
@@ -247,7 +256,7 @@ const BuyerCategory = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">My Service List</Typography>
+            <Typography variant="h6">Buyer Category List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
@@ -262,7 +271,7 @@ const BuyerCategory = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search My Service"
+                        placeholder="Search Buyer Type Name"
                         variant="outlined"
                         size="small"
                         onChange={(e) => {

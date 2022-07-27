@@ -67,6 +67,7 @@ export const communication = {
   BlankConversionRate:"Please enter Conversion rate",
   BlankDescription:"Please enter Description",
   
+  ExistsError:"The item you are trying to add already exists",
   Error:"Your request cannot be processed",
   NoData: "No data found",
 };

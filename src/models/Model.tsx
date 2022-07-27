@@ -250,7 +250,7 @@ export interface ProductSetupModel {
 export interface BuyerCategoryModel {
   id: number;
   srno: number;
-  BuyerType: string;
+  buyerCategoryName: string;
   display: string;
   action: string;
 }

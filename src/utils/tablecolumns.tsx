@@ -995,16 +995,15 @@ export const BuyerCategoryColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "buyerName",
-    headerName: "Service Name",
+    field: "buyerCategoryName",
+    headerName: "Buyer Type Name",
     flex: 1.8,
-    minWidth: 140,
+
   },
   {
     field: "display",
     headerName: "Display",
     flex: 1.8,
-    minWidth: 140,
     sortable: false,
   },
   {
@@ -1012,7 +1011,6 @@ export const BuyerCategoryColumns: GridColDef[] = [
     headerName: "Action",
     sortable: false,
     flex: 1,
-    minWidth: 100,
     renderCell: (e) => (
       <Grid>
         <Button variant="text" sx={{ mr: 1 }}>

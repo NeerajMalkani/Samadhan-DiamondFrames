@@ -30,13 +30,19 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { serviceColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import Provider from "../../../api/Provider";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
 
 const MyServices = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
+  const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
+      navigate(`/login`);
+    } else {
+      SetCookieUseID(cookies.dfc.UserID);
+    }
   }, []);
 
   const [loading, setLoading] = useState(true);
@@ -66,11 +72,15 @@ const MyServices = () => {
 
   useEffect(() => {
     FetchData("");
+    FetchActvityRoles();
   }, []);
 
   const FetchData = (type: string) => {
-    handleCancelClick();
-    Provider.getAll("master/getservices")
+    let params = {
+      DealerID: cookies.dfc.UserID,
+    };
+
+    Provider.getAll(`companyprofiledealer/getmyservices?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -80,6 +90,7 @@ const MyServices = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
+
             setMyServiceNameList(arrList);
             setMyServiceNameListTemp(arrList);
             if (type !== "") {
@@ -104,6 +115,41 @@ const MyServices = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
+  const FetchActvityRoles = () => {
+    Provider.getAll("master/getmainactivities")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el) => {
+              return el.display && el.activityRoleName === "Dealer";
+            });
+            FetchServicesFromActivity("Dealer", response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchServicesFromActivity = (selectedItem, activityData) => {
+    let params = {
+      ID: activityData.find((el) => {
+        return el.activityRoleName === selectedItem;
+      }).id,
+    };
+    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(params)}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el) => {
+              return el.display;
+            });
+            setServiceNameList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
     let ac = serviceNameList.find((el) => el.serviceName === serviceName);
@@ -116,7 +162,7 @@ const MyServices = () => {
   };
 
   const handleCancelClick = () => {
-    setSn("");
+    setSn("--Select--");
     setSnID(0);
     setServiceNameError(false);
     setServiceNameErrorText("");
@@ -128,7 +174,6 @@ const MyServices = () => {
     setButtonLoading(false);
     setDisplay("Yes");
   };
-
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -160,7 +205,11 @@ const MyServices = () => {
       setDataGridPointer("none");
       setDisplay(a.display);
       setSn(a.serviceName);
-      setSnID(a.id);
+      setSnID(
+        serviceNameList.find((el) => {
+          return el.serviceName === a.serviceName;
+        }).id
+      );
       setSelectedID(a.id);
       setButtonDisplay("unset");
       setActionStatus("edit");
@@ -184,19 +233,24 @@ const MyServices = () => {
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("master/insertservices", {
-        ServiceName: paramServiceName,
+      Provider.create("companyprofiledealer/insertmyservices", {
+        ServiceID: snID,
         Display: checked,
+        DealerID: CookieUserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
           } else {
-            handleCancelClick();
             setSnackMsg(communication.Error);
             setSnackbarType("error");
             setOpen(true);
           }
+          handleCancelClick();
         })
         .catch((e) => {
           handleCancelClick();
@@ -205,20 +259,25 @@ const MyServices = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateservices", {
-        id: selectedID,
-        ServiceName: paramServiceName,
+      Provider.create("companyprofiledealer/updatemyservices", {
+        ID: selectedID,
+        ServiceID: snID,
+        DealerID: CookieUserID,
         Display: checked,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
           } else {
-            handleCancelClick();
             setSnackMsg(communication.Error);
             setSnackbarType("error");
             setOpen(true);
           }
+          handleCancelClick();
         })
         .catch((e) => {
           handleCancelClick();
@@ -252,11 +311,7 @@ const MyServices = () => {
                 </MenuItem>
                 {serviceNameList.map((item, index) => {
                   return (
-                    <MenuItem
-                      //selected={index === 1}
-                      key={item.id}
-                      value={item.serviceName}
-                    >
+                    <MenuItem key={item.id} value={item.serviceName}>
                       {item.serviceName}
                     </MenuItem>
                   );
