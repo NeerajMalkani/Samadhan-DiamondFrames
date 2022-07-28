@@ -165,8 +165,9 @@ const ForgotPasswordPage = () => {
   const UpdateUser = () => {
     setIsLoading(true);
     const params = {
-      PhoneNumber: mobile,
+      Username: mobile,
       Password: password1,
+      OTP: parseInt(otp1 + otp2 + otp3 + otp4),
     };
     Provider.create("registration/updateuserpassword", params)
       .then((response) => {
