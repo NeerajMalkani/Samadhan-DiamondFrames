@@ -41,7 +41,6 @@ const LoginPage = () => {
   const [isPasswordError, setIsPasswordError] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [loginType, setLoginType] = useState(false);
   /* #endregion */
 
   /* #region  Handle event and click listeners */
@@ -50,12 +49,9 @@ const LoginPage = () => {
     if (username && password) {
       if (password.length > 2) {
         let params = {
-          // PhoneNumber: loginType ? 0 : parseFloat(username),
           Username: username,
           Password: password,
-          //  RoleID: loginType ? 1 : 2,
         };
-        debugger;
 
         var string_ = JSON.stringify(params);
 
@@ -69,7 +65,6 @@ const LoginPage = () => {
           .then((response: any) => {
             console.log(response.data);
             if (response.data && response.data.code === 200) {
-              debugger;
               const user = {
                 UserID: response.data.data[0].userID,
                 FullName: response.data.data[0].fullName,
@@ -78,7 +73,6 @@ const LoginPage = () => {
               };
               setCookie("dfc", JSON.stringify(user), { path: "/" });
               navigate(`/dashboard`);
-              //StoreUserData(user);
             } else {
               setSnackbarMessage(communication.InvalidUserNotExists);
               setIsSnackbarOpen(true);

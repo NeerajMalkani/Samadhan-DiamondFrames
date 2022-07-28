@@ -39,13 +39,6 @@ const AppRoutes = () => {
   const designationNamesList = useState<DesignationNameModel[]>([]);
   const eWayBillList = useState<EWayBillModel[]>([]);
   const locationTypeList = useState<LocationTypeModel[]>([]);
-  // const [cookies, setCookie] = useCookies(["dfc"]);
-  // useEffect(() => {
-  //   debugger;
-  //   if (!cookies || !cookies.dfc || !cookies.dfc.uid)  {
-  //     Navigate(`/login`);
-  //   }
-  // },[]);
 
   return (
     <CookiesProvider>

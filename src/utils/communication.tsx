@@ -69,5 +69,6 @@ export const communication = {
   
   ExistsError:"The item you are trying to add already exists",
   Error:"Your request cannot be processed",
+  AlreadyExists: "Already exists",
   NoData: "No data found",
 };

@@ -59,7 +59,6 @@ const BuyerCategory = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            debugger;
             setBuyerCategoryList(arrList);
             setBuyerCategoryListTemp(arrList);
             if (type !== "") {

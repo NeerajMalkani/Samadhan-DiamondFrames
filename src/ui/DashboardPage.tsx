@@ -144,7 +144,6 @@ const DashboardPage = () => {
   const handleRoleChange = (event: SelectChangeEvent) => {
     let roleNameOnClick: string = event.target.value;
     let ac = userCountData.find((el) => el.roleName.toLowerCase() === roleNameOnClick.toLowerCase());
-    debugger;
     if (ac !== undefined) {
       setRole(ac?.roleName);
       setRoleID(ac?.roleID);

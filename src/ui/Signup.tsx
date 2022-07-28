@@ -189,7 +189,8 @@ const SignupPage = () => {
       RoleID: 2,
       OTP: parseInt(otp1 + otp2 + otp3 + otp4),
       IsVerified: true,
-      PhoneNumber: mobile,
+      IsActive: true,
+      Username: mobile,
       Status: 1,
     };
     Provider.create("registration/insertuser", params)
@@ -199,12 +200,15 @@ const SignupPage = () => {
             UserID: response.data.data[0].userID,
             FullName: response.data.data[0].fullName,
             RoleID: response.data.data[0].roleID,
-            RoleName: response.data.data[0].roleName
+            RoleName: response.data.data[0].roleID == 1 ? "Admin" : "General User"
           };
           setCookie("dfc", JSON.stringify(user), { path: "/" });
           navigate(`/dashboard`);
+        } else if (response.data.code === 304){
+          setSnackbarMessage(communication.AlreadyExists);
+          setIsSnackbarOpen(true);
         } else {
-          setSnackbarMessage(communication.NoData);
+          setSnackbarMessage(communication.Error);
           setIsSnackbarOpen(true);
         }
         setIsLoading(false);

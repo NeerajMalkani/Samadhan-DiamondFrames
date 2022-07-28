@@ -59,7 +59,6 @@ const WorkLocationPage = () => {
     ResetFields();
     Provider.getAll("servicecatalogue/getworklocations")
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];

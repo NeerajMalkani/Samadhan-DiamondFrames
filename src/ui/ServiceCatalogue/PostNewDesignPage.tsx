@@ -244,7 +244,6 @@ const PostNewDesignPage = () => {
     };
     Provider.getAll(`master/getdesigntypebyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = response.data.data.filter((el: any) => {
@@ -320,7 +319,6 @@ const PostNewDesignPage = () => {
   };
 
   const handleWLChange = (event: SelectChangeEvent) => {
-    debugger;
     let productName: string = event.target.value;
     let ac = workLocationList.find((el) => el.workLocationName === productName);
     if (ac !== undefined) {
@@ -684,7 +682,6 @@ const PostNewDesignPage = () => {
                     //ref={fileInput}
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
-                        debugger;
                         setUploadFileUpload(e.currentTarget.files[0]);
                         let FileName = e.currentTarget.files[0].name;
                         if (FileName !== undefined) setDIErrorText(FileName.trim());
