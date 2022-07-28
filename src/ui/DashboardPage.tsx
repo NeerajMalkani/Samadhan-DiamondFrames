@@ -39,7 +39,7 @@ import { theme } from "../theme/AppTheme";
 
 const DashboardPage = () => {
   let navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["dfc"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["dfc"]);
   const [role, setRole] = useState("--Select--");
   const [roleID, setRoleID] = useState<number>(0);
   const [roleError, setRoleError] = useState<boolean>(false);
@@ -79,7 +79,6 @@ const DashboardPage = () => {
       SetCookieUseID(cookies.dfc.UserID);
     }
   }, []);
-
 
   useEffect(() => {
     GetServiceCatalogue();
@@ -121,9 +120,6 @@ const DashboardPage = () => {
               sliderImageData.push({
                 url: data.designImage,
               });
-              // sliderImageZoomData.push({
-              //   url: data.designImage,
-              // });
             });
             setCatalogueCategoryImages(categoryImageData);
             setCatalogueImages(sliderImageData);
@@ -158,7 +154,8 @@ const DashboardPage = () => {
       setRoleErrorText("Error");
     } else {
       //ajax
-      UpdateUserRole();
+      // UpdateUserRole();
+      setOpen(true);
     }
   };
 
@@ -172,8 +169,17 @@ const DashboardPage = () => {
     Provider.create("registration/updateuserrole", params)
       .then((response) => {
         if (response.data && response.data.code === 200) {
-          setRoleName(roleName);
-          GetUserCount();
+          removeCookie("dfc");
+          const user = {
+            UserID: CookieUserID,
+            FullName: CookieUserName,
+            RoleID: roleID,
+            RoleName: role,
+          };
+          setCookie("dfc", JSON.stringify(user), { path: "/" });
+          // setRoleName(roleName);
+          // GetUserCount();
+          window.location.reload();
         } else {
           setSnackbarMessage(communication.NoData);
           setIsSnackbarOpen(true);
@@ -335,10 +341,10 @@ const DashboardPage = () => {
         )}
       </Container>
       <div>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-          <DialogTitle id="alert-dialog-title">Confirmation</DialogTitle>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Confirmation</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">Do you really want to switch your role to {roleName}? If OK, then your active role will get automatically changed</DialogContentText>
+            <DialogContentText>Do you really want to switch your role to {roleName}? If OK, then your active role will get automatically changed</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
