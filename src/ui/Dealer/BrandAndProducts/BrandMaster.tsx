@@ -1,4 +1,20 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Radio,
+  RadioGroup,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -11,19 +27,26 @@ import { BrandNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
+import ErrorIcon from "@mui/icons-material/Error";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
 
 const BrandMasterPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
+  const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
+      navigate(`/login`);
+    } else {
+      SetCookieUseID(cookies.dfc.UserID);
+    }
   }, []);
 
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [brandName, setBrandName] = useState("");
-  const [brandNamesList, setBrandNamesList] =useState<Array<BrandNameModel>>([]);
+  const [brandNamesList, setBrandNamesList] = useState<Array<BrandNameModel>>([]);
 
   const [brandNamesListTemp, setBrandNamesListTemp] = useState<Array<any>>([]);
 
@@ -40,9 +63,11 @@ const BrandMasterPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
 
   useEffect(() => {
-    FetchData("");
+    if (isBrandApproved) FetchData("");
+    //setIsBrandApproved(true);
   }, []);
 
   const ResetFields = () => {
@@ -56,7 +81,10 @@ const BrandMasterPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("master/getbrand")
+    let params = {
+      DealerID: CookieUserID,
+    };
+    Provider.getAll(`dealerbrand/getbrand?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -135,9 +163,11 @@ const BrandMasterPage = () => {
 
   const InsertUpdateData = (paramBrandName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertbrand", {
+      debugger;
+      Provider.create("dealerbrand/insertbrand", {
         BrandName: paramBrandName,
         Display: checked,
+        DealerID: CookieUserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -156,10 +186,11 @@ const BrandMasterPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updatebrand", {
+      Provider.create("dealerbrand/updatebrand", {
         id: selectedID,
         BrandName: paramBrandName,
         Display: checked,
+        DealerID: CookieUserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -204,118 +235,131 @@ const BrandMasterPage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Brand</Typography>
-          </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">Add/Edit Brand Name</Typography>
-          </Grid>
-          <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Brand Name</b>
-              <label style={{ color: "#ff0000" }}>*</label>
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Brand Name"
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setBrandName((e.target as HTMLInputElement).value);
-                setIsBrandnameError(false);
-                setbrandnameError("");
-              }}
-              error={isBrandnameError}
-              helperText={brandnameError}
-              value={brandName}
-            />
-          </Grid>
-          <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Display</b>
-            </Typography>
-            <FormControl>
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
-                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                <FormControlLabel value="No" control={<Radio />} label="No" />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
-              Cancel
-            </Button>
-            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
-              Submit
-            </LoadingButton>
-          </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Brand List
-            </Typography>
-          </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {brandNamesList.length === 0 ? (
-                
-                  <></>
-                ) : (
-                  <>
-                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                      <TextField
-                        placeholder="Search Brand Name"
-                        variant="outlined"
-                        size="small"
-                        onChange={(e) => {
-                          onChangeSearch((e.target as HTMLInputElement).value);
+        {isBrandApproved ? (
+          <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+            <Grid item xs={4} sm={8} md={12}>
+              <Typography variant="h4">Brand</Typography>
+            </Grid>
+            <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+              <Typography variant="h6">Add/Edit Brand Name</Typography>
+            </Grid>
+            <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Brand Name</b>
+                <label style={{ color: "#ff0000" }}>*</label>
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Brand Name"
+                variant="outlined"
+                size="small"
+                onChange={(e) => {
+                  setBrandName((e.target as HTMLInputElement).value);
+                  setIsBrandnameError(false);
+                  setbrandnameError("");
+                }}
+                error={isBrandnameError}
+                helperText={brandnameError}
+                value={brandName}
+              />
+            </Grid>
+            <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Display</b>
+              </Typography>
+              <FormControl>
+                <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                  <FormControlLabel value="No" control={<Radio />} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={4} sm={8} md={12}>
+              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
+                Cancel
+              </Button>
+              <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+                Submit
+              </LoadingButton>
+            </Grid>
+            <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+              <Typography variant="h6">Brand List</Typography>
+            </Grid>
+            <Grid item xs={4} sm={8} md={12}>
+              {loading ? (
+                <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
+                  {brandNamesList.length === 0 ? (
+                    <></>
+                  ) : (
+                    <>
+                      <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                        <TextField
+                          placeholder="Search"
+                          variant="outlined"
+                          size="small"
+                          onChange={(e) => {
+                            onChangeSearch((e.target as HTMLInputElement).value);
+                          }}
+                          value={searchQuery}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Grid>
+                      <DataGrid
+                        style={{
+                          opacity: dataGridOpacity,
+                          pointerEvents: dataGridPointer,
                         }}
-                        value={searchQuery}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
+                        autoHeight={true}
+                        rows={brandNamesListTemp}
+                        columns={brandNameColumns}
+                        pageSize={pageSize}
+                        rowsPerPageOptions={[5, 10, 20]}
+                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                        disableSelectionOnClick
+                        onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                          const arrBrand = [...brandNamesList];
+                          let a: BrandNameModel | undefined = arrBrand.find((el) => el.id === param.row.id);
+                          handelEditAndDelete((e.target as any).textContent, a);
+                        }}
+                        sx={{
+                          "& .MuiDataGrid-columnHeaders": {
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.primary.contrastText,
+                          },
+                          mb: 1,
                         }}
                       />
-                    </Grid>
-                    <DataGrid
-                      style={{
-                        opacity: dataGridOpacity,
-                        pointerEvents: dataGridPointer,
-                      }}
-                      autoHeight={true}
-                      rows={brandNamesListTemp}
-                      columns={brandNameColumns}
-                      pageSize={pageSize}
-                      rowsPerPageOptions={[5, 10, 20]}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                      disableSelectionOnClick
-                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrBrand = [...brandNamesList];
-                        let a: BrandNameModel | undefined = arrBrand.find((el) => el.id === param.row.id);
-                        handelEditAndDelete((e.target as any).textContent, a);
-                      }}
-                      sx={{
-                        "& .MuiDataGrid-columnHeaders": {
-                          backgroundColor: theme.palette.primary.main,
-                          color: theme.palette.primary.contrastText,
-                        },
-                        mb: 1,
-                      }}
-                    />
-                  </>
-                )}
-              </div>
-            )}
+                    </>
+                  )}
+                </div>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        ) : (
+          <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+            <Grid item xs={4} sm={8} md={12}>
+              <ErrorIcon sx={{ float: "left", mr: 1, color: "#ff5959", mt:"5px" }} />{" "}
+              <Typography variant="h6" sx={{ color: "#ff5959" }}>
+                Would you like to create Brand & Product? Please activate the option in your settings
+              </Typography>
+            </Grid>
+            <Grid item xs={4} sm={8} md={12}>
+            <Button variant="contained" sx={{ mt: 1, mr: 1 }}  onClick={()=>{}}>
+                Go to Settings
+              </Button>
+            </Grid>
+          </Grid>
+        )}
       </Container>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity={snackbarType} sx={{ width: "100%" }}>

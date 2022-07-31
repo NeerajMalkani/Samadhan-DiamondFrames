@@ -30,6 +30,7 @@ import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, U
 import { useCookies } from "react-cookie";
 import { communication } from "../../utils/communication";
 import { LoadingButton } from "@mui/lab";
+import { GetStringifyJson } from "../../utils/CommonFunctions";
 
 const ProductPage = () => {
   let navigate = useNavigate();
@@ -487,18 +488,6 @@ const ProductPage = () => {
       return;
     }
     setIsSnackbarOpen(false);
-  };
-
-  const GetStringifyJson = (params: any) => {
-    var string_ = JSON.stringify(params);
-
-    string_ = string_.replace(/{/g, "");
-    string_ = string_.replace(/}/g, "");
-    string_ = string_.replace(/:/g, "=");
-    string_ = string_.replace(/,/g, "&");
-    string_ = string_.replace(/"/g, "");
-
-    return string_;
   };
 
   const onChangeSearch = (query: string) => {
