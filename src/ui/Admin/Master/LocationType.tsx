@@ -25,14 +25,14 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import { ActivityRoleNameModel, LocationTypeModel, ServiceNameModel } from "../../models/Model";
-import Provider from "../../api/Provider";
-import { communication } from "../../utils/communication";
+import Header from "../../../components/Header";
+import { ActivityRoleNameModel, LocationTypeModel, ServiceNameModel } from "../../../models/Model";
+import Provider from "../../../api/Provider";
+import { communication } from "../../../utils/communication";
 import { LoadingButton } from "@mui/lab";
-import { theme } from "../../theme/AppTheme";
+import { theme } from "../../../theme/AppTheme";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { locationTypeColumns } from "../../utils/tablecolumns";
+import { locationTypeColumns } from "../../../utils/tablecolumns";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

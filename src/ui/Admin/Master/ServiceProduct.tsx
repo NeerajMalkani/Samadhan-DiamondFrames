@@ -30,12 +30,12 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Provider from "../../api/Provider";
-import Header from "../../components/Header";
-import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
-import { communication } from "../../utils/communication";
-import { serviceProductColumns } from "../../utils/tablecolumns";
-import { ValidateGSTRate } from "../../utils/validations";
+import Provider from "../../../api/Provider";
+import Header from "../../../components/Header";
+import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitOfSalesModel } from "../../../models/Model";
+import { communication } from "../../../utils/communication";
+import { serviceProductColumns } from "../../../utils/tablecolumns";
+import { ValidateGSTRate } from "../../../utils/validations";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {

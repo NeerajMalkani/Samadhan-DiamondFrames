@@ -1,17 +1,19 @@
-import { LoadingButton } from "@mui/lab";
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
-import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { useContext, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
-import Provider from "../../api/Provider";
-import Header from "../../components/Header";
-import { DepartmentNameModel } from "../../models/Model";
-import { theme } from "../../theme/AppTheme";
-import { communication } from "../../utils/communication";
-import { departmentColumns } from "../../utils/tablecolumns";
+import React, { useEffect, useState } from "react";
+import Provider from "../../../api/Provider";
+import { DataGrid } from "@mui/x-data-grid";
+import { communication } from "../../../utils/communication";
+import { workFloorColumns } from "../../../utils/tablecolumns";
+import { theme } from "../../../theme/AppTheme";
+import { WorkfloorNameModel } from "../../../models/Model";
+import { useCookies } from "react-cookie";
+import { LoadingButton } from "@mui/lab";
+import SearchIcon from "@mui/icons-material/Search";
 
-const DepartmentPage = () => {
+
+const WorkFloorPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
@@ -20,45 +22,29 @@ const DepartmentPage = () => {
   }, []);
 
   const [loading, setLoading] = useState(true);
-  const [display, setDisplay] = useState("Yes");
-  const [departmentName, setDepartmentName] = useState("");
-  const [departmentNameList, setDepartmentNameList] =useState<Array<DepartmentNameModel>>([]);// useContext(DataContext).departmentNamesList;
-  const [departmentNameError, setDepartmentNameError] = useState("");
-  const [isDepartmentNameError, setIsDepartmentNameError] = useState(false);
-  const [pageSize, setPageSize] = useState<number>(5);
-  const [buttonDisplay, setButtonDisplay] = useState<string>("none");
-  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
-  const [actionStatus, setActionStatus] = useState<string>("new");
-  const [selectedID, setSelectedID] = useState<number>(0);
-  const [open, setOpen] = useState(false);
-  const [snackMsg, setSnackMsg] = useState("");
+  const [display, setDisplay] = React.useState("Yes");
+  const [workfloorName, setWorkfloorName] = React.useState("");
+  const [workfloorNamesList, setWorkfloorNamesList] = React.useState<Array<WorkfloorNameModel>>([]);
+
+  const [workfloorNamesListTemp, setWorkfloorNamesListTemp] = React.useState<Array<WorkfloorNameModel>>([]);
+
+  const [workfloornameError, setworkfloornameError] = useState("");
+  const [isWorkfloornameError, setIsWorkfloornameError] = useState(false);
+  const [pageSize, setPageSize] = React.useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
+  const [actionStatus, setActionStatus] = React.useState<string>("new");
+  const [selectedID, setSelectedID] = React.useState<number>(0);
+  const [open, setOpen] = React.useState(false);
+  const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [departmentNameListTemp, setDepartmentNameListTemp] = useState<Array<DepartmentNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   useEffect(() => {
     FetchData("");
   }, []);
-
-  const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDisplay((event.target as HTMLInputElement).value);
-  };
-
-  const handleSubmitClick = () => {
-    const IsTextFiledError = departmentName.trim() === "";
-    setDepartmentNameError(IsTextFiledError ? communication.BlankActivityName : "");
-    setIsDepartmentNameError(IsTextFiledError);
-    if (!IsTextFiledError) {
-      setButtonLoading(true);
-      InsertUpdateData(departmentName, display === "Yes");
-      setDisplay("Yes");
-      setDepartmentName("");
-      setDepartmentNameError("");
-      setIsDepartmentNameError(false);
-    }
-  };
 
   const ResetFields = () => {
     setSelectedID(0);
@@ -71,7 +57,7 @@ const DepartmentPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("master/getdepartments")
+    Provider.getAll("servicecatalogue/getworkfloors")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -81,81 +67,99 @@ const DepartmentPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setDepartmentNameList(response.data.data);
-            setDepartmentNameListTemp(response.data.data);
+            setWorkfloorNamesList(arrList);
+            setWorkfloorNamesListTemp(arrList);
             if (type !== "") {
-              setSnackMsg("Department " + type);
+              setSnackMsg("Work Floor " + type);
               setOpen(true);
               setSnackbarType("success");
             }
           }
         } else {
+          setSnackbarType("info");
           setSnackMsg(communication.NoData);
           setOpen(true);
-          setSnackbarType("info");
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
+        setSnackbarType("error");
         setSnackMsg(communication.NetworkError);
         setOpen(true);
-        setSnackbarType("error");
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
+  const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDisplay((event.target as HTMLInputElement).value);
+  };
+
+  const handleSubmitClick = () => {
+    const IsTextFiledError = workfloorName.trim() === "";
+    setworkfloornameError(IsTextFiledError ? communication.BlankWorkfloorName : "");
+    setIsWorkfloornameError(IsTextFiledError);
+    if (!IsTextFiledError) {
+      setButtonLoading(true);
+      InsertUpdateData(workfloorName, display === "Yes");
+      setDisplay("Yes");
+      setWorkfloorName("");
+      setworkfloornameError("");
+      setIsWorkfloornameError(false);
+    }
+  };
+
   const handleCancelClick = () => {
     setDisplay("Yes");
-    setDepartmentName("");
-    setDepartmentNameError("");
-    setIsDepartmentNameError(false);
+    setWorkfloorName("");
+    setworkfloornameError("");
+    setIsWorkfloornameError(false);
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DepartmentNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: WorkfloorNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      setDepartmentName(a?.departmentName);
+      setWorkfloorName(a?.workFloorName);
       setSelectedID(a.id);
-      setDepartmentNameError("");
-      setIsDepartmentNameError(false);
+      setworkfloornameError("");
+      setIsWorkfloornameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }
+    }   
   };
 
-  const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
+  const InsertUpdateData = (paramWorkfloorName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertdepartment", {
-        DepartmentName: paramActivityName,
+      Provider.create("servicecatalogue/insertworkfloor", {
+        WorkFloorName: paramWorkfloorName,
         Display: checked,
       })
-        .then((response: any) => {
+        .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
-            setOpen(true);
             setSnackbarType("error");
+            setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
-          setOpen(true);
           setSnackbarType("error");
+          setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updatedepartment", {
-        id: selectedID,
-        DepartmentName: paramActivityName,
+      Provider.create("servicecatalogue/updateworkfloor", {
+        ID: selectedID,
+        WorkFloorName: paramWorkfloorName,
         Display: checked,
       })
         .then((response) => {
@@ -187,11 +191,11 @@ const DepartmentPage = () => {
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setDepartmentNameListTemp(departmentNameList);
+      setWorkfloorNamesListTemp(workfloorNamesList);
     } else {
-      setDepartmentNameListTemp(
-        departmentNameList.filter((el: DepartmentNameModel) => {
-          return el.departmentName.toString().toLowerCase().includes(query.toLowerCase());
+      setWorkfloorNamesListTemp(
+        workfloorNamesList.filter((el: WorkfloorNameModel) => {
+          return el.workFloorName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -203,29 +207,29 @@ const DepartmentPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Department Name</Typography>
+            <Typography variant="h4">Work Floor</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">Add/Edit Department Name</Typography>
+            <Typography variant="h6">Add/Edit Work Floor</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Department Name</b>
+              <b>Work Floor Name</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
               fullWidth
-              placeholder="Department Name"
+              placeholder="Work Floor Name"
               variant="outlined"
               size="small"
               onChange={(e) => {
-                setDepartmentName((e.target as HTMLInputElement).value);
-                setIsDepartmentNameError(false);
-                setDepartmentNameError("");
+                setWorkfloorName((e.target as HTMLInputElement).value);
+                setIsWorkfloornameError(false);
+                setworkfloornameError("");
               }}
-              error={isDepartmentNameError}
-              helperText={departmentNameError}
-              value={departmentName}
+              error={isWorkfloornameError}
+              helperText={workfloornameError}
+              value={workfloorName}
             />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
@@ -249,7 +253,7 @@ const DepartmentPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">
-              Department List
+              Work Floor List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -259,23 +263,23 @@ const DepartmentPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {departmentNameList.length === 0 ? (
+                {workfloorNamesList.length === 0 ? (
                   <></>
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Department Name"
+                        placeholder="Search Work Floor Name"
                         variant="outlined"
                         size="small"
+                        value={searchQuery}
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}
-                        value={searchQuery}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
-                              <GridSearchIcon />
+                              <SearchIcon />
                             </InputAdornment>
                           ),
                         }}
@@ -287,16 +291,15 @@ const DepartmentPage = () => {
                         pointerEvents: dataGridPointer,
                       }}
                       autoHeight={true}
-                      rows={departmentNameListTemp}
-                      columns={departmentColumns}
+                      rows={workfloorNamesListTemp}
+                      columns={workFloorColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...departmentNameList];
-                        let a: DepartmentNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-
+                        const arrWorkfloor = [...workfloorNamesList];
+                        let a: WorkfloorNameModel | undefined = arrWorkfloor.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -304,6 +307,7 @@ const DepartmentPage = () => {
                           backgroundColor: theme.palette.primary.main,
                           color: theme.palette.primary.contrastText,
                         },
+                        mb: 1,
                       }}
                     />
                   </>
@@ -322,4 +326,4 @@ const DepartmentPage = () => {
   );
 };
 
-export default DepartmentPage;
+export default WorkFloorPage;

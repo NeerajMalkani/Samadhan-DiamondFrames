@@ -21,12 +21,12 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Provider from "../../api/Provider";
-import Header from "../../components/Header";
-import { EWayBillModel } from "../../models/Model";
-import { theme } from "../../theme/AppTheme";
-import { communication } from "../../utils/communication";
-import { eWayBillColumns } from "../../utils/tablecolumns";
+import Provider from "../../../api/Provider";
+import Header from "../../../components/Header";
+import { EWayBillModel } from "../../../models/Model";
+import { theme } from "../../../theme/AppTheme";
+import { communication } from "../../../utils/communication";
+import { eWayBillColumns } from "../../../utils/tablecolumns";
 
 const EWayBillPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);

@@ -24,15 +24,15 @@ import {
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
-import { categoryColumns } from "../../utils/tablecolumns";
-import Provider from "../../api/Provider";
-import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../models/Model";
+import { categoryColumns } from "../../../utils/tablecolumns";
+import Provider from "../../../api/Provider";
+import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
-import { communication } from "../../utils/communication";
+import { communication } from "../../../utils/communication";
 import { LoadingButton } from "@mui/lab";
-import { ValidateGSTRate, ValidateStringNumber } from "../../utils/validations";
+import { ValidateGSTRate, ValidateStringNumber } from "../../../utils/validations";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

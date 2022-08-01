@@ -1,19 +1,19 @@
 import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Provider from "../../api/Provider";
+import Provider from "../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
-import { communication } from "../../utils/communication";
-import { workFloorColumns } from "../../utils/tablecolumns";
-import { theme } from "../../theme/AppTheme";
-import { WorkfloorNameModel } from "../../models/Model";
+import { communication } from "../../../utils/communication";
+import { activityColumns } from "../../../utils/tablecolumns";
+import { theme } from "../../../theme/AppTheme";
+import { ActivityRoleNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
+import ListIcon from '@mui/icons-material/List';
 
-
-const WorkFloorPage = () => {
+const ActivityPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
@@ -23,13 +23,13 @@ const WorkFloorPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
-  const [workfloorName, setWorkfloorName] = React.useState("");
-  const [workfloorNamesList, setWorkfloorNamesList] = React.useState<Array<WorkfloorNameModel>>([]);
+  const [activityName, setActivityName] = React.useState("");
+  const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);//React.useContext(DataContext).activityNamesList;
 
-  const [workfloorNamesListTemp, setWorkfloorNamesListTemp] = React.useState<Array<WorkfloorNameModel>>([]);
+  const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
 
-  const [workfloornameError, setworkfloornameError] = useState("");
-  const [isWorkfloornameError, setIsWorkfloornameError] = useState(false);
+  const [activitynameError, setactivitynameError] = useState("");
+  const [isActivitynameError, setIsActivitynameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
@@ -57,7 +57,7 @@ const WorkFloorPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("servicecatalogue/getworkfloors")
+    Provider.getAll("master/getactivityroles")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -67,10 +67,10 @@ const WorkFloorPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setWorkfloorNamesList(arrList);
-            setWorkfloorNamesListTemp(arrList);
+            setActivityNamesList(arrList);
+            setActivityNamesListTemp(arrList);
             if (type !== "") {
-              setSnackMsg("Work Floor " + type);
+              setSnackMsg("Activity role " + type);
               setOpen(true);
               setSnackbarType("success");
             }
@@ -96,48 +96,65 @@ const WorkFloorPage = () => {
   };
 
   const handleSubmitClick = () => {
-    const IsTextFiledError = workfloorName.trim() === "";
-    setworkfloornameError(IsTextFiledError ? communication.BlankWorkfloorName : "");
-    setIsWorkfloornameError(IsTextFiledError);
+    const IsTextFiledError = activityName.trim() === "";
+    setactivitynameError(IsTextFiledError ? communication.BlankActivityName : "");
+    setIsActivitynameError(IsTextFiledError);
     if (!IsTextFiledError) {
       setButtonLoading(true);
-      InsertUpdateData(workfloorName, display === "Yes");
+      InsertUpdateData(activityName, display === "Yes");
       setDisplay("Yes");
-      setWorkfloorName("");
-      setworkfloornameError("");
-      setIsWorkfloornameError(false);
+      setActivityName("");
+      setactivitynameError("");
+      setIsActivitynameError(false);
     }
   };
 
   const handleCancelClick = () => {
     setDisplay("Yes");
-    setWorkfloorName("");
-    setworkfloornameError("");
-    setIsWorkfloornameError(false);
+    setActivityName("");
+    setactivitynameError("");
+    setIsActivitynameError(false);
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: WorkfloorNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      setWorkfloorName(a?.workFloorName);
+      setActivityName(a?.activityRoleName);
       setSelectedID(a.id);
-      setworkfloornameError("");
-      setIsWorkfloornameError(false);
+      setactivitynameError("");
+      setIsActivitynameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }   
+    }
+    // else if (type?.toLowerCase() === "delete" && a !== undefined) {
+    //   setSelectedID(a.id);
+    //   Provider.deleteAllParams("master/deleteactivityroles", { ID: a.id })
+    //     .then((response) => {
+    //       if (response.data && response.data.code === 200) {
+    //         FetchData();
+    //       } else {
+    //         setSnackMsg("your request cannot be processed");
+    //         setOpen(true);
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //       setSnackMsg("your request cannot be processed");
+    //       setOpen(true);
+    //     });
+    // }
   };
 
-  const InsertUpdateData = (paramWorkfloorName: string, checked: boolean) => {
+  const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("servicecatalogue/insertworkfloor", {
-        WorkFloorName: paramWorkfloorName,
+      Provider.create("master/insertactivityroles", {
+        ActivityRoleName: paramActivityName,
         Display: checked,
       })
         .then((response) => {
@@ -157,9 +174,9 @@ const WorkFloorPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("servicecatalogue/updateworkfloor", {
-        ID: selectedID,
-        WorkFloorName: paramWorkfloorName,
+      Provider.create("master/updateactivityroles", {
+        id: selectedID,
+        ActivityRoleName: paramActivityName,
         Display: checked,
       })
         .then((response) => {
@@ -191,11 +208,11 @@ const WorkFloorPage = () => {
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setWorkfloorNamesListTemp(workfloorNamesList);
+      setActivityNamesListTemp(activityNamesList);
     } else {
-      setWorkfloorNamesListTemp(
-        workfloorNamesList.filter((el: WorkfloorNameModel) => {
-          return el.workFloorName.toString().toLowerCase().includes(query.toLowerCase());
+      setActivityNamesListTemp(
+        activityNamesList.filter((el: ActivityRoleNameModel) => {
+          return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -207,29 +224,29 @@ const WorkFloorPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Work Floor</Typography>
+            <Typography variant="h4">Activity</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">Add/Edit Work Floor</Typography>
+            <Typography variant="h6">Add/Edit Activity Name</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Work Floor Name</b>
+              <b>Activity Name</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
               fullWidth
-              placeholder="Work Floor Name"
+              placeholder="Activity Name"
               variant="outlined"
               size="small"
               onChange={(e) => {
-                setWorkfloorName((e.target as HTMLInputElement).value);
-                setIsWorkfloornameError(false);
-                setworkfloornameError("");
+                setActivityName((e.target as HTMLInputElement).value);
+                setIsActivitynameError(false);
+                setactivitynameError("");
               }}
-              error={isWorkfloornameError}
-              helperText={workfloornameError}
-              value={workfloorName}
+              error={isActivitynameError}
+              helperText={activitynameError}
+              value={activityName}
             />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
@@ -253,7 +270,7 @@ const WorkFloorPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">
-              Work Floor List
+              Activity List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -263,19 +280,23 @@ const WorkFloorPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {workfloorNamesList.length === 0 ? (
+                {activityNamesList.length === 0 ? (
+                  // <Grid>
+                  //   <Icon fontSize="inherit"><ListIcon/></Icon>
+                  //   <Typography>No records found.</Typography>
+                  // </Grid>
                   <></>
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Work Floor Name"
+                        placeholder="Search Activity Name"
                         variant="outlined"
                         size="small"
-                        value={searchQuery}
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}
+                        value={searchQuery}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -291,15 +312,15 @@ const WorkFloorPage = () => {
                         pointerEvents: dataGridPointer,
                       }}
                       autoHeight={true}
-                      rows={workfloorNamesListTemp}
-                      columns={workFloorColumns}
+                      rows={activityNamesListTemp}
+                      columns={activityColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrWorkfloor = [...workfloorNamesList];
-                        let a: WorkfloorNameModel | undefined = arrWorkfloor.find((el) => el.id === param.row.id);
+                        const arrActivity = [...activityNamesList];
+                        let a: ActivityRoleNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -326,4 +347,4 @@ const WorkFloorPage = () => {
   );
 };
 
-export default WorkFloorPage;
+export default ActivityPage;

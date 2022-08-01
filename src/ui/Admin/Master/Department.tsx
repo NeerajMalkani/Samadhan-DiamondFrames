@@ -1,19 +1,17 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
-import Header from "../../components/Header";
-import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import Provider from "../../api/Provider";
-import { DataGrid } from "@mui/x-data-grid";
-import { communication } from "../../utils/communication";
-import { workLocationColumns } from "../../utils/tablecolumns";
-import { theme } from "../../theme/AppTheme";
-import { WorkLocationNameModel } from "../../models/Model";
-import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
-import SearchIcon from "@mui/icons-material/Search";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
+import { useContext, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import Provider from "../../../api/Provider";
+import Header from "../../../components/Header";
+import { DepartmentNameModel } from "../../../models/Model";
+import { theme } from "../../../theme/AppTheme";
+import { communication } from "../../../utils/communication";
+import { departmentColumns } from "../../../utils/tablecolumns";
 
-
-const WorkLocationPage = () => {
+const DepartmentPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
@@ -22,29 +20,45 @@ const WorkLocationPage = () => {
   }, []);
 
   const [loading, setLoading] = useState(true);
-  const [display, setDisplay] = React.useState("Yes");
-  const [worklocationName, setWorklocationName] = React.useState("");
-  const [worklocationNamesList, setWorklocationNamesList] = React.useState<Array<WorkLocationNameModel>>([]);
-
-  const [worklocationNamesListTemp, setWorklocationNamesListTemp] = React.useState<Array<WorkLocationNameModel>>([]);
-
-  const [worklocationnameError, setworklocationnameError] = useState("");
-  const [isWorklocationnameError, setIsWorklocationnameError] = useState(false);
-  const [pageSize, setPageSize] = React.useState<number>(5);
-  const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
-  const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
-  const [actionStatus, setActionStatus] = React.useState<string>("new");
-  const [selectedID, setSelectedID] = React.useState<number>(0);
-  const [open, setOpen] = React.useState(false);
-  const [snackMsg, setSnackMsg] = React.useState("");
+  const [display, setDisplay] = useState("Yes");
+  const [departmentName, setDepartmentName] = useState("");
+  const [departmentNameList, setDepartmentNameList] =useState<Array<DepartmentNameModel>>([]);// useContext(DataContext).departmentNamesList;
+  const [departmentNameError, setDepartmentNameError] = useState("");
+  const [isDepartmentNameError, setIsDepartmentNameError] = useState(false);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [buttonDisplay, setButtonDisplay] = useState<string>("none");
+  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
+  const [actionStatus, setActionStatus] = useState<string>("new");
+  const [selectedID, setSelectedID] = useState<number>(0);
+  const [open, setOpen] = useState(false);
+  const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [departmentNameListTemp, setDepartmentNameListTemp] = useState<Array<DepartmentNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   useEffect(() => {
     FetchData("");
   }, []);
+
+  const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDisplay((event.target as HTMLInputElement).value);
+  };
+
+  const handleSubmitClick = () => {
+    const IsTextFiledError = departmentName.trim() === "";
+    setDepartmentNameError(IsTextFiledError ? communication.BlankActivityName : "");
+    setIsDepartmentNameError(IsTextFiledError);
+    if (!IsTextFiledError) {
+      setButtonLoading(true);
+      InsertUpdateData(departmentName, display === "Yes");
+      setDisplay("Yes");
+      setDepartmentName("");
+      setDepartmentNameError("");
+      setIsDepartmentNameError(false);
+    }
+  };
 
   const ResetFields = () => {
     setSelectedID(0);
@@ -57,7 +71,7 @@ const WorkLocationPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("servicecatalogue/getworklocations")
+    Provider.getAll("master/getdepartments")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -67,99 +81,81 @@ const WorkLocationPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setWorklocationNamesList(arrList);
-            setWorklocationNamesListTemp(arrList);
+            setDepartmentNameList(response.data.data);
+            setDepartmentNameListTemp(response.data.data);
             if (type !== "") {
-              setSnackMsg("Work Floor " + type);
+              setSnackMsg("Department " + type);
               setOpen(true);
               setSnackbarType("success");
             }
           }
         } else {
-          setSnackbarType("info");
           setSnackMsg(communication.NoData);
           setOpen(true);
+          setSnackbarType("info");
         }
         setLoading(false);
       })
       .catch((e) => {
         setLoading(false);
-        setSnackbarType("error");
         setSnackMsg(communication.NetworkError);
         setOpen(true);
+        setSnackbarType("error");
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDisplay((event.target as HTMLInputElement).value);
-  };
-
-  const handleSubmitClick = () => {
-    const IsTextFiledError = worklocationName.trim() === "";
-    setworklocationnameError(IsTextFiledError ? communication.BlankWorklocationName : "");
-    setIsWorklocationnameError(IsTextFiledError);
-    if (!IsTextFiledError) {
-      setButtonLoading(true);
-      InsertUpdateData(worklocationName, display === "Yes");
-      setDisplay("Yes");
-      setWorklocationName("");
-      setworklocationnameError("");
-      setIsWorklocationnameError(false);
-    }
-  };
-
   const handleCancelClick = () => {
     setDisplay("Yes");
-    setWorklocationName("");
-    setworklocationnameError("");
-    setIsWorklocationnameError(false);
+    setDepartmentName("");
+    setDepartmentNameError("");
+    setIsDepartmentNameError(false);
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: WorkLocationNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: DepartmentNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      setWorklocationName(a?.workLocationName);
+      setDepartmentName(a?.departmentName);
       setSelectedID(a.id);
-      setworklocationnameError("");
-      setIsWorklocationnameError(false);
+      setDepartmentNameError("");
+      setIsDepartmentNameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }   
+    }
   };
 
-  const InsertUpdateData = (paramWorklocationName: string, checked: boolean) => {
+  const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("servicecatalogue/insertworklocation", {
-        WorkLocationName: paramWorklocationName,
+      Provider.create("master/insertdepartment", {
+        DepartmentName: paramActivityName,
         Display: checked,
       })
-        .then((response) => {
+        .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
-            setSnackbarType("error");
             setOpen(true);
+            setSnackbarType("error");
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
-          setSnackbarType("error");
           setOpen(true);
+          setSnackbarType("error");
         });
     } else if (actionStatus === "edit") {
-      Provider.create("servicecatalogue/updateworklocation", {
-        ID: selectedID,
-        WorkLocationName: paramWorklocationName,
+      Provider.create("master/updatedepartment", {
+        id: selectedID,
+        DepartmentName: paramActivityName,
         Display: checked,
       })
         .then((response) => {
@@ -191,11 +187,11 @@ const WorkLocationPage = () => {
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setWorklocationNamesListTemp(worklocationNamesList);
+      setDepartmentNameListTemp(departmentNameList);
     } else {
-      setWorklocationNamesListTemp(
-        worklocationNamesList.filter((el: WorkLocationNameModel) => {
-          return el.workLocationName.toString().toLowerCase().includes(query.toLowerCase());
+      setDepartmentNameListTemp(
+        departmentNameList.filter((el: DepartmentNameModel) => {
+          return el.departmentName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -207,29 +203,29 @@ const WorkLocationPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Work Location</Typography>
+            <Typography variant="h4">Department Name</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">Add/Edit Work Location</Typography>
+            <Typography variant="h6">Add/Edit Department Name</Typography>
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Work Location name</b>
+              <b>Department Name</b>
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
               fullWidth
-              placeholder="Work Location Name"
+              placeholder="Department Name"
               variant="outlined"
               size="small"
               onChange={(e) => {
-                setWorklocationName((e.target as HTMLInputElement).value);
-                setIsWorklocationnameError(false);
-                setworklocationnameError("");
+                setDepartmentName((e.target as HTMLInputElement).value);
+                setIsDepartmentNameError(false);
+                setDepartmentNameError("");
               }}
-              error={isWorklocationnameError}
-              helperText={worklocationnameError}
-              value={worklocationName}
+              error={isDepartmentNameError}
+              helperText={departmentNameError}
+              value={departmentName}
             />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
@@ -253,7 +249,7 @@ const WorkLocationPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">
-              Work Location List
+              Department List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -263,22 +259,23 @@ const WorkLocationPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {worklocationNamesList.length === 0 ? (
+                {departmentNameList.length === 0 ? (
                   <></>
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Work Location Name"
+                        placeholder="Search Department Name"
                         variant="outlined"
                         size="small"
                         onChange={(e) => {
                           onChangeSearch((e.target as HTMLInputElement).value);
                         }}
+                        value={searchQuery}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
-                              <SearchIcon />
+                              <GridSearchIcon />
                             </InputAdornment>
                           ),
                         }}
@@ -290,15 +287,16 @@ const WorkLocationPage = () => {
                         pointerEvents: dataGridPointer,
                       }}
                       autoHeight={true}
-                      rows={worklocationNamesListTemp}
-                      columns={workLocationColumns}
+                      rows={departmentNameListTemp}
+                      columns={departmentColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrWorklocation = [...worklocationNamesList];
-                        let a: WorkLocationNameModel | undefined = arrWorklocation.find((el) => el.id === param.row.id);
+                        const arrActivity = [...departmentNameList];
+                        let a: DepartmentNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -306,7 +304,6 @@ const WorkLocationPage = () => {
                           backgroundColor: theme.palette.primary.main,
                           color: theme.palette.primary.contrastText,
                         },
-                        mb: 1,
                       }}
                     />
                   </>
@@ -325,4 +322,4 @@ const WorkLocationPage = () => {
   );
 };
 
-export default WorkLocationPage;
+export default DepartmentPage;
