@@ -113,21 +113,21 @@ const BrandPage = () => {
   const [cdError, setCDError] = useState("");
   const [isCDError, setIsCDError] = useState(false);
 
-  const [gold, setGold] = useState("");
-  const [goldError, setGoldError] = useState("");
-  const [isGoldError, setIsGoldError] = useState(false);
+  // const [gold, setGold] = useState("");
+  // const [goldError, setGoldError] = useState("");
+  // const [isGoldError, setIsGoldError] = useState(false);
 
-  const [silver, setSilver] = useState("");
-  const [silverError, setSilverError] = useState("");
-  const [isSilverError, setIsSilverError] = useState(false);
+  // const [silver, setSilver] = useState("");
+  // const [silverError, setSilverError] = useState("");
+  // const [isSilverError, setIsSilverError] = useState(false);
 
-  const [platinum, setPlatinum] = useState("");
-  const [platinumError, setPlatinumError] = useState("");
-  const [isPlatinumError, setIsPlatinumError] = useState(false);
+  // const [platinum, setPlatinum] = useState("");
+  // const [platinumError, setPlatinumError] = useState("");
+  // const [isPlatinumError, setIsPlatinumError] = useState(false);
 
-  const [contractor, setContractor] = useState("");
-  const [contractorError, setContractorError] = useState("");
-  const [isContractorError, setIsContractorError] = useState(false);
+  // const [contractor, setContractor] = useState("");
+  // const [contractorError, setContractorError] = useState("");
+  // const [isContractorError, setIsContractorError] = useState(false);
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
 
   useEffect(() => {
@@ -352,18 +352,18 @@ const BrandPage = () => {
     setCD("");
     setIsCDError(false);
     setCDError("");
-    setGold("");
-    setIsGoldError(false);
-    setGoldError("");
-    setSilver("");
-    setIsSilverError(false);
-    setSilverError("");
-    setPlatinum("");
-    setIsPlatinumError(false);
-    setPlatinumError("");
-    setContractor("");
-    setIsContractorError(false);
-    setContractorError("");
+    // setGold("");
+    // setIsGoldError(false);
+    // setGoldError("");
+    // setSilver("");
+    // setIsSilverError(false);
+    // setSilverError("");
+    // setPlatinum("");
+    // setIsPlatinumError(false);
+    // setPlatinumError("");
+    // setContractor("");
+    // setIsContractorError(false);
+    // setContractorError("");
   };
 
   const handleSubmitClick = () => {
@@ -426,28 +426,28 @@ const BrandPage = () => {
       setCDError(communication.BlankContractorDiscount);
     }
 
-    if (gold.trim() !== "" && !ValidateGSTRate(gold)) {
-      isValid = false;
-      setIsGoldError(true);
-      setGoldError(communication.BlankGoldValue);
-    }
-    if (silver.trim() !== "" && !ValidateGSTRate(silver)) {
-      isValid = false;
-      setIsSilverError(true);
-      setSilverError(communication.BlankSilverValue);
-    }
+    // if (gold.trim() !== "" && !ValidateGSTRate(gold)) {
+    //   isValid = false;
+    //   setIsGoldError(true);
+    //   setGoldError(communication.BlankGoldValue);
+    // }
+    // if (silver.trim() !== "" && !ValidateGSTRate(silver)) {
+    //   isValid = false;
+    //   setIsSilverError(true);
+    //   setSilverError(communication.BlankSilverValue);
+    // }
 
-    if (platinum.trim() !== "" && !ValidateGSTRate(platinum)) {
-      isValid = false;
-      setIsPlatinumError(true);
-      setPlatinumError(communication.BlankPlatinumValue);
-    }
+    // if (platinum.trim() !== "" && !ValidateGSTRate(platinum)) {
+    //   isValid = false;
+    //   setIsPlatinumError(true);
+    //   setPlatinumError(communication.BlankPlatinumValue);
+    // }
 
-    if (contractor.trim() !== "" && !ValidateGSTRate(contractor)) {
-      isValid = false;
-      setIsContractorError(true);
-      setContractorError(communication.BlankContractordValue);
-    }
+    // if (contractor.trim() !== "" && !ValidateGSTRate(contractor)) {
+    //   isValid = false;
+    //   setIsContractorError(true);
+    //   setContractorError(communication.BlankContractordValue);
+    // }
 
     if (isValid) {
       InsertUpdateData();
@@ -466,10 +466,10 @@ const BrandPage = () => {
         AppProviderPromotion: apd,
         ReferralPoint: rp,
         ContractorDiscount: cd,
-        Gold: gold,
-        Silver: silver,
-        Platinum: platinum,
-        Contractor: contractor,
+        // Gold: gold,
+        // Silver: silver,
+        // Platinum: platinum,
+        // Contractor: contractor,
         Display: display === "Yes",
       })
         .then((response) => {
@@ -500,10 +500,10 @@ const BrandPage = () => {
         AppProviderPromotion: apd,
         ReferralPoint: rp,
         ContractorDiscount: cd,
-        Gold: gold,
-        Silver: silver,
-        Platinum: platinum,
-        Contractor: contractor,
+        // Gold: gold,
+        // Silver: silver,
+        // Platinum: platinum,
+        // Contractor: contractor,
         Display: display === "Yes",
       })
         .then((response) => {
@@ -605,18 +605,18 @@ const BrandPage = () => {
       setCD(a.contractorDiscount);
       setCDError("");
       setIsCDError(false);
-      setGold(a.gold);
-      setIsGoldError(false);
-      setGoldError("");
-      setSilver(a.silver);
-      setIsSilverError(false);
-      setSilverError("");
-      setPlatinum(a.platinum);
-      setIsPlatinumError(false);
-      setPlatinumError("");
-      setContractor(a.contractor);
-      setIsContractorError(false);
-      setContractorError("");
+      // setGold(a.gold);
+      // setIsGoldError(false);
+      // setGoldError("");
+      // setSilver(a.silver);
+      // setIsSilverError(false);
+      // setSilverError("");
+      // setPlatinum(a.platinum);
+      // setIsPlatinumError(false);
+      // setPlatinumError("");
+      // setContractor(a.contractor);
+      // setIsContractorError(false);
+      // setContractorError("");
     }
   };
 
@@ -891,7 +891,7 @@ const BrandPage = () => {
             <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
               <Typography variant="h6">Buyer Category Discount (%)</Typography>
             </Grid>
-            <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
+            {/* <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Gold (%)</b>
               </Typography>
@@ -966,7 +966,7 @@ const BrandPage = () => {
                   setContractorError("");
                 }}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={4} sm={5} md={8}>
               <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
                 Cancel
