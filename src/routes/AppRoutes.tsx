@@ -25,9 +25,9 @@ import DesignTypePage from "../ui/ServiceCatalogue/DesignTypePage";
 import PostNewDesignPage from "../ui/ServiceCatalogue/PostNewDesignPage";
 import BrandMasterPage from "../ui/Dealer/BrandAndProducts/BrandMaster";
 import BrandPage from "../ui/Dealer/BrandAndProducts/Brand";
-import ProductListPage from "../ui/Dealer/BrandAndProducts/Product";
+import ProductListPage from "../ui/Dealer/Product/Product";
 import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
-import BuyerCategory from "../ui/Dealer/CompanyProfile/BuyerCategory";
+import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);

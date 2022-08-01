@@ -151,14 +151,50 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
       ],
     },
-    { title: "Users", icon: <Group />, expanded: false },
+    {
+      title: "Users",
+      icon: <Group />,
+      expanded: true,
+      items: [
+        {
+          title: "Pending",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "pending"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/user/pending`);
+            }, 300);
+          },
+        },
+        {
+          title: "Approved",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "approved"), //.includes("service"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/user/approved`);
+            }, 300);
+          },
+        },
+        {
+          title: "Declined",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "declined"), //.includes("unit"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/user/declined`);
+            }, 300);
+          },
+        },
+      ],
+    },
     {
       title: "Service Catalogue",
       icon: <LocalOffer />,
       expanded: false,
       items: [
         {
-          title: "WorkFloor",
+          title: "Work Floor",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "workfloor"), //.includes("activity"),
           navigation: () => {
             open[1](false);
@@ -168,7 +204,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           },
         },
         {
-          title: "WorkLocation",
+          title: "Work Location",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "worklocation"), //.includes("activity"),
           navigation: () => {
             open[1](false);
@@ -188,6 +224,16 @@ const DrawerItems = ({ open }: OpenObj) => {
           },
         },
         {
+          title: "Materials Setup",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "materialssetup"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/servicecatalogue/materialssetup`);
+            }, 300);
+          },
+        },
+        {
           title: "Post New Design",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "postnewdesign"), //.includes("activity"),
           navigation: () => {
@@ -199,7 +245,33 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
       ],
     },
-    { title: "Enquiries & Status", icon: <InsertComment />, expanded: false },
+    {
+      title: "Enquiries & Status",
+      icon: <InsertComment />,
+      expanded: false,
+      items: [
+        {
+          title: "General Enquiry",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "generalenquiry"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/enquiriesandstatus/generalenquiry`);
+            }, 300);
+          },
+        },
+        {
+          title: "BOQ Enquiry",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "boqenquiry"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/enquiriesandstatus/boqenquiry`);
+            }, 300);
+          },
+        },
+      ],
+    },
   ];
 
   const MenuItemsGeneralUser = [
@@ -286,12 +358,12 @@ const DrawerItems = ({ open }: OpenObj) => {
           },
         },
         {
-          title: "Brand",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "brand"),
+          title: "Brand Setup",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "brandsetup"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/dealer/brand`);
+              navigate(`/dealer/brandsetup`);
             }, 300);
           },
         },
