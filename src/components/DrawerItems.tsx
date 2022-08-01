@@ -268,16 +268,6 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
-        {
-          title: "Buyer Category",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "buyercategory"),
-          navigation: () => {
-            open[1](false);
-            setTimeout(() => {
-              navigate(`/dealer/buyercategory`);
-            }, 300);
-          },
-        },
       ],
     },
     {
@@ -305,6 +295,23 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
+        {
+          title: "Buyer Category",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "buyercategory"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/dealer/buyercategory`);
+            }, 300);
+          },
+        },
+      ],
+    },
+    {
+      title: "Product",
+      icon: <HailIcon />,
+      expanded: true,
+      items: [
         {
           title: "Product",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "productlisting"),
@@ -420,7 +427,7 @@ const DrawerItems = ({ open }: OpenObj) => {
   const MenuItemsContractor = [
     {
       title: "Company Profile",
-      icon: "gift-outline",
+      icon: <BusinessIcon />,
       expanded: true,
       items: [
         {
@@ -447,7 +454,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Employee",
-      icon: "gift-outline",
+      icon: <HailIcon />,
       expanded: true,
       items: [
         {
@@ -474,7 +481,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Organization",
-      icon: "gift-outline",
+      icon: <CorporateFareIcon />,
       expanded: true,
       items: [
         {
@@ -538,7 +545,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Client",
-      icon: "gift-outline",
+      icon: <AirlineSeatReclineNormalIcon />,
       expanded: true,
       items: [
         {

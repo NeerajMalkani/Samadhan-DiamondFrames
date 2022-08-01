@@ -10,13 +10,18 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { BuyerCategoryColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import Provider from "../../../api/Provider";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
 
 const BuyerCategory = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
-
+  const [CookieUserID, SetCookieUseID] = useState(0);
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
+      navigate(`/login`);
+    } else {
+      SetCookieUseID(cookies.dfc.UserID);
+    }
   }, []);
 
   const [loading, setLoading] = useState(true);
@@ -49,7 +54,12 @@ const BuyerCategory = () => {
 
   const FetchData = (type: string) => {
     handleCancelClick();
-    Provider.getAll("companyprofiledealer/getbuyercategory")
+   
+    let params = {
+      DealerID: CookieUserID,
+    };
+
+    Provider.getAll(`companyprofiledealer/getbuyercategory?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -154,6 +164,7 @@ const BuyerCategory = () => {
       Provider.create("companyprofiledealer/insertbuyercategory", {
         BuyerCategoryName: buyerCategoryName,
         Display: checked,
+        DealerID: CookieUserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -178,7 +189,7 @@ const BuyerCategory = () => {
         });
     } else if (actionStatus === "edit") {
       Provider.create("companyprofiledealer/updatebuyercategory", {
-        ID: selectedID, BuyerCategoryName: buyerCategoryName, Display: checked   
+        ID: selectedID, BuyerCategoryName: buyerCategoryName, Display: checked, DealerID: CookieUserID,  
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
