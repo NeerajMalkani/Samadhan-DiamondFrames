@@ -334,13 +334,13 @@ const BrandPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
-            response.data.data.map((el) => {
-              buyerCategoryFullData.find((a)=>{
-                return a.buyerCategoryID === el.id;
-              })
+            // debugger;
+            // response.data.data.map((el) => {
+            //   buyerCategoryFullData.find((a)=>{
+            //     return a.buyerCategoryID === el.id;
+            //   })
 
-            });
+            // });
             
             // const arrBuyerDiscountData = [];
             // const arrSelectedBuyerDiscountData = [];
@@ -552,7 +552,6 @@ const BrandPage = () => {
           }
         })
         .catch((e) => {
-          debugger;
           handleCancelClick();
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
