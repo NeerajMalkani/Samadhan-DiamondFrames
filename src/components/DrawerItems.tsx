@@ -316,7 +316,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/basicdetails`);
+              navigate(`/dealer/basicdetails`);
             }, 300);
           },
         },

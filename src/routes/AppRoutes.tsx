@@ -19,7 +19,7 @@ import DepartmentPage from "../ui/Admin/Master/Department";
 import DesignationPage from "../ui/Admin/Master/Designation";
 import EWayBillPage from "../ui/Admin/Master/EWayBill";
 import LocationTypePage from "../ui/Admin/Master/LocationType";
-import WorkFloorPage from "../ui/Admin/ServiceCatalogue/WorkFloorPage"
+import WorkFloorPage from "../ui/Admin/ServiceCatalogue/WorkFloorPage";
 import WorkLocationPage from "../ui/Admin/ServiceCatalogue/WorkLocationPage";
 import DesignTypePage from "../ui/Admin/ServiceCatalogue/DesignTypePage";
 import PostNewDesignPage from "../ui/Admin/ServiceCatalogue/PostNewDesignPage";
@@ -28,6 +28,7 @@ import BrandPage from "../ui/Dealer/BrandAndProducts/Brand";
 import ProductListPage from "../ui/Dealer/Product/Product";
 import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
 import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
+import Basic from "../ui/Dealer/CompanyProfile/Basic";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -74,17 +75,17 @@ const AppRoutes = () => {
                 <Route path="master/department" element={<DepartmentPage />} />
                 <Route path="master/designation" element={<DesignationPage />} />
                 <Route path="master/ewaybill" element={<EWayBillPage />} />
-                <Route path="master/locationtype" element={<LocationTypePage/>} />
-                <Route path="servicecatalogue/workfloor" element={<WorkFloorPage/>} />
-                <Route path="servicecatalogue/worklocation" element={<WorkLocationPage/>} />
-                <Route path="servicecatalogue/designtype" element={<DesignTypePage/>} />
-                <Route path="servicecatalogue/postnewdesign" element={<PostNewDesignPage/>} />
-                <Route path="dealer/brandmaster" element={<BrandMasterPage/>} />
-                <Route path="dealer/brandsetup" element={<BrandPage/>} />
-                <Route path="dealer/productlisting" element={<ProductListPage/>} />
-                <Route path="dealer/myservices" element={<MyServices/>} />
-                <Route path="dealer/buyercategory" element={<BuyerCategory/>} />
-                
+                <Route path="master/locationtype" element={<LocationTypePage />} />
+                <Route path="servicecatalogue/workfloor" element={<WorkFloorPage />} />
+                <Route path="servicecatalogue/worklocation" element={<WorkLocationPage />} />
+                <Route path="servicecatalogue/designtype" element={<DesignTypePage />} />
+                <Route path="servicecatalogue/postnewdesign" element={<PostNewDesignPage />} />
+                <Route path="dealer/brandmaster" element={<BrandMasterPage />} />
+                <Route path="dealer/brandsetup" element={<BrandPage />} />
+                <Route path="dealer/productlisting" element={<ProductListPage />} />
+                <Route path="dealer/myservices" element={<MyServices />} />
+                <Route path="dealer/buyercategory" element={<BuyerCategory />} />
+                <Route path="dealer/basicdetails" element={<Basic />} />
               </Routes>
             </BrowserRouter>
           </Box>

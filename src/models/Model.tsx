@@ -77,7 +77,7 @@ export interface ProductModel {
 export interface ServiceNameModel {
   id: number;
   srno: number;
-  serviceID:number;
+  serviceID: number;
   serviceName: string;
   display: string;
   action: string;
@@ -212,8 +212,8 @@ export interface BrandModel {
   brandID: number;
   unitOfSale: string;
   unitID: number;
-  unitName:string;
-  unitName2:string;
+  unitName: string;
+  unitName2: string;
   generalDiscount: string;
   appProviderDiscount: string;
   referralPoints: string;
@@ -245,11 +245,70 @@ export interface ProductSetupModel {
   action: string;
 }
 
-
 export interface BuyerCategoryModel {
   id: number;
   srno: number;
   buyerCategoryName: string;
   display: string;
   action: string;
+}
+
+export interface StateModel {
+  id: number;
+  stateName: string;
+  isUT: string;
+  isActive: string;
+}
+
+export interface CityModel {
+  id: number;
+  cityName: string;
+  stateID: number;
+  isActive: string;
+}
+
+export interface UserModel {
+  userID: number;
+  fullName: string;
+  userName: string;
+  password: string;
+  roleID: number;
+  OTP: number;
+  isVerifird: string;
+  addressLine: string;
+  stateID: number;
+  cityID: number;
+  pincode: number;
+}
+
+export interface CompanyModel {
+  id: number;
+  CompanyID: number;
+  UserID: number;
+  CompanyName: string;
+  CompanyNamePrefix: string;
+  EmpoyeeCodePrefix: string;
+  QuotationNumberPrefix: string;
+  CompanyLogo: string;
+  CreationTStamp: string;
+  display: string;
+  ContactPersonName: string;
+  ContactPersonNumber: string;
+}
+
+export interface UserProfile {
+  id: number;
+  CompanyID: number;
+  UserID: number;
+  ContactPersonName: string;
+  ContactPersonNumber: string;
+  CompanyName: string;
+  AddressLine: string;
+  StateName: string;
+  CityName: string;
+  StateID: number;
+  CityID: number;
+  Pincode: number;
+  GSTNumber: string;
+  PAN: string;
 }
