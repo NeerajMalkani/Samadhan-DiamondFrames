@@ -569,7 +569,7 @@ const DesignTypePage = () => {
                       <Grid item xs={4} sm={4} md={4} sx={{ mr: 1 }}>
                         <TextField
                           fullWidth
-                          placeholder="Search Design Type Name"
+                          placeholder="Search"
                           variant="outlined"
                           size="small"
                           value={searchQuery}

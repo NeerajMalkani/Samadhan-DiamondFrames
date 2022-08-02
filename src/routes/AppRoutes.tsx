@@ -80,7 +80,7 @@ const AppRoutes = () => {
                 <Route path="servicecatalogue/designtype" element={<DesignTypePage/>} />
                 <Route path="servicecatalogue/postnewdesign" element={<PostNewDesignPage/>} />
                 <Route path="dealer/brandmaster" element={<BrandMasterPage/>} />
-                <Route path="dealer/brand" element={<BrandPage/>} />
+                <Route path="dealer/brandsetup" element={<BrandPage/>} />
                 <Route path="dealer/productlisting" element={<ProductListPage/>} />
                 <Route path="dealer/myservices" element={<MyServices/>} />
                 <Route path="dealer/buyercategory" element={<BuyerCategory/>} />

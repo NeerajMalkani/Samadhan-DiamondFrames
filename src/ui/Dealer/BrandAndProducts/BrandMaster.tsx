@@ -66,9 +66,27 @@ const BrandMasterPage = () => {
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
 
   useEffect(() => {
-    if (isBrandApproved) FetchData("");
-    //setIsBrandApproved(true);
+    FetchShowBrand(cookies.dfc.UserID);
   }, []);
+
+
+  const FetchShowBrand = (UserID) => {
+    let params = {
+      DealerID: UserID,
+    };
+    Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response:any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setIsBrandApproved(response.data.data[0].showBrand);
+            if (response.data.data[0].showBrand) {
+              FetchData("", UserID);
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
 
   const ResetFields = () => {
     setSelectedID(0);
@@ -79,10 +97,10 @@ const BrandMasterPage = () => {
     setButtonLoading(false);
   };
 
-  const FetchData = (type: string) => {
+  const FetchData = (type: string, UserID:number) => {
     ResetFields();
     let params = {
-      DealerID: CookieUserID,
+      DealerID: UserID,
     };
     Provider.getAll(`dealerbrand/getbrand?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
@@ -171,7 +189,7 @@ const BrandMasterPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData("added");
+            FetchData("added", CookieUserID);
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -194,7 +212,7 @@ const BrandMasterPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData("updated");
+            FetchData("updated", CookieUserID);
           } else {
             ResetFields();
             setSnackMsg(communication.Error);

@@ -12,10 +12,10 @@ import{
     Snackbar,
     MenuItem
     } from "@mui/material";
-    import Header from "../components/Header";
+    import Header from "../../components/Header";
     import { useNavigate } from "react-router-dom";
     import React,{ useState,useEffect } from "react";
-    import {theme } from "../theme/AppTheme";
+    import {theme } from "../../theme/AppTheme";
     import { useCookies } from "react-cookie";
     import ModeIcon from '@mui/icons-material/Mode';
     import CheckIcon from '@mui/icons-material/Check';

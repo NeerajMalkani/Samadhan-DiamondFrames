@@ -282,7 +282,7 @@ const ServicePage = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Service Name"
+                        placeholder="Search"
                         variant="outlined"
                         size="small"
                         value={searchQuery}

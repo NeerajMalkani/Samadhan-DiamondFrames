@@ -77,6 +77,7 @@ export interface ProductModel {
 export interface ServiceNameModel {
   id: number;
   srno: number;
+  serviceID:number;
   serviceName: string;
   display: string;
   action: string;
@@ -236,12 +237,12 @@ export interface ProductSetupModel {
   productName: string;
   brandID: number;
   productID: number;
-  imageName: string;
+  image: string;
   description: string;
   unitOfSale: string;
   unitID: number;
   price: string;
-  conversionPrice: string;
+  unitValue: string;
   display: string;
   action: string;
 }

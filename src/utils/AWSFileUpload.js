@@ -31,7 +31,7 @@ export const UploadImageToS3WithNativeSdk = (file, fileName, callBack) => {
       if (err) {
         callBack(err);
       } else {
-        callBack("Success");
+        callBack("Success", fileName);
       }
     });
 };
@@ -46,7 +46,7 @@ export const DeleteImageToS3WithNativeSdk = (fileName, callBack) => {
     if (err) {
       callBack(err);
     } else {
-      callBack("Success");
+      callBack("Success", fileName);
     }
   });
 };

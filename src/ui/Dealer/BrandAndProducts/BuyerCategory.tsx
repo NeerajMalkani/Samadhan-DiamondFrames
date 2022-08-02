@@ -11,6 +11,7 @@ import { BuyerCategoryColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import Provider from "../../../api/Provider";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const BuyerCategory = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -46,20 +47,40 @@ const BuyerCategory = () => {
   const [bcErrorText, setBcErrorText] = useState<string>("");
   const [buyerCategoryList, setBuyerCategoryList] = useState<Array<BuyerCategoryModel>>([]);
   const [buyerCategoryListTemp, setBuyerCategoryListTemp] = useState<Array<BuyerCategoryModel>>([]);
-
+  const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
 
   useEffect(() => {
-    FetchData("");
+    FetchShowBrand(cookies.dfc.UserID);
   }, []);
 
-  const FetchData = (type: string) => {
+
+  const FetchShowBrand = (UserID) => {
+    let params = {
+      DealerID: UserID,
+    };
+    Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response:any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setIsBrandApproved(response.data.data[0].showBrand);
+            if (response.data.data[0].showBrand) {
+              FetchData("", UserID);
+            }
+          
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchData = (type: string, UserID:number) => {
     handleCancelClick();
    
     let params = {
-      DealerID: CookieUserID,
+      DealerID: UserID,
     };
 
-    Provider.getAll(`companyprofiledealer/getbuyercategory?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`dealerbrand/getbuyercategory?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -161,14 +182,14 @@ const BuyerCategory = () => {
   const InsertUpdateData = (buyerCategoryName: string, checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("companyprofiledealer/insertbuyercategory", {
+      Provider.create("dealerbrand/insertbuyercategory", {
         BuyerCategoryName: buyerCategoryName,
         Display: checked,
         DealerID: CookieUserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData("added");
+            FetchData("added", CookieUserID);
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -188,12 +209,12 @@ const BuyerCategory = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("companyprofiledealer/updatebuyercategory", {
+      Provider.create("dealerbrand/updatebuyercategory", {
         ID: selectedID, BuyerCategoryName: buyerCategoryName, Display: checked, DealerID: CookieUserID,  
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData("updated");
+            FetchData("updated", CookieUserID);
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -219,6 +240,7 @@ const BuyerCategory = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
+      {isBrandApproved ? (
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Buyer Category</Typography>
@@ -281,7 +303,7 @@ const BuyerCategory = () => {
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
-                        placeholder="Search Buyer Type Name"
+                        placeholder="Search"
                         variant="outlined"
                         size="small"
                         onChange={(e) => {
@@ -327,6 +349,21 @@ const BuyerCategory = () => {
             )}
           </Grid>
         </Grid>
+        ) : (
+          <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+            <Grid item xs={4} sm={8} md={12}>
+              <ErrorIcon sx={{ float: "left", mr: 1, color: "#ff5959", mt: "5px" }} />{" "}
+              <Typography variant="h6" sx={{ color: "#ff5959" }}>
+                Would you like to create Brand & Product? Please activate the option in your settings
+              </Typography>
+            </Grid>
+            <Grid item xs={4} sm={8} md={12}>
+              <Button variant="contained" sx={{ mt: 1, mr: 1 }} onClick={() => {}}>
+                Go to Settings
+              </Button>
+            </Grid>
+          </Grid>
+        )}
       </Container>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity={snackbarType} sx={{ width: "100%" }}>

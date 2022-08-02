@@ -1051,7 +1051,7 @@ const ServiceProductPage = () => {
                         </Typography>
                         <TextField
                           fullWidth
-                          placeholder="Search Product Name"
+                          placeholder="Search"
                           variant="outlined"
                           size="medium"
                           value={searchQuery}

@@ -129,14 +129,37 @@ const BrandPage = () => {
   // const [contractorError, setContractorError] = useState("");
   // const [isContractorError, setIsContractorError] = useState(false);
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
+  const [buyerCategoryFullData, setBuyerCategoryFullData] = useState([]);
 
   useEffect(() => {
-    if (isBrandApproved){ FetchData("");
-    FetchActvityRoles();FetchBrands()}
+    FetchShowBrand(cookies.dfc.UserID);
   }, []);
 
+  const FetchShowBrand = (UserID) => {
+    let params = {
+      DealerID: UserID,
+    };
+    Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setIsBrandApproved(response.data.data[0].showBrand);
+            if (response.data.data[0].showBrand) {
+              if (isBrandApproved) {
+                FetchData("", UserID);
+                FetchActvityRoles(UserID);
+                FetchBrands(UserID);
+                FetchBuyerCategories(UserID);
+              // FetchBuyerCategoriesDiscounts();
+              }
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
 
-  const FetchActvityRoles = () => {
+  const FetchActvityRoles = (UserID: number) => {
     Provider.getAll("master/getmainactivities")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -144,19 +167,46 @@ const BrandPage = () => {
             response.data.data = response.data.data.filter((el: any) => {
               return el.display && el.activityRoleName === "Dealer";
             });
-            FetchServicesFromActivity(response.data.data[0].id);
+            setArnID(response.data.data[0].id);
+            FetchServicesFromActivity(UserID);
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedID: number) => {
+  const FetchBuyerCategories = (UserID: number) => {
     let params = {
-      ID: selectedID,
+      DealerID: UserID,
     };
+    Provider.getAll(`dealerbrand/getbuyercategory?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            response.data.data.map(function (a: any, index: number) {
+              let isError = { isError: false };
+              a = Object.assign(a, isError);
+              let errorText = { errorText: "" };
+              a = Object.assign(a, errorText);
+              let value = { value: "" };
+              a = Object.assign(a, value);
+            });
 
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+            setBuyerCategoryFullData(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchServicesFromActivity = (UserID: number) => {
+    let params = {
+      DealerID: UserID,
+    };
+    Provider.getAll(`dealercompanyprofile/getmyservices?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -170,12 +220,13 @@ const BrandPage = () => {
       .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
+  const FetchCategoriesFromServices = (selectedServiceID: number, callbackFunction: any = null) => {
     //, callbackFunction: any = null
     let params = {
-      ActivityID: selectedActivityID,
+      ActivityID: arnID,
       ServiceID: selectedServiceID,
     };
+
     Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -200,6 +251,7 @@ const BrandPage = () => {
     Provider.getAll(`master/getunitbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
+          console.log(response.data.data);
           if (response.data.data) {
             response.data.data = response.data.data.filter((el: any) => {
               return el.display;
@@ -211,9 +263,9 @@ const BrandPage = () => {
       .catch((e) => {});
   };
 
-  const FetchBrands = () => {
+  const FetchBrands = (UserID: number) => {
     let params = {
-      DealerID: CookieUserID,
+      DealerID: UserID,
     };
 
     Provider.getAll(`dealerbrand/getbrand?${new URLSearchParams(GetStringifyJson(params))}`)
@@ -227,20 +279,17 @@ const BrandPage = () => {
               a = Object.assign(a, sr);
             });
             setBrandListDropdown(arrList);
-
           }
         }
       })
-      .catch((e) => {
-       
-      });
+      .catch((e) => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  const FetchData = (type: string) => {
+  const FetchData = (type: string, UserID: number) => {
     handleCancelClick();
     let params = {
-      DealerID: CookieUserID,
+      DealerID: UserID,
     };
 
     Provider.getAll(`dealerbrand/GetBrandSetup?${new URLSearchParams(GetStringifyJson(params))}`)
@@ -277,16 +326,48 @@ const BrandPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
+  const FetchBuyerCategoriesDiscounts = (buyerData) => {
+    let params = {
+      DealerID: CookieUserID,
+      DealerBrandID: 1,
+    };
+    Provider.getAll(`dealerbrand/getbrandbuyermapping?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response:any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const arrBuyerDiscountData = [];
+            const arrSelectedBuyerDiscountData = [];
+            buyerData.map((el) => {
+              const matchingData = response.data.data.find((a) => {
+                return a.buyerCategoryID === el.id;
+              });
+              if (matchingData) {
+                arrSelectedBuyerDiscountData.push({
+                  buyerCategoryID: matchingData.buyerCategoryID,
+                  buyerCategoryDiscount: matchingData.buyerCategoryDiscount,
+                });
+                el.buyerCategoryDiscount = matchingData.buyerCategoryDiscount.toFixed(2);
+              }
+              arrBuyerDiscountData.push(el);
+            });
+           // setBuyerCategoryFullData(arrBuyerDiscountData);
+           
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
     let ac = serviceNameList.find((el) => el.serviceName === serviceName);
     if (ac !== undefined) {
       setSn(event.target.value as string);
-      setSnID(ac.id);
+      setSnID(ac.serviceID);
       SetResetServiceName(false);
       SetResetCategoryName(true);
       SetResetUnit(true);
-      FetchCategoriesFromServices(snID,ac.id)
+      FetchCategoriesFromServices(ac.serviceID);
     }
   };
 
@@ -314,13 +395,12 @@ const BrandPage = () => {
   };
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
-    setUnitsOfSales(event.target.value);
-    if (unitOfSalesList[0].unit1Name === event.target.value) {
-      setUnitsOfSales(unitOfSalesList[0].unit2Name);
-      setSelectedUnitID(unitOfSalesList[0].unit1ID);
-    } else {
-      setUnitsOfSales(unitOfSalesList[0].unit1Name);
-      setSelectedUnitID(unitOfSalesList[0].unit2ID);
+    let unitName: string = event.target.value;
+    let ac = unitOfSalesList.find((el) => el.displayUnit === unitName);
+    if (ac !== undefined) {
+      setUnitsOfSales(event.target.value as string);
+      setSelectedUnitID(ac.id);
+      SetResetUnit(false);
     }
   };
 
@@ -456,7 +536,7 @@ const BrandPage = () => {
 
   const InsertUpdateData = () => {
     if (actionStatus === "new") {
-      Provider.create("master/insertbrand", {
+      Provider.create("dealerbrand/insertbrandsetup", {
         BrandID: bnID,
         ServiceID: snID,
         CategoryID: cnID,
@@ -466,15 +546,12 @@ const BrandPage = () => {
         AppProviderPromotion: apd,
         ReferralPoint: rp,
         ContractorDiscount: cd,
-        // Gold: gold,
-        // Silver: silver,
-        // Platinum: platinum,
-        // Contractor: contractor,
         Display: display === "Yes",
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData("added");
+            //FetchData("added", CookieUserID);
+            InsertUpdateBrandMapping("new");
           } else {
             handleCancelClick();
             setSnackMsg(communication.Error);
@@ -489,7 +566,7 @@ const BrandPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updatebrand", {
+      Provider.create("dealerbrand/updatebrandsetup", {
         ID: selectedID,
         BrandID: bnID,
         ServiceID: snID,
@@ -500,15 +577,12 @@ const BrandPage = () => {
         AppProviderPromotion: apd,
         ReferralPoint: rp,
         ContractorDiscount: cd,
-        // Gold: gold,
-        // Silver: silver,
-        // Platinum: platinum,
-        // Contractor: contractor,
         Display: display === "Yes",
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            FetchData("updated");
+            // FetchData("updated", CookieUserID);
+            InsertUpdateBrandMapping("edit");
           } else {
             handleCancelClick();
             setSnackMsg(communication.Error);
@@ -523,6 +597,26 @@ const BrandPage = () => {
           setOpen(true);
         });
     }
+  };
+
+  const InsertUpdateBrandMapping = (mode: string) => {
+    Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", {})
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          FetchData(mode === "new" ? "added" : "updated", CookieUserID);
+        } else {
+          handleCancelClick();
+          setSnackMsg(communication.Error);
+          setSnackbarType("error");
+          setOpen(true);
+        }
+      })
+      .catch((e) => {
+        handleCancelClick();
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
   };
 
   const SetResetServiceName = (isBlank: boolean) => {
@@ -605,18 +699,6 @@ const BrandPage = () => {
       setCD(a.contractorDiscount);
       setCDError("");
       setIsCDError(false);
-      // setGold(a.gold);
-      // setIsGoldError(false);
-      // setGoldError("");
-      // setSilver(a.silver);
-      // setIsSilverError(false);
-      // setSilverError("");
-      // setPlatinum(a.platinum);
-      // setIsPlatinumError(false);
-      // setPlatinumError("");
-      // setContractor(a.contractor);
-      // setIsContractorError(false);
-      // setContractorError("");
     }
   };
 
@@ -786,10 +868,10 @@ const BrandPage = () => {
                   <MenuItem disabled={true} value="--Select--">
                     --Select--
                   </MenuItem>
-                  {unitList.map((item, index) => {
+                  {unitOfSalesList.map((item, index) => {
                     return (
-                      <MenuItem key={index} value={item}>
-                        {item}
+                      <MenuItem key={index} value={item.displayUnit}>
+                        {item.displayUnit}
                       </MenuItem>
                     );
                   })}
@@ -888,85 +970,35 @@ const BrandPage = () => {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-              <Typography variant="h6">Buyer Category Discount (%)</Typography>
-            </Grid>
-            {/* <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Gold (%)</b>
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="0.00"
-                variant="outlined"
-                size="small"
-                error={isGoldError}
-                helperText={goldError}
-                value={gold}
-                onChange={(e) => {
-                  setGold((e.target as HTMLInputElement).value);
-                  setIsGoldError(false);
-                  setGoldError("");
-                }}
-              />
-            </Grid>
-            <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Silver (%)</b>
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="0.00"
-                variant="outlined"
-                size="small"
-                error={isSilverError}
-                helperText={silverError}
-                value={silver}
-                onChange={(e) => {
-                  setSilver((e.target as HTMLInputElement).value);
-                  setIsSilverError(false);
-                  setSilverError("");
-                }}
-              />
-            </Grid>
-            <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Platinum (%)</b>
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="0.00"
-                variant="outlined"
-                size="small"
-                error={isPlatinumError}
-                helperText={platinumError}
-                value={platinum}
-                onChange={(e) => {
-                  setPlatinum((e.target as HTMLInputElement).value);
-                  setIsPlatinumError(false);
-                  setPlatinumError("");
-                }}
-              />
-            </Grid>
-            <Grid item xs={4} sm={3} md={3} sx={{ mt: 1 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Contractor (%)</b>
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="0.00"
-                variant="outlined"
-                size="small"
-                error={isContractorError}
-                helperText={contractorError}
-                value={contractor}
-                onChange={(e) => {
-                  setContractor((e.target as HTMLInputElement).value);
-                  setIsContractorError(false);
-                  setContractorError("");
-                }}
-              />
-            </Grid> */}
+            {buyerCategoryFullData.length !== 0 ? (
+              <Grid container xs={4} sm={8} md={12}>
+                <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+                  <Typography variant="h6">Buyer Category Discount (%)</Typography>
+                </Grid>
+                {buyerCategoryFullData.map((k, i) => {
+                  return (
+                    <Grid item xs={4} sm={3} md={3} sx={{ mt: 2, pl:"8px", pr:"8px" }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>{k.buyerCategoryName} (%)</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        placeholder="0.00"
+                        variant="outlined"
+                        size="small"                     
+                        onChange={(e) => {
+                          k.value = (e.target as HTMLInputElement).value;
+                         console.log( buyerCategoryFullData);
+                          
+                        }}
+                      />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            ) : (
+              <></>
+            )}
             <Grid item xs={4} sm={5} md={8}>
               <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
                 Cancel
@@ -991,7 +1023,7 @@ const BrandPage = () => {
                     <>
                       <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                         <TextField
-                          placeholder="Search Brand Name"
+                          placeholder="Search"
                           variant="outlined"
                           size="small"
                           onChange={(e) => {

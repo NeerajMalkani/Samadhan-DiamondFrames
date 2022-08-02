@@ -27,19 +27,27 @@ import Header from "../../../components/Header";
 import { BrandModel, ProductModel, ProductSetupModel } from "../../../models/Model";
 import { AWSImagePath } from "../../../utils/paths";
 import { useTheme } from "@mui/material/styles";
-import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { productSetupColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import { ValidateGSTRate } from "../../../utils/validations";
 import uuid from "react-uuid";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
+import Provider from "../../../api/Provider";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import SearchIcon from "@mui/icons-material/Search";
 
 const ProductListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
+  const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
+      navigate(`/login`);
+    } else {
+      SetCookieUseID(cookies.dfc.UserID);
+    }
   }, []);
 
   const theme = useTheme();
@@ -95,6 +103,107 @@ const ProductListPage = () => {
   const [saleUnitwith1, setSaleUnitwith1] = useState<string>("");
   const [saleUnit, setSaleUnit] = useState<string>("");
   const [otherSaleUnit, setOtherSaleUnit] = useState<string>("");
+  const [arnID, setArnID] = useState<number>(0);
+  const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
+
+  useEffect(() => {
+    FetchShowBrand(cookies.dfc.UserID);
+  }, []);
+
+  const FetchShowBrand = (UserID) => {
+    let params = {
+      DealerID: UserID,
+    };
+    Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setIsBrandApproved(response.data.data[0].showBrand);
+            if (response.data.data[0].showBrand) {
+              FetchData("", UserID);
+              FetchBrands(UserID);
+              FetchActvityRoles();
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchActvityRoles = () => {
+    Provider.getAll("master/getmainactivities")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display && el.activityRoleName === "Dealer";
+            });
+            setArnID(response.data.data[0].id);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchData = (type: string, UserID: number) => {
+    handleCancelClick();
+    let params = {
+      DealerID: UserID,
+    };
+
+    Provider.getAll(`dealerproduct/getproducts?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+            setProductSetupList(arrList);
+            setProductSetupListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Product " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
+          }
+        } else {
+          setSnackbarType("info");
+          setSnackMsg(communication.NoData);
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackbarType("error");
+        setSnackMsg(communication.NetworkError);
+        setOpen(true);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
+
+  const FetchBrands = (UserID: number) => {
+    let params = {
+      DealerID: UserID,
+    };
+
+    Provider.getAll(`dealerbrand/GetBrandSetup?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setBrandList(response.data.data);
+          }
+        }
+      })
+      .catch((e) => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
 
   const handleBNChange = (event: SelectChangeEvent) => {
     let bName: string = event.target.value;
@@ -104,7 +213,42 @@ const ProductListPage = () => {
       setBnID(ac.id);
       setIsBrandError(false);
       setbrandError("");
+      setProductList([]);
+      setPn("--Select--");
+      setPnID(0);
+      setIsProductError(false);
+      setProductError("");
+      setSaleUnit("");
+      setSaleUnitwith1("");
+      setOtherSaleUnit("");
+      setIsProductError(false);
+      setProductError("");
+      FetchProductsFromCategory(arnID, ac.serviceID, ac.categoryID);
     }
+  };
+
+  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
+    let params = {
+      ActivityID: selectedActivityID,
+      ServiceID: selectedServiceID,
+      CategoryID: selectedCategoryID,
+    };
+    
+    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            setProductList(response.data.data);
+            if (callbackFunction !== null) {
+              callbackFunction(response.data.data);
+            }
+          }
+        }
+      })
+      .catch((e) => {});
   };
 
   const handlePNChnage = (event: SelectChangeEvent) => {
@@ -115,7 +259,35 @@ const ProductListPage = () => {
       setPnID(ac.productID);
       setIsProductError(false);
       setProductError("");
+      setSaleUnit("");
+      setSaleUnitwith1("");
+      setOtherSaleUnit("");
+      FetchUnitsFromProduct(ac.productID);
     }
+  };
+
+  const FetchUnitsFromProduct = (selectedID: number) => {
+    let params = {
+      ProductID: selectedID,
+    };
+
+    Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display;
+            });
+            const units = response.data.data.map((data: any) => data.displayUnit);
+            const unitValue = units[0].split(" / ");
+
+            setSaleUnit(unitValue[0]);
+            setSaleUnitwith1("1 " + unitValue[0]);
+            setOtherSaleUnit(unitValue[1]);
+          }
+        }
+      })
+      .catch((e) => {});
   };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,13 +316,13 @@ const ProductListPage = () => {
       setProductError(communication.SelectProductName);
     }
 
-    if (uploadFileUpload === undefined || uploadFileUpload === null) {
+    if (uploadedImage.trim() === "") {
       isValid = false;
       setDIError(true);
       setDIErrorText(communication.SelectImage);
     }
 
-    if (price.trim() === "" || !ValidateGSTRate(price)) {
+    if (price.toString().trim() === "" || !ValidateGSTRate(price)) {
       isValid = false;
       setIsPriceError(true);
       setPriceErrorText(communication.BlankPrice);
@@ -160,7 +332,7 @@ const ProductListPage = () => {
       isValid = false;
     }
 
-    if (conversionValue.trim() === "" || !ValidateGSTRate(conversionValue)) {
+    if (conversionValue.toString().trim() === "" || !ValidateGSTRate(conversionValue)) {
       isValid = false;
       setIsConversionValueError(true);
       setConversionValueErrorText(communication.BlankConversionRate);
@@ -173,8 +345,11 @@ const ProductListPage = () => {
     }
 
     if (isValid) {
-      if (uploadedImage === "") {
+      setButtonLoading(true);
+      if (uploadFileUpload !== null) {
         uploadImage();
+      } else {
+        InsertUpdateData("Success", uploadedImage);
       }
     }
   };
@@ -185,9 +360,79 @@ const ProductListPage = () => {
     UploadImageToS3WithNativeSdk(uploadFileUpload, imageName, InsertUpdateData);
   };
 
-  const InsertUpdateData = () => {
-    if (actionStatus === "new") {
-    } else if (actionStatus === "edit") {
+  const InsertUpdateData = (Status: string, fileName: string) => {
+    if (Status === "Success") {
+      if (actionStatus === "new") {
+        const params = {
+          DealerID: CookieUserID,
+          BrandID: bnID,
+          ProductID: pnID,
+          Image: fileName,
+          Price: price,
+          UnitValue: conversionValue,
+          Description: description,
+          Display: display === "Yes",
+        };
+        Provider.create("dealerproduct/insertproduct", params)
+          .then((response: any) => {
+            if (response.data && response.data.code === 200) {
+              FetchData("added", CookieUserID);
+            } else if (response.data.code === 304) {
+              setSnackMsg(communication.AlreadyExists);
+              setSnackbarType("error");
+              setOpen(true);
+            } else {
+              setSnackMsg(communication.Error);
+              setSnackbarType("error");
+              setOpen(true);
+            }
+            handleCancelClick();
+          })
+          .catch((e) => {
+            setSnackMsg(communication.NetworkError);
+            setSnackbarType("error");
+            setOpen(true);
+            handleCancelClick();
+          });
+      } else if (actionStatus === "edit") {
+        const params = {
+          ID: selectedID,
+          DealerID: CookieUserID,
+          BrandID: bnID,
+          ProductID: pnID,
+          Image: fileName,
+          Price: price,
+          UnitValue: conversionValue,
+          Description: description,
+          Display: display === "Yes",
+        };
+        Provider.create("dealerproduct/updateproduct", params)
+          .then((response: any) => {
+            if (response.data && response.data.code === 200) {
+              FetchData("updated", CookieUserID);
+            } else if (response.data.code === 304) {
+              setSnackMsg(communication.AlreadyExists);
+              setSnackbarType("error");
+              setOpen(true);
+            } else {
+              setSnackMsg(communication.Error);
+              setSnackbarType("error");
+              setOpen(true);
+            }
+            handleCancelClick();
+          })
+          .catch((e) => {
+            setSnackMsg(communication.NetworkError);
+            setSnackbarType("error");
+            setOpen(true);
+            handleCancelClick();
+          });
+      }
+    } else {
+      setSnackMsg(communication.Error);
+      setSnackbarType("error");
+      setOpen(true);
+      handleCancelClick();
     }
   };
 
@@ -200,9 +445,9 @@ const ProductListPage = () => {
       setBnID(a.brandID);
       setPn(a.productName);
       setPnID(a.productID);
-      setUploadedImage(a.imageName);
+      setUploadedImage(a.image.split("/").pop());
       setPrice(a.price);
-      setConversionValue(a.conversionPrice);
+      setConversionValue(a.unitValue);
       setSaleUnit(a.unitOfSale);
       setDescription(a.description);
 
@@ -211,13 +456,19 @@ const ProductListPage = () => {
       setProductError("");
       setIsPriceError(false);
       setDIError(false);
-      setDIErrorText("");
+      setDIErrorText(a.image.split("/").pop());
       setPriceErrorText("");
       setIsPriceError(false);
       setConversionValueErrorText("");
       setIsConversionValueError(false);
       setDescriptionErrorText("");
       setIsDescriptionError(false);
+
+      let brandData = brandList.find((el) => el.brandID === a.brandID);
+      if (brandData !== undefined) {
+        FetchProductsFromCategory(arnID, brandData.serviceID, brandData.categoryID);
+        FetchUnitsFromProduct(a.productID);
+      }
     }
   };
 
@@ -240,9 +491,9 @@ const ProductListPage = () => {
     setButtonLoading(false);
     setImage("");
     setUploadedImage("");
-    setBn("");
+    setBn("--Select--");
     setBnID(0);
-    setPn("");
+    setPn("--Select--");
     setPnID(0);
     setUploadFileUpload(null);
     setDesignButtonText("Upload Design");
@@ -340,7 +591,6 @@ const ProductListPage = () => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
                         setUploadFileUpload(e.currentTarget.files[0]);
                         let FileName = e.currentTarget.files[0].name;
-
                         if (FileName !== undefined) {
                           setDIErrorText(FileName.trim());
                           setImage(FileName);
@@ -348,7 +598,6 @@ const ProductListPage = () => {
                         }
                         setDesignButtonText("Change");
                         setDIError(false);
-                        // setImage(e.target.value);
                       }
                     }}
                   />
@@ -392,9 +641,9 @@ const ProductListPage = () => {
               size="small"
               value={saleUnit}
               onChange={(e) => {
-                setSaleUnit(e.currentTarget.value);
-                setSaleUnitwith1("1 nos");
-                setOtherSaleUnit("kg");
+                // setSaleUnit(e.currentTarget.value);
+                // setSaleUnitwith1("1 nos");
+                // setOtherSaleUnit("kg");
               }}
             />
           </Grid>
@@ -481,29 +730,23 @@ const ProductListPage = () => {
                   <></>
                 ) : (
                   <>
-                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1, borderWidth: 1, borderColor: theme.palette.divider }}>
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Product Name</b>
-                        </Typography>
-                        <TextField
-                          fullWidth
-                          placeholder="Search Product Name"
-                          variant="outlined"
-                          size="medium"
-                          value={searchQuery}
-                          onChange={(e) => {
-                            onChangeSearch((e.target as HTMLInputElement).value);
-                          }}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <GridSearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Grid>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search"
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        value={searchQuery}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <SearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
                     </Grid>
                     <DataGrid
                       style={{
