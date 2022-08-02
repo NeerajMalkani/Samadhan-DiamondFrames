@@ -208,18 +208,16 @@ export interface BrandModel {
   categoryID: number;
   hsnCode: string;
   gst: string;
-  brandPrefix: string;
+  brandPrefixName: string;
   brandID: number;
   unitOfSale: string;
   unitID: number;
+  unitName:string;
+  unitName2:string;
   generalDiscount: string;
-  appProviderPromotion: string;
-  referralPoint: string;
+  appProviderDiscount: string;
+  referralPoints: string;
   contractorDiscount: string;
-  gold: string;
-  silver: string;
-  platinum: string;
-  contractor: string;
   display: string;
   action: string;
 }

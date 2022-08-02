@@ -32,6 +32,7 @@ import { ValidateGSTRate } from "../../../utils/validations";
 import Provider from "../../../api/Provider";
 import ErrorIcon from "@mui/icons-material/Error";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { json } from "stream/consumers";
 
 const BrandPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -130,6 +131,7 @@ const BrandPage = () => {
   // const [isContractorError, setIsContractorError] = useState(false);
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
   const [buyerCategoryFullData, setBuyerCategoryFullData] = useState([]);
+  const [buyerCategoryFullDataOriginal, setBuyerCategoryFullDataOriginal] = useState([]);
 
   useEffect(() => {
     FetchShowBrand(cookies.dfc.UserID);
@@ -150,7 +152,7 @@ const BrandPage = () => {
                 FetchActvityRoles(UserID);
                 FetchBrands(UserID);
                 FetchBuyerCategories(UserID);
-              // FetchBuyerCategoriesDiscounts();
+                // FetchBuyerCategoriesDiscounts();
               }
             }
           }
@@ -187,15 +189,12 @@ const BrandPage = () => {
               return el.display;
             });
             response.data.data.map(function (a: any, index: number) {
-              let isError = { isError: false };
-              a = Object.assign(a, isError);
-              let errorText = { errorText: "" };
-              a = Object.assign(a, errorText);
-              let value = { value: "" };
+              let value = { BuyerCategoryDiscount: "" };
               a = Object.assign(a, value);
             });
 
             setBuyerCategoryFullData(response.data.data);
+            setBuyerCategoryFullDataOriginal(response.data.data);
           }
         }
       })
@@ -326,32 +325,39 @@ const BrandPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  const FetchBuyerCategoriesDiscounts = (buyerData) => {
+  const FetchBuyerCategoriesDiscounts = (selectSNID: number) => {
     let params = {
       DealerID: CookieUserID,
-      DealerBrandID: 1,
+      DealerBrandID: selectSNID,
     };
     Provider.getAll(`dealerbrand/getbrandbuyermapping?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response:any) => {
+      .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            const arrBuyerDiscountData = [];
-            const arrSelectedBuyerDiscountData = [];
-            buyerData.map((el) => {
-              const matchingData = response.data.data.find((a) => {
+            debugger;
+            response.data.data.map((el) => {
+              buyerCategoryFullData.find((a)=>{
                 return a.buyerCategoryID === el.id;
-              });
-              if (matchingData) {
-                arrSelectedBuyerDiscountData.push({
-                  buyerCategoryID: matchingData.buyerCategoryID,
-                  buyerCategoryDiscount: matchingData.buyerCategoryDiscount,
-                });
-                el.buyerCategoryDiscount = matchingData.buyerCategoryDiscount.toFixed(2);
-              }
-              arrBuyerDiscountData.push(el);
+              })
+
             });
-           // setBuyerCategoryFullData(arrBuyerDiscountData);
-           
+            
+            // const arrBuyerDiscountData = [];
+            // const arrSelectedBuyerDiscountData = [];
+            // buyerData.map((el) => {
+            //   const matchingData = response.data.data.find((a) => {
+            //     return a.buyerCategoryID === el.id;
+            //   });
+            //   if (matchingData) {
+            //     arrSelectedBuyerDiscountData.push({
+            //       buyerCategoryID: matchingData.buyerCategoryID,
+            //       buyerCategoryDiscount: matchingData.buyerCategoryDiscount,
+            //     });
+            //     el.buyerCategoryDiscount = matchingData.buyerCategoryDiscount.toFixed(2);
+            //   }
+            //   arrBuyerDiscountData.push(el);
+            // });
+            // setBuyerCategoryFullData(arrBuyerDiscountData);
           }
         }
       })
@@ -432,18 +438,10 @@ const BrandPage = () => {
     setCD("");
     setIsCDError(false);
     setCDError("");
-    // setGold("");
-    // setIsGoldError(false);
-    // setGoldError("");
-    // setSilver("");
-    // setIsSilverError(false);
-    // setSilverError("");
-    // setPlatinum("");
-    // setIsPlatinumError(false);
-    // setPlatinumError("");
-    // setContractor("");
-    // setIsContractorError(false);
-    // setContractorError("");
+    // buyerCategoryFullData.map(function (a: any, index: number) {
+    //   a.BuyerCategoryDiscount = "";
+    // });
+    setBuyerCategoryFullData(buyerCategoryFullDataOriginal);
   };
 
   const handleSubmitClick = () => {
@@ -505,53 +503,47 @@ const BrandPage = () => {
       setIsCDError(true);
       setCDError(communication.BlankContractorDiscount);
     }
-
-    // if (gold.trim() !== "" && !ValidateGSTRate(gold)) {
-    //   isValid = false;
-    //   setIsGoldError(true);
-    //   setGoldError(communication.BlankGoldValue);
-    // }
-    // if (silver.trim() !== "" && !ValidateGSTRate(silver)) {
-    //   isValid = false;
-    //   setIsSilverError(true);
-    //   setSilverError(communication.BlankSilverValue);
-    // }
-
-    // if (platinum.trim() !== "" && !ValidateGSTRate(platinum)) {
-    //   isValid = false;
-    //   setIsPlatinumError(true);
-    //   setPlatinumError(communication.BlankPlatinumValue);
-    // }
-
-    // if (contractor.trim() !== "" && !ValidateGSTRate(contractor)) {
-    //   isValid = false;
-    //   setIsContractorError(true);
-    //   setContractorError(communication.BlankContractordValue);
-    // }
-
     if (isValid) {
       InsertUpdateData();
     }
   };
 
   const InsertUpdateData = () => {
+    let uosid = 0;
+    let uosid2 = 0;
+    const objUnits1 = unitOfSalesList.find((el) => {
+      return el.displayUnit && el.displayUnit === unitsOfSales;
+    });
+
+    if (objUnits1) {
+      uosid = objUnits1.unit1ID;
+      uosid2 = objUnits1.unit2ID;
+    }
+
     if (actionStatus === "new") {
       Provider.create("dealerbrand/insertbrandsetup", {
         BrandID: bnID,
         ServiceID: snID,
         CategoryID: cnID,
-        BrandPrefix: brandPrefix,
-        UnitID: selectedUnitID,
+        BrandPrefixName: brandPrefix,
         GeneralDiscount: gd,
-        AppProviderPromotion: apd,
-        ReferralPoint: rp,
+        AppProviderDiscount: apd,
+        ReferralPoints: rp,
         ContractorDiscount: cd,
         Display: display === "Yes",
+        UnitOfSalesID: uosid,
+        UnitOfSalesID2: uosid2,
+        DealerID: CookieUserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
             //FetchData("added", CookieUserID);
             InsertUpdateBrandMapping("new");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            handleCancelClick();
           } else {
             handleCancelClick();
             setSnackMsg(communication.Error);
@@ -560,6 +552,7 @@ const BrandPage = () => {
           }
         })
         .catch((e) => {
+          debugger;
           handleCancelClick();
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
@@ -571,13 +564,15 @@ const BrandPage = () => {
         BrandID: bnID,
         ServiceID: snID,
         CategoryID: cnID,
-        BrandPrefix: brandPrefix,
-        UnitID: selectedUnitID,
+        BrandPrefixName: brandPrefix,
         GeneralDiscount: gd,
-        AppProviderPromotion: apd,
-        ReferralPoint: rp,
+        AppProviderDiscount: apd,
+        ReferralPoints: rp,
         ContractorDiscount: cd,
         Display: display === "Yes",
+        UnitOfSalesID: uosid,
+        UnitOfSalesID2: uosid2,
+        DealerID: CookieUserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -600,7 +595,21 @@ const BrandPage = () => {
   };
 
   const InsertUpdateBrandMapping = (mode: string) => {
-    Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", {})
+    let data = buyerCategoryFullData.find((el) => parseFloat(el.BuyerCategoryDiscount) > 0);
+    if (!Array.isArray(data)) {
+      let newData = [];
+      newData.push(data);
+      data = [...newData];
+    }
+
+    let DealerJson = [];
+
+    data.map(function (a: any, index: number) {
+      DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
+    });
+
+    console.log("data " + JSON.stringify(DealerJson));
+    Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
       .then((response) => {
         if (response.data && response.data.code === 200) {
           FetchData(mode === "new" ? "added" : "updated", CookieUserID);
@@ -675,30 +684,39 @@ const BrandPage = () => {
       setCn(a.categoryName);
       setCnID(a.categoryID);
       SetResetCategoryName(false);
+      FetchCategoriesFromServices(a.serviceID, (acategoryList) => {
+        
+        let ac = acategoryList.find((el) => el.categoryName === a.categoryName);
+        if (ac !== undefined) {
+          setGst(parseFloat(ac.gstRate).toFixed(2) + "%");
+          setHsn(ac.hsnsacCode);
+          FetchUnitsFromCategory(ac.id);
+        }
+      });
 
-      setHsn(a.hsnCode);
-      setGst(a.gst);
-      setBrandPrefix(a.brandPrefix);
+      setBrandPrefix(a.brandPrefixName);
       setIsBrandPrefixError(false);
       setBrandPrefixError("");
       setBn(a.brandName);
       setBnID(a.brandID);
       SetResetBrandName(false);
-      setUnitsOfSales(a.unitOfSale);
-      setSelectedUnitID(a.unitID);
+      setUnitsOfSales(a.unitName + " / " + a.unitName2);
+
       SetResetUnit(false);
       setGD(a.generalDiscount);
       setIsGDError(false);
       setGDError("");
-      setAPD(a.appProviderPromotion);
+      setAPD(a.appProviderDiscount);
       setAPDError("");
       setIsAPDError(false);
-      setRP(a.referralPoint);
+      setRP(a.referralPoints);
       setIsRPError(false);
       setRPError("");
       setCD(a.contractorDiscount);
       setCDError("");
       setIsCDError(false);
+
+      FetchBuyerCategoriesDiscounts(a.brandID);
     }
   };
 
@@ -971,25 +989,25 @@ const BrandPage = () => {
               </FormControl>
             </Grid>
             {buyerCategoryFullData.length !== 0 ? (
-              <Grid container xs={4} sm={8} md={12}>
+              <Grid container columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
                   <Typography variant="h6">Buyer Category Discount (%)</Typography>
                 </Grid>
                 {buyerCategoryFullData.map((k, i) => {
                   return (
-                    <Grid item xs={4} sm={3} md={3} sx={{ mt: 2, pl:"8px", pr:"8px" }}>
+                    <Grid item xs={4} sm={3} md={3} sx={{ mt: 2, pl: "8px", pr: "8px" }}>
                       <Typography variant="subtitle2" sx={{ mb: 1 }}>
                         <b>{k.buyerCategoryName} (%)</b>
                       </Typography>
                       <TextField
+                        key={i}
                         fullWidth
                         placeholder="0.00"
                         variant="outlined"
-                        size="small"                     
+                        size="small"
                         onChange={(e) => {
-                          k.value = (e.target as HTMLInputElement).value;
-                         console.log( buyerCategoryFullData);
-                          
+                          k.BuyerCategoryDiscount = (e.target as HTMLInputElement).value;
+                          // console.log(buyerCategoryFullData);
                         }}
                       />
                     </Grid>

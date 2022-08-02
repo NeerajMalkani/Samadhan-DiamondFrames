@@ -862,7 +862,7 @@ export const brandColumns: GridColDef[] = [
     flex: 1.5,
   },
   {
-    field: "brandPrefix",
+    field: "brandPrefixName",
     headerName: "Brand Prefix",
     flex: 1,
   },
@@ -873,8 +873,11 @@ export const brandColumns: GridColDef[] = [
   },
   {
     field: "Unit of Sale",
-    headerName: "unitOfSale.",
+    headerName: "unitOfSale",
     flex: 1.8,
+    renderCell: (params) => {
+        return params.row.unitName + " / " + params.row.unitName2;
+    },
   },
   {
     field: "generalDiscount",
@@ -887,7 +890,7 @@ export const brandColumns: GridColDef[] = [
     flex: 1,
   },
   {
-    field: "appProviderPromotion",
+    field: "appProviderDiscount",
     headerName: "App Provider Promotion (%)",
     flex: 1,
   },
@@ -896,13 +899,13 @@ export const brandColumns: GridColDef[] = [
     headerName: "Referral Points (%)",
     flex: 1,
   },
-  {
-    field: "approve",
-    headerName: "Approve",
-    flex: 1.8,
-    sortable: false,
-    maxWidth: 100,
-  },
+  // {
+  //   field: "approve",
+  //   headerName: "Approve",
+  //   flex: 1.8,
+  //   sortable: false,
+  //   maxWidth: 100,
+  // },
   {
     field: "display",
     headerName: "Display",
