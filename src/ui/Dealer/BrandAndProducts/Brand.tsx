@@ -1091,8 +1091,8 @@ const BrandPage = () => {
               </Typography>
             </Grid>
             <Grid item xs={4} sm={8} md={12}>
-              <Button variant="contained" sx={{ mt: 1, mr: 1 }} onClick={() => {}}>
-                Go to Settings
+              <Button variant="contained" sx={{ mt: 1, mr: 1 }} onClick={() => {navigate(`/dealer/basicdetails`);}}>
+                Activate
               </Button>
             </Grid>
           </Grid>
