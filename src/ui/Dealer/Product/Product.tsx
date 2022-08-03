@@ -104,10 +104,13 @@ const ProductListPage = () => {
   const [saleUnit, setSaleUnit] = useState<string>("");
   const [otherSaleUnit, setOtherSaleUnit] = useState<string>("");
   const [arnID, setArnID] = useState<number>(0);
-  const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
+  //const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
 
   useEffect(() => {
-    FetchShowBrand(cookies.dfc.UserID);
+    //FetchShowBrand(cookies.dfc.UserID);
+    FetchData("", cookies.dfc.UserID);
+    FetchBrands(cookies.dfc.UserID);
+    FetchActvityRoles();
   }, []);
 
   const FetchShowBrand = (UserID) => {
@@ -118,7 +121,7 @@ const ProductListPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            setIsBrandApproved(response.data.data[0].showBrand);
+          //  setIsBrandApproved(response.data.data[0].showBrand);
             if (response.data.data[0].showBrand) {
               FetchData("", UserID);
               FetchBrands(UserID);
