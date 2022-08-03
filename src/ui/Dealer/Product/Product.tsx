@@ -233,7 +233,7 @@ const ProductListPage = () => {
       ServiceID: selectedServiceID,
       CategoryID: selectedCategoryID,
     };
-    
+
     Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -356,8 +356,10 @@ const ProductListPage = () => {
 
   const uploadImage = () => {
     let imageName: string = uuid();
-    setUploadedImage(imageName);
-    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName, InsertUpdateData);
+    let fileExtension = uploadedImage.split(".").pop();
+    setUploadedImage(imageName + "." + fileExtension);
+    //  setUploadedImage(imageName);
+    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertUpdateData);
   };
 
   const InsertUpdateData = (Status: string, fileName: string) => {

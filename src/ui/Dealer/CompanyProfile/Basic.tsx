@@ -277,8 +277,9 @@ const Basic = () => {
 
   const uploadImage = () => {
     let imageName: string = uuid();
-    setUploadedImage(imageName);
-    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName, InsertData);
+    let fileExtension = uploadedImage.split(".").pop();
+    setUploadedImage(imageName + "." + fileExtension);
+    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertData);
   };
 
   const InsertData = (status: string, fileName: string) => {
