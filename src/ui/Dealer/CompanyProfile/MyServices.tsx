@@ -80,7 +80,7 @@ const MyServices = () => {
       DealerID: cookies.dfc.UserID,
     };
 
-    Provider.getAll(`companyprofiledealer/getmyservices?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`dealercompanyprofile/getmyservices?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -233,7 +233,7 @@ const MyServices = () => {
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("companyprofiledealer/insertmyservices", {
+      Provider.create("dealercompanyprofile/insertmyservices", {
         ServiceID: snID,
         Display: checked,
         DealerID: CookieUserID,
@@ -259,7 +259,7 @@ const MyServices = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("companyprofiledealer/updatemyservices", {
+      Provider.create("dealercompanyprofile/updatemyservices", {
         ID: selectedID,
         ServiceID: snID,
         DealerID: CookieUserID,

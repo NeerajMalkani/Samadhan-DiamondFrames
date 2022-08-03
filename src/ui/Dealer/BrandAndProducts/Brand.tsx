@@ -92,7 +92,7 @@ const BrandPage = () => {
   const [unitList, setUnitList] = useState<string[]>([]);
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
-  // const [selectedUnit, setSelectedUnit] = useState<string>("");
+
   const [selectedUnitID, setSelectedUnitID] = useState<number>(0);
 
   const [display, setDisplay] = useState("Yes");
@@ -114,21 +114,6 @@ const BrandPage = () => {
   const [cdError, setCDError] = useState("");
   const [isCDError, setIsCDError] = useState(false);
 
-  // const [gold, setGold] = useState("");
-  // const [goldError, setGoldError] = useState("");
-  // const [isGoldError, setIsGoldError] = useState(false);
-
-  // const [silver, setSilver] = useState("");
-  // const [silverError, setSilverError] = useState("");
-  // const [isSilverError, setIsSilverError] = useState(false);
-
-  // const [platinum, setPlatinum] = useState("");
-  // const [platinumError, setPlatinumError] = useState("");
-  // const [isPlatinumError, setIsPlatinumError] = useState(false);
-
-  // const [contractor, setContractor] = useState("");
-  // const [contractorError, setContractorError] = useState("");
-  // const [isContractorError, setIsContractorError] = useState(false);
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
   const [buyerCategoryFullData, setBuyerCategoryFullData] = useState([]);
   const [buyerCategoryFullDataOriginal, setBuyerCategoryFullDataOriginal] = useState([]);
@@ -192,9 +177,8 @@ const BrandPage = () => {
               let value = { BuyerCategoryDiscount: "" };
               a = Object.assign(a, value);
             });
+            setBuyerCategoryFullData([...response.data.data]);
 
-            setBuyerCategoryFullData(response.data.data);
-            setBuyerCategoryFullDataOriginal(response.data.data);
           }
         }
       })
@@ -335,29 +319,30 @@ const BrandPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             // debugger;
-            // response.data.data.map((el) => {
-            //   buyerCategoryFullData.find((a)=>{
-            //     return a.buyerCategoryID === el.id;
-            //   })
+            response.data.data.map((el) => {
+              let buyerData = buyerCategoryFullData.find((a) => {
+                return el.buyerCategoryID === a.id;
+              });
+              buyerData.BuyerCategoryDiscount = el.buyerCategoryDiscount;
+            });
 
-            // });
-            
-            // const arrBuyerDiscountData = [];
-            // const arrSelectedBuyerDiscountData = [];
-            // buyerData.map((el) => {
-            //   const matchingData = response.data.data.find((a) => {
-            //     return a.buyerCategoryID === el.id;
-            //   });
-            //   if (matchingData) {
-            //     arrSelectedBuyerDiscountData.push({
-            //       buyerCategoryID: matchingData.buyerCategoryID,
-            //       buyerCategoryDiscount: matchingData.buyerCategoryDiscount,
-            //     });
-            //     el.buyerCategoryDiscount = matchingData.buyerCategoryDiscount.toFixed(2);
-            //   }
-            //   arrBuyerDiscountData.push(el);
-            // });
-            // setBuyerCategoryFullData(arrBuyerDiscountData);
+            const arrBuyerDiscountData = [];
+            //const arrSelectedBuyerDiscountData = [];
+            buyerCategoryFullData.map((el) => {
+              const matchingData = response.data.data.find((a) => {
+                return a.buyerCategoryID === el.id;
+              });
+              if (matchingData) {
+                el.BuyerCategoryDiscount = matchingData.buyerCategoryDiscount;
+                // arrSelectedBuyerDiscountData.push({
+                //   buyerCategoryID: matchingData.buyerCategoryID,
+                //   buyerCategoryDiscount: matchingData.buyerCategoryDiscount,
+                // });
+                // el.buyerCategoryDiscount = matchingData.buyerCategoryDiscount.toFixed(2);
+              }
+              arrBuyerDiscountData.push(el);
+            });
+            setBuyerCategoryFullData(arrBuyerDiscountData);
           }
         }
       })
@@ -438,10 +423,10 @@ const BrandPage = () => {
     setCD("");
     setIsCDError(false);
     setCDError("");
-    // buyerCategoryFullData.map(function (a: any, index: number) {
-    //   a.BuyerCategoryDiscount = "";
-    // });
-    setBuyerCategoryFullData(buyerCategoryFullDataOriginal);
+    buyerCategoryFullData.map((el) => {
+        el.BuyerCategoryDiscount = "";
+    });
+
   };
 
   const handleSubmitClick = () => {
@@ -481,24 +466,24 @@ const BrandPage = () => {
       setUnitErrorText(communication.SelectUnitName);
     }
 
-    if (gd.trim() === "" || !ValidateGSTRate(gd)) {
+    if (gd.toString().trim() === "" || !ValidateGSTRate(gd)) {
       isValid = false;
       setIsGDError(true);
       setGDError(communication.BlankGeneralDiscount);
     }
 
-    if (apd.trim() === "" || !ValidateGSTRate(apd)) {
+    if (apd.toString().trim() === "" || !ValidateGSTRate(apd)) {
       isValid = false;
       setIsAPDError(true);
       setAPDError(communication.BlankAppProviderDiscount);
     }
 
-    if (rp.trim() === "" || !ValidateGSTRate(rp)) {
+    if (rp.toString().trim() === "" || !ValidateGSTRate(rp)) {
       isValid = false;
       setIsRPError(true);
       setRPError(communication.BlankReferralPoint);
     }
-    if (cd.trim() === "" || !ValidateGSTRate(cd)) {
+    if (cd.toString().trim() === "" || !ValidateGSTRate(cd)) {
       isValid = false;
       setIsCDError(true);
       setCDError(communication.BlankContractorDiscount);
@@ -594,20 +579,20 @@ const BrandPage = () => {
   };
 
   const InsertUpdateBrandMapping = (mode: string) => {
-    let data = buyerCategoryFullData.find((el) => parseFloat(el.BuyerCategoryDiscount) > 0);
-    if (!Array.isArray(data)) {
-      let newData = [];
-      newData.push(data);
-      data = [...newData];
-    }
+    let data = buyerCategoryFullData.filter((el) => {
+      return parseFloat(el.BuyerCategoryDiscount) > 0;
+    });
+    // if (!Array.isArray(data)) {
+    //   let newData = [];
+    //   newData.push(data);
+    //   data = [...newData];
+    // }
 
     let DealerJson = [];
-
     data.map(function (a: any, index: number) {
       DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
     });
 
-    console.log("data " + JSON.stringify(DealerJson));
     Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
       .then((response) => {
         if (response.data && response.data.code === 200) {
@@ -684,7 +669,6 @@ const BrandPage = () => {
       setCnID(a.categoryID);
       SetResetCategoryName(false);
       FetchCategoriesFromServices(a.serviceID, (acategoryList) => {
-        
         let ac = acategoryList.find((el) => el.categoryName === a.categoryName);
         if (ac !== undefined) {
           setGst(parseFloat(ac.gstRate).toFixed(2) + "%");
@@ -1004,9 +988,18 @@ const BrandPage = () => {
                         placeholder="0.00"
                         variant="outlined"
                         size="small"
+                        value={k.BuyerCategoryDiscount}
                         onChange={(e) => {
-                          k.BuyerCategoryDiscount = (e.target as HTMLInputElement).value;
-                          // console.log(buyerCategoryFullData);
+                          let text = (e.target as HTMLInputElement).value;
+                          const arrBuyerDiscountData = [];
+
+                          buyerCategoryFullData.map((el) => {
+                            if (k.id === el.id) {
+                              el.BuyerCategoryDiscount = text;
+                            }
+                            arrBuyerDiscountData.push(el);
+                          });
+                          setBuyerCategoryFullData(arrBuyerDiscountData);
                         }}
                       />
                     </Grid>
