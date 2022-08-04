@@ -29,6 +29,7 @@ import ProductListPage from "../ui/Dealer/Product/Product";
 import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
 import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
 import Basic from "../ui/Dealer/CompanyProfile/Basic";
+import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
 
 const AppRoutes = () => {
   const activityNamesList = useState<ActivityRoleNameModel[]>([]);
@@ -80,6 +81,7 @@ const AppRoutes = () => {
                 <Route path="servicecatalogue/worklocation" element={<WorkLocationPage />} />
                 <Route path="servicecatalogue/designtype" element={<DesignTypePage />} />
                 <Route path="servicecatalogue/postnewdesign" element={<PostNewDesignPage />} />
+                <Route path="servicecatalogue/materialsetup" element={<MaterialSetup />} />
                 <Route path="dealer/brandmaster" element={<BrandMasterPage />} />
                 <Route path="dealer/brandsetup" element={<BrandPage />} />
                 <Route path="dealer/productlisting" element={<ProductListPage />} />

@@ -19,7 +19,7 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import "../theme/Styles.css";
@@ -36,6 +36,20 @@ import AnnouncementIcon from "@mui/icons-material/Announcement";
 import Icon from "@mui/material/Icon";
 import PrismaZoom from "react-prismazoom";
 import { theme } from "../theme/AppTheme";
+
+function useWindowSize(callback: Function) {
+  useLayoutEffect(() => {
+    function updateSize() {
+      // console.log(window.innerWidth + " " + window.innerHeight);
+      if (callback !== undefined) {
+        callback(window.innerWidth, window.innerHeight);
+      }
+    }
+    window.addEventListener("resize", updateSize);
+    updateSize();
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+}
 
 const DashboardPage = () => {
   let navigate = useNavigate();
@@ -65,6 +79,9 @@ const DashboardPage = () => {
   const [catalogueCategoryImages, setCatalogueCategoryImages] = useState([]);
   const [catalogueImages, setCatalogueImages] = useState([]);
 
+  const [galleryWidth, setGalleryWidth] = useState(896);
+  const [galleryHeight, setGalleryHeight] = useState(504);
+
   const arrQuickLinks = [
     { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
     { title: "Feedbacks", icon: "AnnouncementIcon", backgroundColor: "" },
@@ -79,6 +96,14 @@ const DashboardPage = () => {
       SetCookieUseID(cookies.dfc.UserID);
     }
   }, []);
+
+  useWindowSize((widthScreen, heightScreen) => {
+    if (widthScreen < 896) {
+      setGalleryWidth(widthScreen - 60);
+    } else {
+      setGalleryWidth(896);
+    }
+  });
 
   useEffect(() => {
     GetServiceCatalogue();
@@ -294,8 +319,8 @@ const DashboardPage = () => {
                   slideDuration={3}
                   loop={true}
                   autoPlay={true}
-                  width={896}
-                  height={504}
+                  width={galleryWidth}
+                  height={galleryHeight}
                   images={catalogueImages}
                   showBullets={true}
                   showNavs={true}
@@ -322,7 +347,7 @@ const DashboardPage = () => {
                 backgroundColor: "rgba(0, 102, 193, 0.04)",
               }}
             >
-              <img alt="" style={{ height: 148 }} src="https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-ncino.jpg" />
+              <img alt="" style={{ height: 148, maxWidth: galleryWidth }} src="https://www.wordstream.com/wp-content/uploads/2021/07/banner-ads-examples-ncino.jpg" />
               <Typography sx={{ position: "absolute", bottom: "8px", right: "16px" }}>Sponsered Ads</Typography>
             </Grid>
             <Grid item xs={4} sm={8} md={12} sx={{ mt: 2 }}>

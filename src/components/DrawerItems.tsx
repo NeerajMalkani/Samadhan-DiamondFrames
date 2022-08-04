@@ -225,11 +225,11 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Materials Setup",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "materialssetup"), //.includes("activity"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "materialsetup"), //.includes("activity"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/servicecatalogue/materialssetup`);
+              navigate(`/servicecatalogue/materialsetup`);
             }, 300);
           },
         },
