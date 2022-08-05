@@ -40,7 +40,6 @@ import { theme } from "../theme/AppTheme";
 function useWindowSize(callback: Function) {
   useLayoutEffect(() => {
     function updateSize() {
-      // console.log(window.innerWidth + " " + window.innerHeight);
       if (callback !== undefined) {
         callback(window.innerWidth, window.innerHeight);
       }
@@ -100,8 +99,10 @@ const DashboardPage = () => {
   useWindowSize((widthScreen, heightScreen) => {
     if (widthScreen < 896) {
       setGalleryWidth(widthScreen - 60);
+      setGalleryHeight(((widthScreen - 60) * 504) / 896);
     } else {
       setGalleryWidth(896);
+      setGalleryHeight(504);
     }
   });
 
