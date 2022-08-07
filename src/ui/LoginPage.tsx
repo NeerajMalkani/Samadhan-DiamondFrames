@@ -10,6 +10,7 @@ import { ValidateFields } from "../utils/validations";
 import { theme } from "../theme/AppTheme";
 import { useCookies } from "react-cookie";
 import { json } from "stream/consumers";
+import { GetStringifyJson } from "../utils/CommonFunctions";
 
 const LoginPage = () => {
   /* #region Check user is login and handle enter click  */
@@ -53,15 +54,7 @@ const LoginPage = () => {
           Password: password,
         };
 
-        var string_ = JSON.stringify(params);
-
-        string_ = string_.replace(/{/g, "");
-        string_ = string_.replace(/}/g, "");
-        string_ = string_.replace(/:/g, "=");
-        string_ = string_.replace(/,/g, "&");
-        string_ = string_.replace(/"/g, "");
-
-        Provider.getAll(`registration/login?${string_}`)
+        Provider.getAll(`registration/login?${new URLSearchParams(GetStringifyJson(params))}`)
           .then((response: any) => {
             console.log(response.data);
             if (response.data && response.data.code === 200) {

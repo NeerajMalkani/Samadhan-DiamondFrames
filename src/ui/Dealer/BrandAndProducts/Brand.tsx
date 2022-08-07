@@ -116,7 +116,6 @@ const BrandPage = () => {
 
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
   const [buyerCategoryFullData, setBuyerCategoryFullData] = useState([]);
-  const [buyerCategoryFullDataOriginal, setBuyerCategoryFullDataOriginal] = useState([]);
 
   useEffect(() => {
     FetchShowBrand(cookies.dfc.UserID);

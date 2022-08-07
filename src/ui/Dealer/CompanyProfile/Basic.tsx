@@ -161,7 +161,7 @@ const Basic = () => {
 
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Logo");
-  const [image, setImage] = useState("");
+  const [profileImage, setProfileImage] = useState("");
   const [uploadedImage, setUploadedImage] = useState("");
   const [uploadFileUpload, setUploadFileUpload] = useState<any>();
 
@@ -210,8 +210,9 @@ const Basic = () => {
             setSOP(response.data.data[0].salesOrderPrefix ? response.data.data[0].salesOrderPrefix : "");
             setDisplay(response.data.data[0].showBrand ? "Yes" : "No");
             setUploadedImage(response.data.data[0].companyLogo);
-            setImage(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : AWSImagePath + "placeholder-image.png");
+            setProfileImage(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : AWSImagePath + "placeholder-image.png");
             // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
+           debugger;
             if (response.data.data[0].stateID !== 0) {
               FetchCities(response.data.data[0].stateID);
             }
@@ -267,6 +268,7 @@ const Basic = () => {
   };
 
   const handleSubmitClick = () => {
+    debugger;
     setButtonLoading(true);
     if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
       uploadImage();
@@ -276,6 +278,7 @@ const Basic = () => {
   };
 
   const uploadImage = () => {
+    debugger;
     let imageName: string = uuid();
     let fileExtension = uploadedImage.split(".").pop();
     setUploadedImage(imageName + "." + fileExtension);
@@ -311,7 +314,7 @@ const Basic = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
-              setImage(fileName ? AWSImagePath + fileName : "");
+              setProfileImage(fileName ? AWSImagePath + fileName : "");
               setUploadFileUpload(undefined);
             }
             setSnackbarType("success");
@@ -361,9 +364,11 @@ const Basic = () => {
             <Typography variant="h4">Basic details</Typography>
           </Grid>
           {loading ? (
-            <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-              <CircularProgress />
-            </Box>
+            <Grid item xs={4} sm={8} md={12}>
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+                <CircularProgress />
+              </Box>
+            </Grid>
           ) : (
             <>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -376,374 +381,380 @@ const Basic = () => {
               </Box>
               <Grid item xs={4} sm={8} md={12}>
                 <TabPanel value={value} index={0}>
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Company / Frim Name</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setCompanyName((e.target as HTMLInputElement).value);
-                        setIsCompanyNameError(false);
-                        setCompanyNameError("");
-                      }}
-                      error={isCompanyNameError}
-                      helperText={companyNameError}
-                      value={companyName}
-                    />
-                  </Grid>
+                  <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Company / Frim Name</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setCompanyName((e.target as HTMLInputElement).value);
+                          setIsCompanyNameError(false);
+                          setCompanyNameError("");
+                        }}
+                        error={isCompanyNameError}
+                        helperText={companyNameError}
+                        value={companyName}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Contact person Name</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setContact((e.target as HTMLInputElement).value);
-                        setIsContactError(false);
-                        setContactError("");
-                      }}
-                      error={isContactError}
-                      helperText={contactError}
-                      value={contact}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Contact person Name</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setContact((e.target as HTMLInputElement).value);
+                          setIsContactError(false);
+                          setContactError("");
+                        }}
+                        error={isContactError}
+                        helperText={contactError}
+                        value={contact}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Contact No.</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setContactNo((e.target as HTMLInputElement).value);
-                        setIsContactNoError(false);
-                        setContactNoError("");
-                      }}
-                      error={isContactNoError}
-                      helperText={contactNoError}
-                      value={contactNo}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Contact No.</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setContactNo((e.target as HTMLInputElement).value);
+                          setIsContactNoError(false);
+                          setContactNoError("");
+                        }}
+                        error={isContactNoError}
+                        helperText={contactNoError}
+                        value={contactNo}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>GST No.</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setGSTNo((e.target as HTMLInputElement).value);
-                        setIsGSTNoError(false);
-                        setGSTNoError("");
-                      }}
-                      error={isGSTNoError}
-                      helperText={gstNoError}
-                      value={gstNo}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>GST No.</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setGSTNo((e.target as HTMLInputElement).value);
+                          setIsGSTNoError(false);
+                          setGSTNoError("");
+                        }}
+                        error={isGSTNoError}
+                        helperText={gstNoError}
+                        value={gstNo}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>PAN No.</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setPanNo((e.target as HTMLInputElement).value);
-                        setIsPanNoError(false);
-                        setPanNoError("");
-                      }}
-                      error={isPanNoError}
-                      helperText={panNoError}
-                      value={panNo}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>PAN No.</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setPanNo((e.target as HTMLInputElement).value);
+                          setIsPanNoError(false);
+                          setPanNoError("");
+                        }}
+                        error={isPanNoError}
+                        helperText={panNoError}
+                        value={panNo}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Location Name</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setLocationName((e.target as HTMLInputElement).value);
-                        setIsLocationNameError(false);
-                        setLocationNameError("");
-                      }}
-                      error={isLocationNameError}
-                      helperText={locatoinNameError}
-                      value={locationName}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Location Name</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setLocationName((e.target as HTMLInputElement).value);
+                          setIsLocationNameError(false);
+                          setLocationNameError("");
+                        }}
+                        error={isLocationNameError}
+                        helperText={locatoinNameError}
+                        value={locationName}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Address</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setAddress((e.target as HTMLInputElement).value);
-                        setIsAddressError(false);
-                        setAddressError("");
-                      }}
-                      error={isAddressError}
-                      helperText={addressError}
-                      value={address}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Address</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setAddress((e.target as HTMLInputElement).value);
+                          setIsAddressError(false);
+                          setAddressError("");
+                        }}
+                        error={isAddressError}
+                        helperText={addressError}
+                        value={address}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>State Name</b>
-                    </Typography>
-                    <Autocomplete
-                      disablePortal
-                      fullWidth
-                      options={statesFullData}
-                      //sx={{ width: 300 }}
-                      onChange={(event: React.SyntheticEvent, value: any) => {
-                        setIsStateError(false);
-                        setStateError("");
-                        if (value !== null) {
-                          setSelectedStateName(value.label);
-                          setSelectedStateID(value.id);
-                          setCityFullData([]);
-                          setSelectedCityName("");
-                          setSelectedCityID(0);
-                          FetchCities(value.id);
-                        }
-                      }}
-                      value={selectedStateName}
-                      renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>State Name</b>
+                      </Typography>
+                      <Autocomplete
+                        disablePortal
+                        fullWidth
+                        options={statesFullData}
+                        //sx={{ width: 300 }}
+                        onChange={(event: React.SyntheticEvent, value: any) => {
+                          setIsStateError(false);
+                          setStateError("");
+                          if (value !== null) {
+                            setSelectedStateName(value.label);
+                            setSelectedStateID(value.id);
+                            setCityFullData([]);
+                            setSelectedCityName("");
+                            setSelectedCityID(0);
+                            FetchCities(value.id);
+                          }
+                        }}
+                        value={selectedStateName}
+                        renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>City Name</b>
-                    </Typography>
-                    <Autocomplete
-                      disablePortal
-                      fullWidth
-                      options={cityFullData}
-                      // sx={{ width: 300 }}
-                      onChange={(event: React.SyntheticEvent, value: any) => {
-                        setIsCityError(false);
-                        setCityError("");
-                        if (value !== null) {
-                          setSelectedCityName(value.label);
-                          setSelectedCityID(value.id);
-                        }
-                      }}
-                      value={selectedCityName}
-                      renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCityError} helperText={cityError} />}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>City Name</b>
+                      </Typography>
+                      <Autocomplete
+                        disablePortal
+                        fullWidth
+                        options={cityFullData}
+                        // sx={{ width: 300 }}
+                        onChange={(event: React.SyntheticEvent, value: any) => {
+                          setIsCityError(false);
+                          setCityError("");
+                          if (value !== null) {
+                            setSelectedCityName(value.label);
+                            setSelectedCityID(value.id);
+                          }
+                        }}
+                        value={selectedCityName}
+                        renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCityError} helperText={cityError} />}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Pincode</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setPincode((e.target as HTMLInputElement).value);
-                        setIsPincodeError(false);
-                        setPincodeError("");
-                      }}
-                      error={isPincodeError}
-                      helperText={pincodeError}
-                      value={pincode}
-                    />
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Pincode</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setPincode((e.target as HTMLInputElement).value);
+                          setIsPincodeError(false);
+                          setPincodeError("");
+                        }}
+                        error={isPincodeError}
+                        helperText={pincodeError}
+                        value={pincode}
+                      />
+                    </Grid>
                   </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Account Number</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setAccountNo((e.target as HTMLInputElement).value);
-                        setIsAccountNoError(false);
-                        setAccountNoError("");
-                      }}
-                      error={isAccountNoError}
-                      helperText={accountNoError}
-                      value={accountNo}
-                    />
-                  </Grid>
+                  <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Account Number</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setAccountNo((e.target as HTMLInputElement).value);
+                          setIsAccountNoError(false);
+                          setAccountNoError("");
+                        }}
+                        error={isAccountNoError}
+                        helperText={accountNoError}
+                        value={accountNo}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Bank Name</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setBankName((e.target as HTMLInputElement).value);
-                        setIsBankNameError(false);
-                        setBankNameError("");
-                      }}
-                      error={isBankNameError}
-                      helperText={bankNameError}
-                      value={bankName}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Bank Name</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setBankName((e.target as HTMLInputElement).value);
+                          setIsBankNameError(false);
+                          setBankNameError("");
+                        }}
+                        error={isBankNameError}
+                        helperText={bankNameError}
+                        value={bankName}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Bank Branch Name</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setBankBranchName((e.target as HTMLInputElement).value);
-                        setIsBankBranchNameError(false);
-                        setBankBranchNameError("");
-                      }}
-                      error={isBankBranchNameError}
-                      helperText={bankBranchNameError}
-                      value={bankBranchName}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Bank Branch Name</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setBankBranchName((e.target as HTMLInputElement).value);
+                          setIsBankBranchNameError(false);
+                          setBankBranchNameError("");
+                        }}
+                        error={isBankBranchNameError}
+                        helperText={bankBranchNameError}
+                        value={bankBranchName}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>IFSC Code</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setIFSCCode((e.target as HTMLInputElement).value);
-                        setIsIFSCCodeError(false);
-                        setIFSCCodeError("");
-                      }}
-                      error={isIFSCCodeError}
-                      helperText={IFSCCodeError}
-                      value={IFSCCode}
-                    />
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>IFSC Code</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setIFSCCode((e.target as HTMLInputElement).value);
+                          setIsIFSCCodeError(false);
+                          setIFSCCodeError("");
+                        }}
+                        error={isIFSCCodeError}
+                        helperText={IFSCCodeError}
+                        value={IFSCCode}
+                      />
+                    </Grid>
                   </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                  <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Create Brand & Product</b>
-                    </Typography>
-                    <FormControl>
-                      <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
-                        <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                        <FormControlLabel value="No" control={<Radio />} label="No" />
-                      </RadioGroup>
-                    </FormControl>
-                  </Grid>
+                  <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
+                    <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Create Brand & Product</b>
+                      </Typography>
+                      <FormControl>
+                        <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+                          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                          <FormControlLabel value="No" control={<Radio />} label="No" />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Company Name Prefix</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setCNP((e.target as HTMLInputElement).value);
-                        setIsCNPError(false);
-                        setCNPError("");
-                      }}
-                      error={isCNPError}
-                      helperText={cnpError}
-                      value={cnp}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Company Name Prefix</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setCNP((e.target as HTMLInputElement).value);
+                          setIsCNPError(false);
+                          setCNPError("");
+                        }}
+                        error={isCNPError}
+                        helperText={cnpError}
+                        value={cnp}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Employee Code Prefix</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setECP((e.target as HTMLInputElement).value);
-                        setIsECPError(false);
-                        setECPError("");
-                      }}
-                      error={isECPError}
-                      helperText={ecpError}
-                      value={ecp}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Employee Code Prefix</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setECP((e.target as HTMLInputElement).value);
+                          setIsECPError(false);
+                          setECPError("");
+                        }}
+                        error={isECPError}
+                        helperText={ecpError}
+                        value={ecp}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Purchase Order Prefix</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setPOP((e.target as HTMLInputElement).value);
-                        setIsPOPError(false);
-                        setPOPError("");
-                      }}
-                      error={isPOPError}
-                      helperText={popError}
-                      value={pop}
-                    />
-                  </Grid>
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Purchase Order Prefix</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setPOP((e.target as HTMLInputElement).value);
+                          setIsPOPError(false);
+                          setPOPError("");
+                        }}
+                        error={isPOPError}
+                        helperText={popError}
+                        value={pop}
+                      />
+                    </Grid>
 
-                  <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                      <b>Sales Order Prefix</b>
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        setSOP((e.target as HTMLInputElement).value);
-                        setIsSOPError(false);
-                        setSOPError("");
-                      }}
-                      error={isSOPError}
-                      helperText={sopError}
-                      value={sop}
-                    />
+                    <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Sales Order Prefix</b>
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setSOP((e.target as HTMLInputElement).value);
+                          setIsSOPError(false);
+                          setSOPError("");
+                        }}
+                        error={isSOPError}
+                        helperText={sopError}
+                        value={sop}
+                      />
+                    </Grid>
                   </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                  <img src={image} style={{ width: "48px", height: "48px" }} />
+                  <img alt="Profile image" src={profileImage} style={{ width: "48px", height: "48px" }} />
                   <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
                       <b> Logo</b>

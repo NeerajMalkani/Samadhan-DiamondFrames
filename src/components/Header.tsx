@@ -70,7 +70,7 @@ const Header = () => {
       title: "Logout",
       icon: <Logout />,
       click: () => {
-        removeCookie("dfc");
+        removeCookie("dfc", { path: "/" });
         navigate(`/login`);
       },
     },
