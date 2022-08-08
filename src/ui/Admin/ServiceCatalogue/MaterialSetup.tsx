@@ -80,8 +80,6 @@ function a11yProps(index: number) {
 }
 
 interface ProductItemModel {
-  serviceID: number;
-  categoryID: number;
   productID: number;
   productName: string;
   brandID: number;
@@ -90,6 +88,21 @@ interface ProductItemModel {
   rate: number;
   amount: number;
   formula: number;
+}
+
+interface BrandProductItemModel {
+  brandID: number;
+  brandName: string;
+  productID: number;
+  price: number;
+  unitValue: number;
+  categoryName: string;
+}
+
+interface BrandItemModel {
+  brandID: number;
+  brandName: string;
+  categoryName: string;
 }
 
 const MaterialSetup = () => {
@@ -186,7 +199,8 @@ const MaterialSetup = () => {
   const [pnDealerID, setPnDealerID] = useState(0);
   const [productDealerList, setProductDealerList] = useState<Array<ProductModel>>([]);
 
-  const [brandList, setBrandList] = useState<Array<BrandModel>>([]);
+  const [brandProductList, setBrandProductList] = useState<Array<BrandProductItemModel>>([]);
+  const [brandList, setBrandList] = useState<Array<BrandItemModel>>([]);
 
   useEffect(() => {
     // setProductItem([
@@ -311,6 +325,30 @@ const MaterialSetup = () => {
       })
       .catch((e) => {});
   };
+
+  const FetchProductBrandFromProductID = (selectedItem: number) => {
+    let params = {
+      ProductID: selectedItem,
+    };
+    Provider.getAll(`master/getbrandsbyproductids?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el) => {
+              return el.display;
+            });
+            setBrandProductList(response.data.data);
+            let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
+            setBrandList(BrandData);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  function uniqueByKey(array: Array<any>, key: string) {
+    return array.map((item) => item.age).filter((value, index, self) => self.indexOf(value) === index);
+  }
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: number = parseInt(event.target.value);
@@ -577,7 +615,26 @@ const MaterialSetup = () => {
     }
   };
 
-  const handleBrandChange = () => {};
+  const handleBrandChange = (event: SelectChangeEvent) => {
+    let brandData: number = parseInt(event.target.value);
+    if (brandData > 0) {
+      let brandText = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData)).brandName;
+      let brandPrice = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData)).price;
+      let ProductData: Array<ProductItemModel> = [...productItem];
+      productItem.map((value: ProductItemModel, index: number) => {
+        if (value.brandID === brandData) {
+          ProductData[index].brandName = brandText;
+          ProductData[index].brandID = brandData;
+          ProductData[index].rate = brandPrice;
+          if (ProductData[index].formula !== 0) {
+            ProductData[index].amount = ProductData[index].rate / ProductData[index].formula;
+            ProductData[index].quantity = ProductData[index].amount / ProductData[index].rate;
+          }
+        }
+      });
+      setProductItem(ProductData);
+    }
+  };
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -823,13 +880,29 @@ const MaterialSetup = () => {
                                   {row.brandName}
                                 </TableCell>
                                 <TableCell align="right">
-                                  <TextField sx={{ width: "96px" }} placeholder="" variant="outlined" size="small" value={row.quantity} onChange={(e) => {}} />
+                                  <TextField sx={{ width: "96px" }} disabled placeholder="" variant="outlined" size="small" value={row.quantity} onChange={(e) => {}} />
                                 </TableCell>
                                 <TableCell align="right">
-                                  <TextField sx={{ width: "96px" }} placeholder="" variant="outlined" size="small" value={row.rate} onChange={(e) => {}} />
+                                  <TextField
+                                    sx={{ width: "96px" }}
+                                    placeholder=""
+                                    variant="outlined"
+                                    size="small"
+                                    value={row.rate}
+                                    onChange={(e: React.SyntheticEvent) => {
+                                      row.rate = parseFloat((e.target as HTMLInputElement).value);
+                                      if (row.formula !== 0) {
+                                        row.amount = row.rate / row.formula;
+                                        row.quantity = row.amount / row.rate;
+                                      }
+                                      let NewArr = [...productItem];
+                                      NewArr.splice(index, 1, row);
+                                      setProductItem(NewArr);
+                                    }}
+                                  />
                                 </TableCell>
                                 <TableCell align="right">
-                                  <TextField sx={{ width: "96px" }} placeholder="" variant="outlined" size="small" value={row.amount} onChange={(e) => {}} />
+                                  <TextField sx={{ width: "96px" }} disabled placeholder="" variant="outlined" size="small" value={row.amount} onChange={(e) => {}} />
                                 </TableCell>
                                 <TableCell align="right">
                                   <TextField
@@ -840,6 +913,10 @@ const MaterialSetup = () => {
                                     value={row.formula}
                                     onChange={(e: React.SyntheticEvent) => {
                                       row.formula = parseFloat((e.target as HTMLInputElement).value);
+                                      if (row.rate !== 0) {
+                                        row.amount = row.rate / row.formula;
+                                        row.quantity = row.amount / row.rate;
+                                      }
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
                                       setProductItem(NewArr);
@@ -883,8 +960,8 @@ const MaterialSetup = () => {
                           </MenuItem>
                           {brandList.map((item, index) => {
                             return (
-                              <MenuItem key={index} value={item.id}>
-                                {item.brandName}
+                              <MenuItem key={index} value={item.brandID}>
+                                {item.brandName + " (" + item.categoryName + ")"}
                               </MenuItem>
                             );
                           })}
@@ -1052,7 +1129,7 @@ const MaterialSetup = () => {
                 onChange={(event: React.SyntheticEvent, value: any) => {
                   let PItem: Array<ProductItemModel> = [];
                   value.map((item: ProductModel) => {
-                    PItem.push({ serviceID: 0, categoryID: 0, productID: item.productID, productName: item.productName, brandID: 0, brandName: "ads", quantity: 0, rate: 0, amount: 0, formula: 0 });
+                    PItem.push({ productID: item.productID, productName: item.productName, brandID: 0, brandName: "", quantity: 0, rate: 0, amount: 0, formula: 0 });
                   });
 
                   setProductItem(PItem);
