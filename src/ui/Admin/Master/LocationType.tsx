@@ -68,11 +68,11 @@ const LocationTypePage = () => {
   const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [locationTypeList, setLocationTypeList] = useState<Array<LocationTypeModel>>([]);//useContext(DataContext).locationTypeList;
+  const [locationTypeList, setLocationTypeList] = useState<Array<LocationTypeModel>>([]); //useContext(DataContext).locationTypeList;
   const [locationTypeListTemp, setLocationTypeListTemp] = useState<Array<LocationTypeModel>>([]);
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);//useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); //useContext(DataContext).activityNamesList;
 
-  const [serviceNamesList, setServiceNamesList] =useState<Array<ServiceNameModel>>([]);// useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] = useState<Array<ServiceNameModel>>([]); // useContext(DataContext).serviceNameList;
 
   const [activityList, setActivityList] = useState<string[]>([]);
   const [activityListID, setActivityListID] = useState<number[]>([]);
@@ -313,6 +313,10 @@ const LocationTypePage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchLocationType("added");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
           } else {
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -338,6 +342,10 @@ const LocationTypePage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchLocationType("updated");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
           } else {
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -558,9 +566,7 @@ const LocationTypePage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Location Type List
-            </Typography>
+            <Typography variant="h6">Location Type List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

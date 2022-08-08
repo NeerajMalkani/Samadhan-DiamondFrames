@@ -177,7 +177,6 @@ const BrandPage = () => {
               a = Object.assign(a, value);
             });
             setBuyerCategoryFullData([...response.data.data]);
-
           }
         }
       })
@@ -422,9 +421,8 @@ const BrandPage = () => {
     setIsCDError(false);
     setCDError("");
     buyerCategoryFullData.map((el) => {
-        el.BuyerCategoryDiscount = "";
+      el.BuyerCategoryDiscount = "";
     });
-
   };
 
   const handleSubmitClick = () => {
@@ -580,12 +578,6 @@ const BrandPage = () => {
     let data = buyerCategoryFullData.filter((el) => {
       return parseFloat(el.BuyerCategoryDiscount) > 0;
     });
-    // if (!Array.isArray(data)) {
-    //   let newData = [];
-    //   newData.push(data);
-    //   data = [...newData];
-    // }
-
     let DealerJson = [];
     data.map(function (a: any, index: number) {
       DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
@@ -595,6 +587,11 @@ const BrandPage = () => {
       .then((response) => {
         if (response.data && response.data.code === 200) {
           FetchData(mode === "new" ? "added" : "updated", CookieUserID);
+        } else if (response.data.code === 304) {
+          setSnackMsg(communication.ExistsError);
+          setOpen(true);
+          setSnackbarType("error");
+          handleCancelClick();
         } else {
           handleCancelClick();
           setSnackMsg(communication.Error);
@@ -1090,7 +1087,13 @@ const BrandPage = () => {
               </Typography>
             </Grid>
             <Grid item xs={4} sm={8} md={12}>
-              <Button variant="contained" sx={{ mt: 1, mr: 1 }} onClick={() => {navigate(`/dealer/basicdetails`);}}>
+              <Button
+                variant="contained"
+                sx={{ mt: 1, mr: 1 }}
+                onClick={() => {
+                  navigate(`/dealer/basicdetails`);
+                }}
+              >
                 Activate
               </Button>
             </Grid>

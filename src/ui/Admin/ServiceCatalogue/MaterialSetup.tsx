@@ -47,6 +47,7 @@ import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { brandColumns } from "../../../utils/tablecolumns";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { communication } from "../../../utils/communication";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -135,7 +136,7 @@ const MaterialSetup = () => {
 
   const [display, setDisplay] = useState("Yes");
 
-  const [lengthFeet, setLengthFeet] = useState("8");
+  const [lengthFeet, setLengthFeet] = useState("1");
   const [isLengthFeetError, setIsLengthFeetError] = useState<boolean>(false);
   const [lengthFeetError, setLengthFeetError] = useState("");
 
@@ -143,7 +144,7 @@ const MaterialSetup = () => {
   const [isLengthInchesError, setIsLengthInchesError] = useState<boolean>(false);
   const [lengthInchesError, setLengthInchesError] = useState("");
 
-  const [widthHeightFeet, setWidthHeightFeet] = useState("8");
+  const [widthHeightFeet, setWidthHeightFeet] = useState("1");
   const [isWidthHeightFeetError, setIsWidthHeightFeetError] = useState<boolean>(false);
   const [widthHeightFeetError, setWidthHeightFeetError] = useState("");
 
@@ -536,7 +537,45 @@ const MaterialSetup = () => {
     SetResetProductDealerName();
   };
 
-  const handleSubmitClick = () => {};
+  const handleSubmitClick = () => {
+    let isValid = true;
+    if (snID === 0) {
+      setIsServicenameError(true);
+      setServicenameError(communication.SelectServiceName);
+    }
+    if (cnID === 0) {
+      setIsCategorynameError(true);
+      setCategorynameError(communication.SelectCategoryName);
+    }
+    if (pnID === 0) {
+      setIsProductError(true);
+      setProductError(communication.SelectProductName);
+    }
+
+    if (pdtID === 0) {
+      setIsProductDesignTypeError(true);
+      setProductDesignTypeError(communication.SelectProductName);
+    }
+
+    if (parseInt(lengthFeet) === 0) {
+      setIsLengthFeetError(true);
+      setLengthFeetError("");
+    }
+
+    if (parseInt(widthHeightFeet) === 0) {
+      setIsWidthHeightFeetError(true);
+      setWidthHeightFeet("");
+    }
+
+    if (productItem.length === 0) {
+      setOpen(true);
+      setSnackMsg("error");
+      setSnackMsg("Please add product");
+    }
+
+    if (isValid) {
+    }
+  };
 
   const handleBrandChange = () => {};
   return (
@@ -991,6 +1030,7 @@ const MaterialSetup = () => {
               <Autocomplete
                 multiple
                 id="checkboxes-tags"
+                value={productItem}
                 options={productDealerList}
                 disableCloseOnSelect
                 getOptionLabel={(option: ProductModel) => option.productName}

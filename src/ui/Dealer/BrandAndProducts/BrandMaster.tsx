@@ -1,20 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputAdornment,
-  Radio,
-  RadioGroup,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -69,13 +53,12 @@ const BrandMasterPage = () => {
     FetchShowBrand(cookies.dfc.UserID);
   }, []);
 
-
   const FetchShowBrand = (UserID) => {
     let params = {
       DealerID: UserID,
     };
     Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response:any) => {
+      .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setIsBrandApproved(response.data.data[0].showBrand);
@@ -97,7 +80,7 @@ const BrandMasterPage = () => {
     setButtonLoading(false);
   };
 
-  const FetchData = (type: string, UserID:number) => {
+  const FetchData = (type: string, UserID: number) => {
     ResetFields();
     let params = {
       DealerID: UserID,
@@ -190,6 +173,11 @@ const BrandMasterPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added", CookieUserID);
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -213,6 +201,11 @@ const BrandMasterPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated", CookieUserID);
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -366,13 +359,19 @@ const BrandMasterPage = () => {
         ) : (
           <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
             <Grid item xs={4} sm={8} md={12}>
-              <ErrorIcon sx={{ float: "left", mr: 1, color: "#ff5959", mt:"5px" }} />{" "}
+              <ErrorIcon sx={{ float: "left", mr: 1, color: "#ff5959", mt: "5px" }} />{" "}
               <Typography variant="h6" sx={{ color: "#ff5959" }}>
                 Would you like to create Brand & Product? Please activate the option in your settings
               </Typography>
             </Grid>
             <Grid item xs={4} sm={8} md={12}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1 }}  onClick={()=>{navigate(`/dealer/basicdetails`);}}>
+              <Button
+                variant="contained"
+                sx={{ mt: 1, mr: 1 }}
+                onClick={() => {
+                  navigate(`/dealer/basicdetails`);
+                }}
+              >
                 Activate
               </Button>
             </Grid>

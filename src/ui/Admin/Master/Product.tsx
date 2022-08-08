@@ -328,6 +328,10 @@ const ProductPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           GetProductData("added");
+        }else if (response.data.code === 304) {
+          setSnackbarMessage(communication.ExistsError);
+          setIsSnackbarOpen(true);
+          setSnackbarType("error");
         } else {
           setSnackbarMessage(communication.Error);
           setSnackbarType("error");
@@ -356,6 +360,10 @@ const ProductPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           GetProductData("updated");
+        }else if (response.data.code === 304) {
+          setSnackbarMessage(communication.ExistsError);
+          setIsSnackbarOpen(true);
+          setSnackbarType("error");
         } else {
           setSnackbarMessage(communication.Error);
           setSnackbarType("error");

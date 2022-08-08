@@ -139,6 +139,11 @@ const DepartmentPage = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
+          }else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -161,6 +166,11 @@ const DepartmentPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
+          }else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);

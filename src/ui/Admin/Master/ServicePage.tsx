@@ -21,7 +21,7 @@ const ServicePage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [serviceName, setServiceName] = React.useState("");
-  const [serviceNamesList, setServiceNamesList] =useState<Array<ServiceNameModel>>([]);// React.useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] = useState<Array<ServiceNameModel>>([]); // React.useContext(DataContext).serviceNameList;
   const [servicenameError, setservicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
@@ -169,6 +169,11 @@ const ServicePage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -191,6 +196,11 @@ const ServicePage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -265,9 +275,7 @@ const ServicePage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Service List
-            </Typography>
+            <Typography variant="h6">Service List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

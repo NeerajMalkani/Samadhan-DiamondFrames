@@ -156,7 +156,7 @@ const CategoryPage = () => {
       });
 
     if (activityNamesList.length === 0) {
-      Provider.getAll("master/getactivityroles")
+      Provider.getAll("master/getmainactivities")
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
@@ -404,6 +404,11 @@ const CategoryPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
+          }else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -431,6 +436,11 @@ const CategoryPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
+          }else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);

@@ -1,4 +1,21 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Icon,
+  InputAdornment,
+  Radio,
+  RadioGroup,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -11,7 +28,6 @@ import { WorkLocationNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
-
 
 const WorkLocationPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -131,7 +147,7 @@ const WorkLocationPage = () => {
       setIsWorklocationnameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }   
+    }
   };
 
   const InsertUpdateData = (paramWorklocationName: string, checked: boolean) => {
@@ -143,6 +159,11 @@ const WorkLocationPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -165,6 +186,11 @@ const WorkLocationPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
@@ -252,9 +278,7 @@ const WorkLocationPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Work Location List
-            </Typography>
+            <Typography variant="h6">Work Location List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

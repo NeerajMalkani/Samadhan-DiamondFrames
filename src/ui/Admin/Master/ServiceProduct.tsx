@@ -466,7 +466,11 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           FetchData("updated");
           handleCancelClick();
-        } else {
+        }else if (response.data.code === 304) {
+          setSnackbarMessage(communication.ExistsError);
+          setIsSnackbarOpen(true);
+          setSnackbarType("error");
+        }  else {
           setSnackbarMessage(communication.Error);
           setSnackbarType("error");
           setIsSnackbarOpen(true);

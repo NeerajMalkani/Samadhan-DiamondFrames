@@ -290,7 +290,11 @@ const DesignTypePage = () => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
             handleCancelClick();
-          } else {
+          }else if (response.data.code === 304) {
+            setSnackbarMessage(communication.ExistsError);
+            setIsSnackbarOpen(true);
+            setSnackbarType("error");
+          }  else {
             setSnackbarMessage(communication.Error);
             setSnackbarType("error");
             setIsSnackbarOpen(true);
@@ -316,7 +320,11 @@ const DesignTypePage = () => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
             handleCancelClick();
-          } else {
+          }else if (response.data.code === 304) {
+            setSnackbarMessage(communication.ExistsError);
+            setIsSnackbarOpen(true);
+            setSnackbarType("error");
+          }  else {
             setSnackbarMessage(communication.Error);
             setSnackbarType("error");
             setIsSnackbarOpen(true);
