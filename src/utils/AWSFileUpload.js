@@ -6,7 +6,7 @@ const REGION = awsCreds.awsRegion;
 
 AWS.config.update({
   accessKeyId: awsCreds.awsAccessKey,
-  secretAccessKey:awsCreds.awsSecretKey,
+  secretAccessKey: awsCreds.awsSecretKey,
 });
 
 const myBucket = new AWS.S3({
@@ -49,4 +49,8 @@ export const DeleteImageToS3WithNativeSdk = (fileName, callBack) => {
       callBack("Success", fileName);
     }
   });
+};
+
+export const uniqueByKey = (array, key) => {
+  return [...new Map(array.map((item) => [item[key], item])).values()];
 };

@@ -48,6 +48,7 @@ import { brandColumns } from "../../../utils/tablecolumns";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { communication } from "../../../utils/communication";
+import { uniqueByKey } from "../../../utils/AWSFileUpload";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -312,7 +313,7 @@ const MaterialSetup = () => {
       CategoryID: cnID,
       ProductID: selectedItem,
     };
-    Provider.getAll(`master/getdesigntypebyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`servicecatalogue/getdesigntypebyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -326,17 +327,18 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchProductBrandFromProductID = (selectedItem: number) => {
+  const FetchProductBrandFromProductID = (selectedItem: string) => {
     let params = {
       ProductID: selectedItem,
     };
-    Provider.getAll(`master/getbrandsbyproductids?${new URLSearchParams(GetStringifyJson(params))}`)
+
+    Provider.getAll(`servicecatalogue/getbrandsbyproductids?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el) => {
-              return el.display;
-            });
+            // response.data.data = response.data.data.filter((el) => {
+            //   return el.display;
+            // });
             setBrandProductList(response.data.data);
             let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
             setBrandList(BrandData);
@@ -345,10 +347,6 @@ const MaterialSetup = () => {
       })
       .catch((e) => {});
   };
-
-  function uniqueByKey(array: Array<any>, key: string) {
-    return array.map((item) => item.age).filter((value, index, self) => self.indexOf(value) === index);
-  }
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: number = parseInt(event.target.value);
@@ -359,6 +357,7 @@ const MaterialSetup = () => {
       SetResetServiceName(false);
       SetResetCategoryName(true);
       SetResetProductName(true);
+      SetResetProductDesignType(true);
       FetchCategoriesFromServices(arnID, serviceName, "contractor");
     }
   };
@@ -383,6 +382,7 @@ const MaterialSetup = () => {
       setCnID(categoryName);
       SetResetCategoryName(false);
       SetResetProductName(true);
+      SetResetProductDesignType(true);
 
       FetchProductsFromCategory(arnID, snID, ac.id, "contractor");
     }
@@ -407,7 +407,7 @@ const MaterialSetup = () => {
       setPn(ac.productName);
       setPnID(productName);
       SetResetProductName(false);
-
+      SetResetProductDesignType(true);
       FetchDesignTypeFromProduct(productName);
     }
   };
@@ -616,13 +616,16 @@ const MaterialSetup = () => {
   };
 
   const handleBrandChange = (event: SelectChangeEvent) => {
+    debugger;
     let brandData: number = parseInt(event.target.value);
     if (brandData > 0) {
+      //let ProductData1 = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData));
       let brandText = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData)).brandName;
       let brandPrice = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData)).price;
       let ProductData: Array<ProductItemModel> = [...productItem];
       productItem.map((value: ProductItemModel, index: number) => {
-        if (value.brandID === brandData) {
+        //ProductData1.find((el: BrandProductItemModel) => (el.brandID = brandData))
+        if (value.productID === brandData) {
           ProductData[index].brandName = brandText;
           ProductData[index].brandID = brandData;
           ProductData[index].rate = brandPrice;
@@ -635,6 +638,7 @@ const MaterialSetup = () => {
       setProductItem(ProductData);
     }
   };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -1107,7 +1111,9 @@ const MaterialSetup = () => {
               <Autocomplete
                 multiple
                 id="checkboxes-tags"
-                value={productItem}
+                // value={productItem}
+                //isOptionEqualToValue={(option, value) => true}
+                includeInputInList={true}
                 options={productDealerList}
                 disableCloseOnSelect
                 getOptionLabel={(option: ProductModel) => option.productName}
@@ -1116,7 +1122,7 @@ const MaterialSetup = () => {
                   let data = productItem.find((el: ProductItemModel) => {
                     return el.productID === option.productID;
                   });
-                  if (data != null) {
+                  if (data !== null && data !==undefined) {
                     selected = true;
                   }
                   return (
@@ -1128,12 +1134,14 @@ const MaterialSetup = () => {
                 }}
                 onChange={(event: React.SyntheticEvent, value: any) => {
                   let PItem: Array<ProductItemModel> = [];
+                  let ProductIds: string = "";
                   value.map((item: ProductModel) => {
                     PItem.push({ productID: item.productID, productName: item.productName, brandID: 0, brandName: "", quantity: 0, rate: 0, amount: 0, formula: 0 });
+                    ProductIds += "," + item.productID;
                   });
 
                   setProductItem(PItem);
-                  console.log(JSON.stringify(PItem));
+                  //  FetchProductBrandFromProductID(ProductIds.replace(/^,|,$/g, ""));
                 }}
                 //style={{ width: 240 }}
                 renderInput={(params) => <TextField {...params} label="Products" placeholder="Products" />}
