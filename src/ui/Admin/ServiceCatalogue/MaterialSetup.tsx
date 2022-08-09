@@ -2,7 +2,6 @@ import { LoadingButton } from "@mui/lab";
 import {
   Alert,
   AlertColor,
-  Autocomplete,
   Box,
   Button,
   Checkbox,
@@ -46,10 +45,10 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import { BrandModel, CategoryModel, DesignTypeModel, ProductModel, ServiceNameModel } from "../../../models/Model";
+import { BrandModel, CategoryModel, DesignTypeModel, MaterialSetupModel, ProductModel, ServiceNameModel } from "../../../models/Model";
 import { theme } from "../../../theme/AppTheme";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
-import { brandColumns } from "../../../utils/tablecolumns";
+import { brandColumns, materialSetupColumns } from "../../../utils/tablecolumns";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { communication } from "../../../utils/communication";
@@ -150,8 +149,8 @@ const MaterialSetup = () => {
   const [isProductDesignTypeError, setIsProductDesignTypeError] = useState(false);
   const [productDesignTypeList, setProductDesignTypeList] = useState<Array<DesignTypeModel>>([]);
 
-  const [materialSetupList, setMaterialSetupList] = useState<Array<any>>([]);
-  const [materialSetupListTemp, setMaterialSetupListTemp] = useState<Array<any>>([]);
+  const [materialSetupList, setMaterialSetupList] = useState<Array<MaterialSetupModel>>([]);
+  const [materialSetupListTemp, setMaterialSetupListTemp] = useState<Array<MaterialSetupModel>>([]);
 
   const [display, setDisplay] = useState("Yes");
 
@@ -207,25 +206,50 @@ const MaterialSetup = () => {
 
   const [brandProductList, setBrandProductList] = useState<Array<BrandProductItemModel>>([]);
   const [brandList, setBrandList] = useState<Array<BrandItemModel>>([]);
+  const [selectedBrand, setSelectedBrand] = useState<number>(0);
+
+  const [isBrandError, setIsBrandError] = useState(false);
+  const [brandError, setBrandError] = useState("");
 
   useEffect(() => {
-    // setProductItem([
-    //   {
-    //     serviceID: 0,
-    //     categoryID: 0,
-    //     productID: 0,
-    //     productName: "Suraj",
-    //     brandID: 0,
-    //     brandName: "",
-    //     quantity: 1,
-    //     rate: 2.5,
-    //     amount: 0,
-    //     formula: 2,
-    //   },
-    // ]);
+    FetchData("");
     FetchActvityRoles();
     CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
   }, []);
+
+  const FetchData = (type: string) => {
+    handleCancelClick();
+    Provider.getAll("servicecatalogue/getmaterialsetup")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+            setMaterialSetupList(arrList);
+            setMaterialSetupListTemp(arrList);
+
+            if (type !== "") {
+              setSnackMsg("Material setup " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
+          }
+        } else {
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+      })
+      .catch((e) => {
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
 
   const FetchActvityRoles = () => {
     Provider.getAll("master/getmainactivities")
@@ -296,7 +320,7 @@ const MaterialSetup = () => {
       ServiceID: selectedServiceID,
       CategoryID: selectedCategoryID,
     };
-    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/${type === "contractor" ? "getproductsbycategoryid" : "getproductsbycategoryidforbrands"}?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -321,11 +345,11 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchDesignTypeFromProduct = (selectedItem: number) => {
+  const FetchDesignTypeFromProduct = (selectedActivitryID: number, selectedServiceID: number, selectedCategoryID: number, selectedItem: number) => {
     let params = {
-      ActivityID: arnID,
-      ServiceID: snID,
-      CategoryID: cnID,
+      ActivityID: selectedActivitryID,
+      ServiceID: selectedServiceID,
+      CategoryID: selectedCategoryID,
       ProductID: selectedItem,
     };
     Provider.getAll(`servicecatalogue/getdesigntypebyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
@@ -342,15 +366,19 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchProductBrandFromProductID = () => {
-    const productids = productItem.map((data) => data.productID);
+  const FetchProductBrandFromProductID = (data: any) => {
+    let productids = null;
+    if (data === "") productids = productItem.map((data) => data.productID);
+    else productids = data.map((data) => data.productID);
+
     let params = {
       ProductID: productids.join(","),
     };
-
+    debugger;
     Provider.getAll(`servicecatalogue/getbrandsbyproductids?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
+          debugger;
           if (response.data.data) {
             setBrandProductList(response.data.data);
             let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
@@ -421,7 +449,7 @@ const MaterialSetup = () => {
       setPnID(productName);
       SetResetProductName(false);
       SetResetProductDesignType(true);
-      FetchDesignTypeFromProduct(productName);
+      FetchDesignTypeFromProduct(arnID, snID, cnID, productName);
     }
   };
 
@@ -539,7 +567,32 @@ const MaterialSetup = () => {
     }
   };
 
-  const handleCancelClick = () => {};
+  const handleCancelClick = () => {
+    setLoading(false);
+    setActionStatus("new");
+    setDataGridOpacity(1);
+    setDataGridPointer("auto");
+    setButtonDisplay("none");
+    setButtonLoading(false);
+
+    SetResetServiceName(true);
+    SetResetCategoryName(true);
+    SetResetProductName(true);
+    SetResetProductDesignType(true);
+    setLengthFeet("1");
+    setLengthInches("0");
+    setWidthHeightFeet("1");
+    setWidthHeightInches("0");
+    setLengthFeetError("");
+    setIsLengthFeetError(false);
+    setWidthHeightFeetError("");
+    setIsWidthHeightFeetError(false);
+    CalculateSqfeet(1, 0, 1, 0);
+    setSubTotal(0);
+    setProductItem([]);
+    setBrandList([]);
+    setBrandProductList([]);
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -574,8 +627,8 @@ const MaterialSetup = () => {
       setMaterialSetupListTemp(materialSetupList);
     } else {
       setMaterialSetupListTemp(
-        materialSetupList.filter((el: any) => {
-          return el.brandName.toString().toLowerCase().includes(query.toLowerCase());
+        materialSetupList.filter((el: MaterialSetupModel) => {
+          return el.designTypeName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -586,57 +639,122 @@ const MaterialSetup = () => {
     SetResetServiceDealerName();
     SetResetCategoryDealerName();
     SetResetProductDealerName();
-    FetchProductBrandFromProductID();
+    FetchProductBrandFromProductID("");
   };
 
   const handleSubmitClick = () => {
     let isValid = true;
     if (snID === 0) {
+      isValid = false;
       setIsServicenameError(true);
       setServicenameError(communication.SelectServiceName);
     }
     if (cnID === 0) {
+      isValid = false;
       setIsCategorynameError(true);
       setCategorynameError(communication.SelectCategoryName);
     }
     if (pnID === 0) {
+      isValid = false;
       setIsProductError(true);
       setProductError(communication.SelectProductName);
     }
 
     if (pdtID === 0) {
+      isValid = false;
       setIsProductDesignTypeError(true);
       setProductDesignTypeError(communication.SelectProductName);
     }
 
     if (parseInt(lengthFeet) === 0) {
+      isValid = false;
       setIsLengthFeetError(true);
-      setLengthFeetError("");
+      setLengthFeetError("Please select length");
     }
 
     if (parseInt(widthHeightFeet) === 0) {
+      isValid = false;
       setIsWidthHeightFeetError(true);
-      setWidthHeightFeet("");
+      setWidthHeightFeet("Please select width");
     }
 
     if (productItem.length === 0) {
+      isValid = false;
       setOpen(true);
       setSnackMsg("error");
       setSnackMsg("Please add product");
+    } else {
+      let blankData = productItem.find((el) => el.formula === 0);
+      if (blankData !== undefined && blankData !== null) {
+        isValid = false;
+        setOpen(true);
+        setSnackMsg("error");
+        setSnackMsg("All product fields are compulsary");
+      }
+    }
+
+    if (selectedBrand === 0) {
+      isValid = false;
+      setIsBrandError(true);
+      setBrandError(communication.SelectBrandName);
     }
 
     if (isValid) {
+      InsertData();
+    }
+  };
+
+  const InsertData = () => {
+    if (actionStatus === "new") {
+      const arrMaterialProducts = [];
+      productItem.map((k) => {
+        arrMaterialProducts.push({
+          ProductID: k.productID,
+          BrandID: k.brandID,
+          Rate: k.rate,
+          Amount: k.amount,
+          Quantity: k.quantity,
+          Formula: k.formula,
+        });
+      });
+      Provider.create("servicecatalogue/insertmaterialsetup", {
+        MaterialSetupMaster: {
+          DesignTypeID: pdtID,
+          Length: parseFloat(lengthFeet + "." + lengthInches),
+          Width: parseFloat(widthHeightFeet + "." + widthHeightInches),
+          Display: display === "Yes",
+        },
+        MaterialProductMappings: arrMaterialProducts,
+      })
+        .then((response: any) => {
+          if (response.data && response.data.code === 200) {
+            FetchData("added");
+          } else {
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
+    } else if (actionStatus === "edit") {
     }
   };
 
   const handleBrandChange = (event: SelectChangeEvent) => {
+    debugger;
     let brandData: number = parseInt(event.target.value);
     if (brandData > 0) {
+      setSelectedBrand(brandData);
       let ProductData1 = brandProductList.filter((el: BrandProductItemModel) => (el.brandID = brandData));
       let ProductData: Array<ProductItemModel> = [...productItem];
 
       ProductData.map((value: ProductItemModel, index: number) => {
         ProductData1.find(function (item: BrandProductItemModel, i: number) {
+          debugger;
           if (item.productID === value.productID) {
             value.brandName = item.brandName;
             value.brandID = item.brandID;
@@ -648,11 +766,13 @@ const MaterialSetup = () => {
       const productids = ProductData.map((data) => data.amount);
       setSubTotal(productids.reduce((a, b) => a + b, 0));
       setProductItem(ProductData);
+
+      setIsBrandError(false);
+      setBrandError("");
     }
   };
 
   const handleToggle = (value: ProductModel) => () => {
-    debugger;
     let dataIndex = -1;
     const currentIndex = productItem.find(function (item, i) {
       if (item.productID === value.productID) {
@@ -676,6 +796,83 @@ const MaterialSetup = () => {
 
     setProductItem(newChecked);
     setProductDealerList(tempProductDealerList);
+  };
+
+  const handelEditAndDelete = (type: string | null, a: MaterialSetupModel | undefined) => {
+    if (type?.toLowerCase() === "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.display);
+      setButtonDisplay("unset");
+      setActionStatus("edit");
+
+      setSnID(a.serviceID);
+      setCnID(a.categoryID);
+      setPnID(a.productID);
+      setPdtID(a.designTypeID);
+
+      let length = a.length.toString().split(".");
+      let width = a.width.toString().split(".");
+      SetResetServiceName(true);
+      SetResetCategoryName(true);
+      SetResetProductName(true);
+      SetResetProductDesignType(true);
+      setLengthFeet(length[0]);
+      setLengthInches(length[1]);
+      setWidthHeightFeet(width[0]);
+      setWidthHeightInches(width[1]);
+      setLengthFeetError("");
+      setIsLengthFeetError(false);
+      setWidthHeightFeetError("");
+      setIsWidthHeightFeetError(false);
+      CalculateSqfeet(parseInt(length[0]), parseInt(length[1]), parseInt(width[0]), parseInt(width[1]));
+      setSubTotal(0);
+
+      FetchCategoriesFromServices(arnID, a.serviceID, "contractor");
+      FetchProductsFromCategory(arnID, a.serviceID, a.categoryID, "contractor");
+      FetchDesignTypeFromProduct(arnID, a.serviceID, a.categoryID, a.productID);
+      FetchProductsFromMaterialSetup(a.id);
+      // setProductItem([]);
+      // setBrandList([]);
+      // setBrandProductList([]);
+    }
+  };
+
+  const FetchProductsFromMaterialSetup = (id: number) => {
+    let params = {
+      MaterialSetupID: id,
+    };
+    Provider.getAll(`servicecatalogue/getmaterialsetupmapping?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            console.log(response.data.data);
+            const tempArr = [];
+
+            let totalTemp = 0;
+            response.data.data.map((k) => {
+              if (k.amount) {
+                totalTemp += parseFloat(k.amount);
+              }
+              tempArr.push({
+                productID: k.productID,
+                productName: k.productName,
+                brandID: k.brandID,
+                brandName: k.brandName,
+                rate: k.rate.toFixed(4),
+                amount: k.amount.toFixed(4),
+                quantity: Math.ceil(k.quantity),
+                formula: k.formula.toFixed(4),
+              });
+            });
+            setSubTotal(totalTemp);
+            setProductItem(tempArr);
+
+            FetchProductBrandFromProductID(tempArr);
+          }
+        }
+      })
+      .catch((e) => {});
   };
 
   return (
@@ -998,16 +1195,17 @@ const MaterialSetup = () => {
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sm={4} md={12} sx={{ mt: 1 }}>
-                      <FormControl style={{ width: 240 }} size="small" error={isProductDesignTypeError}>
+                      <FormControl style={{ width: 240 }} size="small" error={isBrandError}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Brand Name</b>
                           <label style={{ color: "#ff0000" }}>*</label>
                         </Typography>
-                        <Select value={pdtID.toString()} onChange={handleBrandChange}>
+                        <Select value={selectedBrand.toString()} onChange={handleBrandChange}>
                           <MenuItem disabled={true} value="0">
                             --Select--
                           </MenuItem>
                           {brandList.map((item, index) => {
+                            console.log(item.brandID);
                             return (
                               <MenuItem key={index} value={item.brandID}>
                                 {item.brandName + " (" + item.categoryName + ")"}
@@ -1015,7 +1213,7 @@ const MaterialSetup = () => {
                             );
                           })}
                         </Select>
-                        <FormHelperText>{productDesignTypeError}</FormHelperText>
+                        <FormHelperText>{brandError}</FormHelperText>
                       </FormControl>
                     </Grid>
                   </>
@@ -1043,11 +1241,11 @@ const MaterialSetup = () => {
                     </Box>
                   ) : (
                     <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                      {materialSetupListTemp.length === 0 ? (
+                      {materialSetupList.length === 0 ? (
                         <></>
                       ) : (
                         <>
-                          <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                          <Grid item xs={4} sm={8} md={12} sx={{ mt: 1, alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                             <TextField
                               placeholder="Search"
                               variant="outlined"
@@ -1073,18 +1271,18 @@ const MaterialSetup = () => {
                             autoHeight={true}
                             getRowHeight={() => "auto"}
                             rows={materialSetupListTemp}
-                            columns={brandColumns}
+                            columns={materialSetupColumns}
                             pageSize={pageSize}
                             rowsPerPageOptions={[5, 10, 20]}
                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                             disableSelectionOnClick
                             onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                              //   const arrActivity = [...brandList];
-                              //   let a: BrandModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                              //   if (a) {
-                              //     const clickType = (e.target as any).textContent;
-                              //     if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
-                              //   }
+                              const arrActivity = [...materialSetupList];
+                              let a: MaterialSetupModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                              if (a) {
+                                const clickType = (e.target as any).textContent;
+                                if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
+                              }
                             }}
                             sx={{
                               "& .MuiDataGrid-columnHeaders": {

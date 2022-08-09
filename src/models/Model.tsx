@@ -52,7 +52,7 @@ export interface ProductModel {
   unit2ID: number;
   unit2Name: string;
   selectedUnitID: number;
-  isChecked:boolean;
+  isChecked: boolean;
 }
 //  {
 //   id: number;
@@ -312,4 +312,21 @@ export interface UserProfile {
   Pincode: number;
   GSTNumber: string;
   PAN: string;
+}
+
+export interface MaterialSetupModel {
+  id: number;
+  srno: number;
+  categoryID: number;
+  categoryName: string;
+  designTypeID: number;
+  designTypeName: string;
+  display: string;
+  length: number;
+  productID: number;
+  productName: string;
+  serviceID: number;
+  serviceName: string;
+  width: number;
+  action: string;
 }

@@ -1023,3 +1023,60 @@ export const BuyerCategoryColumns: GridColDef[] = [
     ),
   },
 ];
+
+
+export const materialSetupColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    sortable: false,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.5,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category > Service Product Name",
+    flex: 1.5,
+    renderCell: (param) => (
+      <Grid>
+        <Typography>{param.value}</Typography>
+        <Typography color="textSecondary">{param.row.productName}</Typography>
+      </Grid>
+    ),
+  },
+  {
+    field: "designTypeName",
+    headerName: "Design Type Name",
+    flex: 1,
+  },
+  {
+    field: "materialCost",
+    headerName: "Materials Cost (per Sq.Ft)",
+    flex: 1.8,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    maxWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
