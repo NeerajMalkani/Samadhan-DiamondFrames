@@ -35,6 +35,7 @@ import { ValidateGSTRate } from "../../../utils/validations";
 import { awsCreds } from "../../../utils/credentials";
 import ReactS3Client from "react-aws-s3-typescript";
 import uuid from "react-uuid";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
 
 const PostNewDesignPage = () => {
   let navigate = useNavigate();
@@ -488,17 +489,6 @@ const PostNewDesignPage = () => {
     }
   };
 
-  const GetStringifyJson = (params: any) => {
-    var string_ = JSON.stringify(params);
-
-    string_ = string_.replace(/{/g, "");
-    string_ = string_.replace(/}/g, "");
-    string_ = string_.replace(/:/g, "=");
-    string_ = string_.replace(/,/g, "&");
-    string_ = string_.replace(/"/g, "");
-
-    return string_;
-  };
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -691,7 +681,7 @@ const PostNewDesignPage = () => {
                     }}
                   />
                 </Button>
-                <img alt="" src={image} style={{ width: "48px", height: "36px", border: "1px solid rgba(0,0,0,0.12)", borderRadius: "4px" }} />
+                {/* <img alt="" src={image} style={{ width: "48px", height: "36px", border: "1px solid rgba(0,0,0,0.12)", borderRadius: "4px" }} /> */}
               </Grid>
               <FormHelperText>{errorDIText}</FormHelperText>
             </FormControl>

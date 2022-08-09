@@ -211,6 +211,8 @@ const MaterialSetup = () => {
   const [isBrandError, setIsBrandError] = useState(false);
   const [brandError, setBrandError] = useState("");
 
+  const [selectedID, setSelectedID] = useState<number>(0);
+
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
@@ -592,6 +594,7 @@ const MaterialSetup = () => {
     setProductItem([]);
     setBrandList([]);
     setBrandProductList([]);
+    setSelectedID(0);
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -733,14 +736,53 @@ const MaterialSetup = () => {
             setSnackMsg(communication.Error);
             setSnackbarType("error");
             setOpen(true);
+            handleCancelClick();
           }
         })
         .catch((e) => {
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
           setOpen(true);
+          handleCancelClick();
         });
     } else if (actionStatus === "edit") {
+      const arrMaterialProducts = [];
+      productItem.map((k) => {
+        arrMaterialProducts.push({
+          ProductID: k.productID,
+          BrandID: k.brandID,
+          Rate: k.rate,
+          Amount: k.amount,
+          Quantity: k.quantity,
+          Formula: k.formula,
+        });
+      });
+      Provider.create("servicecatalogue/insertmaterialsetup", {
+        MaterialSetupMaster: {
+          ID: selectedID,
+          DesignTypeID: pdtID,
+          Length: parseFloat(lengthFeet + "." + lengthInches),
+          Width: parseFloat(widthHeightFeet + "." + widthHeightInches),
+          Display: display === "Yes",
+        },
+        MaterialProductMappings: arrMaterialProducts,
+      })
+        .then((response: any) => {
+          if (response.data && response.data.code === 200) {
+            FetchData("updated");
+          } else {
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+            handleCancelClick();
+          }
+        })
+        .catch((e) => {
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+          handleCancelClick();
+        });
     }
   };
 
@@ -800,16 +842,14 @@ const MaterialSetup = () => {
 
   const handelEditAndDelete = (type: string | null, a: MaterialSetupModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
+      setValue(0);
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
       setButtonDisplay("unset");
       setActionStatus("edit");
 
-      setSnID(a.serviceID);
-      setCnID(a.categoryID);
-      setPnID(a.productID);
-      setPdtID(a.designTypeID);
+      setSelectedID(a.id);
 
       let length = a.length.toString().split(".");
       let width = a.width.toString().split(".");
@@ -832,6 +872,16 @@ const MaterialSetup = () => {
       FetchProductsFromCategory(arnID, a.serviceID, a.categoryID, "contractor");
       FetchDesignTypeFromProduct(arnID, a.serviceID, a.categoryID, a.productID);
       FetchProductsFromMaterialSetup(a.id);
+
+      setSnID(a.serviceID);
+      setCnID(a.categoryID);
+      setPnID(a.productID);
+      setPdtID(a.designTypeID);
+
+      setSn(a.serviceName);
+      setCn(a.categoryName);
+      setPn(a.productName);
+      setPdt(a.designTypeName);
       // setProductItem([]);
       // setBrandList([]);
       // setBrandProductList([]);
