@@ -17,6 +17,11 @@ import {
   FormHelperText,
   Grid,
   InputAdornment,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Paper,
   Radio,
@@ -299,7 +304,17 @@ const MaterialSetup = () => {
               return el.display;
             });
             if (type === "contractor") setProductList(response.data.data);
-            else if (type === "dealer") setProductDealerList(response.data.data);
+            else if (type === "dealer") {
+              const fullData = response.data.data.map((o) => ({
+                ...o,
+                isChecked: productItem.find((el) => {
+                  return el.productID === o.productID;
+                })
+                  ? true
+                  : false,
+              }));
+              setProductDealerList(fullData);
+            }
           }
         }
       })
@@ -327,18 +342,16 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchProductBrandFromProductID = (selectedItem: string) => {
+  const FetchProductBrandFromProductID = () => {
+    const productids = productItem.map((data) => data.productID);
     let params = {
-      ProductID: selectedItem,
+      ProductID: productids.join(","),
     };
 
     Provider.getAll(`servicecatalogue/getbrandsbyproductids?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            // response.data.data = response.data.data.filter((el) => {
-            //   return el.display;
-            // });
             setBrandProductList(response.data.data);
             let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
             setBrandList(BrandData);
@@ -573,6 +586,7 @@ const MaterialSetup = () => {
     SetResetServiceDealerName();
     SetResetCategoryDealerName();
     SetResetProductDealerName();
+    FetchProductBrandFromProductID();
   };
 
   const handleSubmitClick = () => {
@@ -616,27 +630,52 @@ const MaterialSetup = () => {
   };
 
   const handleBrandChange = (event: SelectChangeEvent) => {
-    debugger;
     let brandData: number = parseInt(event.target.value);
     if (brandData > 0) {
-      //let ProductData1 = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData));
-      let brandText = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData)).brandName;
-      let brandPrice = brandProductList.find((el: BrandProductItemModel) => (el.brandID = brandData)).price;
+      let ProductData1 = brandProductList.filter((el: BrandProductItemModel) => (el.brandID = brandData));
       let ProductData: Array<ProductItemModel> = [...productItem];
-      productItem.map((value: ProductItemModel, index: number) => {
-        //ProductData1.find((el: BrandProductItemModel) => (el.brandID = brandData))
-        if (value.productID === brandData) {
-          ProductData[index].brandName = brandText;
-          ProductData[index].brandID = brandData;
-          ProductData[index].rate = brandPrice;
-          if (ProductData[index].formula !== 0) {
-            ProductData[index].amount = ProductData[index].rate / ProductData[index].formula;
-            ProductData[index].quantity = ProductData[index].amount / ProductData[index].rate;
+
+      ProductData.map((value: ProductItemModel, index: number) => {
+        ProductData1.find(function (item: BrandProductItemModel, i: number) {
+          if (item.productID === value.productID) {
+            value.brandName = item.brandName;
+            value.brandID = item.brandID;
+            value.rate = item.price;
+            return i;
           }
-        }
+        });
       });
+      const productids = ProductData.map((data) => data.amount);
+      setSubTotal(productids.reduce((a, b) => a + b, 0));
       setProductItem(ProductData);
     }
+  };
+
+  const handleToggle = (value: ProductModel) => () => {
+    debugger;
+    let dataIndex = -1;
+    const currentIndex = productItem.find(function (item, i) {
+      if (item.productID === value.productID) {
+        dataIndex = i;
+        return i;
+      }
+    });
+    let tempProductDealerList = [...productDealerList];
+    var itemIndex = tempProductDealerList.findIndex((x) => x.productID == value.productID);
+    const newChecked = [...productItem];
+
+    if (currentIndex === undefined || currentIndex === null) {
+      newChecked.push({ productID: value.productID, productName: value.productName, brandID: 0, brandName: "", quantity: 0, rate: 0, amount: 0, formula: 0 });
+      tempProductDealerList[itemIndex] = { ...tempProductDealerList[itemIndex], isChecked: true };
+    } else {
+      newChecked.splice(dataIndex, 1);
+      tempProductDealerList[itemIndex] = { ...tempProductDealerList[itemIndex], isChecked: false };
+    }
+    const productids = newChecked.map((data) => data.amount);
+    setSubTotal(productids.reduce((a, b) => a + b, 0));
+
+    setProductItem(newChecked);
+    setProductDealerList(tempProductDealerList);
   };
 
   return (
@@ -902,6 +941,8 @@ const MaterialSetup = () => {
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
                                       setProductItem(NewArr);
+                                      const productids = NewArr.map((data) => data.amount);
+                                      setSubTotal(productids.reduce((a, b) => a + b, 0));
                                     }}
                                   />
                                 </TableCell>
@@ -924,6 +965,8 @@ const MaterialSetup = () => {
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
                                       setProductItem(NewArr);
+                                      const productids = NewArr.map((data) => data.amount);
+                                      setSubTotal(productids.reduce((a, b) => a + b, 0));
                                     }}
                                   />
                                 </TableCell>
@@ -935,6 +978,8 @@ const MaterialSetup = () => {
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1);
                                       setProductItem(NewArr);
+                                      const productids = NewArr.map((data) => data.amount);
+                                      setSubTotal(productids.reduce((a, b) => a + b, 0));
                                     }}
                                   >
                                     Remove
@@ -1063,7 +1108,15 @@ const MaterialSetup = () => {
           {snackMsg}
         </Alert>
       </Snackbar>
-      <Dialog open={openDialog} onClose={handleClose} disableEscapeKeyDown>
+      <Dialog
+        open={openDialog}
+        onClose={(event, reason) => {
+          if (reason !== "backdropClick") {
+            handleClose();
+          }
+        }}
+        disableEscapeKeyDown
+      >
         <DialogTitle>Choose Product</DialogTitle>
         <DialogContent sx={{ width: 480 }}>
           <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={{ xs: 1, md: 2 }}>
@@ -1108,7 +1161,30 @@ const MaterialSetup = () => {
               </FormControl>
             </Grid>
             <Grid item xs={4} sm={8} md={12}>
-              <Autocomplete
+              <List sx={{ width: "100%", maxWidth: 360, height: 240, bgcolor: "background.paper" }}>
+                {productDealerList.map((value: ProductModel, index: number) => {
+                  const labelId = `checkbox-list-label-${index}`;
+                  // let selected: boolean = false;
+                  // let data = productItem.find((el: ProductItemModel) => {
+                  //   return el.productID === value.productID;
+                  // });
+                  // if (data !== null && data !== undefined) {
+                  //   selected = true;
+                  // }
+                  return (
+                    <ListItem key={index} disablePadding>
+                      <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                        <ListItemIcon>
+                          <Checkbox edge="start" checked={value.isChecked} tabIndex={-1} disableRipple inputProps={{ "aria-labelledby": labelId }} />
+                        </ListItemIcon>
+                        <ListItemText id={labelId} primary={value.productName} />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
+              </List>
+
+              {/* <Autocomplete
                 multiple
                 id="checkboxes-tags"
                 // value={productItem}
@@ -1145,12 +1221,12 @@ const MaterialSetup = () => {
                 }}
                 //style={{ width: 240 }}
                 renderInput={(params) => <TextField {...params} label="Products" placeholder="Products" />}
-              />
+              /> */}
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
     </Box>

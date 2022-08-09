@@ -52,6 +52,7 @@ export interface ProductModel {
   unit2ID: number;
   unit2Name: string;
   selectedUnitID: number;
+  isChecked:boolean;
 }
 //  {
 //   id: number;
