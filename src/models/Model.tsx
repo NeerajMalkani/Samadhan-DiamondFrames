@@ -189,6 +189,8 @@ export interface PostNewDesignModel {
   activityID: number;
   productID: number;
   serviceDisplay: string;
+  designNumber: string;
+  designImage:string;
 }
 
 export interface BrandNameModel {

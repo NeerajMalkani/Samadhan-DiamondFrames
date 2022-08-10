@@ -121,7 +121,7 @@ const ProductListPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-          //  setIsBrandApproved(response.data.data[0].showBrand);
+            //  setIsBrandApproved(response.data.data[0].showBrand);
             if (response.data.data[0].showBrand) {
               FetchData("", UserID);
               FetchBrands(UserID);
@@ -445,6 +445,9 @@ const ProductListPage = () => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
+      setButtonDisplay("unset");
+      setActionStatus("edit");
+
       setDisplay(a.display);
       setBn(a.brandName);
       setBnID(a.brandID);
@@ -455,6 +458,7 @@ const ProductListPage = () => {
       setConversionValue(a.unitValue);
       setSaleUnit(a.unitOfSale);
       setDescription(a.description);
+      setSelectedID(a.id);
 
       setbrandError("");
       setIsBrandError(false);

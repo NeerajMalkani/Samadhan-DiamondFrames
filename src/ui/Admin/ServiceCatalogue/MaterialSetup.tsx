@@ -53,6 +53,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { communication } from "../../../utils/communication";
 import { uniqueByKey } from "../../../utils/AWSFileUpload";
+import { json } from "stream/consumers";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -370,8 +371,8 @@ const MaterialSetup = () => {
 
   const FetchProductBrandFromProductID = (data: any) => {
     let productids = null;
-    if (data === "") productids = productItem.map((data) => data.productID);
-    else productids = data.map((data) => data.productID);
+    if (data === "") productids = productItem.map((data1) => data1.productID);
+    else productids = data.map((data1) => data1.productID);
 
     let params = {
       ProductID: productids.join(","),
@@ -382,6 +383,7 @@ const MaterialSetup = () => {
         if (response.data && response.data.code === 200) {
           debugger;
           if (response.data.data) {
+            console.log(JSON.stringify(response.data.data));
             setBrandProductList(response.data.data);
             let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
             setBrandList(BrandData);
@@ -726,6 +728,7 @@ const MaterialSetup = () => {
           Length: parseFloat(lengthFeet + "." + lengthInches),
           Width: parseFloat(widthHeightFeet + "." + widthHeightInches),
           Display: display === "Yes",
+          Subtotal: subTotal,
         },
         MaterialProductMappings: arrMaterialProducts,
       })
@@ -764,6 +767,7 @@ const MaterialSetup = () => {
           Length: parseFloat(lengthFeet + "." + lengthInches),
           Width: parseFloat(widthHeightFeet + "." + widthHeightInches),
           Display: display === "Yes",
+          Subtotal: subTotal,
         },
         MaterialProductMappings: arrMaterialProducts,
       })
@@ -882,9 +886,6 @@ const MaterialSetup = () => {
       setCn(a.categoryName);
       setPn(a.productName);
       setPdt(a.designTypeName);
-      // setProductItem([]);
-      // setBrandList([]);
-      // setBrandProductList([]);
     }
   };
 
@@ -917,7 +918,7 @@ const MaterialSetup = () => {
             });
             setSubTotal(totalTemp);
             setProductItem(tempArr);
-
+            setSelectedBrand(tempArr[0].brandID);
             FetchProductBrandFromProductID(tempArr);
           }
         }
@@ -1133,7 +1134,7 @@ const MaterialSetup = () => {
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ mt: 2 }}>
-                      <TableContainer component={Paper} sx={{ maxWidth: "100%" }}>
+                      <TableContainer component={Paper} sx={{ width: "100%" }}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                           <TableHead>
                             <TableRow>
@@ -1270,7 +1271,15 @@ const MaterialSetup = () => {
                 )}
 
                 <Grid item xs={4} sm={8} md={12} sx={{ mt: 2 }}>
-                  <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
+                  <Button
+                    variant="contained"
+                    sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+                    style={{ display: buttonDisplay }}
+                    onClick={() => {
+                      setValue(1);
+                      handleCancelClick();
+                    }}
+                  >
                     Cancel
                   </Button>
                   <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
