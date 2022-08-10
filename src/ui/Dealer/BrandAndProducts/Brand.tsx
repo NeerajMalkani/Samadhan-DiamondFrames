@@ -502,7 +502,7 @@ const BrandPage = () => {
       uosid = objUnits1.unit1ID;
       uosid2 = objUnits1.unit2ID;
     }
-    debugger;
+    
     if (actionStatus === "new") {
       Provider.create("dealerbrand/insertbrandsetup", {
         BrandID: bnID,
@@ -588,7 +588,7 @@ const BrandPage = () => {
 
       Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
         .then((response) => {
-          if (response.data && response.data.code === 200) {
+          if (response.data && (response.data.code === 200 || response.data.code === 204)) {
             FetchData(mode === "new" ? "added" : "updated", CookieUserID);
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);

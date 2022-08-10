@@ -91,10 +91,10 @@ interface ProductItemModel {
   productName: string;
   brandID: number;
   brandName: string;
-  quantity: number;
-  rate: number;
-  amount: number;
-  formula: number;
+  quantity: string;
+  rate: string;
+  amount: string;
+  formula: string;
 }
 
 interface BrandProductItemModel {
@@ -383,7 +383,6 @@ const MaterialSetup = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            console.log(JSON.stringify(response.data.data));
             setBrandProductList(response.data.data);
             let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
             setBrandList(BrandData);
@@ -689,7 +688,7 @@ const MaterialSetup = () => {
       setSnackMsg("error");
       setSnackMsg("Please add product");
     } else {
-      let blankData = productItem.find((el) => el.formula === 0);
+      let blankData = productItem.find((el) => !el.formula || el.formula === "");
       if (blankData !== undefined && blankData !== null) {
         isValid = false;
         setOpen(true);
@@ -803,13 +802,13 @@ const MaterialSetup = () => {
           if (item.productID === value.productID) {
             value.brandName = item.brandName;
             value.brandID = item.brandID;
-            value.rate = item.price;
+            value.rate = item.price.toFixed(4);
             return i;
           }
         });
       });
       const productids = ProductData.map((data) => data.amount);
-      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
+      setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
       setProductItem(ProductData);
 
       setIsBrandError(false);
@@ -830,14 +829,14 @@ const MaterialSetup = () => {
     const newChecked = [...productItem];
 
     if (currentIndex === undefined || currentIndex === null) {
-      newChecked.push({ productID: value.productID, productName: value.productName, brandID: 0, brandName: "", quantity: 0, rate: 0, amount: 0, formula: 0 });
+      newChecked.push({ productID: value.productID, productName: value.productName, brandID: 0, brandName: "", quantity: "0", rate: "0", amount: "0", formula: "0" });
       tempProductDealerList[itemIndex] = { ...tempProductDealerList[itemIndex], isChecked: true };
     } else {
       newChecked.splice(dataIndex, 1);
       tempProductDealerList[itemIndex] = { ...tempProductDealerList[itemIndex], isChecked: false };
     }
     const productids = newChecked.map((data) => data.amount);
-    setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
+    setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
 
     setProductItem(newChecked);
     setProductDealerList(tempProductDealerList);
@@ -895,7 +894,6 @@ const MaterialSetup = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            console.log(response.data.data);
             const tempArr = [];
 
             let totalTemp = 0;
@@ -940,7 +938,7 @@ const MaterialSetup = () => {
           </Box>
           <Grid item xs={4} sm={8} md={12}>
             <TabPanel value={value} index={0}>
-              <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
+              <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={{ xs: 1, md: 2 }}>
                 <Grid item xs={4} sm={4} md={3} sx={{ mt: 1 }}>
                   <FormControl fullWidth size="small" error={isServicenameError}>
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -1042,7 +1040,7 @@ const MaterialSetup = () => {
                 <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)", mt: 3 }}>
                   <Typography variant="h6">Dealers Materials Setup For Service Product</Typography>
                 </Grid>
-                <Grid container xs={4} sm={8} md={12} sx={{ mt: 1 }}>
+                <Grid container columns={{ xs: 4, sm: 8, md: 12 }} sx={{ mt: 1 }}>
                   <Grid container xs={4} sm={4} md={3} sx={{ mt: 1 }}>
                     <Typography variant="subtitle2" sx={{ mb: 1, width: "100%" }}>
                       <b>Length</b>
@@ -1054,9 +1052,6 @@ const MaterialSetup = () => {
                           <b>Feet</b>
                         </Typography>
                         <Select value={lengthFeet} onChange={handleLFChange}>
-                          {/* <MenuItem disabled={true} value="--Select--">
-                            --Select--
-                          </MenuItem> */}
                           {CreateLengthFeet(50)}
                         </Select>
                         <FormHelperText>{lengthFeetError}</FormHelperText>
@@ -1086,9 +1081,6 @@ const MaterialSetup = () => {
                           <b>Feet</b>
                         </Typography>
                         <Select value={widthHeightFeet} onChange={handleWHFChange}>
-                          {/* <MenuItem disabled={true} value="--Select--">
-                            --Select--
-                          </MenuItem> */}
                           {CreateLengthFeet(50)}
                         </Select>
                         <FormHelperText>{widthHeightFeetError}</FormHelperText>
@@ -1163,22 +1155,16 @@ const MaterialSetup = () => {
                                     size="small"
                                     value={row.rate}
                                     onChange={(e: React.SyntheticEvent) => {
-                                      // if ((e.target as HTMLInputElement).value.trim() !== "") {
-                                      row.rate = parseFloat((e.target as HTMLInputElement).value);
-                                      if (parseFloat(row.formula.toString()) !== 0) {
-                                        row.amount = row.rate / parseFloat(row.formula.toString());
-                                        row.quantity = row.amount / row.rate;
+                                      row.rate = (e.target as HTMLInputElement).value;
+                                      if (parseFloat(row.formula) !== 0) {
+                                        row.amount = (parseFloat(row.rate) / parseFloat(row.formula)).toFixed(4);
+                                        row.quantity = (parseFloat(row.amount) / parseFloat(row.rate)).toFixed(4);
                                       }
-                                      // } else {
-                                      //   row.amount = 0;
-                                      //   row.quantity = 0;
-                                      // }
-
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
                                       setProductItem(NewArr);
                                       const productids = NewArr.map((data) => data.amount);
-                                      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
+                                      setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
                                     }}
                                   />
                                 </TableCell>
@@ -1193,29 +1179,24 @@ const MaterialSetup = () => {
                                     size="small"
                                     value={row.formula}
                                     onChange={(e: React.SyntheticEvent) => {
-                                      //  if ((e.target as HTMLInputElement).value.trim() !== "") {
-                                      row.formula = parseFloat((e.target as HTMLInputElement).value);
+                                      row.formula = (e.target as HTMLInputElement).value;
                                       if (row.formula) {
-                                        if (parseFloat(row.rate.toString()) !== 0) {
-                                          row.amount = parseFloat(row.rate.toString()) / row.formula;
-                                          row.quantity = row.amount / parseFloat(row.rate.toString());
+                                        if (parseFloat(row.rate) !== 0) {
+                                          row.amount = (parseFloat(row.rate) / parseFloat(row.formula)).toFixed(4);
+                                          row.quantity = (parseFloat(row.amount) / parseFloat(row.rate.toString())).toFixed(4);
                                         } else {
-                                          row.amount = 1 / row.formula;
-                                          row.quantity = row.amount / 1;
+                                          row.amount = (1 / parseFloat(row.formula)).toFixed(4);
+                                          row.quantity = parseFloat(row.amount).toFixed(4);
                                         }
                                       } else {
-                                        row.amount = 0;
-                                        row.quantity = 0;
+                                        row.amount = "";
+                                        row.quantity = "";
                                       }
-                                      // } else {
-                                      //   row.amount = 0;
-                                      //   row.quantity = 0;
-                                      // }
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
                                       setProductItem(NewArr);
                                       const productids = NewArr.map((data) => data.amount);
-                                      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
+                                      setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
                                     }}
                                   />
                                 </TableCell>
@@ -1228,7 +1209,7 @@ const MaterialSetup = () => {
                                       NewArr.splice(index, 1);
                                       setProductItem(NewArr);
                                       const productids = NewArr.map((data) => data.amount);
-                                      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
+                                      setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
                                     }}
                                   >
                                     Remove
@@ -1257,7 +1238,6 @@ const MaterialSetup = () => {
                             --Select--
                           </MenuItem>
                           {brandList.map((item, index) => {
-                            console.log(item.brandID);
                             return (
                               <MenuItem key={index} value={item.brandID}>
                                 {item.brandName + " (" + item.categoryName + ")"}
