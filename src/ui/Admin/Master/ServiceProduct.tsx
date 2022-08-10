@@ -144,6 +144,7 @@ const ServiceProductPage = () => {
               a = Object.assign(a, id);
               return a;
             });
+            
             setServiceProductList(arrList);
             setProductListTemp(arrList);
             if (type !== "") {
@@ -563,7 +564,7 @@ const ServiceProductPage = () => {
       // setUnitsOfSalesID(a?.unitOfSalesID);
       SetResetUnitName(false);
       //FetchUnitsFromCategory(a?.categoryID);
-      setAlternateUnit(a?.alternateUnitOfSales.toString());
+      setAlternateUnit(a?.conversionRate.toString());
       setRateWithMaterial(a?.rateWithMaterials.toString());
       setRateWithoutMaterial(a?.rateWithoutMaterials.toString());
       setShortSpecification(a?.shortSpecification);

@@ -164,7 +164,6 @@ const BrandMasterPage = () => {
 
   const InsertUpdateData = (paramBrandName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      debugger;
       Provider.create("dealerbrand/insertbrand", {
         BrandName: paramBrandName,
         Display: checked,

@@ -379,6 +379,8 @@ const BrandPage = () => {
     if (ac !== undefined) {
       setBn(event.target.value as string);
       setBnID(ac.id);
+      setbrandError("");
+      setIsBrandError(false);
     }
   };
 
@@ -500,7 +502,7 @@ const BrandPage = () => {
       uosid = objUnits1.unit1ID;
       uosid2 = objUnits1.unit2ID;
     }
-debugger;
+    debugger;
     if (actionStatus === "new") {
       Provider.create("dealerbrand/insertbrandsetup", {
         BrandID: bnID,
@@ -578,33 +580,37 @@ debugger;
     let data = buyerCategoryFullData.filter((el) => {
       return parseFloat(el.BuyerCategoryDiscount) > 0;
     });
-    let DealerJson = [];
-    data.map(function (a: any, index: number) {
-      DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
-    });
-
-    Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
-      .then((response) => {
-        if (response.data && response.data.code === 200) {
-          FetchData(mode === "new" ? "added" : "updated", CookieUserID);
-        } else if (response.data.code === 304) {
-          setSnackMsg(communication.ExistsError);
-          setOpen(true);
-          setSnackbarType("error");
-          handleCancelClick();
-        } else {
-          handleCancelClick();
-          setSnackMsg(communication.Error);
-          setSnackbarType("error");
-          setOpen(true);
-        }
-      })
-      .catch((e) => {
-        handleCancelClick();
-        setSnackMsg(communication.NetworkError);
-        setSnackbarType("error");
-        setOpen(true);
+    //if (data !== undefined && data !== null && data.length > 0) {
+      let DealerJson = [];
+      data.map(function (a: any, index: number) {
+        DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
       });
+
+      Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData(mode === "new" ? "added" : "updated", CookieUserID);
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            handleCancelClick();
+          } else {
+            handleCancelClick();
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          handleCancelClick();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
+    // } else {
+    //   FetchData(mode === "new" ? "added" : "updated", CookieUserID);
+    // }
   };
 
   const SetResetServiceName = (isBlank: boolean) => {

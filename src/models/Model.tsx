@@ -42,6 +42,7 @@ export interface ProductModel {
   activityID: number;
   productID: number;
   alternateUnitOfSales: number;
+  conversionRate: number;
   rateWithMaterials: number;
   rateWithoutMaterials: number;
   serviceDisplay: string;
@@ -182,6 +183,7 @@ export interface PostNewDesignModel {
   categoryName: string;
   productName: string;
   designTypeName: string;
+  designTypeID: number;
   display: string;
   action: string;
   serviceID: number;
@@ -190,7 +192,10 @@ export interface PostNewDesignModel {
   productID: number;
   serviceDisplay: string;
   designNumber: string;
-  designImage:string;
+  designImage: string;
+  labourCost: string;
+  workLocationID: number;
+  workLocationName: string;
 }
 
 export interface BrandNameModel {
@@ -331,4 +336,5 @@ export interface MaterialSetupModel {
   serviceName: string;
   width: number;
   action: string;
+  subtotal: string;
 }

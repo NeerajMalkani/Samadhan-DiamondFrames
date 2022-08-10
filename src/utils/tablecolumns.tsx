@@ -1054,9 +1054,12 @@ export const materialSetupColumns: GridColDef[] = [
     flex: 1,
   },
   {
-    field: "materialCost",
+    field: "subtotal",
     headerName: "Materials Cost (per Sq.Ft)",
     flex: 1.8,
+    renderCell: (params) => {
+      return (params.row.subtotal/(params.row.length * params.row.width)).toFixed(4)
+  },
   },
   {
     field: "display",

@@ -51,7 +51,7 @@ function TabPanel(props: TabPanelProps) {
     <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Box>{children}</Box>
         </Box>
       )}
     </div>
@@ -196,9 +196,9 @@ const Basic = () => {
             setLocationName(response.data.data[0].locationName ? response.data.data[0].locationName : "");
             setAddress(response.data.data[0].addressLine ? response.data.data[0].addressLine : "");
             setSelectedStateName(response.data.data[0].stateName === null ? "" : response.data.data[0].stateName);
-            setSelectedStateID(response.data.data[0].stateID);
+            setSelectedStateID(response.data.data[0].stateID === null ? 0 : response.data.data[0].stateID);
             setSelectedCityName(response.data.data[0].cityName === null ? "" : response.data.data[0].cityName);
-            setSelectedCityID(response.data.data[0].cityID);
+            setSelectedCityID(response.data.data[0].cityID === null ? 0 : response.data.data[0].cityID);
             setPincode(response.data.data[0].pincode !== 0 ? response.data.data[0].pincode.toString() : "");
             setAccountNo(response.data.data[0].accountNumber !== 0 ? response.data.data[0].accountNumber.toString() : "");
             setBankName(response.data.data[0].bankName ? response.data.data[0].bankName : "");
@@ -212,7 +212,7 @@ const Basic = () => {
             setUploadedImage(response.data.data[0].companyLogo);
             setProfileImage(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : AWSImagePath + "placeholder-image.png");
             // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
-           debugger;
+           
             if (response.data.data[0].stateID !== 0) {
               FetchCities(response.data.data[0].stateID);
             }
@@ -268,7 +268,7 @@ const Basic = () => {
   };
 
   const handleSubmitClick = () => {
-    debugger;
+
     setButtonLoading(true);
     if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
       uploadImage();
@@ -278,7 +278,6 @@ const Basic = () => {
   };
 
   const uploadImage = () => {
-    debugger;
     let imageName: string = uuid();
     let fileExtension = uploadedImage.split(".").pop();
     setUploadedImage(imageName + "." + fileExtension);
@@ -310,8 +309,10 @@ const Basic = () => {
         SalesOrderPrefix: sop,
         ShowBrand: display === "Yes",
       };
+  
       Provider.create("master/insertuserprofile", params)
         .then((response) => {
+
           if (response.data && response.data.code === 200) {
             if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
               setProfileImage(fileName ? AWSImagePath + fileName : "");

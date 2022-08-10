@@ -213,7 +213,7 @@ const ProductListPage = () => {
     let ac = brandList.find((el) => el.brandName === bName);
     if (ac !== undefined) {
       setBn(event.target.value as string);
-      setBnID(ac.id);
+      setBnID(ac.brandID);
       setIsBrandError(false);
       setbrandError("");
       setProductList([]);
@@ -366,13 +366,13 @@ const ProductListPage = () => {
   };
 
   const InsertUpdateData = (Status: string, fileName: string) => {
-    if (Status === "Success") {
+    if (Status.toLowerCase() === "success") {
       if (actionStatus === "new") {
         const params = {
           DealerID: CookieUserID,
           BrandID: bnID,
           ProductID: pnID,
-          Image: fileName,
+          Image: AWSImagePath + fileName,
           Price: price,
           UnitValue: conversionValue,
           Description: description,
@@ -405,7 +405,7 @@ const ProductListPage = () => {
           DealerID: CookieUserID,
           BrandID: bnID,
           ProductID: pnID,
-          Image: fileName,
+          Image: AWSImagePath + fileName,
           Price: price,
           UnitValue: conversionValue,
           Description: description,

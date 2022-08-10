@@ -32,10 +32,9 @@ import { communication } from "../../../utils/communication";
 import { AWSImagePath } from "../../../utils/paths";
 import Provider from "../../../api/Provider";
 import { ValidateGSTRate } from "../../../utils/validations";
-import { awsCreds } from "../../../utils/credentials";
-import ReactS3Client from "react-aws-s3-typescript";
 import uuid from "react-uuid";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 
 const PostNewDesignPage = () => {
   let navigate = useNavigate();
@@ -102,22 +101,13 @@ const PostNewDesignPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [display, setDisplay] = useState("Yes");
 
-  const [image, setImage] = useState(AWSImagePath + "placeholder-image.png");
-  const [filePath, setFilePath] = useState(null);
+  const [image, setImage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState("");
   const [uploadFileUpload, setUploadFileUpload] = useState<any>();
   const [errorDI, setDIError] = useState(false);
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Design");
-  const [isImageReplaced, setIsImageReplaced] = useState(false);
-  //const fileInput = useRef();
-
-  const config = {
-    bucketName: awsCreds.awsBucket,
-    // dirName: 'media', /* optional */
-    region: awsCreds.awsRegion,
-    accessKeyId: awsCreds.awsAccessKey,
-    secretAccessKey: awsCreds.awsSecretKey,
-  };
+  const [selectedID, setSelectedID] = useState<number>(0);
 
   useEffect(() => {
     FetchData("");
@@ -126,6 +116,7 @@ const PostNewDesignPage = () => {
   }, []);
 
   const FetchData = (type: string) => {
+    handleCancelClick();
     Provider.getAll("servicecatalogue/getpostnewdesigntypes")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -243,7 +234,8 @@ const PostNewDesignPage = () => {
       CategoryID: selectedCategoryID,
       ProductID: selectedProductID,
     };
-    Provider.getAll(`master/getdesigntypebyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+
+    Provider.getAll(`servicecatalogue/getdesigntypebyproductidformaterialsetup?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -305,7 +297,7 @@ const PostNewDesignPage = () => {
       setPnID(ac.productID);
       SetResetProductName(false);
       SetResetProductDesignType(true);
-      FetchDesignTypeFromProductID(arnID, snID, cnID, ac.id);
+      FetchDesignTypeFromProductID(arnID, snID, cnID, ac.productID);
     }
   };
 
@@ -434,20 +426,111 @@ const PostNewDesignPage = () => {
       setDesignNoErrorText(communication.SelectProductName);
     }
 
-    if (labourCost.trim() === "" || !ValidateGSTRate(labourCost)) {
+    if (labourCost.toString().trim() === "" || !ValidateGSTRate(labourCost)) {
       isValid = false;
       setLabourCostError(true);
       setLabourCostTextError(communication.SelectProductName);
     }
 
-    if (image.trim() === AWSImagePath + "placeholder-image.png") {
+    if (uploadedImage.trim() === "") {
       isValid = false;
       setDIError(true);
       setDIErrorText(communication.SelectImage);
     }
 
     if (isValid) {
-      // UpdateData();
+      setButtonLoading(true);
+      if (uploadFileUpload !== null) {
+        uploadImage();
+      } else {
+        InsertData("Success", uploadedImage);
+      }
+    }
+  };
+
+  const uploadImage = () => {
+    let imageName: string = uuid();
+    let fileExtension = uploadedImage.split(".").pop();
+    setUploadedImage(imageName + "." + fileExtension);
+    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertData);
+  };
+
+  const InsertData = (Status: string, fileName: string) => {
+    if (Status.toLowerCase() === "success") {
+      if (actionStatus === "new") {
+        Provider.create("servicecatalogue/insertpostnewdesigntype", {
+          ServiceID: snID,
+          CategoryID: cnID,
+          ProductID: pnID,
+          DesignTypeID: pdtID,
+          WorkLocationID: wlID,
+          DesignNumber: designNo,
+          DesignImage: AWSImagePath + fileName,
+          LabourCost: labourCost,
+          Display: display === "Yes",
+        })
+          .then((response) => {
+            if (response.data && response.data.code === 200) {
+              FetchData("added");
+            } else if (response.data.code === 304) {
+              setSnackbarMessage(communication.AlreadyExists);
+              setSnackbarType("error");
+              setIsSnackbarOpen(true);
+              setButtonLoading(false);
+            } else {
+              setSnackbarMessage(communication.Error);
+              setSnackbarType("error");
+              setIsSnackbarOpen(true);
+              setButtonLoading(false);
+            }
+          })
+          .catch((e) => {
+            setSnackbarMessage(communication.NetworkError);
+            setSnackbarType("error");
+            setIsSnackbarOpen(true);
+            setButtonLoading(false);
+          });
+      } else if (actionStatus === "edit") {
+        Provider.create("servicecatalogue/updatepostnewdesigntype", {
+          ID: selectedID,
+          ServiceID: snID,
+          CategoryID: cnID,
+          ProductID: pnID,
+          DesignTypeID: pdtID,
+          WorkLocationID: wlID,
+          DesignNumber: designNo,
+          DesignImage: AWSImagePath + fileName,
+          LabourCost: labourCost,
+          Display: display === "Yes",
+        })
+          .then((response) => {
+            if (response.data && response.data.code === 200) {
+              FetchData("updated");
+            } else if (response.data.code === 304) {
+              setSnackbarMessage(communication.AlreadyExists);
+              setSnackbarType("error");
+              setIsSnackbarOpen(true);
+              setButtonLoading(false);
+            } else {
+              setSnackbarMessage(communication.Error);
+              setSnackbarType("error");
+              setIsSnackbarOpen(true);
+              setButtonLoading(false);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            setSnackbarMessage(communication.NetworkError);
+            setSnackbarType("error");
+            setIsSnackbarOpen(true);
+            setButtonLoading(false);
+          });
+      }
+    } else {
+      setSnackbarMessage(communication.Error);
+      setSnackbarType("error");
+      setIsSnackbarOpen(true);
+      setButtonLoading(false);
     }
   };
 
@@ -463,32 +546,60 @@ const PostNewDesignPage = () => {
     SetResetProductName(true);
     setProductList([]);
 
+    SetResetProductDesignType(true);
+    setProductDesignTypeList([]);
+
+    SetResetworkLocation(true);
+    setWorkLocationList([]);
+
+    setLabourCost("");
+    setLabourCostError(false);
+    setLabourCostTextError("");
+
+    setDesignButtonText("Upload Design");
+    setUploadedImage("");
+    setUploadFileUpload(null);
+
+    setDIError(false);
+    setDIErrorText("");
+
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setActionStatus("new");
   };
 
-  const UploadFileToS3 = async () => {
-    if (uploadFileUpload != null && uploadFileUpload != undefined) {
-      try {
-        //  let fileObj = fileInput?.current?.files[0];
-        //let fileName = fileInput.current.files[0].name;
-        let newFileName = uuid();
-        const s3 = new ReactS3Client(config);
-        const res = await s3.uploadFile(uploadFileUpload, newFileName);
+  const handelEditAndDelete = (type: string | null, a: PostNewDesignModel | undefined) => {
+    if (type?.toLowerCase() === "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.display);
+      setButtonDisplay("unset");
+      setActionStatus("edit");
 
-        console.log(res);
+      setSelectedID(a.id);
+      setSn(a.serviceName);
+      setSnID(a.serviceID);
+      setCnID(a.categoryID);
+      setCn(a.categoryName);
+      setPn(a.productName);
+      setPnID(a.productID);
+      setPdt(a.designTypeName);
+      setPdtID(a.designTypeID);
+      setDesignNo(a.designNumber);
+      setLabourCost(a.labourCost);
+      setWl(a.workLocationName);
+      setWlID(a.workLocationID);
+      setUploadedImage(a.designImage.split("/").pop());
+      setDIError(false);
+      setDIErrorText(a.designImage.split("/").pop());
 
-        //   const ReactS3Client = new S3(config);
-        //    ReactS3Client
-        // .uploadFile(fileObj, newFileName)
-        //  .then(data => console.log(data))
-        //  .catch(err => console.error(err))
-      } catch (e) {}
+      FetchCategoriesFromServices(arnID, a.serviceID);
+      FetchProductsFromCategory(arnID, a.serviceID, a.categoryID);
+      FetchDesignTypeFromProductID(arnID, a.serviceID, a.categoryID, a.productID);
+      FetchWorkLocation();
     }
   };
-
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -499,9 +610,7 @@ const PostNewDesignPage = () => {
             <Typography variant="h4">Post New Design</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Add/Edit Post New Design
-            </Typography>
+            <Typography variant="h6">Add/Edit Post New Design</Typography>
           </Grid>
 
           <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
@@ -576,14 +685,14 @@ const PostNewDesignPage = () => {
                 <b>Product Design Type</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select value={pn} onChange={handlePDTChange}>
+              <Select value={pdt} onChange={handlePDTChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
                 {productDesignTypeList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.productName}>
-                      {item.productName}
+                    <MenuItem key={index} value={item.designTypeName}>
+                      {item.designTypeName}
                     </MenuItem>
                   );
                 })}
@@ -598,7 +707,7 @@ const PostNewDesignPage = () => {
                 <b>Working Location Name</b>
                 <label style={{ color: "#ff0000" }}>*</label>
               </Typography>
-              <Select value={pn} onChange={handleWLChange}>
+              <Select value={wl} onChange={handleWLChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
@@ -673,10 +782,15 @@ const PostNewDesignPage = () => {
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
                         setUploadFileUpload(e.currentTarget.files[0]);
+
                         let FileName = e.currentTarget.files[0].name;
-                        if (FileName !== undefined) setDIErrorText(FileName.trim());
+                        if (FileName !== undefined) {
+                          setDIErrorText(FileName.trim());
+                          setImage(FileName);
+                          setUploadedImage(FileName);
+                        }
                         setDesignButtonText("Change");
-                        setImage(e.target.value);
+                        setDIError(false);
                       }
                     }}
                   />
@@ -757,12 +871,12 @@ const PostNewDesignPage = () => {
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        // const arrActivity = [...designTypeList];
-                        // let a: DesignTypeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        // if (a) {
-                        //   const clickType = (e.target as any).textContent;
-                        //   if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
-                        // }
+                        const arrActivity = [...postNewDesign];
+                        let a: PostNewDesignModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        if (a) {
+                          const clickType = (e.target as any).textContent;
+                          if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
+                        }
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {

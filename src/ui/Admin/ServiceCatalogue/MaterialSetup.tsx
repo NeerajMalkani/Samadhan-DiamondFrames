@@ -54,6 +54,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { communication } from "../../../utils/communication";
 import { uniqueByKey } from "../../../utils/AWSFileUpload";
 import { json } from "stream/consumers";
+import { parse } from "path";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -71,7 +72,7 @@ function TabPanel(props: TabPanelProps) {
     <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Box>{children}</Box>
         </Box>
       )}
     </div>
@@ -188,7 +189,7 @@ const MaterialSetup = () => {
   const [arnID, setArnID] = useState<number>(0);
   const [arnDealerID, setArnDealerID] = useState<number>(0);
   const [totalSqFt, setTotalSqFt] = useState<number>(0);
-  const [subTotal, setSubTotal] = useState<number>(0);
+  const [subTotal, setSubTotal] = useState<string>("0");
 
   const [openDialog, setOpenDialog] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
@@ -377,11 +378,10 @@ const MaterialSetup = () => {
     let params = {
       ProductID: productids.join(","),
     };
-    debugger;
-    Provider.getAll(`servicecatalogue/getbrandsbyproductids?${new URLSearchParams(GetStringifyJson(params))}`)
+
+    Provider.getAll(`servicecatalogue/getbrandsbyproductids?${new URLSearchParams(params)}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          debugger;
           if (response.data.data) {
             console.log(JSON.stringify(response.data.data));
             setBrandProductList(response.data.data);
@@ -592,7 +592,7 @@ const MaterialSetup = () => {
     setWidthHeightFeetError("");
     setIsWidthHeightFeetError(false);
     CalculateSqfeet(1, 0, 1, 0);
-    setSubTotal(0);
+    setSubTotal("0");
     setProductItem([]);
     setBrandList([]);
     setBrandProductList([]);
@@ -760,7 +760,8 @@ const MaterialSetup = () => {
           Formula: k.formula,
         });
       });
-      Provider.create("servicecatalogue/insertmaterialsetup", {
+
+      Provider.create("servicecatalogue/updatematerialsetup", {
         MaterialSetupMaster: {
           ID: selectedID,
           DesignTypeID: pdtID,
@@ -791,16 +792,14 @@ const MaterialSetup = () => {
   };
 
   const handleBrandChange = (event: SelectChangeEvent) => {
-    debugger;
     let brandData: number = parseInt(event.target.value);
     if (brandData > 0) {
       setSelectedBrand(brandData);
-      let ProductData1 = brandProductList.filter((el: BrandProductItemModel) => (el.brandID = brandData));
+      let ProductData1 = brandProductList.filter((el: BrandProductItemModel) => el.brandID === brandData);
       let ProductData: Array<ProductItemModel> = [...productItem];
 
       ProductData.map((value: ProductItemModel, index: number) => {
         ProductData1.find(function (item: BrandProductItemModel, i: number) {
-          debugger;
           if (item.productID === value.productID) {
             value.brandName = item.brandName;
             value.brandID = item.brandID;
@@ -810,7 +809,7 @@ const MaterialSetup = () => {
         });
       });
       const productids = ProductData.map((data) => data.amount);
-      setSubTotal(productids.reduce((a, b) => a + b, 0));
+      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
       setProductItem(ProductData);
 
       setIsBrandError(false);
@@ -838,7 +837,7 @@ const MaterialSetup = () => {
       tempProductDealerList[itemIndex] = { ...tempProductDealerList[itemIndex], isChecked: false };
     }
     const productids = newChecked.map((data) => data.amount);
-    setSubTotal(productids.reduce((a, b) => a + b, 0));
+    setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
 
     setProductItem(newChecked);
     setProductDealerList(tempProductDealerList);
@@ -854,7 +853,6 @@ const MaterialSetup = () => {
       setActionStatus("edit");
 
       setSelectedID(a.id);
-
       let length = a.length.toString().split(".");
       let width = a.width.toString().split(".");
       SetResetServiceName(true);
@@ -862,15 +860,15 @@ const MaterialSetup = () => {
       SetResetProductName(true);
       SetResetProductDesignType(true);
       setLengthFeet(length[0]);
-      setLengthInches(length[1]);
+      setLengthInches(length[1] === undefined ? "0" : length[1]);
       setWidthHeightFeet(width[0]);
-      setWidthHeightInches(width[1]);
+      setWidthHeightInches(width[1] === undefined ? "0" : width[1]);
       setLengthFeetError("");
       setIsLengthFeetError(false);
       setWidthHeightFeetError("");
       setIsWidthHeightFeetError(false);
-      CalculateSqfeet(parseInt(length[0]), parseInt(length[1]), parseInt(width[0]), parseInt(width[1]));
-      setSubTotal(0);
+      CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
+      setSubTotal("0");
 
       FetchCategoriesFromServices(arnID, a.serviceID, "contractor");
       FetchProductsFromCategory(arnID, a.serviceID, a.categoryID, "contractor");
@@ -912,11 +910,11 @@ const MaterialSetup = () => {
                 brandName: k.brandName,
                 rate: k.rate.toFixed(4),
                 amount: k.amount.toFixed(4),
-                quantity: Math.ceil(k.quantity),
+                quantity: parseFloat(k.quantity).toFixed(4),
                 formula: k.formula.toFixed(4),
               });
             });
-            setSubTotal(totalTemp);
+            setSubTotal(totalTemp.toFixed(4));
             setProductItem(tempArr);
             setSelectedBrand(tempArr[0].brandID);
             FetchProductBrandFromProductID(tempArr);
@@ -1153,23 +1151,7 @@ const MaterialSetup = () => {
                                 <TableCell component="th" scope="row">
                                   {row.productName}
                                 </TableCell>
-                                <TableCell>
-                                  {/* <FormControl fullWidth size="small" error={isCategorynameError}>
-                                  <Select value={row.brandName} onChange={handleCNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                      --Select--
-                                    </MenuItem>
-                                    {categoryList.map((item, index) => {
-                                      return (
-                                        <MenuItem key={index} value={item.id}>
-                                          {item.categoryName}
-                                        </MenuItem>
-                                      );
-                                    })}
-                                  </Select>
-                                </FormControl> */}
-                                  {row.brandName}
-                                </TableCell>
+                                <TableCell>{row.brandName}</TableCell>
                                 <TableCell align="right">
                                   <TextField sx={{ width: "96px" }} disabled placeholder="" variant="outlined" size="small" value={row.quantity} onChange={(e) => {}} />
                                 </TableCell>
@@ -1181,16 +1163,22 @@ const MaterialSetup = () => {
                                     size="small"
                                     value={row.rate}
                                     onChange={(e: React.SyntheticEvent) => {
+                                      // if ((e.target as HTMLInputElement).value.trim() !== "") {
                                       row.rate = parseFloat((e.target as HTMLInputElement).value);
-                                      if (row.formula !== 0) {
-                                        row.amount = row.rate / row.formula;
+                                      if (parseFloat(row.formula.toString()) !== 0) {
+                                        row.amount = row.rate / parseFloat(row.formula.toString());
                                         row.quantity = row.amount / row.rate;
                                       }
+                                      // } else {
+                                      //   row.amount = 0;
+                                      //   row.quantity = 0;
+                                      // }
+
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
                                       setProductItem(NewArr);
                                       const productids = NewArr.map((data) => data.amount);
-                                      setSubTotal(productids.reduce((a, b) => a + b, 0));
+                                      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
                                     }}
                                   />
                                 </TableCell>
@@ -1205,16 +1193,29 @@ const MaterialSetup = () => {
                                     size="small"
                                     value={row.formula}
                                     onChange={(e: React.SyntheticEvent) => {
+                                      //  if ((e.target as HTMLInputElement).value.trim() !== "") {
                                       row.formula = parseFloat((e.target as HTMLInputElement).value);
-                                      if (row.rate !== 0) {
-                                        row.amount = row.rate / row.formula;
-                                        row.quantity = row.amount / row.rate;
+                                      if (row.formula) {
+                                        if (parseFloat(row.rate.toString()) !== 0) {
+                                          row.amount = parseFloat(row.rate.toString()) / row.formula;
+                                          row.quantity = row.amount / parseFloat(row.rate.toString());
+                                        } else {
+                                          row.amount = 1 / row.formula;
+                                          row.quantity = row.amount / 1;
+                                        }
+                                      } else {
+                                        row.amount = 0;
+                                        row.quantity = 0;
                                       }
+                                      // } else {
+                                      //   row.amount = 0;
+                                      //   row.quantity = 0;
+                                      // }
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
                                       setProductItem(NewArr);
                                       const productids = NewArr.map((data) => data.amount);
-                                      setSubTotal(productids.reduce((a, b) => a + b, 0));
+                                      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
                                     }}
                                   />
                                 </TableCell>
@@ -1227,7 +1228,7 @@ const MaterialSetup = () => {
                                       NewArr.splice(index, 1);
                                       setProductItem(NewArr);
                                       const productids = NewArr.map((data) => data.amount);
-                                      setSubTotal(productids.reduce((a, b) => a + b, 0));
+                                      setSubTotal(productids.reduce((a, b) => a + b, 0).toFixed(4));
                                     }}
                                   >
                                     Remove
