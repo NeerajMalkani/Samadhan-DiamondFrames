@@ -10,6 +10,9 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import HailIcon from "@mui/icons-material/Hail";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
 import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
+import InstallDesktopIcon from '@mui/icons-material/InstallDesktop';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import PaidIcon from '@mui/icons-material/Paid';
 import ShopIcon from "@mui/icons-material/Shop";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../theme/AppTheme";
@@ -276,8 +279,26 @@ const DrawerItems = ({ open }: OpenObj) => {
 
   const MenuItemsGeneralUser = [
     {
-      title: "Brands & Prodcuts",
-      icon: "gift-outline",
+      title: "Profile Update",
+      icon: <BusinessIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Profile Update",
+          isActive: window.location.href.toLowerCase().includes("profileupdate"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generaluser/profileupdate`);
+            }, 300);
+          },
+        },
+        
+      ],
+    },
+    {
+      title: "Enquiry & Estimation",
+      icon: <Inventory2Icon />,
       expanded: true,
       items: [
         {
@@ -286,7 +307,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/imagegallery`);
+              navigate(`/generaluser/imagegallery`);
             }, 300);
           },
         },
@@ -296,7 +317,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/estimation`);
+              navigate(`/generaluser/estimation`);
             }, 300);
           },
         },
@@ -590,7 +611,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Rate Card",
-      icon: "gift-outline",
+      icon: <PaidIcon/>,
       expanded: true,
       items: [
         {
@@ -634,7 +655,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Quotation & Enquiries",
-      icon: "gift-outline",
+      icon: <PointOfSaleIcon/>,
       expanded: true,
       items: [
         {
@@ -671,7 +692,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Projects",
-      icon: "gift-outline",
+      icon: <InstallDesktopIcon/>,
       expanded: true,
       items: [
         {

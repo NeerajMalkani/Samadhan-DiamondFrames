@@ -667,7 +667,7 @@ const ProductListPage = () => {
               <TextField
                 style={{ float: "left" }}
                 //fullWidth
-                placeholder="Price"
+                placeholder="Unit value"
                 variant="outlined"
                 size="small"
                 value={conversionValue}

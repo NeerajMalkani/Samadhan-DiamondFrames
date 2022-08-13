@@ -564,7 +564,21 @@ const MaterialSetup = () => {
 
   const CalculateSqfeet = (lf: number, li: number, whf: number, whi: number) => {
     if (lf > 0 && li > -1 && whf > 0 && whi > -1) {
-      setTotalSqFt(parseFloat((parseFloat(lf + "." + li) * parseFloat(whf + "." + whi)).toFixed(2)));
+      let lengthInches = ((lf * 12 + li) * (whf * 12 + whi)) / 144;
+      setTotalSqFt(parseFloat(lengthInches.toFixed(4)));
+      if (productItem.length > 0) {
+        let total = 0;
+        const arrMaterialProducts = [...productItem];
+        arrMaterialProducts.map((k) => {
+          if (parseFloat(k.formula) !== 0) {
+            k.quantity = (parseFloat(lengthInches.toString()) / parseFloat(k.formula)).toFixed(4);
+            k.amount = (parseFloat(k.quantity) * parseFloat(k.rate === "0" ? "1" : k.rate)).toFixed(4);
+            total += parseFloat(k.amount);
+          }
+        });
+        setProductItem(arrMaterialProducts);
+        setSubTotal(total.toFixed(4));
+      }
     } else {
       setTotalSqFt(0);
     }
@@ -803,11 +817,16 @@ const MaterialSetup = () => {
             value.brandName = item.brandName;
             value.brandID = item.brandID;
             value.rate = item.price.toFixed(4);
+            if (parseFloat(value.formula) !== 0) {
+              value.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(value.formula)).toFixed(4);
+              value.amount = (parseFloat(value.quantity) * parseFloat(value.rate === "0" ? "1" : value.rate)).toFixed(4);
+            }
             return i;
           }
         });
       });
-      const productids = ProductData.map((data) => data.amount);
+      const newChecked = [...ProductData];
+      const productids = newChecked.map((data) => data.amount);
       setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
       setProductItem(ProductData);
 
@@ -1157,8 +1176,8 @@ const MaterialSetup = () => {
                                     onChange={(e: React.SyntheticEvent) => {
                                       row.rate = (e.target as HTMLInputElement).value;
                                       if (parseFloat(row.formula) !== 0) {
-                                        row.amount = (parseFloat(row.rate) / parseFloat(row.formula)).toFixed(4);
-                                        row.quantity = (parseFloat(row.amount) / parseFloat(row.rate)).toFixed(4);
+                                        row.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(row.formula)).toFixed(4);
+                                        row.amount = (parseFloat(row.quantity) * parseFloat(row.rate)).toFixed(4);
                                       }
                                       let NewArr = [...productItem];
                                       NewArr.splice(index, 1, row);
@@ -1182,8 +1201,8 @@ const MaterialSetup = () => {
                                       row.formula = (e.target as HTMLInputElement).value;
                                       if (row.formula) {
                                         if (parseFloat(row.rate) !== 0) {
-                                          row.amount = (parseFloat(row.rate) / parseFloat(row.formula)).toFixed(4);
-                                          row.quantity = (parseFloat(row.amount) / parseFloat(row.rate.toString())).toFixed(4);
+                                          row.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(row.formula)).toFixed(4);
+                                          row.amount = (parseFloat(row.quantity) * parseFloat(row.rate)).toFixed(4);
                                         } else {
                                           row.amount = (1 / parseFloat(row.formula)).toFixed(4);
                                           row.quantity = parseFloat(row.amount).toFixed(4);
