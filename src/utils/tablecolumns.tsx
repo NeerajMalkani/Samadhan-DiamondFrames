@@ -1083,3 +1083,95 @@ export const materialSetupColumns: GridColDef[] = [
     ),
   },
 ];
+
+export const employeeColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "activityRoleName",
+    headerName: "Employee Name / Code",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Mobile No",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Branch",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Department",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Designation",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Profile Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Login Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Verify Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Branch",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];

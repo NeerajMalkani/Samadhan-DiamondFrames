@@ -30,6 +30,7 @@ import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
 import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
 import Basic from "../ui/Dealer/CompanyProfile/Basic";
 import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
+import EmployeeList from "../ui/Contractor/Employee/EmployeeList";
 
 const AppRoutes = () => {
   return (
@@ -65,6 +66,7 @@ const AppRoutes = () => {
               <Route path="dealer/myservices" element={<MyServices />} />
               <Route path="dealer/buyercategory" element={<BuyerCategory />} />
               <Route path="dealer/basicdetails" element={<Basic />} />
+              <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
             </Routes>
           </BrowserRouter>
         </Box>
