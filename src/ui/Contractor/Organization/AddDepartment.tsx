@@ -139,6 +139,7 @@ const AddDepartment =() => {
   
   
     const handleDropdownChange = (event: SelectChangeEvent) => {
+      debugger;
       let departmentName: string = event.target.value;
       let ac = departmentList.find((el) => el.departmentName === departmentName);
       if (ac !== undefined) {
@@ -190,6 +191,7 @@ const AddDepartment =() => {
     };
   
     const handelEditAndDelete = (type: string | null, a: DepartmentNameModel | undefined) => {
+      debugger;
       if (type?.toLowerCase() === "edit" && a !== undefined) {
         setDataGridOpacity(0.3);
         setDataGridPointer("none");
@@ -206,7 +208,6 @@ const AddDepartment =() => {
       }
     };
 
-  
     const handleSubmitClick = () => {
       debugger;
       let isValid: boolean = true;
@@ -227,7 +228,7 @@ const AddDepartment =() => {
         Provider.create("master/insertuserdepartments", {
           UserId:cookies.dfc.UserID,
           UserType: 3,
-          DepartmentID:1,
+          DepartmentID:departmentID,
           Display: checked,
         })
           .then((response) => {
@@ -253,10 +254,9 @@ const AddDepartment =() => {
           });
       } else if (actionStatus === "edit") {
         Provider.create("master/updateuserdepartment", {
-          // ServiceID: departmentID,
           UserId:cookies.dfc.UserID,
           UserType: 3,
-          DepartmentID:1,
+          DepartmentID:departmentID,
           Display: checked,
         })
           .then((response) => {
@@ -385,9 +385,10 @@ return(
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        debugger;
                         const arrActivity = [...gridDepartmentList];
                         let a: DepartmentNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        // handelEditAndDelete((e.target as any).textContent, a);
+                        handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {
@@ -401,71 +402,6 @@ return(
               </div>
             )}
           </Grid>
-    {/* <Grid item xs={4} sm={8} md={12}>
-            {loading ? (
-                <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{m:2}}
-                >
-                    <CircularProgress/>
-                </Box>
-            ) : (
-                <div style={{height:500, width:"100%",marginBottom:"20px"}}>
-                    {departmentNameList.length === 0 ? (
-                        <></>
-                    ) :(
-                        <>
-                        <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                      <TextField
-                        placeholder="Search"
-                        variant="outlined"
-                        size="small"
-                        //sx={{justifySelf:"flex-end"}}
-                        // onChange={(e) => {
-                        //   onChangeSearch((e.target as HTMLInputElement).value);
-                        // }}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              < SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                       </Grid>
-                      <DataGrid
-                      style={{
-                        opacity:dataGridOpacity,
-                        pointerEvents: dataGridPointer,
-                      }}
-                      rows={myDepartmentNameListTemp}
-                      columns={activityColumns}
-                      pageSize={pageSize}
-                      rowsPerPageOptions={[5, 10, 20]}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                      disableSelectionOnClick
-                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...departmentNameList];
-                        let a: DepartmentNameModel | undefined =
-                          arrActivity.find((el) => el.id === param.row.id);
-                        // handelEditAndDelete((e.target as any).textContent, a);
-                      }}
-                      sx={{
-                        "& .MuiDataGrid-columnHeaders": {
-                          backgroundColor: theme.palette.primary.main,
-                          color: theme.palette.primary.contrastText,
-                        },
-                        mb: 1
-                      }}  
-                    />
-                </>
-                )}
-            </div>
-            )}
-            </Grid> */}
 </Grid>
 
 </Grid>

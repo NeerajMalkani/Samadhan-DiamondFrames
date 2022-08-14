@@ -56,6 +56,7 @@ import {
         const [snackMsg,setSnackMsg] =React.useState("");
         const [buttonLoading,setButtonLoading] =useState(false);
         const [display, setDisplay ]= React.useState("Yes");
+        const [reportingAuthority, setReportingAuthority ]= React.useState("Yes");
         const [pageSize,setPageSize] =React.useState<number>(5);
         const [buttonDisplay,setButtonDisplay] = React.useState<string>("none");
         const [dataGridOpacity,setDataGridOpacity]=React.useState<number>(1);
@@ -95,6 +96,7 @@ import {
                   const arrList = [...response.data.data];
                   arrList.map(function (a: any, index: number) {
                     a.display = a.display ? "Yes" : "No";
+                    a.reportingAuthority = a.reportingAuthority ? "Yes" : "No";
                     let sr = { srno: index + 1 };
                     a = Object.assign(a, sr);
                   });
@@ -162,10 +164,15 @@ import {
           setButtonDisplay("none");
           setButtonLoading(false);
           setDisplay("Yes");
+          setReportingAuthority("Yes");
         };
       
         const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           setDisplay((event.target as HTMLInputElement).value);
+        };
+
+        const handleReportingAuthorityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+          setReportingAuthority((event.target as HTMLInputElement).value);
         };
       
         const onChangeSearch = (query: string) => {
@@ -190,10 +197,12 @@ import {
         };
       
         const handelEditAndDelete = (type: string | null, a: DesignationNameModel | undefined) => {
+          debugger;
           if (type?.toLowerCase() === "edit" && a !== undefined) {
             setDataGridOpacity(0.3);
             setDataGridPointer("none");
             setDisplay(a.display);
+            setReportingAuthority(a.reportingAuthority);
             setDesignationName(a.designationName);
             setDesignationID(
                 designationList.find((el) => {
@@ -216,19 +225,19 @@ import {
           
           }
           if (isValid) {
-            InsertUpdateData(designationName, display === "Yes");
+            InsertUpdateData(designationName, display === "Yes", reportingAuthority === "Yes");
           }
         };
       
-        const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
+        const InsertUpdateData = (paramServiceName: string, checked: boolean, reportingAuthority: boolean) => {
           debugger;
           setButtonLoading(true);
           if (actionStatus === "new") {
             Provider.create("master/insertuserdesignation", {
               UserId:cookies.dfc.UserID,
               UserType: 3,
-              DesignationID:1,
-              ReportingAuthority:1,
+              DesignationID:designationID,
+              ReportingAuthority:reportingAuthority,
               Display: checked,
             })
               .then((response) => {
@@ -257,8 +266,8 @@ import {
               // ServiceID: departmentID,
               UserId:cookies.dfc.UserID,
               UserType: 3,
-              DesignationID:1,
-              ReportingAuthority:1,
+              DesignationID:designationID,
+              ReportingAuthority:reportingAuthority,
               Display: checked,
             })
               .then((response) => {
@@ -326,7 +335,7 @@ import {
                 <b>Reporting Authority</b>
                 </Typography>
                 <FormControl>
-                  <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+                  <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleReportingAuthorityChange}>
                     <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                     <FormControlLabel value="No" control={<Radio />} label="No" />
                   </RadioGroup>
@@ -400,9 +409,10 @@ import {
                           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                           disableSelectionOnClick
                           onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                            debugger;
                             const arrActivity = [...gridDesignationList];
                             let a: DesignationNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                            // handelEditAndDelete((e.target as any).textContent, a);
+                            handelEditAndDelete((e.target as any).textContent, a);
                           }}
                           sx={{
                             "& .MuiDataGrid-columnHeaders": {
@@ -416,71 +426,6 @@ import {
                   </div>
                 )}
               </Grid>
-        {/* <Grid item xs={4} sm={8} md={12}>
-                {loading ? (
-                    <Box
-                    height="300px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{m:2}}
-                    >
-                        <CircularProgress/>
-                    </Box>
-                ) : (
-                    <div style={{height:500, width:"100%",marginBottom:"20px"}}>
-                        {departmentNameList.length === 0 ? (
-                            <></>
-                        ) :(
-                            <>
-                            <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                          <TextField
-                            placeholder="Search"
-                            variant="outlined"
-                            size="small"
-                            //sx={{justifySelf:"flex-end"}}
-                            // onChange={(e) => {
-                            //   onChangeSearch((e.target as HTMLInputElement).value);
-                            // }}
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  < SearchIcon />
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                           </Grid>
-                          <DataGrid
-                          style={{
-                            opacity:dataGridOpacity,
-                            pointerEvents: dataGridPointer,
-                          }}
-                          rows={myDepartmentNameListTemp}
-                          columns={activityColumns}
-                          pageSize={pageSize}
-                          rowsPerPageOptions={[5, 10, 20]}
-                          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                          disableSelectionOnClick
-                          onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                            const arrActivity = [...departmentNameList];
-                            let a: DepartmentNameModel | undefined =
-                              arrActivity.find((el) => el.id === param.row.id);
-                            // handelEditAndDelete((e.target as any).textContent, a);
-                          }}
-                          sx={{
-                            "& .MuiDataGrid-columnHeaders": {
-                              backgroundColor: theme.palette.primary.main,
-                              color: theme.palette.primary.contrastText,
-                            },
-                            mb: 1
-                          }}  
-                        />
-                    </>
-                    )}
-                </div>
-                )}
-                </Grid> */}
     </Grid>
     
     </Grid>
