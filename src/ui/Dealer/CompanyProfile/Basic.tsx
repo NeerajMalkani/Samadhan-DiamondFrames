@@ -199,8 +199,8 @@ const Basic = () => {
             setSelectedStateID(response.data.data[0].stateID === null ? 0 : response.data.data[0].stateID);
             setSelectedCityName(response.data.data[0].cityName === null ? "" : response.data.data[0].cityName);
             setSelectedCityID(response.data.data[0].cityID === null ? 0 : response.data.data[0].cityID);
-            setPincode(response.data.data[0].pincode !== 0 ? response.data.data[0].pincode.toString() : "");
-            setAccountNo(response.data.data[0].accountNumber !== 0 ? response.data.data[0].accountNumber.toString() : "");
+            setPincode(response.data.data[0].pincode === null ? "" : response.data.data[0].pincode.toString() !== "" ? response.data.data[0].pincode.toString() : "");
+            setAccountNo(response.data.data[0].accountNumber === null ? "" : response.data.data[0].accountNumber.toString() !== "" ? response.data.data[0].accountNumber.toString() : "");
             setBankName(response.data.data[0].bankName ? response.data.data[0].bankName : "");
             setBankBranchName(response.data.data[0].branchName ? response.data.data[0].branchName : "");
             setIFSCCode(response.data.data[0].ifscCode ? response.data.data[0].ifscCode : "");
@@ -227,8 +227,10 @@ const Basic = () => {
   };
 
   const FetchStates = () => {
+    debugger;
     Provider.getAll("master/getstates")
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const stateData: any = [];
