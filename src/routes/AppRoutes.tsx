@@ -31,6 +31,10 @@ import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
 import Basic from "../ui/Dealer/CompanyProfile/Basic";
 import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
 import EmployeeList from "../ui/Contractor/Employee/EmployeeList";
+import CBasic from "../ui/Contractor/CompanyProfile/CBasic";
+import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
+import AddDepartment from "../ui/Contractor/Organization/AddDepartment";
+import AddDesignation from "../ui/Contractor/Organization/AddDesignation";
 
 const AppRoutes = () => {
   return (
@@ -67,6 +71,10 @@ const AppRoutes = () => {
               <Route path="dealer/buyercategory" element={<BuyerCategory />} />
               <Route path="dealer/basicdetails" element={<Basic />} />
               <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
+              <Route path="contractor/companyprofile/cbasic" element={<CBasic/>}/>
+              <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
+              <Route path="contractor/organization/adddepartment" element={<AddDepartment/>}/>
+              <Route path="contractor/organization/adddesignation" element={<AddDesignation/>}/>
             </Routes>
           </BrowserRouter>
         </Box>
