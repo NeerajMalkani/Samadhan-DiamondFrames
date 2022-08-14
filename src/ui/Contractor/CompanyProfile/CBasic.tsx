@@ -21,23 +21,23 @@ import {
     AlertColor,
     CircularProgress,
   } from "@mui/material";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
   import { useNavigate } from "react-router-dom";
   import React, { useState, useEffect } from "react";
-  import { theme } from "../../theme/AppTheme";
+  import { theme } from "../../../theme/AppTheme";
   import { useCookies } from "react-cookie";
   import ModeIcon from "@mui/icons-material/Mode";
   import CheckIcon from "@mui/icons-material/Check";
   import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
   import { border } from "@mui/system";
-  import Provider from "../../api/Provider";
+  import Provider from "../../../api/Provider";
   import { LoadingButton } from "@mui/lab";
-  import { GetStringifyJson } from "../../utils/CommonFunctions";
-  import { AWSImagePath } from "../../utils/paths";
-  import { communication } from "../../utils/communication";
-  import { UploadImageToS3WithNativeSdk } from "../../utils/AWSFileUpload";
+  import { GetStringifyJson } from "../../../utils/CommonFunctions";
+  import { AWSImagePath } from "../../../utils/paths";
+  import { communication } from "../../../utils/communication";
+  import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
   import uuid from "react-uuid";
-  import { CityModel, CompanyModel, StateModel, UserModel, UserProfile } from "../../models/Model";
+  import { CityModel, CompanyModel, StateModel, UserModel, UserProfile } from "../../../models/Model";
   
   interface TabPanelProps {
     children?: React.ReactNode;

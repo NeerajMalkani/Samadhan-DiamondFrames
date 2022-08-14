@@ -23,14 +23,14 @@ import {
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
-import { ServiceNameModel } from "../../models/Model";
+import Header from "../../../components/Header";
+import { ServiceNameModel } from "../../../models/Model";
 import { Theme, useTheme } from "@mui/material/styles";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { serviceColumns } from "../../utils/tablecolumns";
-import { communication } from "../../utils/communication";
-import Provider from "../../api/Provider";
-import { GetStringifyJson } from "../../utils/CommonFunctions";
+import { serviceColumns } from "../../../utils/tablecolumns";
+import { communication } from "../../../utils/communication";
+import Provider from "../../../api/Provider";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
 
 const CMyServices = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
