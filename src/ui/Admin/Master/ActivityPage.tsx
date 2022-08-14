@@ -55,6 +55,7 @@ const ActivityPage = () => {
     setButtonLoading(false);
   };
 
+  
   const FetchData = (type: string) => {
     ResetFields();
     Provider.getAll("master/getactivityroles")
