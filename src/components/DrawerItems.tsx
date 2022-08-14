@@ -525,11 +525,11 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Basic Details",
-          isActive: window.location.href.toLowerCase().includes("basicdetails"),
+          isActive: window.location.href.toLowerCase().includes("cbasic"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/companyprofile/cbasic`);
+              navigate(`/contractor/companyprofile/cbasic`);
             }, 300);
           },
         },
@@ -539,7 +539,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/companyprofile/cmyservice`);
+              navigate(`/contractor/companyprofile/cmyservice`);
             }, 300);
           },
         },
@@ -583,7 +583,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/organization/adddepartment`);
+              navigate(`/contractor/organization/adddepartment`);
             }, 300);
           },
         },
@@ -603,7 +603,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/organization/adddesignation`);
+              navigate(`/contractor/organization/adddesignation`);
             }, 300);
           },
         },
