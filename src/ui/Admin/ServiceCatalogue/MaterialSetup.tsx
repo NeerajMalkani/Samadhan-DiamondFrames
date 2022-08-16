@@ -748,6 +748,11 @@ const MaterialSetup = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
+          }else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            handleCancelClick();
           } else {
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -788,6 +793,11 @@ const MaterialSetup = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
+          }else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            handleCancelClick();
           } else {
             setSnackMsg(communication.Error);
             setSnackbarType("error");
