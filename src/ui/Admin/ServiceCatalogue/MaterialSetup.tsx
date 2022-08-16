@@ -1421,13 +1421,6 @@ const MaterialSetup = () => {
               <List sx={{ width: "100%", maxWidth: 360, height: 240, bgcolor: "background.paper" }}>
                 {productDealerList.map((value: ProductModel, index: number) => {
                   const labelId = `checkbox-list-label-${index}`;
-                  // let selected: boolean = false;
-                  // let data = productItem.find((el: ProductItemModel) => {
-                  //   return el.productID === value.productID;
-                  // });
-                  // if (data !== null && data !== undefined) {
-                  //   selected = true;
-                  // }
                   return (
                     <ListItem key={index} disablePadding>
                       <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
@@ -1440,45 +1433,6 @@ const MaterialSetup = () => {
                   );
                 })}
               </List>
-
-              {/* <Autocomplete
-                multiple
-                id="checkboxes-tags"
-                // value={productItem}
-                //isOptionEqualToValue={(option, value) => true}
-                includeInputInList={true}
-                options={productDealerList}
-                disableCloseOnSelect
-                getOptionLabel={(option: ProductModel) => option.productName}
-                renderOption={(props, option) => {
-                  let selected: boolean = false;
-                  let data = productItem.find((el: ProductItemModel) => {
-                    return el.productID === option.productID;
-                  });
-                  if (data !== null && data !==undefined) {
-                    selected = true;
-                  }
-                  return (
-                    <li {...props}>
-                      <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-                      {option.productName}
-                    </li>
-                  );
-                }}
-                onChange={(event: React.SyntheticEvent, value: any) => {
-                  let PItem: Array<ProductItemModel> = [];
-                  let ProductIds: string = "";
-                  value.map((item: ProductModel) => {
-                    PItem.push({ productID: item.productID, productName: item.productName, brandID: 0, brandName: "", quantity: 0, rate: 0, amount: 0, formula: 0 });
-                    ProductIds += "," + item.productID;
-                  });
-
-                  setProductItem(PItem);
-                  //  FetchProductBrandFromProductID(ProductIds.replace(/^,|,$/g, ""));
-                }}
-                //style={{ width: 240 }}
-                renderInput={(params) => <TextField {...params} label="Products" placeholder="Products" />}
-              /> */}
             </Grid>
           </Grid>
         </DialogContent>
