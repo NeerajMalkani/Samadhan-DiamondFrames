@@ -2,14 +2,14 @@ import { CreateImageGalleryEstimation } from "../components/Cards";
 import { Box, Grid, Grow } from "@mui/material";
 import NoData from "../components/NoData";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
-import { ImageGalleryEstimation } from "../models/Model";
+import { ButtonSettings, ImageGalleryEstimation } from "../models/Model";
 
 interface Props {
   shows: ImageGalleryEstimation[];
-  actionButton: boolean;
+  buttonSettings: ButtonSettings;
 }
 
-const ShowsGrid = ({ shows, actionButton }: Props) => {
+const ShowsGrid = ({ shows, buttonSettings }: Props) => {
   return (
     <Box mt={3} mb={3}>
       {shows.length > 0 ? (
@@ -18,7 +18,7 @@ const ShowsGrid = ({ shows, actionButton }: Props) => {
             return (
               <Grow key={i} in={true} style={{ transformOrigin: "0 0 0" }}>
                 <Grid item xs={2} sm={4} md={3}>
-                  <CreateImageGalleryEstimation props={k} actionButton={actionButton}/>
+                  <CreateImageGalleryEstimation props={k} buttonSettings={buttonSettings}/>
                 </Grid>
               </Grow>
             );

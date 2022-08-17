@@ -340,11 +340,21 @@ export interface MaterialSetupModel {
   subtotal: string;
 }
 
-
 export interface ImageGalleryEstimation {
   id: number;
   srno: number;
-  imageName:string;
-  categoryName:string;
-  productName:string;
+  imageName: string;
+  categoryName: string;
+  productName: string;
+}
+
+export interface ButtonSettings {
+  isActionButton: boolean;
+  actionButtons: Array<ActionButtons>;
+}
+
+export interface ActionButtons {
+  title: string;
+  type: "text" | "outlined" | "contained";
+  callBack: Function;
 }

@@ -1,6 +1,6 @@
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Paper, Typography } from "@mui/material";
 import { useState } from "react";
-import { ImageGalleryEstimation } from "../models/Model";
+import { ActionButtons, ButtonSettings, ImageGalleryEstimation } from "../models/Model";
 export const CreateGeneralCards = (title: string, icon: any) => {
   const [shadow, setShadow] = useState(1);
   const onMouseOver = () => setShadow(4);
@@ -39,10 +39,9 @@ export const CreateTotalUserCards = (title: string, value: number, icon: any, bg
 
 interface Props {
   props: ImageGalleryEstimation;
-  actionButton: Boolean;
+  buttonSettings: ButtonSettings;
 }
-
-export const CreateImageGalleryEstimation = ({ props, actionButton }: Props) => {
+export const CreateImageGalleryEstimation = ({ props, buttonSettings }: Props) => {
   const [shadow, setShadow] = useState(1);
   const onMouseOver = () => setShadow(20);
   const onMouseOut = () => setShadow(1);
@@ -78,11 +77,28 @@ export const CreateImageGalleryEstimation = ({ props, actionButton }: Props) => 
           </Typography>
         </CardContent>
       </CardActionArea>
-      {actionButton ? <CardActions disableSpacing sx={{ flex: 1, display: "flex", position: "relative" }}>
-      <Button variant="contained" sx={{ marginTop: 2 }}>
+      {buttonSettings.actionButtons ? (
+        <CardActions disableSpacing sx={{ flex: 1, display: "flex", position: "relative" }}>
+          {buttonSettings.actionButtons.map((value: ActionButtons, index: number) => {
+            return (
+              <Button
+                variant={value.type}
+                sx={{ marginTop: 2 }}
+                onClick={() => {
+                  value.callBack();
+                }}
+              >
+                {value.title}
+              </Button>
+            );
+          })}
+          {/* <Button variant="contained" sx={{ marginTop: 2 }}>
           fsfzfd
-        </Button>
-      </CardActions> : <></>}
+        </Button> */}
+        </CardActions>
+      ) : (
+        <></>
+      )}
     </Card>
   );
 };
