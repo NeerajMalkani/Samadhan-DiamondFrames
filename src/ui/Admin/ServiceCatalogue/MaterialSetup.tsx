@@ -702,7 +702,7 @@ const MaterialSetup = () => {
       setSnackMsg("error");
       setSnackMsg("Please add product");
     } else {
-      let blankData = productItem.find((el) => !el.formula || el.formula === "");
+      let blankData = productItem.find((el) => !el.formula || el.formula === "0");
       if (blankData !== undefined && blankData !== null) {
         isValid = false;
         setOpen(true);
@@ -748,11 +748,10 @@ const MaterialSetup = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
-            handleCancelClick();
           } else {
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -793,7 +792,7 @@ const MaterialSetup = () => {
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
