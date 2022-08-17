@@ -39,7 +39,7 @@ const ImageGalleryAndEstimationPage = () => {
               navigate(`/generaluser/imagegallery/product?id=25`);
             }}
           >
-            <img src="" alt="" style={{ width: "100%", height: "100%", border: "1px solid rgba(0,0,0,0.12)" }} />
+            <img src="" alt="" style={{ maxWidth: 240, maxHeight: 240, border: "1px solid rgba(0,0,0,0.12)" }} />
           </div>
         </Grid>
       );
