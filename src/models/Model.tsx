@@ -339,3 +339,12 @@ export interface MaterialSetupModel {
   action: string;
   subtotal: string;
 }
+
+
+export interface ImageGalleryEstimation {
+  id: number;
+  srno: number;
+  imageName:string;
+  categoryName:string;
+  productName:string;
+}

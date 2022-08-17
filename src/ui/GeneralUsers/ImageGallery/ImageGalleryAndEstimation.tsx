@@ -2,8 +2,9 @@ import { Alert, AlertColor, Box, CircularProgress, Container, Grid, IconButton, 
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import ShowsGrid from "../../../components/GridStructure";
 import Header from "../../../components/Header";
-import { BrandNameModel } from "../../../models/Model";
+import { ImageGalleryEstimation } from "../../../models/Model";
 
 const ImageGalleryAndEstimationPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -18,35 +19,63 @@ const ImageGalleryAndEstimationPage = () => {
     }
   }, []);
 
-  const [loading, setLoading] = useState(true);
-  const [brandNamesList, setBrandNamesList] = useState<Array<BrandNameModel>>([]);
+  const [loading, setLoading] = useState(false);
+  const [brandNamesList, setBrandNamesList] = useState<Array<ImageGalleryEstimation>>([{
+    id: 0,
+    srno: 1,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  },{
+    id: 1,
+    srno: 2,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  },{
+    id: 1,
+    srno: 2,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  },{
+    id: 1,
+    srno: 2,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  },{
+    id: 1,
+    srno: 2,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  },{
+    id: 1,
+    srno: 2,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  },{
+    id: 1,
+    srno: 2,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  },{
+    id: 1,
+    srno: 2,
+    imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
+    categoryName: "zsdfgsdg",
+    productName: "gdfgdf"
+  }]);
 
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
 
-  const CreateImageList = () => {
-    let menuItems = [];
-    brandNamesList.map((value: BrandNameModel, index: number) => {
-      menuItems.push(
-        <Grid sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-          <Typography>dsdf</Typography>
-          <Typography>dsfsd</Typography>
-          <div
-            style={{ padding: "8px", cursor: "pointer" }}
-            onClick={() => {
-              navigate(`/generaluser/imagegallery/product?id=25`);
-            }}
-          >
-            <img src="" alt="" style={{ maxWidth: 240, maxHeight: 240, border: "1px solid rgba(0,0,0,0.12)" }} />
-          </div>
-        </Grid>
-      );
-    });
-
-    return menuItems;
-  };
+ 
 
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
@@ -73,9 +102,7 @@ const ImageGalleryAndEstimationPage = () => {
                 {brandNamesList.length === 0 ? (
                   <></>
                 ) : (
-                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {CreateImageList()}
-                  </Grid>
+                 <ShowsGrid shows={brandNamesList} actionButton={true}/>
                 )}
               </div>
             )}

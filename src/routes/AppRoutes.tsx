@@ -35,6 +35,8 @@ import CBasic from "../ui/Contractor/CompanyProfile/CBasic";
 import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
 import AddDepartment from "../ui/Contractor/Organization/AddDepartment";
 import AddDesignation from "../ui/Contractor/Organization/AddDesignation";
+import ImageGalleryAndEstimationPage from "../ui/GeneralUsers/ImageGallery/ImageGalleryAndEstimation";
+import ImageGalleryAndEstimationProductPage from "../ui/GeneralUsers/ImageGallery/ImageGalleryAndEstimationProduct";
 
 const AppRoutes = () => {
   return (
@@ -71,10 +73,12 @@ const AppRoutes = () => {
               <Route path="dealer/buyercategory" element={<BuyerCategory />} />
               <Route path="dealer/basicdetails" element={<Basic />} />
               <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
-              <Route path="contractor/companyprofile/cbasic" element={<CBasic/>}/>
-              <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
-              <Route path="contractor/organization/adddepartment" element={<AddDepartment/>}/>
-              <Route path="contractor/organization/adddesignation" element={<AddDesignation/>}/>
+              <Route path="contractor/companyprofile/cbasic" element={<CBasic />} />
+              <Route path="contractor/companyprofile/cmyservice" element={<CMyService />} />
+              <Route path="contractor/organization/adddepartment" element={<AddDepartment />} />
+              <Route path="contractor/organization/adddesignation" element={<AddDesignation />} />
+              <Route path="generaluser/imagegallery" element={<ImageGalleryAndEstimationPage />} />
+              {/* <Route path="generaluser/imagegallery/product" element={<ImageGalleryAndEstimationProductPage />} /> */}
             </Routes>
           </BrowserRouter>
         </Box>
