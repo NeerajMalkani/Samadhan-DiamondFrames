@@ -36,6 +36,9 @@ import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
 import AddDepartment from "../ui/Contractor/Organization/AddDepartment";
 import AddDesignation from "../ui/Contractor/Organization/AddDesignation";
 
+import AddDDepartment from "../ui/Dealer/Organization/AddDepartment";
+import AddDDesignation from "../ui/Dealer/Organization/AddDesignation";
+
 const AppRoutes = () => {
   return (
     <CookiesProvider>
@@ -73,8 +76,10 @@ const AppRoutes = () => {
               <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
               <Route path="contractor/companyprofile/cbasic" element={<CBasic/>}/>
               <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
-              <Route path="contractor/organization/adddepartment" element={<AddDepartment/>}/>
-              <Route path="contractor/organization/adddesignation" element={<AddDesignation/>}/>
+              <Route path="contractor/organization/addepartment" element={<AddDepartment/>}/>
+              <Route path="contractor/organization/addesignation" element={<AddDesignation/>}/>
+              <Route path="dealer/organization/addepartment" element={<AddDDepartment/>}/>
+              <Route path="dealer/organization/addesignation" element={<AddDDesignation/>}/>
             </Routes>
           </BrowserRouter>
         </Box>
