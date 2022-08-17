@@ -121,6 +121,7 @@ export interface DesignationNameModel {
   srno: number;
   designationName: string;
   display: string;
+  reportingAuthority: string;
   action: string;
 }
 
