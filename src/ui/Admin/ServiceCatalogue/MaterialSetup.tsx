@@ -1209,12 +1209,11 @@ const MaterialSetup = () => {
                                     onChange={(e: React.SyntheticEvent) => {
                                       row.formula = (e.target as HTMLInputElement).value;
                                       if (row.formula) {
+                                        row.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(row.formula)).toFixed(4);
                                         if (parseFloat(row.rate) !== 0) {
-                                          row.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(row.formula)).toFixed(4);
                                           row.amount = (parseFloat(row.quantity) * parseFloat(row.rate)).toFixed(4);
                                         } else {
-                                          row.amount = (1 / parseFloat(row.formula)).toFixed(4);
-                                          row.quantity = parseFloat(row.amount).toFixed(4);
+                                          row.amount = "0.0000";
                                         }
                                       } else {
                                         row.amount = "";
