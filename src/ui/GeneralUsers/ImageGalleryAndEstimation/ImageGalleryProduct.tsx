@@ -3,14 +3,18 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../../../components/Header";
-import {ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
+import { ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 import PrismaZoom from "react-prismazoom";
 import { ArrowBack } from "@mui/icons-material";
 import ShowsGrid from "../../../components/GridStructure";
+import NoData from "../../../components/NoData";
+import ListIcon from "@mui/icons-material/List";
+import Provider from "../../../api/Provider";
+import { communication } from "../../../utils/communication";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
 
 const ImageGalleryProductPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
-  const [CookieUserID, SetCookieUseID] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
   let navigate = useNavigate();
@@ -19,13 +23,12 @@ const ImageGalleryProductPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
     } else {
-      SetCookieUseID(cookies.dfc.UserID);
-      searchParams.get("id");
+      FetchImageGalleryData(parseInt(searchParams.get("id")));
     }
   }, []);
 
   const [loading, setLoading] = useState(true);
-  const [brandNamesList, setBrandNamesList] = useState<Array<ImageGalleryEstimation>>([]);
+  const [imageGalleryData, setImageGalleryData] = useState<Array<ImageGalleryEstimation>>([]);
 
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -34,18 +37,22 @@ const ImageGalleryProductPage = () => {
 
   const [selectedImage, setSelectedImage] = useState("");
   const [imageOpen, setImageOpen] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
 
   const buttonSetting: ButtonSettings = {
     isActionButton: false,
     actionButtons: [
       {
-        title: "Go to Estimation",
-        type: "contained",
-        callBack: () => {},
+        title: "Zoom",
+        type: "text",
+        callBack: (data: ImageGalleryEstimation) => {
+          setSelectedImage(data.designImage);
+          setImageOpen(true);
+        },
       },
       {
-        title: "Zoom",
-        type: "contained",
+        title: "Go to Estimation",
+        type: "text",
         callBack: () => {},
       },
     ],
@@ -62,25 +69,57 @@ const ImageGalleryProductPage = () => {
     setImageOpen(false);
   };
 
-  const handleCardClick = () => {};
+  const handleCardClick = (data: ImageGalleryEstimation) => {
+    setSelectedImage(data.designImage);
+    setImageOpen(true);
+  };
+
+  const FetchImageGalleryData = (id: number) => {
+    let params = {
+      CategoryID: id,
+    };
+
+    Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setImageGalleryData(response.data.data);
+            setCategoryName(response.data.data[0].serviceName);
+          }
+        } else {
+          setImageGalleryData([]);
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-          <Grid item xs={4} sm={8} md={12}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <IconButton
               aria-label="back"
-              size="small"
+              size="large"
+              sx={{ marginTop: "-8px" }}
               onClick={() => {
-                navigate(`/generaluser/imagegallery`);
+                navigate(`/generaluser/imagegallery/category`);
               }}
             >
               <ArrowBack fontSize="small" />
             </IconButton>
-            <Typography sx={{ ml: 1 }} variant="h4">
-              Service Catalogue and Image Gallery
+            <Typography sx={{ ml: 1, display: "inline" }} variant="h4">
+              {"Image Gallery » " + categoryName}
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -90,10 +129,10 @@ const ImageGalleryProductPage = () => {
               </Box>
             ) : (
               <div>
-                {brandNamesList.length === 0 ? (
-                  <></>
+                {imageGalleryData.length === 0 ? (
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
-                  <div>{brandNamesList.length === 0 ? <></> : <ShowsGrid shows={brandNamesList} buttonSettings={buttonSetting} cardCallback={handleCardClick} />}</div>
+                  <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClick} type="product" />
                 )}
               </div>
             )}

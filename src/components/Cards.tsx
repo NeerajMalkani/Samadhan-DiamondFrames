@@ -40,9 +40,10 @@ export const CreateTotalUserCards = (title: string, value: number, icon: any, bg
 interface Props {
   props: ImageGalleryEstimation;
   buttonSettings: ButtonSettings;
-  cardCallback:Function;
+  cardCallback: Function;
+  type: string;
 }
-export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallback }: Props) => {
+export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallback, type }: Props) => {
   const [shadow, setShadow] = useState(1);
   const onMouseOver = () => setShadow(20);
   const onMouseOut = () => setShadow(1);
@@ -52,30 +53,17 @@ export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallba
       <CardActionArea
         onClick={(e) => {
           console.log(e);
-          cardCallback(props.imageName);
+          cardCallback(props);
         }}
       >
-        <CardMedia
-          component="img"
-          image={props.imageName}
-          alt={props.categoryName}
-          data-id={props.id}
-          // onClick={(event: React.MouseEvent) => {
-          //   event.preventDefault();
-          // }}
-        />
+        <CardMedia component="img" image={props.designImage} alt={props.serviceName} data-id={props.id} />
 
-        <CardContent
-          data-id={props.id}
-          // onClick={(event) => {
-          //   event.preventDefault();
-          // }}
-        >
+        <CardContent data-id={props.id}>
           <Typography variant="h6" color="text.primary" noWrap={true}>
-            {props.categoryName}
+            {type !== "product" ? props.serviceName : props.productName}
           </Typography>
           <Typography variant="h6" color="text.secondary" noWrap={true}>
-            {props.productName}
+            {props.designTypeName}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -87,16 +75,13 @@ export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallba
                 variant={value.type}
                 sx={{ marginTop: 2 }}
                 onClick={() => {
-                  value.callBack();
+                  value.callBack(props);
                 }}
               >
                 {value.title}
               </Button>
             );
           })}
-          {/* <Button variant="contained" sx={{ marginTop: 2 }}>
-          fsfzfd
-        </Button> */}
         </CardActions>
       ) : (
         <></>

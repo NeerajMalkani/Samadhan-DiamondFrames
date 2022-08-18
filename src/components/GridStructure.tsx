@@ -1,16 +1,17 @@
 import { CreateImageGalleryEstimation } from "../components/Cards";
 import { Box, Grid, Grow } from "@mui/material";
 import NoData from "../components/NoData";
-import SearchOffIcon from "@mui/icons-material/SearchOff";
+import ListIcon from "@mui/icons-material/List";
 import { ButtonSettings, ImageGalleryEstimation } from "../models/Model";
 
 interface Props {
   shows: ImageGalleryEstimation[];
   buttonSettings: ButtonSettings;
-  cardCallback:Function;
+  cardCallback: Function;
+  type: string;
 }
 
-const ShowsGrid = ({ shows, buttonSettings, cardCallback }: Props) => {
+const ShowsGrid = ({ shows, buttonSettings, cardCallback, type }: Props) => {
   return (
     <Box mt={3} mb={3}>
       {shows.length > 0 ? (
@@ -19,20 +20,14 @@ const ShowsGrid = ({ shows, buttonSettings, cardCallback }: Props) => {
             return (
               <Grow key={i} in={true} style={{ transformOrigin: "0 0 0" }}>
                 <Grid item xs={2} sm={4} md={3}>
-                  <CreateImageGalleryEstimation props={k} buttonSettings={buttonSettings} cardCallback={cardCallback}/>
+                  <CreateImageGalleryEstimation key={i} props={k} buttonSettings={buttonSettings} cardCallback={cardCallback} type={type} />
                 </Grid>
               </Grow>
             );
           })}
         </Grid>
       ) : (
-        <NoData
-          Icon={<SearchOffIcon sx={{ fontSize: 72, color: "red" }} />}
-          height="auto"
-          text="No search results"
-          secondaryText=""
-          isButton={false}
-        />
+        <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
       )}
     </Box>
   );

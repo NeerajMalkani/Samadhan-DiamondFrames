@@ -2,82 +2,27 @@ import { Alert, AlertColor, Box, CircularProgress, Container, Grid, IconButton, 
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import Provider from "../../../api/Provider";
 import ShowsGrid from "../../../components/GridStructure";
 import Header from "../../../components/Header";
+import NoData from "../../../components/NoData";
 import { ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
+import { communication } from "../../../utils/communication";
+import ListIcon from "@mui/icons-material/List";
 
 const ImageGalleryCategoryPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
-  const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
-    } else {
-      SetCookieUseID(cookies.dfc.UserID);
     }
   }, []);
 
-  const [loading, setLoading] = useState(false);
-  const [brandNamesList, setBrandNamesList] = useState<Array<ImageGalleryEstimation>>([
-    {
-      id: 0,
-      srno: 1,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-    {
-      id: 1,
-      srno: 2,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-    {
-      id: 1,
-      srno: 2,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-    {
-      id: 1,
-      srno: 2,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-    {
-      id: 1,
-      srno: 2,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-    {
-      id: 1,
-      srno: 2,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-    {
-      id: 1,
-      srno: 2,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-    {
-      id: 1,
-      srno: 2,
-      imageName: "https://images.ctfassets.net/hrltx12pl8hq/a2hkMAaruSQ8haQZ4rBL9/8ff4a6f289b9ca3f4e6474f29793a74a/nature-image-for-website.jpg?fit=fill&w=480&h=320",
-      categoryName: "zsdfgsdg",
-      productName: "gdfgdf",
-    },
-  ]);
+  const [loading, setLoading] = useState(true);
+
+  const [imageGalleryData, setImageGalleryData] = useState<Array<ImageGalleryEstimation>>([]);
 
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -96,15 +41,44 @@ const ImageGalleryCategoryPage = () => {
     setOpen(false);
   };
 
-  const handleCardClick = () => {};
+  const handleCardClick = (data: ImageGalleryEstimation) => {
+    navigate(`/generaluser/imagegallery/product?id=` + data.serviceID);
+  };
+
+  useEffect(() => {
+    FetchImageGalleryData();
+  }, []);
+
+  const FetchImageGalleryData = () => {
+    Provider.getAll("generaluserenquiryestimations/getimagegallery")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setImageGalleryData(response.data.data);
+          }
+        } else {
+          setImageGalleryData([]);
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-          <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Service Catalogue and Image Gallery</Typography>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h4">Service Catalogue & Image Gallery</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
@@ -112,7 +86,13 @@ const ImageGalleryCategoryPage = () => {
                 <CircularProgress />
               </Box>
             ) : (
-              <div>{brandNamesList.length === 0 ? <></> : <ShowsGrid shows={brandNamesList} buttonSettings={buttonSetting} cardCallback={handleCardClick} />}</div>
+              <div>
+                {imageGalleryData.length === 0 ? (
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                ) : (
+                  <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClick} type="category"/>
+                )}
+              </div>
             )}
           </Grid>
         </Grid>

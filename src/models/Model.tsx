@@ -364,11 +364,19 @@ export interface MaterialSetupModel {
 }
 
 export interface ImageGalleryEstimation {
-  id: number;
-  srno: number;
-  imageName: string;
+  categoryID: number;
   categoryName: string;
+  designImage: string;
+  designNumber: string;
+  designTypeID: number;
+  designTypeName: string;
+  id: number;
+  productID: number;
   productName: string;
+  serviceID: number;
+  serviceName: string;
+  workLocationID: number;
+  workLocationName: string;
 }
 
 export interface ButtonSettings {
