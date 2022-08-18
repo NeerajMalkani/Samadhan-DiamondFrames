@@ -30,7 +30,7 @@ const ShowsGrid = ({ shows, buttonSettings, cardCallback }: Props) => {
           Icon={<SearchOffIcon sx={{ fontSize: 72, color: "red" }} />}
           height="auto"
           text="No search results"
-          secondaryText="Write appropriate word . Check for typos . Be more specific"
+          secondaryText=""
           isButton={false}
         />
       )}

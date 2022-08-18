@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../../../components/Header";
-import { BrandNameModel, ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
+import {ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 import PrismaZoom from "react-prismazoom";
 import { ArrowBack } from "@mui/icons-material";
 import ShowsGrid from "../../../components/GridStructure";
