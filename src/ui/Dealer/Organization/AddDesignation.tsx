@@ -84,7 +84,7 @@ import {
         const FetchData = () => {
           debugger;
           let params = {
-            UserType: 3,
+            UserType: 4,
             UserId:cookies.dfc.UserID
           };
           Provider.getAll(`master/getuserdesignation?${new URLSearchParams(GetStringifyJson(params))}`)
@@ -226,7 +226,7 @@ import {
           if (actionStatus === "new") {
             Provider.create("master/insertuserdesignation", {
               UserId:cookies.dfc.UserID,
-              UserType: 3,
+              UserType: 4,
               DesignationID:1,
               ReportingAuthority:1,
               Display: checked,
@@ -256,7 +256,7 @@ import {
             Provider.create("master/updateuserdesignation", {
               // ServiceID: departmentID,
               UserId:cookies.dfc.UserID,
-              UserType: 3,
+              UserType: 4,
               DesignationID:1,
               ReportingAuthority:1,
               Display: checked,
