@@ -40,8 +40,9 @@ export const CreateTotalUserCards = (title: string, value: number, icon: any, bg
 interface Props {
   props: ImageGalleryEstimation;
   buttonSettings: ButtonSettings;
+  cardCallback:Function;
 }
-export const CreateImageGalleryEstimation = ({ props, buttonSettings }: Props) => {
+export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallback }: Props) => {
   const [shadow, setShadow] = useState(1);
   const onMouseOver = () => setShadow(20);
   const onMouseOut = () => setShadow(1);
@@ -51,6 +52,7 @@ export const CreateImageGalleryEstimation = ({ props, buttonSettings }: Props) =
       <CardActionArea
         onClick={(e) => {
           console.log(e);
+          cardCallback(props.imageName);
         }}
       >
         <CardMedia

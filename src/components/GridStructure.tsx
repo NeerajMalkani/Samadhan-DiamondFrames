@@ -7,9 +7,10 @@ import { ButtonSettings, ImageGalleryEstimation } from "../models/Model";
 interface Props {
   shows: ImageGalleryEstimation[];
   buttonSettings: ButtonSettings;
+  cardCallback:Function;
 }
 
-const ShowsGrid = ({ shows, buttonSettings }: Props) => {
+const ShowsGrid = ({ shows, buttonSettings, cardCallback }: Props) => {
   return (
     <Box mt={3} mb={3}>
       {shows.length > 0 ? (
@@ -18,7 +19,7 @@ const ShowsGrid = ({ shows, buttonSettings }: Props) => {
             return (
               <Grow key={i} in={true} style={{ transformOrigin: "0 0 0" }}>
                 <Grid item xs={2} sm={4} md={3}>
-                  <CreateImageGalleryEstimation props={k} buttonSettings={buttonSettings}/>
+                  <CreateImageGalleryEstimation props={k} buttonSettings={buttonSettings} cardCallback={cardCallback}/>
                 </Grid>
               </Grow>
             );

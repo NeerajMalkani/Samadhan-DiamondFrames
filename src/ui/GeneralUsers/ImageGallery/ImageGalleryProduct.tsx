@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../../../components/Header";
-import { BrandNameModel } from "../../../models/Model";
+import { BrandNameModel, ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 import PrismaZoom from "react-prismazoom";
 import { ArrowBack } from "@mui/icons-material";
+import ShowsGrid from "../../../components/GridStructure";
 
-const ImageGalleryAndEstimationProductPage = () => {
+const ImageGalleryProductPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,7 +25,7 @@ const ImageGalleryAndEstimationProductPage = () => {
   }, []);
 
   const [loading, setLoading] = useState(true);
-  const [brandNamesList, setBrandNamesList] = useState<Array<BrandNameModel>>([]);
+  const [brandNamesList, setBrandNamesList] = useState<Array<ImageGalleryEstimation>>([]);
 
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -34,35 +35,20 @@ const ImageGalleryAndEstimationProductPage = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [imageOpen, setImageOpen] = useState(false);
 
-  const CreateImageList = () => {
-    let menuItems = [];
-    brandNamesList.map((value: BrandNameModel, index: number) => {
-      menuItems.push(
-        <Grid sx={{ border: "1px solid rgba(0,0,0,0.12)" }}>
-          <Typography>dsdf</Typography>
-          <Typography>dsfsd</Typography>
-          <div style={{ padding: "8px", cursor: "pointer" }} onClick={() => {}}>
-            <img src="" alt="" style={{ width: "100%", height: "100%", border: "1px solid rgba(0,0,0,0.12)" }} />
-          </div>
-          <div style={{ width: "100%" }}>
-            <Link
-              sx={{ float: "left" }}
-              onClick={() => {
-                setSelectedImage("");
-                setImageOpen(true);
-              }}
-            >
-              Zoom
-            </Link>
-            <Link sx={{ float: "right" }} onClick={() => {}}>
-              Go to Estimation
-            </Link>
-          </div>
-        </Grid>
-      );
-    });
-
-    return menuItems;
+  const buttonSetting: ButtonSettings = {
+    isActionButton: false,
+    actionButtons: [
+      {
+        title: "Go to Estimation",
+        type: "contained",
+        callBack: () => {},
+      },
+      {
+        title: "Zoom",
+        type: "contained",
+        callBack: () => {},
+      },
+    ],
   };
 
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
@@ -75,6 +61,8 @@ const ImageGalleryAndEstimationProductPage = () => {
   const handleImageClose = () => {
     setImageOpen(false);
   };
+
+  const handleCardClick = () => {};
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -105,9 +93,7 @@ const ImageGalleryAndEstimationProductPage = () => {
                 {brandNamesList.length === 0 ? (
                   <></>
                 ) : (
-                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {CreateImageList()}
-                  </Grid>
+                  <div>{brandNamesList.length === 0 ? <></> : <ShowsGrid shows={brandNamesList} buttonSettings={buttonSetting} cardCallback={handleCardClick} />}</div>
                 )}
               </div>
             )}
@@ -136,4 +122,4 @@ const ImageGalleryAndEstimationProductPage = () => {
   );
 };
 
-export default ImageGalleryAndEstimationProductPage;
+export default ImageGalleryProductPage;

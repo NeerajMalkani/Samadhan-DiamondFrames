@@ -307,7 +307,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generaluser/imagegallery`);
+              navigate(`/generaluser/imagegallery/category`);
             }, 300);
           },
         },

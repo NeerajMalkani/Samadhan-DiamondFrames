@@ -6,7 +6,7 @@ import ShowsGrid from "../../../components/GridStructure";
 import Header from "../../../components/Header";
 import { ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 
-const ImageGalleryAndEstimationPage = () => {
+const ImageGalleryCategoryPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
@@ -96,6 +96,8 @@ const ImageGalleryAndEstimationPage = () => {
     setOpen(false);
   };
 
+  const handleCardClick = () => {};
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -110,7 +112,7 @@ const ImageGalleryAndEstimationPage = () => {
                 <CircularProgress />
               </Box>
             ) : (
-              <div>{brandNamesList.length === 0 ? <></> : <ShowsGrid shows={brandNamesList} buttonSettings={buttonSetting} />}</div>
+              <div>{brandNamesList.length === 0 ? <></> : <ShowsGrid shows={brandNamesList} buttonSettings={buttonSetting} cardCallback={handleCardClick} />}</div>
             )}
           </Grid>
         </Grid>
@@ -124,4 +126,4 @@ const ImageGalleryAndEstimationPage = () => {
   );
 };
 
-export default ImageGalleryAndEstimationPage;
+export default ImageGalleryCategoryPage;
