@@ -390,7 +390,6 @@ const DashboardPage = () => {
           <DialogContent>
             <PrismaZoom allowPan={false} style={{ height: 640, display: "flex", justifyContent: "center" }}>
               <img alt="" style={{ height: 640 }} src={selectedImage} />
-              {/* {selectedImage} */}
             </PrismaZoom>
           </DialogContent>
           <DialogActions>

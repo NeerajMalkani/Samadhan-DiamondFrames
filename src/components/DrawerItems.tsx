@@ -307,7 +307,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generaluser/imagegallery`);
+              navigate(`/generaluser/imagegallery/category`);
             }, 300);
           },
         },
@@ -593,7 +593,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/addbranch`);
+              navigate(`/contractor/organization/addbranch`);
             }, 300);
           },
         },

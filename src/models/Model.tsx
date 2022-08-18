@@ -108,6 +108,27 @@ export interface RoleDetails {
   roleCount: number;
 }
 
+export interface BranchModel{
+  CompanyName:string;
+  BranchName:string;
+  AccountNo:number;
+  Address:string;
+  BankName:string;
+  BankBranchName:string;
+  ContactPersonNo:number;
+  GST:string;
+  Pan:string;
+  Pincode:number;
+  IfscCode:number;
+}
+
+export interface BranchTypeModel {
+  id: number;
+  branchType: string;
+  assignBranch:string;
+  isUT: string;
+  isActive: string;
+}
 export interface DepartmentNameModel {
   id: number;
   srno: number;
@@ -115,6 +136,7 @@ export interface DepartmentNameModel {
   display: string;
   action: string;
 }
+
 
 export interface DesignationNameModel {
   id: number;
@@ -124,6 +146,7 @@ export interface DesignationNameModel {
   reportingAuthority: string;
   action: string;
 }
+
 
 export interface EWayBillModel {
   id: number;
@@ -338,4 +361,23 @@ export interface MaterialSetupModel {
   width: number;
   action: string;
   subtotal: string;
+}
+
+export interface ImageGalleryEstimation {
+  id: number;
+  srno: number;
+  imageName: string;
+  categoryName: string;
+  productName: string;
+}
+
+export interface ButtonSettings {
+  isActionButton: boolean;
+  actionButtons: Array<ActionButtons>;
+}
+
+export interface ActionButtons {
+  title: string;
+  type: "text" | "outlined" | "contained";
+  callBack: Function;
 }

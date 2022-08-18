@@ -84,7 +84,7 @@ import {
         const FetchData = () => {
           debugger;
           let params = {
-            UserType: 3,
+            UserType: 4,
             UserId:cookies.dfc.UserID
           };
           Provider.getAll(`master/getuserdepartments?${new URLSearchParams(GetStringifyJson(params))}`)
@@ -200,7 +200,7 @@ import {
                 return el.departmentName === a.departmentName;
               }).id
             );
-            setDepartmentID(a.id);
+            setSelectedID(a.id);
             setButtonDisplay("unset");
             setActionStatus("edit");
           }
@@ -226,7 +226,7 @@ import {
           if (actionStatus === "new") {
             Provider.create("master/insertuserdepartments", {
               UserId:cookies.dfc.UserID,
-              UserType: 3,
+              UserType: 4,
               DepartmentID:1,
               Display: checked,
             })
@@ -255,8 +255,8 @@ import {
             Provider.create("master/updateuserdepartment", {
               // ServiceID: departmentID,
               UserId:cookies.dfc.UserID,
-              UserType: 3,
-              DepartmentID:1,
+              UserType: 4,
+              DepartmentID:departmentID,
               Display: checked,
             })
               .then((response) => {
