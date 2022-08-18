@@ -172,6 +172,7 @@ import {
         };
 
         const handleReportingAuthorityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+          debugger;
           setReportingAuthority((event.target as HTMLInputElement).value);
         };
       
@@ -209,7 +210,7 @@ import {
                 return el.designationName === a.designationName;
               }).id
             );
-            setDesignationID(a.id);
+            setSelectedID(a.id);
             setButtonDisplay("unset");
             setActionStatus("edit");
           }
@@ -219,6 +220,7 @@ import {
         const handleSubmitClick = () => {
           debugger;
           let isValid: boolean = true;
+          //let isValid: boolean = true;
       
           if (designationName.trim() === "--Select--") {
             isValid = false;
@@ -269,6 +271,7 @@ import {
               DesignationID:designationID,
               ReportingAuthority:reportingAuthority,
               Display: checked,
+              ID: selectedID
             })
               .then((response) => {
                 debugger;
@@ -335,7 +338,7 @@ import {
                 <b>Reporting Authority</b>
                 </Typography>
                 <FormControl>
-                  <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleReportingAuthorityChange}>
+                  <RadioGroup row name="row-radio-buttons-group" value={reportingAuthority} onChange={handleReportingAuthorityChange}>
                     <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                     <FormControlLabel value="No" control={<Radio />} label="No" />
                   </RadioGroup>
@@ -364,10 +367,7 @@ import {
                 <Typography variant="h6">My Designation List</Typography>
               </Grid>  
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-        {/* <Grid item sm={4}>
-            <Typography variant="h6"><b>Show</b>&nbsp;<NativeSelect></NativeSelect>&nbsp;entries</Typography>
-        </Grid> */}
-        <Grid item xs={4} sm={8} md={12}>
+           <Grid item xs={4} sm={8} md={12}>
                 {loading ? (
                   <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                     <CircularProgress />

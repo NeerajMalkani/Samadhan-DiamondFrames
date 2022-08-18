@@ -1,7 +1,6 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { DataContextProvider } from "../contexts/DataContexts";
 import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/Admin/Master/ActivityPage";
@@ -39,7 +38,6 @@ import AddDDepartment from "../ui/Dealer/Organization/AddDepartment";
 import AddDDesignation from "../ui/Dealer/Organization/AddDesignation";
 import ImageGalleryCategoryPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryCategory";
 import ImageGalleryProductPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryProduct";
-import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductDetails";
 
 const AppRoutes = () => {
   return (
@@ -76,15 +74,15 @@ const AppRoutes = () => {
               <Route path="dealer/buyercategory" element={<BuyerCategory />} />
               <Route path="dealer/basicdetails" element={<Basic />} />
               <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
-              <Route path="contractor/companyprofile/cbasic" element={<CBasic />} />
-              <Route path="contractor/companyprofile/cmyservice" element={<CMyService />} />
-              <Route path="contractor/organization/addepartment" element={<AddDepartment />} />
-              <Route path="contractor/organization/addesignation" element={<AddDesignation />} />
-              <Route path="dealer/organization/addepartment" element={<AddDDepartment />} />
-              <Route path="dealer/organization/addesignation" element={<AddDDesignation />} />
+              <Route path="contractor/companyprofile/cbasic" element={<CBasic/>}/>
+              <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
+              <Route path="contractor/organization/addepartment" element={<AddDepartment/>}/>
+              <Route path="contractor/organization/addesignation" element={<AddDesignation/>}/>
+              <Route path="dealer/organization/addepartment" element={<AddDDepartment/>}/>
+              <Route path="dealer/organization/addesignation" element={<AddDDesignation/>}/>
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
-              <Route path="generaluser/imagegallery/productDeatils" element={<ImageGalleryProductDetailsPage />} />
+
             </Routes>
           </BrowserRouter>
         </Box>
