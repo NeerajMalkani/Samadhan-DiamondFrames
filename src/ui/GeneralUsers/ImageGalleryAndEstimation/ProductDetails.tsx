@@ -6,6 +6,7 @@ import Header from "../../../components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
+
 const ImageGalleryProductDetailsPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);

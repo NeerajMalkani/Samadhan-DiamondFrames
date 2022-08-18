@@ -10,6 +10,8 @@ import { theme } from "../../../theme/AppTheme";
 import { ServiceNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
+import ListIcon from "@mui/icons-material/List";
+import NoData from "../../../components/NoData";
 
 const ServicePage = () => {
   let navigate = useNavigate();
@@ -285,7 +287,7 @@ const ServicePage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {serviceNamesList.length === 0 ? (
-                  <></>
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>

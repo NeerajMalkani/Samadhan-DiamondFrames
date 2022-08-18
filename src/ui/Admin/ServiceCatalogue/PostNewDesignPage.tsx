@@ -35,6 +35,8 @@ import { ValidateGSTRate } from "../../../utils/validations";
 import uuid from "react-uuid";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
+import NoData from "../../../components/NoData";
+import ListIcon from "@mui/icons-material/List";
 
 const PostNewDesignPage = () => {
   let navigate = useNavigate();
@@ -833,7 +835,7 @@ const PostNewDesignPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%" }}>
                 {postNewDesign.length === 0 ? (
-                  <></>
+                 <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>

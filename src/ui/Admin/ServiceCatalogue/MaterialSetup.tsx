@@ -53,8 +53,8 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { communication } from "../../../utils/communication";
 import { uniqueByKey } from "../../../utils/AWSFileUpload";
-import { json } from "stream/consumers";
-import { parse } from "path";
+import ListIcon from "@mui/icons-material/List";
+import NoData from "../../../components/NoData";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -1309,7 +1309,7 @@ const MaterialSetup = () => {
                   ) : (
                     <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                       {materialSetupList.length === 0 ? (
-                        <></>
+                       <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                       ) : (
                         <>
                           <Grid item xs={4} sm={8} md={12} sx={{ mt: 1, alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>

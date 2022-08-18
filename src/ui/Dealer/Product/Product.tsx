@@ -36,6 +36,8 @@ import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import Provider from "../../../api/Provider";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import SearchIcon from "@mui/icons-material/Search";
+import NoData from "../../../components/NoData";
+import ListIcon from "@mui/icons-material/List";
 
 const ProductListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -736,7 +738,7 @@ const ProductListPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {productSetupList.length === 0 ? (
-                  <></>
+                 <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>

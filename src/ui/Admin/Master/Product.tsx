@@ -31,6 +31,8 @@ import { useCookies } from "react-cookie";
 import { communication } from "../../../utils/communication";
 import { LoadingButton } from "@mui/lab";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import NoData from "../../../components/NoData";
+import ListIcon from "@mui/icons-material/List";
 
 const ProductPage = () => {
   let navigate = useNavigate();
@@ -694,7 +696,7 @@ const ProductPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {productList.length === 0 ? (
-                  <></>
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>

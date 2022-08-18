@@ -32,10 +32,12 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
+import NoData from "../../../components/NoData";
 import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitOfSalesModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import { serviceProductColumns } from "../../../utils/tablecolumns";
 import { ValidateGSTRate } from "../../../utils/validations";
+import ListIcon from "@mui/icons-material/List";
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
@@ -1011,7 +1013,7 @@ const ServiceProductPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {serviceProductList.length === 0 ? (
-                  <></>
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1, borderWidth: 1, borderColor: theme.palette.divider }}>

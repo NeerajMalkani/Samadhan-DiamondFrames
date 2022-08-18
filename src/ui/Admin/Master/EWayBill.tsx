@@ -23,10 +23,12 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
+import NoData from "../../../components/NoData";
 import { EWayBillModel } from "../../../models/Model";
 import { theme } from "../../../theme/AppTheme";
 import { communication } from "../../../utils/communication";
 import { eWayBillColumns } from "../../../utils/tablecolumns";
+import ListIcon from "@mui/icons-material/List";
 
 const EWayBillPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -458,7 +460,7 @@ const EWayBillPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {ewayBillList.length === 0 ? (
-                  <></>
+                <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                   <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
