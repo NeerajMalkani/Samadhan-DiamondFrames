@@ -27,7 +27,6 @@ import React, { useEffect, useState } from "react";
 import DataContexts from "../../../contexts/DataContexts";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
-import { activityColumns } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
 import { ActivityRoleNameModel, DepartmentNameModel } from "../../../models/Model";
 import { Cookies, useCookies } from "react-cookie";
@@ -65,6 +64,7 @@ const AddDepartment =() => {
     const [searchQuery, setSearchQuery] =useState("");
     const [snackbarType,setSnackbarType] = useState<AlertColor | undefined>("error");
     const theme =useTheme();
+
 
     const [departmentName,setDepartmentName] =useState("--Select--");
     const [departmentID,setDepartmentID] =useState<number>(0);
@@ -202,7 +202,7 @@ const AddDepartment =() => {
             return el.departmentName === a.departmentName;
           }).id
         );
-        setDepartmentID(a.id);
+        setSelectedID(a.id);
         setButtonDisplay("unset");
         setActionStatus("edit");
       }
@@ -258,6 +258,7 @@ const AddDepartment =() => {
           UserType: 3,
           DepartmentID:departmentID,
           Display: checked,
+          ID: selectedID
         })
           .then((response) => {
             debugger;

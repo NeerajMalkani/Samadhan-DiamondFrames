@@ -144,6 +144,7 @@ export const activityColumns: GridColDef[] = [
   },
 ];
 
+
 export const serviceColumns: GridColDef[] = [
   {
     field: "srno",
@@ -442,6 +443,74 @@ export const departmentColumns: GridColDef[] = [
   },
 ];
 
+export const branchColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "locationType",
+    headerName: "Location Type",
+    flex: 2.5,
+    minWidth: 140,
+  },
+  {
+    field: "locationName",
+    headerName: "Location Name",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "branchAdmin",
+    headerName: "Branch Admin",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "address",
+    headerName: "Address",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "gstNo",
+    headerName: "GST No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+
+  {
+    field: "panNo",
+    headerName: "PAN No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    maxWidth: 80,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 1,
+    maxWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
 export const designationColumns: GridColDef[] = [
   {
     field: "srno",
@@ -454,6 +523,13 @@ export const designationColumns: GridColDef[] = [
     field: "designationName",
     headerName: "Designation Name",
     flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "reportingAuthority",
+    headerName: "Reporting Authority",
+    flex: 1.8,
+    sortable: false,
     minWidth: 140,
   },
   {

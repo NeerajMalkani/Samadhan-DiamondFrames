@@ -39,6 +39,7 @@ import AddDDepartment from "../ui/Dealer/Organization/AddDepartment";
 import AddDDesignation from "../ui/Dealer/Organization/AddDesignation";
 import ImageGalleryCategoryPage from "../ui/GeneralUsers/ImageGallery/ImageGalleryCategory";
 import ImageGalleryProductPage from "../ui/GeneralUsers/ImageGallery/ImageGalleryProduct";
+import AddBranch from "../ui/Contractor/Organization/AddBranch";
 
 const AppRoutes = () => {
   return (
@@ -79,11 +80,12 @@ const AppRoutes = () => {
               <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
               <Route path="contractor/organization/addepartment" element={<AddDepartment/>}/>
               <Route path="contractor/organization/addesignation" element={<AddDesignation/>}/>
+              <Route path="contractor/organization/addbranch" element={<AddBranch/>}/>
               <Route path="dealer/organization/addepartment" element={<AddDDepartment/>}/>
               <Route path="dealer/organization/addesignation" element={<AddDDesignation/>}/>
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
-
+             
             </Routes>
           </BrowserRouter>
         </Box>

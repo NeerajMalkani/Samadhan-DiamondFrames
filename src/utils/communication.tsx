@@ -77,4 +77,11 @@ export const communication = {
   BlankCity: "Please select valid city",
   BlankGst: "Please enter valid GST number",
   BlankPan: "Please enter valid PAN number",
+  BlankBranchName: "Please enter Branch Name",
+  BlankAccountNo: "Please enter Account No",
+  BlankBankName: "Please enter Bank Name",
+  BlankBankBranchName: "Please enter Bank Branch Name",
+  BlankIfscCode: "Please enter IFSC Code",
+  BlankBranchType: "Please select Branch Type",
+  BlankAssignBranchAdmin: "Please select Assign Branch Admin",
 };
