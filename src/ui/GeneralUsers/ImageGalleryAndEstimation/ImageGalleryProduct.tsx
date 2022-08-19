@@ -1,7 +1,7 @@
 import { Alert, AlertColor, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Link, Snackbar, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../../../components/Header";
 import { ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 import PrismaZoom from "react-prismazoom";
@@ -12,18 +12,21 @@ import ListIcon from "@mui/icons-material/List";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { CyperKey } from "../../../utils/credentials";
 
-const ImageGalleryProductPage = () => {
+const ImageGalleryProductPage = (route) => {
+  let CryptoJS = require("crypto-js");
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [searchParams, setSearchParams] = useSearchParams();
-
   let navigate = useNavigate();
 
   useEffect(() => {
+
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
     } else {
-      FetchImageGalleryData(parseInt(searchParams.get("id")));
+      let ciphertext = CryptoJS.AES.decrypt(decodeURI(searchParams.get("id").toString()), CyperKey).toString();
+      FetchImageGalleryData(parseInt(ciphertext));
     }
   }, []);
 

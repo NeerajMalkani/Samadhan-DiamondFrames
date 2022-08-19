@@ -5,9 +5,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../../../components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
+import { CyperKey } from "../../../utils/credentials";
+import Provider from "../../../api/Provider";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { communication } from "../../../utils/communication";
 
 
 const ImageGalleryProductDetailsPage = () => {
+  let CryptoJS = require("crypto-js");
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,9 +23,11 @@ const ImageGalleryProductDetailsPage = () => {
       navigate(`/login`);
     } else {
       SetCookieUseID(cookies.dfc.UserID);
-      searchParams.get("id");
+     let ciphertext = CryptoJS.AES.decrypt(searchParams.get("id").toString(), CyperKey).toString(); 
+     FetchImageGalleryData(parseInt(decodeURI(ciphertext)));
     }
   }, []);
+
 
   const [loading, setLoading] = useState(true);
   //Snackbar
@@ -34,6 +41,34 @@ const ImageGalleryProductDetailsPage = () => {
   const [widthHeightInches, setWidthHeightInches] = useState("0");
   const [totalSqFt, setTotalSqFt] = useState<number>(0);
   const [buttonLoading, setButtonLoading] = useState(false);
+
+  const FetchImageGalleryData = (id: number) => {
+    let params = {
+      CategoryID: id,
+    };
+
+    Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            // setImageGalleryData(response.data.data);
+            // setCategoryName(response.data.data[0].serviceName);
+          }
+        } else {
+          //setImageGalleryData([]);
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
 
   const CreateLengthFeet = (count: number) => {
     let menuItems = [];
@@ -85,11 +120,12 @@ const ImageGalleryProductDetailsPage = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <IconButton
+          <IconButton
               aria-label="back"
-              size="small"
+              size="large"
+              sx={{ marginTop: "-8px" }}
               onClick={() => {
-                navigate(`/generaluser/imagegallery`);
+                navigate(`/generaluser/imagegallery/product?id=`);
               }}
             >
               <ArrowBack fontSize="small" />

@@ -9,8 +9,10 @@ import NoData from "../../../components/NoData";
 import { ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import ListIcon from "@mui/icons-material/List";
+import { CyperKey } from "../../../utils/credentials";
 
 const ImageGalleryCategoryPage = () => {
+  let CryptoJS = require("crypto-js");
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
@@ -42,7 +44,9 @@ const ImageGalleryCategoryPage = () => {
   };
 
   const handleCardClick = (data: ImageGalleryEstimation) => {
-    navigate(`/generaluser/imagegallery/product?id=` + data.serviceID);
+    debugger;
+    let ciphertext = CryptoJS.AES.encrypt(data.serviceID.toString(), CyperKey).toString();
+    navigate(`/generaluser/imagegallery/product?id=` + encodeURIComponent(ciphertext)); //{ state: { id: data.serviceID, name: data.serviceName } }
   };
 
   useEffect(() => {
@@ -90,7 +94,7 @@ const ImageGalleryCategoryPage = () => {
                 {imageGalleryData.length === 0 ? (
                   <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
-                  <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClick} type="category"/>
+                  <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClick} type="category" />
                 )}
               </div>
             )}
