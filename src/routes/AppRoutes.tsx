@@ -79,8 +79,8 @@ const AppRoutes = () => {
               <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
               <Route path="contractor/companyprofile/cbasic" element={<CBasic/>}/>
               <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
-              <Route path="contractor/organization/addepartment" element={<AddDepartment/>}/>
-              <Route path="contractor/organization/addesignation" element={<AddDesignation/>}/>
+              <Route path="contractor/organization/adddepartment" element={<AddDepartment/>}/>
+              <Route path="contractor/organization/adddesignation" element={<AddDesignation/>}/>
               <Route path="dealer/organization/addepartment" element={<AddDDepartment/>}/>
               <Route path="dealer/organization/addesignation" element={<AddDDesignation/>}/>
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
