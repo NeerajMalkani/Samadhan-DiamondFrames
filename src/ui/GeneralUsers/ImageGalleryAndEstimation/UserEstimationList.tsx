@@ -23,19 +23,21 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header";
 import NoData from "../../../components/NoData";
-import { ActivityRoleNameModel } from "../../../models/Model";
+import { YourEstimationModel } from "../../../models/Model";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid } from "@mui/x-data-grid";
 import { theme } from "../../../theme/AppTheme";
-import { activityColumns } from "../../../utils/tablecolumns";
+import { yourEstimationColumns } from "../../../utils/tablecolumns";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import Provider from "../../../api/Provider";
+import { communication } from "../../../utils/communication";
 
 const UserEstimationListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
-  const [CookieUserID, SetCookieUseID] = useState(0);
 
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);
-  const [activityNamesListTemp, setActivityNamesListTemp] = useState<Array<ActivityRoleNameModel>>([]);
+  const [activityNamesList, setActivityNamesList] = useState<Array<YourEstimationModel>>([]);
+  const [activityNamesListTemp, setActivityNamesListTemp] = useState<Array<YourEstimationModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState<number>(5);
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
@@ -44,13 +46,13 @@ const UserEstimationListPage = () => {
   const [dialogHeader, setDialogHeader] = useState<string>("");
   const [dialogText, setDialogText] = useState<string>("");
 
-  const [contractorName, SetContractorName] = useState<string>("");
-  const [quotationAmount, SetQuotationAmount] = useState<string>("");
-  const [cas, SetCas] = useState<string>("");
-  const [was, SetWas] = useState<string>("");
-  const [action, SetAction] = useState<string>("");
-  const [crl, SetCrl] = useState<string>("");
-
+  const [contractorName, SetContractorName] = useState<string>("NA");
+  const [quotationAmount, SetQuotationAmount] = useState<string>("NA");
+  const [cas, SetCas] = useState<string>("NA");
+  const [was, SetWas] = useState<string>("NA");
+  const [action, SetAction] = useState<string>("NA");
+  const [crl, SetCrl] = useState<string>("NA");
+  const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -58,6 +60,7 @@ const UserEstimationListPage = () => {
       navigate(`/login`);
     } else {
       SetCookieUseID(cookies.dfc.UserID);
+      FetchData(cookies.dfc.UserID);
     }
   }, []);
 
@@ -67,14 +70,46 @@ const UserEstimationListPage = () => {
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
 
+  const FetchData = (userID: number) => {
+    let params = {
+      UserID: userID,
+    };
+    Provider.getAll(`generaluserenquiryestimations/getuserallestimation?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+            setActivityNamesList(arrList);
+            setActivityNamesListTemp(arrList);
+          }
+        } else {
+          ///  listData[1]([]);
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
+
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
       setActivityNamesListTemp(activityNamesList);
     } else {
       setActivityNamesListTemp(
-        activityNamesList.filter((el: ActivityRoleNameModel) => {
-          return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
+        activityNamesList.filter((el: YourEstimationModel) => {
+          return el.productName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -91,6 +126,43 @@ const UserEstimationListPage = () => {
     setOpenDialog(false);
   };
 
+  const handelEditAndDelete = (type: string | null, a: YourEstimationModel | undefined) => {
+    if (type?.toLowerCase() === "view details" && a !== undefined) {
+      navigate(`/generaluser/imagegallery/productestimationdetails`, { state: { userDesignEstimationID: a.id } });
+    } else if (type?.toLowerCase() === "send enquiry" && a !== undefined) {
+      InsertDesignEstimationEnquiry(a.id, a.totalAmount);
+    } else if (type?.toLowerCase() === "view" && a !== undefined) {
+      setOpenDialog(true);
+    }
+  };
+
+  const InsertDesignEstimationEnquiry = (userDesignEstimationID: number, totalAmount: number) => {
+    const params = {
+      ID: userDesignEstimationID,
+      TotalAmount: totalAmount,
+      Status: true,
+    };
+    Provider.create("generaluserenquiryestimations/insertdesignestimateenquiries", params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          setSnackMsg(communication.EstimationSent);
+          setSnackbarType("success");
+          setOpen(true);
+          FetchData(CookieUserID);
+          setLoading(true);
+        } else {
+          setSnackMsg(communication.Error);
+          setSnackbarType("error");
+          setOpen(true);
+        }
+      })
+      .catch((e) => {
+        setSnackMsg(communication.Error);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -98,66 +170,73 @@ const UserEstimationListPage = () => {
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography sx={{ ml: 1 }} variant="h4">
-              Service Catalogue and Image Gallery
+              Your Estimations
+            </Typography>
+
+            <Typography sx={{ ml: 1, mt: 2, borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }} variant="h6">
+              Estimation List
             </Typography>
           </Grid>
-          {loading ? (
-            <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-              {activityNamesList.length === 0 ? (
-                <NoData Icon={<SearchOffIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No search results" secondaryText="" isButton={false} />
-              ) : (
-                <>
-                  <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                    <TextField
-                      placeholder="Search"
-                      variant="outlined"
-                      size="small"
-                      onChange={(e) => {
-                        onChangeSearch((e.target as HTMLInputElement).value);
+          <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
+            {loading ? (
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
+                {activityNamesList.length === 0 ? (
+                  <NoData Icon={<SearchOffIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No search results" secondaryText="" isButton={false} />
+                ) : (
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search"
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        value={searchQuery}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <SearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
                       }}
-                      value={searchQuery}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <SearchIcon />
-                          </InputAdornment>
-                        ),
+                      autoHeight={true}
+                      getRowHeight={() => "auto"}
+                      rows={activityNamesListTemp}
+                      columns={yourEstimationColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...activityNamesList];
+                        let a: YourEstimationModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        handelEditAndDelete((e.target as any).textContent, a);
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
+                        mb: 1,
                       }}
                     />
-                  </Grid>
-                  <DataGrid
-                    style={{
-                      opacity: dataGridOpacity,
-                      pointerEvents: dataGridPointer,
-                    }}
-                    autoHeight={true}
-                    rows={activityNamesListTemp}
-                    columns={activityColumns}
-                    pageSize={pageSize}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    disableSelectionOnClick
-                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                      // const arrActivity = [...activityNamesList];
-                      // let a: ActivityRoleNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                      // handelEditAndDelete((e.target as any).textContent, a);
-                    }}
-                    sx={{
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                      },
-                      mb: 1,
-                    }}
-                  />
-                </>
-              )}
-            </div>
-          )}
+                  </>
+                )}
+              </div>
+            )}
+          </Grid>
         </Grid>
       </Container>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
@@ -172,10 +251,20 @@ const UserEstimationListPage = () => {
           <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
             <ListItem>
               <ListItemText primary="Contractor Name" secondary={contractorName} />
+            </ListItem>
+            <ListItem>
               <ListItemText primary="Quotation Amount" secondary={quotationAmount} />
+            </ListItem>
+            <ListItem>
               <ListItemText primary="Contractor Accept Status" secondary={cas} />
+            </ListItem>
+            <ListItem>
               <ListItemText primary="Work Allot Status" secondary={was} />
+            </ListItem>
+            <ListItem>
               <ListItemText primary="Action" secondary={action} />
+            </ListItem>
+            <ListItem>
               <ListItemText primary="Contractor Response List Empty" secondary={crl} />
             </ListItem>
           </List>

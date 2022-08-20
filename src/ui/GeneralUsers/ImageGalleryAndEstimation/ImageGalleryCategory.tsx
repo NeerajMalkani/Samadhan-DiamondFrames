@@ -1,4 +1,4 @@
-import { Alert, AlertColor, Box, CircularProgress, Container, Grid, IconButton, Snackbar, Typography } from "@mui/material";
+import { Alert, AlertColor, Box, CircularProgress, Container, Grid, Snackbar, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,8 @@ import NoData from "../../../components/NoData";
 import { ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import ListIcon from "@mui/icons-material/List";
-import { CyperKey } from "../../../utils/credentials";
 
 const ImageGalleryCategoryPage = () => {
-  let CryptoJS = require("crypto-js");
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
@@ -44,9 +42,7 @@ const ImageGalleryCategoryPage = () => {
   };
 
   const handleCardClick = (data: ImageGalleryEstimation) => {
-    debugger;
-    let ciphertext = CryptoJS.AES.encrypt(data.serviceID.toString(), CyperKey).toString();
-    navigate(`/generaluser/imagegallery/product?id=` + encodeURIComponent(ciphertext)); //{ state: { id: data.serviceID, name: data.serviceName } }
+    navigate(`/generaluser/imagegallery/product`, { state: { id: data.serviceID, name: data.serviceName } });
   };
 
   useEffect(() => {

@@ -227,10 +227,9 @@ const Basic = () => {
   };
 
   const FetchStates = () => {
-    debugger;
+    
     Provider.getAll("master/getstates")
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const stateData: any = [];

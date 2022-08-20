@@ -38,6 +38,9 @@ import AddDDepartment from "../ui/Dealer/Organization/AddDepartment";
 import AddDDesignation from "../ui/Dealer/Organization/AddDesignation";
 import ImageGalleryCategoryPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryCategory";
 import ImageGalleryProductPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryProduct";
+import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductDetails";
+import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductEstimationDetails";
+import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
 
 const AppRoutes = () => {
   return (
@@ -82,6 +85,10 @@ const AppRoutes = () => {
               <Route path="dealer/organization/addesignation" element={<AddDDesignation/>}/>
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
+              <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
+              <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
+              <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
+              
 
             </Routes>
           </BrowserRouter>

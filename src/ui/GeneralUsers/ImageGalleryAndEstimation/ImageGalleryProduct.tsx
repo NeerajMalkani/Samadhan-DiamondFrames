@@ -12,26 +12,28 @@ import ListIcon from "@mui/icons-material/List";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
-import { CyperKey } from "../../../utils/credentials";
+import { retrunValueFromLocation } from "../../../utils/AWSFileUpload";
 
 const ImageGalleryProductPage = (route) => {
-  let CryptoJS = require("crypto-js");
   const [cookies, setCookie] = useCookies(["dfc"]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [serviceName, setServiceName] = useState("");
+
+  const location = useLocation();
+
   let navigate = useNavigate();
 
   useEffect(() => {
-
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
     } else {
-      let ciphertext = CryptoJS.AES.decrypt(decodeURI(searchParams.get("id").toString()), CyperKey).toString();
-      FetchImageGalleryData(parseInt(ciphertext));
+      setServiceName(retrunValueFromLocation(location, "name"));
+      FetchImageGalleryData(parseInt(retrunValueFromLocation(location, "id")));
     }
   }, []);
 
   const [loading, setLoading] = useState(true);
   const [imageGalleryData, setImageGalleryData] = useState<Array<ImageGalleryEstimation>>([]);
+  const [selectedData, setSelectedData] = useState<ImageGalleryEstimation>();
 
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -40,7 +42,6 @@ const ImageGalleryProductPage = (route) => {
 
   const [selectedImage, setSelectedImage] = useState("");
   const [imageOpen, setImageOpen] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
 
   const buttonSetting: ButtonSettings = {
     isActionButton: false,
@@ -56,7 +57,9 @@ const ImageGalleryProductPage = (route) => {
       {
         title: "Go to Estimation",
         type: "text",
-        callBack: () => {},
+        callBack: (data: ImageGalleryEstimation) => {
+          navigate(`/generaluser/imagegallery/productdetails`, { state: data });
+        },
       },
     ],
   };
@@ -73,6 +76,7 @@ const ImageGalleryProductPage = (route) => {
   };
 
   const handleCardClick = (data: ImageGalleryEstimation) => {
+    setSelectedData(data);
     setSelectedImage(data.designImage);
     setImageOpen(true);
   };
@@ -87,7 +91,6 @@ const ImageGalleryProductPage = (route) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setImageGalleryData(response.data.data);
-            setCategoryName(response.data.data[0].serviceName);
           }
         } else {
           setImageGalleryData([]);
@@ -122,7 +125,7 @@ const ImageGalleryProductPage = (route) => {
               <ArrowBack fontSize="small" />
             </IconButton>
             <Typography sx={{ ml: 1, display: "inline" }} variant="h4">
-              {"Image Gallery » " + categoryName}
+              {"Image Gallery » " + serviceName}
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -157,7 +160,14 @@ const ImageGalleryProductPage = (route) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleImageClose}>Cancel</Button>
-          <Button onClick={() => {}}>Go to Estimation</Button>
+          <Button
+            onClick={() => {
+              console.log(JSON.stringify(selectedData));
+              navigate(`/generaluser/imagegallery/productdetails`, { state: selectedData });
+            }}
+          >
+            Go to Estimation
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

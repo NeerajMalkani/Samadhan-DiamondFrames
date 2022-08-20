@@ -144,7 +144,6 @@ export const activityColumns: GridColDef[] = [
   },
 ];
 
-
 export const serviceColumns: GridColDef[] = [
   {
     field: "srno",
@@ -952,7 +951,7 @@ export const brandColumns: GridColDef[] = [
     headerName: "unitOfSale",
     flex: 1.8,
     renderCell: (params) => {
-        return params.row.unitName + " / " + params.row.unitName2;
+      return params.row.unitName + " / " + params.row.unitName2;
     },
   },
   {
@@ -1100,7 +1099,6 @@ export const BuyerCategoryColumns: GridColDef[] = [
   },
 ];
 
-
 export const materialSetupColumns: GridColDef[] = [
   {
     field: "srno",
@@ -1134,8 +1132,8 @@ export const materialSetupColumns: GridColDef[] = [
     headerName: "Materials Cost (per Sq.Ft)",
     flex: 1.8,
     renderCell: (params) => {
-      return (params.row.subtotal/(params.row.length * params.row.width)).toFixed(4)
-  },
+      return (params.row.subtotal / (params.row.length * params.row.width)).toFixed(4);
+    },
   },
   {
     field: "display",
@@ -1234,19 +1232,112 @@ export const employeeColumns: GridColDef[] = [
         <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
+      </Grid>
+    ),
+  },
+];
 
-        {/* <Button
-          variant="contained"
-          sx={{ backgroundColor: theme.palette.error.main }}
-        >
-          Delete
-        </Button> */}
-        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
-          <EditIcon />
-        </IconButton>
-        <IconButton aria-label="delete">
-          <DeleteIcon />
-        </IconButton> */}
+export const yourEstimationColumns: GridColDef[] = [
+  {
+    field: "view",
+    headerName: "View",
+    sortable: false,
+    flex: 1.3,
+    maxWidth: 80,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          View
+        </Button>
+      </Grid>
+    ),
+  },
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "id",
+    headerName: "Estimation No.",
+    flex: 1.2,
+    minWidth: 50,
+  },
+  {
+    field: "designTypeID",
+    headerName: "Design Code",
+    flex: 1.2,
+    minWidth: 60,
+  },
+  {
+    field: "designTypeName",
+    headerName: "Design Type",
+    flex: 1.8,
+    minWidth: 140,
+  },
+
+  {
+    field: "productName",
+    headerName: "Product Name",
+    flex: 2.5,
+    minWidth: 140,
+  },
+  {
+    field: "totalSqFt",
+    headerName: "Total Sq.Ft",
+    flex: 1.5,
+    minWidth: 100,
+    renderCell: (e) => {
+      let length = e.row.length.toString().split(".");
+      let width = e.row.width.toString().split(".");
+
+      let lengthInches = ((parseInt(length[0]) * 12 + parseInt(length[1] === undefined ? "0" : length[1])) * (parseInt(width[0]) * 12 + parseInt(width[1] === undefined ? "0" : width[1]))) / 144;
+      return lengthInches.toFixed(4);
+    },
+  },
+  {
+    field: "totalAmount",
+    headerName: "Total Amount",
+    flex: 1.8,
+    minWidth: 140,
+    renderCell: (e) => e.value.toFixed(4),
+  },
+  {
+    field: "status",
+    headerName: "Send Enquiry Status",
+    flex: 1.5,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Typography color={e.value ? "green" : "red"}>{e.value ? "Yes" : "No"}</Typography>
+      </Grid>
+    ),
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 1.8,
+    maxWidth: 240,
+    renderCell: (e) => (
+      <Grid>
+        {e.row.status ? (
+          <Grid>
+            <Button variant="text" sx={{ mr: 1 }}>
+              Send Enquiry
+            </Button>
+          </Grid>
+        ) : (
+          <></>
+        )}
+        <Grid>
+          <Button variant="text" sx={{ mr: 1 }}>
+            View Details
+          </Button>
+        </Grid>
       </Grid>
     ),
   },

@@ -108,24 +108,24 @@ export interface RoleDetails {
   roleCount: number;
 }
 
-export interface BranchModel{
-  CompanyName:string;
-  BranchName:string;
-  AccountNo:number;
-  Address:string;
-  BankName:string;
-  BankBranchName:string;
-  ContactPersonNo:number;
-  GST:string;
-  Pan:string;
-  Pincode:number;
-  IfscCode:number;
+export interface BranchModel {
+  CompanyName: string;
+  BranchName: string;
+  AccountNo: number;
+  Address: string;
+  BankName: string;
+  BankBranchName: string;
+  ContactPersonNo: number;
+  GST: string;
+  Pan: string;
+  Pincode: number;
+  IfscCode: number;
 }
 
 export interface BranchTypeModel {
   id: number;
   branchType: string;
-  assignBranch:string;
+  assignBranch: string;
   isUT: string;
   isActive: string;
 }
@@ -137,7 +137,6 @@ export interface DepartmentNameModel {
   action: string;
 }
 
-
 export interface DesignationNameModel {
   id: number;
   srno: number;
@@ -146,7 +145,6 @@ export interface DesignationNameModel {
   reportingAuthority: string;
   action: string;
 }
-
 
 export interface EWayBillModel {
   id: number;
@@ -388,4 +386,37 @@ export interface ActionButtons {
   title: string;
   type: "text" | "outlined" | "contained";
   callBack: Function;
+}
+
+export interface EstimationCostDetails {
+  id: number;
+  labourCost: number;
+  length: number;
+  materialCostPerSqFeet: number;
+  status: boolean;
+  width: number;
+}
+
+export interface ProductItemModel {
+  amount: number;
+  brandName: number;
+  formula: number;
+  generalDiscount: number;
+  length: number;
+  materialSetupID: number;
+  productName: string;
+  quantity: number;
+  rate: number;
+  width: number;
+}
+
+export interface YourEstimationModel {
+  designTypeID: number;
+  designTypeName: string;
+  id: number;
+  length: number;
+  productName: string;
+  status: boolean;
+  totalAmount: number;
+  width: number;
 }

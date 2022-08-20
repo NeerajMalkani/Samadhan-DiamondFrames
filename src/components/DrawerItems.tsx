@@ -303,7 +303,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Image Gallery",
-          isActive: window.location.href.toLowerCase().includes("imagegallery"),
+          isActive: window.location.href.toLowerCase().includes("imagegallery/category"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -313,11 +313,11 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Your Estimations",
-          isActive: window.location.href.toLowerCase().includes("estimation"),
+          isActive: window.location.href.toLowerCase().includes("userestimation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generaluser/estimation`);
+              navigate(`/generaluser/userestimation`);
             }, 300);
           },
         },
@@ -451,7 +451,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Add Department",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "adddepartment"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "addepartment"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -471,7 +471,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "adddesignation"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "addesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -579,11 +579,11 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Add Department",
-          isActive: window.location.href.toLowerCase().includes("adddepartment"),
+          isActive: window.location.href.toLowerCase().includes("addepartment"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/adddepartment`);
+              navigate(`/contractor/organization/addepartment`);
             }, 300);
           },
         },
@@ -599,11 +599,11 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Designation",
-          isActive: window.location.href.toLowerCase().includes("adddesignation"),
+          isActive: window.location.href.toLowerCase().includes("addesignation"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/adddesignation`);
+              navigate(`/contractor/organization/addesignation`);
             }, 300);
           },
         },

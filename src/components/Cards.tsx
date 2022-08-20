@@ -42,14 +42,15 @@ interface Props {
   buttonSettings: ButtonSettings;
   cardCallback: Function;
   type: string;
+  count:number;
 }
-export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallback, type }: Props) => {
+export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallback, type, count }: Props) => {
   const [shadow, setShadow] = useState(1);
   const onMouseOver = () => setShadow(20);
   const onMouseOut = () => setShadow(1);
 
   return (
-    <Card elevation={shadow} onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
+    <Card key={count} elevation={shadow} onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
       <CardActionArea
         onClick={(e) => {
           console.log(e);

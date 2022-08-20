@@ -84,4 +84,6 @@ export const communication = {
   BlankIfscCode: "Please enter IFSC Code",
   BlankBranchType: "Please select Branch Type",
   BlankAssignBranchAdmin: "Please select Assign Branch Admin",
+
+  EstimationSent: "Your estimation request has been sent successfully",
 };

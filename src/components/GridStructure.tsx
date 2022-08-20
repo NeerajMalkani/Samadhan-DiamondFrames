@@ -20,7 +20,7 @@ const ShowsGrid = ({ shows, buttonSettings, cardCallback, type }: Props) => {
             return (
               <Grow key={i} in={true} style={{ transformOrigin: "0 0 0" }}>
                 <Grid item xs={2} sm={4} md={3}>
-                  <CreateImageGalleryEstimation key={i} props={k} buttonSettings={buttonSettings} cardCallback={cardCallback} type={type} />
+                  <CreateImageGalleryEstimation key={i} count={i} props={k} buttonSettings={buttonSettings} cardCallback={cardCallback} type={type} />
                 </Grid>
               </Grow>
             );

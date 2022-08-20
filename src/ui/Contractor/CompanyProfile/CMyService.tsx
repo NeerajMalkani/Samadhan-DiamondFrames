@@ -74,9 +74,9 @@ const CMyServices = () => {
 
   useEffect(() => {
     FetchServices();
-    FetchData();
+    FetchData("");
   }, []);
-  
+
   const ResetFields = () => {
     setSelectedID(0);
     setActionStatus("new");
@@ -85,7 +85,6 @@ const CMyServices = () => {
     setButtonDisplay("none");
     setButtonLoading(false);
   };
-
 
   const FetchServices = () => {
     Provider.getAll("master/getservices")
@@ -99,15 +98,13 @@ const CMyServices = () => {
       .catch((e) => {});
   };
 
-  const FetchData = () => {
-    debugger;
+  const FetchData = (type: string) => {
     let params = {
       ContractorID: cookies.dfc.UserID,
     };
-    
+
     Provider.getAll(`contractorcompanyprofile/getmyservices?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
@@ -119,9 +116,11 @@ const CMyServices = () => {
 
             setGridServicesList(arrList);
             setGridServicesListTemp(arrList);
-            setSnackMsg("Service");
+            if (type !== "") {
+              setSnackMsg("Service " + type);
               setOpen(true);
               setSnackbarType("success");
+            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -131,7 +130,6 @@ const CMyServices = () => {
         setLoading(false);
       })
       .catch((e) => {
-        debugger;
         setLoading(false);
         setSnackMsg(communication.NetworkError);
         setSnackbarType("error");
@@ -171,13 +169,13 @@ const CMyServices = () => {
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      // setMyServiceNameListTemp(myServiceNameList);
+      setGridServicesListTemp(gridServicesList);
     } else {
-      // setMyServiceNameListTemp(
-      //   myServiceNameList.filter((el: ServiceNameModel) => {
-      //     return el.serviceName.toString().toLowerCase().includes(query.toLowerCase());
-      //   })
-      // );
+      setGridServicesListTemp(
+        gridServicesList.filter((el: ServiceNameModel) => {
+          return el.serviceName.toString().toLowerCase().includes(query.toLowerCase());
+        })
+      );
     }
   };
 
@@ -206,11 +204,12 @@ const CMyServices = () => {
   };
 
   const handleSubmitClick = () => {
-    debugger;
     let isValid: boolean = true;
 
     if (serviceName.trim() === "--Select--") {
       isValid = false;
+      setIsServiceError(true);
+      setServiceErrorText("Please select Service");
     }
 
     if (isValid) {
@@ -219,7 +218,6 @@ const CMyServices = () => {
   };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
-    debugger;
     setButtonLoading(true);
     if (actionStatus === "new") {
       Provider.create("contractorcompanyprofile/insertmyservices", {
@@ -229,8 +227,7 @@ const CMyServices = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            debugger;
-            FetchData();
+            FetchData("added");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -257,7 +254,7 @@ const CMyServices = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-          FetchData();
+            FetchData("updated");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
