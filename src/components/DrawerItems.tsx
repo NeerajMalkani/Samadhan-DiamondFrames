@@ -561,6 +561,16 @@ const DrawerItems = ({ open }: OpenObj) => {
           },
         },
         {
+          title: "Employee Edit",
+          isActive: window.location.href.toLowerCase().includes("employeeedit"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/contractor/employee/employeeedit`);
+            }, 300);
+          },
+        },
+        {
           title: "Employee Report",
           isActive: window.location.href.toLowerCase().includes("employeereport"),
           navigation: () => {
