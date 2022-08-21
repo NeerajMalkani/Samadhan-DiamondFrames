@@ -1324,7 +1324,7 @@ export const yourEstimationColumns: GridColDef[] = [
     maxWidth: 240,
     renderCell: (e) => (
       <Grid>
-        {e.row.status ? (
+        {!e.row.status ? (
           <Grid>
             <Button variant="text" sx={{ mr: 1 }}>
               Send Enquiry

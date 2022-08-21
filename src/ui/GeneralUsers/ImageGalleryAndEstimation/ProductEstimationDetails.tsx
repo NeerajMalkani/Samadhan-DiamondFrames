@@ -152,7 +152,6 @@ const ProductEstimationDetailsPage = () => {
           if (index === productItem.length - 1) {
             transportCharges = subtotalCal * (5 / 100);
             setMaterialCost(subtotalCal);
-           
           }
           return (
             <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
@@ -255,7 +254,7 @@ const ProductEstimationDetailsPage = () => {
                         Total Amount
                       </Typography>
                       <Typography variant="h5" sx={{ mt: 2 }}>
-                        {(materialCost + labourCost).toFixed(4)}
+                        {(materialCost + materialCost * (5 / 100) + labourCost).toFixed(4)}
                       </Typography>
                       <Button
                         startIcon={<VisibilityIcon />}
@@ -278,7 +277,7 @@ const ProductEstimationDetailsPage = () => {
                             Material Cost
                           </Typography>
                           <Typography variant="h5" sx={{ mt: 2 }}>
-                            {materialCost.toFixed(4)}
+                            {(materialCost + materialCost * (5 / 100)).toFixed(4)}
                           </Typography>
                           <Button
                             variant="text"

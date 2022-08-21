@@ -297,6 +297,9 @@ const PostNewDesignPage = () => {
     if (ac !== undefined) {
       setPn(event.target.value as string);
       setPnID(ac.productID);
+      if (ac.rateWithoutMaterials) {
+        setLabourCost(ac.rateWithoutMaterials.toFixed(4));
+      }
       SetResetProductName(false);
       SetResetProductDesignType(true);
       FetchDesignTypeFromProductID(arnID, snID, cnID, ac.productID);
@@ -835,7 +838,7 @@ const PostNewDesignPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%" }}>
                 {postNewDesign.length === 0 ? (
-                 <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
