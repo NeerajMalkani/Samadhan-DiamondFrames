@@ -297,6 +297,34 @@ export interface CityModel {
   isActive: string;
 }
 
+export interface BloodGroupModel {
+  id: number;
+  bloodGroup: string;
+  bloodGroupID: number;
+  isActive: string;
+}
+
+export interface DOBModel {
+  id: number;
+  dateOfBirth: string;
+  dateOfBirthID: number;
+  isActive: string;
+}
+
+export interface DOJModel {
+  id: number;
+  dateOfJoin: string;
+  dateOfJoinID: number;
+  isActive: string;
+}
+
+export interface BranchModel {
+  id: number;
+  branchName: string;
+  branchID: number;
+  isActive: string;
+}
+
 export interface UserModel {
   userID: number;
   fullName: string;

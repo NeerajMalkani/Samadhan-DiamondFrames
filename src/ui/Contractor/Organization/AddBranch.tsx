@@ -33,6 +33,8 @@ import { communication } from "../../../utils/communication";
 import { CityModel,BranchTypeModel,  StateModel,  } from "../../../models/Model";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { SelectChangeEvent } from "@mui/material";
+import { ForkRight } from "@mui/icons-material";
+
     const AddBranch = () => {
         debugger;
         const [cookies, setCookie] = useCookies(["dfc"]);
@@ -46,9 +48,6 @@ import { SelectChangeEvent } from "@mui/material";
     const [loading, setLoading]=useState(true);
     const [display, setDisplay ]= React.useState("Yes");
     
-    // const [activityNamesList, setActivityNamesList] = React.useContext(DataContexts).activityNamesList;
-    // const [activityNamesListTemp,setActivityNamesListTemp]=React.useState<Array<any>>([]);
-   // const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);
     const [branchList, setBranchList] = useState<Array<BranchModel>>([]);
     const [branchListTemp,setBranchListTemp]=React.useState<Array<any>>([]);
   
@@ -136,6 +135,9 @@ import { SelectChangeEvent } from "@mui/material";
   const [isIfscError, setIsIfscError] = useState(false);
 
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+
+  const [gridBranchList,setGridBranchList]= useState<Array<BranchModel>>([]);
+  const [gridBranchListTemp, setGridBranchListTemp] = useState<Array<BranchModel>>([]);
   
 
   
@@ -143,6 +145,7 @@ import { SelectChangeEvent } from "@mui/material";
     //FetchBranchData();
     FetchStates();
     //FetchCity();
+    FetchData();
   }, []);
   
     
@@ -174,72 +177,30 @@ import { SelectChangeEvent } from "@mui/material";
           .catch((e) => {});
       };
     
-      // const FetchBranchData = () => {
-      //   ResetFields();
-      //   Provider.getAll("master/getactivityroles") 
-      //     .then((response: any) => {
-      //       if (response.data && response.data.code === 200) {
-      //         if (response.data.data) {
-      //           const arrList = [...response.data.data];
-      //           arrList.map(function (a: any, index: number) {
-      //             a.display = a.display ? "Yes" : "No";
-      //             let sr = { srno: index + 1 };
-      //             a = Object.assign(a, sr);
-      //           });
-      //           setBranchList(response.data.data);
-      //           setBranchListTemp(response.data.data);
-      //         }
-      //       } else {
-      //         // setSnackMsg(communication.Error);
-      //         // setOpen(true);
-      //       }
-      //       setLoading(false);
-      //     })
-      //     .catch((e) => {
-      //       setLoading(false);
-      //       setSnackMsg(communication.NetworkError);
-      //       setOpen(true);
-      //     });
-      //   // eslint-disable-next-line react-hooks/exhaustive-deps
-      // };
-
-      const FetchBranchData = (type: string) => {
+      const FetchData = () => {
+        debugger;
         let params = {
-          UserID: cookies.dfc.UserID,
+          UserType: 3,
+          UserId:cookies.dfc.UserID
         };
-        Provider.getAll(`master/getuserprofile?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.getAll(`master/getuserbranches?${new URLSearchParams(GetStringifyJson(params))}`)
           .then((response: any) => {
             debugger;
             if (response.data && response.data.code === 200) {
               if (response.data.data) {
                 const arrList = [...response.data.data];
-    
-                // setUserID(arrList[0].userID);
-                setCompanyName(arrList[0].companyName);
-                setBranchName(arrList[0].branchName)
-                setAccountNo(arrList[0].accountNo)
-                setAddress(arrList[0].address)
-                setBankName(arrList[0].bankname)
-                setBankBranchName(arrList[0].profileA)
-                setContactPerson(arrList[0].contactPersonName);
-                setState(arrList[0].stateName);
-                setStateID(arrList[0].stateID);
-                if (arrList[0].stateID > 0) {
-                  debugger;
-                  FetchCity(arrList[0].stateID);
-                  setCity(arrList[0].cityName);
-                  setCityID(arrList[0].cityID);
-                }
-                setIfsc(arrList[0].ifsc);
-                setGst(arrList[0].gstNumber);
-                setPan(arrList[0].pan);
-                setPincode(arrList[0].pincode);
-              
-                if (type !== "") {
-                  setSnackMsg("Branch" + type);
-                  setOpen(true);
-                  setSnackbarType("success");
-                }
+                arrList.map(function (a: any, index: number) {
+                  a.display = a.display ? "Yes" : "No";
+                  let sr = { srno: index + 1 };
+                  a = Object.assign(a, sr);
+                });
+                setGridBranchList(arrList);
+                setGridBranchListTemp(arrList);
+                // if (type !== "") {
+                //   setSnackMsg("Service " + type);
+                //   setOpen(true);
+                //   setSnackbarType("success");
+                // }
               }
             } else {
               setSnackMsg(communication.NoData);
@@ -256,6 +217,7 @@ import { SelectChangeEvent } from "@mui/material";
           });
         // eslint-disable-next-line react-hooks/exhaustive-deps
       };
+    
 
       const handleSubmitClick = () => {
         debugger;
@@ -272,82 +234,82 @@ import { SelectChangeEvent } from "@mui/material";
           setCompanyError(communication.BlankBranchName);
         }
 
-        if (accountNo.trim() === "") {
-          isValid = false;
-          setIsCompanyError(true);
-          setCompanyError(communication.BlankAccountNo);
-        }
+        // if (accountNo.trim() === "") {
+        //   isValid = false;
+        //   setIsCompanyError(true);
+        //   setCompanyError(communication.BlankAccountNo);
+        // }
 
         if (branchType.trim() === "") {
           isValid = false;
           setIsCompanyError(true);
           setCompanyError(communication.BlankBranchType);
         }
-        if (assignBranchAdmin.trim() === "") {
-          isValid = false;
-          setIsCompanyError(true);
-          setCompanyError(communication.BlankAssignBranchAdmin);
-        }
+        // if (assignBranchAdmin.trim() === "") {
+        //   isValid = false;
+        //   setIsCompanyError(true);
+        //   setCompanyError(communication.BlankAssignBranchAdmin);
+        // }
 
-        if (address.trim() === "") {
-          isValid = false;
-          setIsCompanyError(true);
-          setCompanyError(communication.BlankAddress);
-        }
+        // if (address.trim() === "") {
+        //   isValid = false;
+        //   setIsCompanyError(true);
+        //   setCompanyError(communication.BlankAddress);
+        // }
 
-        if (bankName.trim() === "") {
-          isValid = false;
-          setIsCompanyError(true);
-          setCompanyError(communication.BlankBankName);
-        }
+        // if (bankName.trim() === "") {
+        //   isValid = false;
+        //   setIsCompanyError(true);
+        //   setCompanyError(communication.BlankBankName);
+        // }
 
-        if (bankBranchName.trim() === "") {
-          isValid = false;
-          setIsCompanyError(true);
-          setCompanyError(communication.BlankBankName);
-        }
+        // if (bankBranchName.trim() === "") {
+        //   isValid = false;
+        //   setIsCompanyError(true);
+        //   setCompanyError(communication.BlankBankName);
+        // }
 
-        if (contactPerson.trim() === "") {
-          isValid = false;
-          setIsContactPersonError(true);
-          setContactPersonError(communication.BlankContactPerson);
-        }
+        // if (contactPerson.trim() === "") {
+        //   isValid = false;
+        //   setIsContactPersonError(true);
+        //   setContactPersonError(communication.BlankContactPerson);
+        // }
     
-        if (ifsc.trim() === "") {
-          isValid = false;
-          setIsMobileError(true);
-          setMobileError(communication.BlankIfscCode);
-        }
+        // if (ifsc.trim() === "") {
+        //   isValid = false;
+        //   setIsMobileError(true);
+        //   setMobileError(communication.BlankIfscCode);
+        // }
     
-        if (state.trim() === "--Select--") {
-          isValid = false;
-          setIsStateError(true);
-          setStateError(communication.BlankState);
-        }
+        // if (state.trim() === "--Select--") {
+        //   isValid = false;
+        //   setIsStateError(true);
+        //   setStateError(communication.BlankState);
+        // }
     
-        if (city.trim() === "--Select--") {
-          isValid = false;
-          setIsCityError(true);
-          setCityError(communication.BlankCity);
-        }
+        // if (city.trim() === "--Select--") {
+        //   isValid = false;
+        //   setIsCityError(true);
+        //   setCityError(communication.BlankCity);
+        // }
     
-        if (pincode.toString().trim() === "") {
-          isValid = false;
-          setIsPincodeError(true);
-          setPincodeError(communication.BlankBrandPrefix);
-        }
+        // if (pincode.toString().trim() === "") {
+        //   isValid = false;
+        //   setIsPincodeError(true);
+        //   setPincodeError(communication.BlankBrandPrefix);
+        // }
     
-        if (gst.trim() === "") {
-          isValid = false;
-          setIsGstError(true);
-          setGstError(communication.BlankGst);
-        }
+        // if (gst.trim() === "") {
+        //   isValid = false;
+        //   setIsGstError(true);
+        //   setGstError(communication.BlankGst);
+        // }
     
-        if (pan.trim() === "") {
-          isValid = false;
-          setIsPanError(true);
-          setPanError(communication.BlankPan);
-        }
+        // if (pan.trim() === "") {
+        //   isValid = false;
+        //   setIsPanError(true);
+        //   setPanError(communication.BlankPan);
+        // }
         debugger;
         if (isValid) {
           //InsertUpdateData();
@@ -510,19 +472,19 @@ return(
            <br></br>
            <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
            <Grid item sm={2}> 
-            <label><label style={{ color: "#ff0000" }}>*</label> Company/Firm Name</label>
+            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Company/Firm Name</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
             </Grid>
             <Grid item sm={2}> 
-            <label><label style={{ color: "#ff0000" }}>*</label> Branch / location name</label>
+            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Branch / location name</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
             </Grid>
             <Grid item sm={2}> 
-            <label> Account No</label>
+            <label style={{float:'right',}}> Account No</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
@@ -531,7 +493,7 @@ return(
             <br></br>
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
            <Grid item sm={2}> 
-            <label><label style={{ color: "#ff0000" }}>*</label> Branch Type</label>
+            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Branch Type</label>
           </Grid>
           <Grid item sm={2}>
             <FormControl fullWidth size="small" error={isbranchTypeError}>
@@ -548,16 +510,16 @@ return(
                 })}
               </Select>
               <FormHelperText>{branchTypeError}</FormHelperText>
-            </FormControl>
+            </FormControl>  
             </Grid>
-            <Grid item sm={2}> 
-            <label>Address</label>
+            <Grid item sm={2} className="float-right"> 
+            <label style={{float:'right',}}>Address</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
             </Grid>
             <Grid item sm={2}> 
-            <label> Bank Name</label>
+            <label style={{float:'right',}}> Bank Name</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
@@ -566,7 +528,7 @@ return(
             <br></br>
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
            <Grid item sm={2}> 
-            <label> Assign Branch Admin</label>
+            <label style={{float:'right',}}> Assign Branch Admin</label>
           </Grid>
           <Grid item sm={2}>
             <FormControl fullWidth size="small" error={isAssignBranchAdminError}>
@@ -586,7 +548,7 @@ return(
             </FormControl>
             </Grid>
             <Grid item sm={2}> 
-            <label>State</label>
+            <label style={{float:'right',}}>State</label>
           </Grid>
           <Grid item sm={2}>
             <FormControl fullWidth size="small" error={isStateError}>
@@ -606,7 +568,7 @@ return(
             </FormControl>
             </Grid>
             <Grid item sm={2}> 
-            <label> Bank  Branch Name</label>
+            <label style={{float:'right',}}> Bank  Branch Name</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
@@ -615,13 +577,13 @@ return(
             <br></br>
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
            <Grid item sm={2}> 
-            <label> Contact Person No</label>
+            <label style={{float:'right',}}> Contact Person No</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
             </Grid>
             <Grid item sm={2}> 
-            <label> City</label>
+            <label style={{float:'right',}}> City</label>
           </Grid>
           <Grid item sm={2}>
             <FormControl fullWidth size="small" error={isCityError}>
@@ -641,7 +603,7 @@ return(
             </FormControl>
             </Grid>
             <Grid item sm={2}> 
-            <label> IFSC Code</label>
+            <label style={{float:'right',}}> IFSC Code</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
@@ -650,13 +612,13 @@ return(
             <br></br>
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
            <Grid item sm={2}> 
-            <label> GST No</label>
+            <label style={{float:'right',}}> GST No</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
             </Grid>
             <Grid item sm={2}> 
-            <label> Pincode</label>
+            <label style={{float:'right',}}> Pincode</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
@@ -665,7 +627,7 @@ return(
             <br></br>
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
            <Grid item sm={2}> 
-            <label> PAN No</label>
+            <label style={{float:'right',}}> PAN No</label>
           </Grid>
           <Grid item sm={2}>
                 <TextField  variant="outlined" size="small"></TextField>
@@ -674,7 +636,7 @@ return(
             <br></br>
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
            <Grid item sm={2}> 
-            <label> Display</label>
+            <label style={{float:'right',}}> Display</label>
           </Grid>
           <Grid item sm={2}>
                {/* <Checkbox></Checkbox> */}

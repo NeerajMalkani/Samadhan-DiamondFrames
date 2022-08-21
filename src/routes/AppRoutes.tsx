@@ -42,6 +42,9 @@ import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEs
 import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductEstimationDetails";
 import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
 
+import AddBranch from "../ui/Contractor/Organization/AddBranch";
+import EmployeeEdit from "../ui/Contractor/Employee/EmployeeEdit";
+
 const AppRoutes = () => {
   return (
     <CookiesProvider>
@@ -81,15 +84,13 @@ const AppRoutes = () => {
               <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
               <Route path="contractor/organization/adddepartment" element={<AddDepartment/>}/>
               <Route path="contractor/organization/adddesignation" element={<AddDesignation/>}/>
+              <Route path="contractor/organization/addbranch" element={<AddBranch/>}/>
               <Route path="dealer/organization/addepartment" element={<AddDDepartment/>}/>
               <Route path="dealer/organization/addesignation" element={<AddDDesignation/>}/>
-              <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
-              <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
-              
-
+              <Route path="contractor/employee/employeeedit" element={<EmployeeEdit />} />
             </Routes>
           </BrowserRouter>
         </Box>
