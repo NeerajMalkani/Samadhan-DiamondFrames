@@ -12,7 +12,7 @@ import ListIcon from "@mui/icons-material/List";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
-import { retrunValueFromLocation } from "../../../utils/AWSFileUpload";
+import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
 
 const ImageGalleryProductPage = (route) => {
   const [cookies, setCookie] = useCookies(["dfc"]);

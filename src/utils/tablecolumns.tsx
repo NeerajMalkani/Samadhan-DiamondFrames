@@ -1,10 +1,5 @@
 import { Button, Grid, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
-import React from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import { PanoramaSharp } from "@mui/icons-material";
-import { AWSImagePath } from "./paths";
 
 export const categoryColumns: GridColDef[] = [
   {

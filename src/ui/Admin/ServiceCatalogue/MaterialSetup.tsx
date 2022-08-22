@@ -52,7 +52,7 @@ import { brandColumns, materialSetupColumns } from "../../../utils/tablecolumns"
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { communication } from "../../../utils/communication";
-import { uniqueByKey } from "../../../utils/AWSFileUpload";
+import { uniqueByKey } from "../../../utils/JSCommonFunction";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
 

@@ -9,7 +9,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
-import { retrunValueFromLocation } from "../../../utils/AWSFileUpload";
+import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
 import { EstimationCostDetails, ProductItemModel } from "../../../models/Model";
 
 const ProductEstimationDetailsPage = () => {

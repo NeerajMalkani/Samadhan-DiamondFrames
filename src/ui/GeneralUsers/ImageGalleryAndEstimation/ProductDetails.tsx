@@ -8,7 +8,7 @@ import { LoadingButton } from "@mui/lab";
 import Provider from "../../../api/Provider";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { communication } from "../../../utils/communication";
-import { retrunValueFromLocation } from "../../../utils/AWSFileUpload";
+import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
 import { theme } from "../../../theme/AppTheme";
 import { ProductItemModel } from "../../../models/Model";
 
