@@ -87,6 +87,7 @@ import { ForkRight } from "@mui/icons-material";
   const [assignBranchAdminList, setAssignBranchAdminList] = useState<Array<BranchTypeModel>>([]);
 
   const [companyName, setCompanyName] = useState("");
+  const [companyNameID, setCompanyNameID]= useState<number>(0);
   const [companyError, setCompanyError] = useState("");
   const [isCompanyError, setIsCompanyError] = useState(false);
 
@@ -177,6 +178,42 @@ import { ForkRight } from "@mui/icons-material";
           .catch((e) => {});
       };
     
+      const BranchType =() =>{
+        Provider.getAll("")
+        .then((response:any)=> {
+          if(response.data && response.data.code === 200){
+            if (response.data.data){
+              setBranchTypeList(response.data.data);
+            }
+          }
+        })
+        .catch((e)=>{});
+      };
+
+      const CompanyName =() =>{
+        Provider.getAll("")
+        .then((response:any)=>{
+          if(response.data && response.data.code === 200){
+            if(response.data.data){
+              setCompanyName(response.data.data);
+            }
+          }
+        })
+        .catch((e)=>{});
+      };
+
+      const AssignBranchAdmin=() =>{
+        Provider.getAll("")
+        .then((response:any)=>{
+          if(response.data && response.data.code === 200){
+            if(response.data.data){
+              setAssignBranchAdmin(response.data.data);
+            }
+          }
+        })
+      }
+
+
       const FetchData = () => {
         debugger;
         let params = {
@@ -215,6 +252,8 @@ import { ForkRight } from "@mui/icons-material";
             setSnackbarType("error");
             setOpen(true);
           });
+
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
       };
     
@@ -316,48 +355,63 @@ import { ForkRight } from "@mui/icons-material";
         }
       };
 
-      // const InsertUpdateData = () => {
-      //   debugger;
-      //   if (actionStatus === "new") {
-      //     Provider.create("master/insertuserprofile", {
-      //       UserType:userType,
-      //       UserID: userID,
-      //       CompanyID:,
-      //       BranchTypeID:,
-      //       BranchAdminID:,
-      //       ContactpersonNo:,
-      //       GSTNo:,
-      //       PANNo:,
-      //       Dispaly:,
-      //       LocationName:,
-      //       Address:,
-      //       StateID:,
-      //       CityId:,
-      //       Pincode:,
-      //       AccountNo:,
-      //       BankName:,
-      //       bankBranchName:,
-            
-      //     })
-      //       .then((response) => {
-      //         debugger;
-      //         if (response.data && response.data.code === 200) {
-      //           //FetchData("added");
-      //         } else {
-      //           setSnackMsg(communication.Error);
-      //           setSnackbarType("error");
-      //           setOpen(true);
-      //         }
-      //       })
-      //       .catch((e) => {
-      //         debugger;
-    
-      //         setSnackMsg(communication.NetworkError);
-      //         setSnackbarType("error");
-      //         setOpen(true);
-      //       });
-      //   }
-      // };
+      
+      const InsertUpdateData = () => {
+        setButtonLoading(true);
+        if (actionStatus === "new") {
+          Provider.create("master/insertuserbranch", {
+            UserId: cookies.dfc.UserID,
+            UserType: 3,
+          })
+            .then((response) => {
+              if (response.data && response.data.code === 200) {
+                FetchData();
+              } else if (response.data.code === 304) {
+                setSnackMsg(communication.ExistsError);
+                setOpen(true);
+                setSnackbarType("error");
+              } else {
+                setSnackMsg(communication.Error);
+                setSnackbarType("error");
+                setOpen(true);
+              }
+              // handleCancelClick();
+            })
+            .catch((e) => {
+              // handleCancelClick();
+              setSnackMsg(communication.NetworkError);
+              setSnackbarType("error");
+              setOpen(true);
+            });
+        } else if (actionStatus === "edit") {
+          Provider.create("master/updateuserbranch", {
+            // ServiceID: departmentID,
+            UserId: cookies.dfc.UserID,
+            UserType: 3,
+           
+          })
+            .then((response) => {
+              if (response.data && response.data.code === 200) {
+                FetchData();
+              } else if (response.data.code === 304) {
+                setSnackMsg(communication.ExistsError);
+                setOpen(true);
+                setSnackbarType("error");
+              } else {
+                setSnackMsg(communication.Error);
+                setSnackbarType("error");
+                setOpen(true);
+              }
+              //handleCancelClick();
+            })
+            .catch((e) => {
+              //handleCancelClick();
+              setSnackMsg(communication.NetworkError);
+              setSnackbarType("error");
+              setOpen(true);
+            });
+        }
+      };
      
       const handleSNChange = (event: SelectChangeEvent) => {
         debugger;
@@ -475,7 +529,7 @@ return(
             <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Company/Firm Name</label>
           </Grid>
           <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
+                <TextField  variant="outlined" size="small" ></TextField>
             </Grid>
             <Grid item sm={2}> 
             <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Branch / location name</label>

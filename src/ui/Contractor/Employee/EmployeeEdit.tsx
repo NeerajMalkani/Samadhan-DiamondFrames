@@ -44,12 +44,6 @@ import {
 import { SelectChangeEvent } from "@mui/material";
 
 
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-// import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -99,9 +93,7 @@ const EmployeeEdit = () => {
     }
   }, []);
 
-  const [values, setValues] = useState<Date | null>(
-    new Date('2014-08-18T21:11:54'),
-  );
+ 
   const [companyName, setCompanyName] = useState("");
   const [companyNameError, setCompanyNameError] = useState("");
   const [isCompanyNameError, setIsCompanyNameError] = useState(false);
@@ -311,15 +303,7 @@ const EmployeeEdit = () => {
     setValue(newValue);
   };
 
-  //  function MaterialUIPickers() {
-  //   const [value, setValue] = React.useState<Date | null>(
-  //     new Date('2014-08-18T21:11:54'),
-  //   );
-
-  // const handleDChange = (newValue: Date | null) => {
-  //   //setValues(newValue);
-  // };
-
+  
   useEffect(() => {
     debugger;
     FetchBasicDetails();
@@ -772,17 +756,7 @@ const EmployeeEdit = () => {
                 <Grid item sm={3}>
 
                 
-                  {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DesktopDatePicker
-                      inputFormat="MM/dd/yyyy"
-                      value={value}
-                      onChange={handleDChange}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </LocalizationProvider> */}
-
-
-
+      
                 </Grid>
               </Grid>
               <br></br>
