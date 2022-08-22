@@ -6,7 +6,7 @@ import Header from "../../../components/Header";
 import { ArrowBack } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import Provider from "../../../api/Provider";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { GetStringifyJson, CalculateSqfeet } from "../../../utils/CommonFunctions";
 import { communication } from "../../../utils/communication";
 import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
 import { theme } from "../../../theme/AppTheme";
@@ -26,7 +26,8 @@ const ImageGalleryProductDetailsPage = () => {
       SetCookieUseID(cookies.dfc.UserID);
       setSelectedData(retrunValueFromLocation(location, "", true));
       setLoading(false);
-      CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
+      let TotalArea = CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
+      setTotalSqFt(TotalArea);
     }
   }, []);
 
@@ -55,39 +56,24 @@ const ImageGalleryProductDetailsPage = () => {
     return menuItems;
   };
 
-  const CalculateSqfeet = (lf: number, li: number, whf: number, whi: number) => {
-    if (lf > 0 && li > -1 && whf > 0 && whi > -1) {
-      let lengthInches = ((lf * 12 + li) * (whf * 12 + whi)) / 144;
-      setTotalSqFt(parseFloat(lengthInches.toFixed(4)));
-    } else {
-      setTotalSqFt(0);
-    }
-  };
-
-  const CalculateSqfeetInternal = (lf: number, li: number, whf: number, whi: number) => {
-    if (lf > 0 && li > -1 && whf > 0 && whi > -1) {
-      let lengthInches = ((lf * 12 + li) * (whf * 12 + whi)) / 144;
-      return lengthInches;
-    } else {
-      return 0;
-    }
-  };
   const handleLFChange = (event: SelectChangeEvent, type: string) => {
     let lf: string = event.target.value;
+    let TotalArea = 0;
     if (parseInt(lf) > 0) {
       if (type === "lengthFeet") {
         setLengthFeet(event.target.value as string);
-        CalculateSqfeet(parseInt(lf), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
+        TotalArea = CalculateSqfeet(parseInt(lf), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
       } else if (type === "lengthInches") {
         setLengthInches(event.target.value as string);
-        CalculateSqfeet(parseInt(lengthFeet), parseInt(lf), parseInt(widthHeightFeet), parseInt(widthHeightInches));
+        TotalArea = CalculateSqfeet(parseInt(lengthFeet), parseInt(lf), parseInt(widthHeightFeet), parseInt(widthHeightInches));
       } else if (type === "widthFeet") {
         setWidthHeightFeet(event.target.value as string);
-        CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(lf), parseInt(widthHeightInches));
+        TotalArea = CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(lf), parseInt(widthHeightInches));
       } else if (type === "widthInches") {
         setWidthHeightInches(event.target.value as string);
-        CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(lf));
+        TotalArea = CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(lf));
       }
+      setTotalSqFt(TotalArea);
     }
   };
 
@@ -111,12 +97,7 @@ const ImageGalleryProductDetailsPage = () => {
             response.data.data.map((k: ProductItemModel, i) => {
               let length = k.length.toString().split(".");
               let width = k.width.toString().split(".");
-              const destinationSqFt = CalculateSqfeetInternal(
-                parseInt(length[0]),
-                parseInt(length[1] === undefined ? "0" : length[1]),
-                parseInt(width[0]),
-                parseInt(width[1] === undefined ? "0" : width[1])
-              );
+              const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
               let newAmount = (targetSqFt * k.amount) / destinationSqFt;
               newAmount = newAmount - newAmount * (k.generalDiscount / 100);
               subtotalCal += newAmount;

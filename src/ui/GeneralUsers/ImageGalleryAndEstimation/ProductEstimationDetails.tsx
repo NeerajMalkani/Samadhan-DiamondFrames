@@ -6,7 +6,7 @@ import Header from "../../../components/Header";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { LoadingButton } from "@mui/lab";
 import EmailIcon from "@mui/icons-material/Email";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { GetStringifyJson, CalculateSqfeet } from "../../../utils/CommonFunctions";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
@@ -57,11 +57,9 @@ const ProductEstimationDetailsPage = () => {
             console.log(JSON.stringify(response.data.data));
             let length = response.data.data[0].length.toString().split(".");
             let width = response.data.data[0].width.toString().split(".");
-            CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
-            setLabourCost(
-              CalculateSqfeetInternal(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1])) *
-                response.data.data[0].labourCost
-            );
+            let TotalArea = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
+            setTotalSqFt(TotalArea);
+            setLabourCost(TotalArea * response.data.data[0].labourCost);
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -110,24 +108,6 @@ const ProductEstimationDetailsPage = () => {
     setOpen(false);
   };
 
-  const CalculateSqfeet = (lf: number, li: number, whf: number, whi: number) => {
-    if (lf > 0 && li > -1 && whf > 0 && whi > -1) {
-      let lengthInches = ((lf * 12 + li) * (whf * 12 + whi)) / 144;
-      setTotalSqFt(parseFloat(lengthInches.toFixed(4)));
-    } else {
-      setTotalSqFt(0);
-    }
-  };
-
-  const CalculateSqfeetInternal = (lf: number, li: number, whf: number, whi: number) => {
-    if (lf > 0 && li > -1 && whf > 0 && whi > -1) {
-      let lengthInches = ((lf * 12 + li) * (whf * 12 + whi)) / 144;
-      return lengthInches;
-    } else {
-      return 0;
-    }
-  };
-
   const CreateProductDetails = () => {
     let subtotalCal = 0,
       transportCharges = 0;
@@ -137,7 +117,7 @@ const ProductEstimationDetailsPage = () => {
         {productItem.map((row: ProductItemModel, index: number) => {
           let length = row.length.toString().split(".");
           let width = row.width.toString().split(".");
-          const destinationSqFt = CalculateSqfeetInternal(
+          const destinationSqFt = CalculateSqfeet(
             parseInt(length[0]),
             parseInt(length[1] === undefined ? "0" : length[1]),
             parseInt(width[0]),
