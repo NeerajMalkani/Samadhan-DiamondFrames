@@ -45,10 +45,10 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import { BrandModel, CategoryModel, DesignTypeModel, MaterialSetupModel, ProductModel, ServiceNameModel } from "../../../models/Model";
+import { CategoryModel, DesignTypeModel, MaterialSetupModel, ProductModel, ServiceNameModel } from "../../../models/Model";
 import { theme } from "../../../theme/AppTheme";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
-import { brandColumns, materialSetupColumns } from "../../../utils/tablecolumns";
+import { materialSetupColumns } from "../../../utils/tablecolumns";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { communication } from "../../../utils/communication";
@@ -1309,7 +1309,7 @@ const MaterialSetup = () => {
                   ) : (
                     <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                       {materialSetupList.length === 0 ? (
-                       <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                        <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                       ) : (
                         <>
                           <Grid item xs={4} sm={8} md={12} sx={{ mt: 1, alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
