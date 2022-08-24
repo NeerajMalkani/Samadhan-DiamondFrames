@@ -448,3 +448,17 @@ export interface YourEstimationModel {
   totalAmount: number;
   width: number;
 }
+
+export interface EmployeeModel {
+  id: number;
+  srno: number;
+  employeeName:string;
+  mobileNo:string;
+  branchName: string;
+  departmentName: string;
+  designationName: string;
+  profileStatus: string;
+  loginStatus: string;
+  verifyStatus: string;
+  action: string;
+}

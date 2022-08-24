@@ -86,4 +86,8 @@ export const communication = {
   BlankAssignBranchAdmin: "Please select Assign Branch Admin",
 
   EstimationSent: "Your estimation request has been sent successfully",
+
+  BlankEmployeeName: "Please enter Employee Name",
+  BlankMobileNo: "Please enter valid Mobile number",
+  BlankAadharNo: "Please enter valid Aadhar number",
 };
