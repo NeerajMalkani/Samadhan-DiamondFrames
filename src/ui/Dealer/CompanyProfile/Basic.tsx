@@ -525,7 +525,6 @@ const Basic = () => {
                         disablePortal
                         fullWidth
                         options={statesFullData}
-                        //sx={{ width: 300 }}
                         onChange={(event: React.SyntheticEvent, value: any) => {
                           setIsStateError(false);
                           setStateError("");

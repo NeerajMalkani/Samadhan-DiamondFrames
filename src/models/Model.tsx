@@ -452,8 +452,8 @@ export interface YourEstimationModel {
 export interface EmployeeModel {
   id: number;
   srno: number;
-  employeeName:string;
-  mobileNo:string;
+  employeeName: string;
+  mobileNo: string;
   branchName: string;
   departmentName: string;
   designationName: string;
@@ -461,4 +461,23 @@ export interface EmployeeModel {
   loginStatus: string;
   verifyStatus: string;
   action: string;
+}
+
+export interface ClientModel {
+  id: number;
+  srno: number;
+  addedByUserID: number;
+  companyName: string;
+  contactPerson: string;
+  contactMobileNumber: string;
+  address1: string;
+  stateID: number;
+  cityID: number;
+  stateName: string;
+  cityName: string;
+  pincode: string;
+  gstNumber: string;
+  pan: string;
+  serviceType: number;
+  display: string;
 }
