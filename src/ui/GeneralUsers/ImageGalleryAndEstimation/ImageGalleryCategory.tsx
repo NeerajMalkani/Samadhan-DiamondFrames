@@ -42,7 +42,7 @@ const ImageGalleryCategoryPage = () => {
   };
 
   const handleCardClick = (data: ImageGalleryEstimation) => {
-    navigate(`/generaluser/imagegallery/product`, { state: { id: data.serviceID, name: data.serviceName } });
+    navigate(`/generaluser/imagegallery/product`, { state: { id: data.serviceID, name: data.serviceName, type: "gallery" } });
   };
 
   useEffect(() => {

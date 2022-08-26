@@ -16,6 +16,7 @@ const ImageGalleryProductDetailsPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [selectedData, setSelectedData] = useState<any>();
+  const [type, setType] = useState("");
   const location = useLocation();
   let navigate = useNavigate();
 
@@ -143,9 +144,13 @@ const ImageGalleryProductDetailsPage = () => {
         if (response.data && response.data.code === 200) {
           if (fromCount === 2) {
             if (from === "add") {
-              navigate(`/generaluser/imagegallery/category`);
+              if (selectedData.type === "gallery") {
+                navigate(`/generaluser/imagegallery/category`);
+              } else {
+                navigate(`/dashboard`);
+              }
             } else {
-              navigate(`/generaluser/imagegallery/productestimationdetails`, { state: { userDesignEstimationID: response.data.data[0].userDesignEstimationID } });
+              navigate(`/generaluser/imagegallery/productestimationdetails`, { state: { userDesignEstimationID: response.data.data[0].userDesignEstimationID, type: selectedData.type } });
               //   navigation.navigate("GetEstimationScreen", { userDesignEstimationID: response.data.data[0].userDesignEstimationID });
             }
           } else {
@@ -175,7 +180,7 @@ const ImageGalleryProductDetailsPage = () => {
               size="large"
               sx={{ marginTop: "-8px" }}
               onClick={() => {
-                navigate(`/generaluser/imagegallery/product`, { state: { id: selectedData.serviceID, name: selectedData.serviceName } });
+                navigate(`/generaluser/imagegallery/product`, { state: { id: selectedData.serviceID, name: selectedData.serviceName, type: selectedData.type } });
               }}
             >
               <ArrowBack fontSize="small" />

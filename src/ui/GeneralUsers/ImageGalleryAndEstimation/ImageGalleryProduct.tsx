@@ -17,6 +17,7 @@ import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
 const ImageGalleryProductPage = (route) => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [serviceName, setServiceName] = useState("");
+  const [type, setType] = useState("");
 
   const location = useLocation();
 
@@ -27,6 +28,7 @@ const ImageGalleryProductPage = (route) => {
       navigate(`/login`);
     } else {
       setServiceName(retrunValueFromLocation(location, "name"));
+      setType(retrunValueFromLocation(location, "type"));
       FetchImageGalleryData(parseInt(retrunValueFromLocation(location, "id")));
     }
   }, []);
@@ -58,6 +60,7 @@ const ImageGalleryProductPage = (route) => {
         title: "Go to Estimation",
         type: "text",
         callBack: (data: ImageGalleryEstimation) => {
+          data["type"]=type;
           navigate(`/generaluser/imagegallery/productdetails`, { state: data });
         },
       },

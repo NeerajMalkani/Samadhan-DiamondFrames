@@ -23,19 +23,17 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import "../theme/Styles.css";
-import { CreateGeneralCards, CreateTotalUserCards } from "../components/Cards";
+import { CreateTotalUserCards } from "../components/Cards";
 import { useCookies } from "react-cookie";
 import Provider from "../api/Provider";
-import { RoleDetails } from "../models/Model";
+import { ButtonSettings, ImageGalleryEstimation, RoleDetails } from "../models/Model";
 import { LoadingButton } from "@mui/lab";
 import { communication } from "../utils/communication";
 import SimpleImageSlider from "react-simple-image-slider";
-import TitlebarBelowImageList from "../components/ImageGallery";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
-import Icon from "@mui/material/Icon";
 import PrismaZoom from "react-prismazoom";
-import { theme } from "../theme/AppTheme";
+import ShowsGrid from "../components/GridStructure";
 
 function useWindowSize(callback: Function) {
   useLayoutEffect(() => {
@@ -75,16 +73,21 @@ const DashboardPage = () => {
   const [imageOpen, setImageOpen] = useState(false);
 
   const [catalogueFullData, setCatalogueFullData] = useState([]);
-  const [catalogueCategoryImages, setCatalogueCategoryImages] = useState([]);
+  const [catalogueCategoryImages, setCatalogueCategoryImages] = useState<Array<ImageGalleryEstimation>>([]);
   const [catalogueImages, setCatalogueImages] = useState([]);
 
   const [galleryWidth, setGalleryWidth] = useState(896);
   const [galleryHeight, setGalleryHeight] = useState(504);
+  const [arnID, setArnID] = useState<number>(0);
+  // const arrQuickLinks = [
+  //   { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
+  //   { title: "Feedbacks", icon: "AnnouncementIcon", backgroundColor: "" },
+  // ];
 
-  const arrQuickLinks = [
-    { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
-    { title: "Feedbacks", icon: "AnnouncementIcon", backgroundColor: "" },
-  ];
+  const buttonSetting: ButtonSettings = {
+    isActionButton: false,
+    actionButtons: [],
+  };
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
@@ -108,7 +111,23 @@ const DashboardPage = () => {
 
   useEffect(() => {
     GetServiceCatalogue();
+    FetchActvityRoles();
   }, []);
+
+  const FetchActvityRoles = () => {
+    Provider.getAll("master/getmainactivities")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = response.data.data.filter((el: any) => {
+              return el.display && el.activityRoleName === "Contractor";
+            });
+            setArnID(response.data.data[0].id);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
 
   const GetUserCount = () => {
     Provider.getAll("registration/getusers")
@@ -135,19 +154,19 @@ const DashboardPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setCatalogueFullData(response.data.data);
-            const categoryImageData = [];
+            //const categoryImageData = [];
             const sliderImageData = [];
             response.data.data.map((data, index: number) => {
-              categoryImageData.push({
-                url: data.designImage,
-                title: data.categoryName,
-                id: index,
-              });
+              // categoryImageData.push({
+              //   url: data.designImage,
+              //   title: data.categoryName,
+              //   id: index,
+              // });
               sliderImageData.push({
                 url: data.designImage,
               });
             });
-            setCatalogueCategoryImages(categoryImageData);
+            setCatalogueCategoryImages(response.data.data);
             setCatalogueImages(sliderImageData);
           }
         } else {
@@ -232,14 +251,18 @@ const DashboardPage = () => {
     }
     setIsSnackbarOpen(false);
   };
-  const captionStyle = {
-    fontSize: "2em",
-    fontWeight: "bold",
+  const handleCardClick = (data: ImageGalleryEstimation) => {
+    navigate(`/generaluser/imagegallery/product`, { state: { id: data.serviceID, name: data.serviceName, type: "dashboard" } });
   };
-  const slideNumberStyle = {
-    fontSize: "16px",
-    fontWeight: "bold",
-  };
+
+  // const captionStyle = {
+  //   fontSize: "2em",
+  //   fontWeight: "bold",
+  // };
+  // const slideNumberStyle = {
+  //   fontSize: "16px",
+  //   fontWeight: "bold",
+  // };
   return (
     <Box sx={{ mt: 7 }}>
       <Header />
@@ -303,12 +326,13 @@ const DashboardPage = () => {
                 <Typography variant="h5">Gallery</Typography>
               </Grid>
               <Grid xs={4} sm={8} md={12} sx={{ mt: 1 }} style={{ display: "flex", justifyContent: "center" }}>
-                <TitlebarBelowImageList
+                {/* <TitlebarBelowImageList
                   itemData={catalogueCategoryImages}
                   callback={(index: number) => {
                     console.log(index);
                   }}
-                />
+                /> */}
+                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={CookieRoleID === arnID ? handleCardClick : () => {}} type="category" />
               </Grid>
             </Grid>
             <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>
