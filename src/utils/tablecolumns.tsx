@@ -1337,3 +1337,138 @@ export const yourEstimationColumns: GridColDef[] = [
     ),
   },
 ];
+
+export const clientColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "ServiceProviderRole",
+    headerName: "Service Provider Role",
+    flex: 1.8,
+    maxWidth: 180,
+    renderCell: (e) => {
+      let arrService = [];
+      switch (e.row.serviceType) {
+        case 1:
+          arrService.push("Vendor");
+          break;
+        case 2:
+          arrService.push("Supplier");
+          break;
+        case 3:
+          arrService.push("Client");
+          break;
+        case 12:
+          arrService.push("Vendor");
+          arrService.push("Supplier");
+          break;
+        case 13:
+          arrService.push("Vendor");
+          arrService.push("Client");
+          break;
+        case 23:
+          arrService.push("Supplier");
+          arrService.push("Vendor");
+          break;
+        case 123:
+          arrService.push("Vendor");
+          arrService.push("Supplier");
+          arrService.push("Client");
+          break;
+      }
+
+      return (
+        <Grid>
+          {arrService.map((item) => {
+            return <Typography>{item}</Typography>;
+          })}
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "companyName",
+    headerName: "Company / Firm Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "address1",
+    headerName: "Address",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+    renderCell: (e) => {
+       return (
+        <Grid>
+          <Typography>{e.row.companyName}</Typography>
+          <Typography>{e.row.address1}</Typography>
+          <Typography>{e.row.cityName + " - " + e.row.pincode}</Typography>
+          <Typography>{e.row.stateName}</Typography>
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "gstNumber",
+    headerName: "GST No.",
+    flex: 1.8,
+    minWidth: 160,
+    sortable: false,
+  },
+  {
+    field: "pan",
+    headerName: "PAN No.",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "contactPerson",
+    headerName: "Contact Person",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "contactMobileNumber",
+    headerName: "Phone No.",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 140,
+  },
+  {
+    field: "sds",
+    headerName: "Created/Added",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 140,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];

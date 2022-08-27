@@ -165,7 +165,7 @@ const ProductEstimationDetailsPage = () => {
         </TableRow>
         <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
           <TableCell colSpan={4} sx={{ textAlign: "right" }}>
-            <Button variant="contained">Pay</Button>
+            <Button variant="contained">Add to Cart</Button>
           </TableCell>
         </TableRow>
       </TableBody>

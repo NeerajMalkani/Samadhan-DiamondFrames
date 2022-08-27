@@ -466,18 +466,17 @@ export interface EmployeeModel {
 export interface ClientModel {
   id: number;
   srno: number;
-  addedByUserID: number;
-  companyName: string;
-  contactPerson: string;
-  contactMobileNumber: string;
   address1: string;
-  stateID: number;
   cityID: number;
-  stateName: string;
   cityName: string;
-  pincode: string;
+  companyName: string;
+  contactMobileNumber: string;
+  contactPerson: string;
+  display: string;
   gstNumber: string;
   pan: string;
+  pincode: string;
   serviceType: number;
-  display: string;
+  stateID: number;
+  stateName: string;
 }

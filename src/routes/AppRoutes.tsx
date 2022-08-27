@@ -41,6 +41,7 @@ import ImageGalleryProductPage from "../ui/GeneralUsers/ImageGalleryAndEstimatio
 import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductDetails";
 import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductEstimationDetails";
 import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
+import ContractorClientPage from "../ui/Contractor/Client/CClient";
 
 import AddBranch from "../ui/Contractor/Organization/AddBranch";
 import EmployeeEdit from "../ui/Contractor/Employee/EmployeeEdit";
@@ -93,6 +94,7 @@ const AppRoutes = () => {
               <Route path="contractor/employee/employeeedit" element={<EmployeeEdit />} />
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
+              <Route path="contractor/clientlist" element={<ContractorClientPage />}/>
             </Routes>
           </BrowserRouter>
         </Box>

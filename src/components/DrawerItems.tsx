@@ -657,7 +657,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/clientlist`);
+              navigate(`/contractor/clientlist`);
             }, 300);
           },
         },

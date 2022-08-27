@@ -9,8 +9,11 @@ import NoData from "../../../components/NoData";
 import { theme } from "../../../theme/AppTheme";
 import { restrictNumericMobile } from "../../../utils/validations";
 import ListIcon from "@mui/icons-material/List";
-import { ActivityRoleNameModel, ClientModel } from "../../../models/Model";
-import { activityColumns } from "../../../utils/tablecolumns";
+import Provider from "../../../api/Provider";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { communication } from "../../../utils/communication";
+import { ClientModel } from "../../../models/Model";
+import { clientColumns } from "../../../utils/tablecolumns";
 
 const ContractorClientPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -24,19 +27,75 @@ const ContractorClientPage = () => {
   const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
   const [pageSize, setPageSize] = useState<number>(5);
   const [loading, setLoading] = useState(true);
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);
-  const [activityNamesListTemp, setActivityNamesListTemp] = useState<Array<any>>([]);
+  const [clientList, setClientList] = useState<Array<ClientModel>>([]);
+  const [clientListTemp, setClientListTemp] = useState<Array<ClientModel>>([]);
+  const dataType = useState("add");
+  const cardDisplay = useState("none");
   let navigate = useNavigate();
 
-  let aaa: ClientModel = null;
+  let selectedData = useState<ClientModel>();
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
     } else {
       SetCookieUseID(cookies.dfc.UserID);
+      FetchData(cookies.dfc.UserID, "");
     }
   }, []);
+
+  const FetchData = (userID: number, type: string) => {
+    let params = {
+      AddedByUserID: userID,
+    };
+    Provider.getAll(`contractorquotationestimation/getclients?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            const lisData = [...response.data.data];
+            lisData.map(function (a: any, index: number) {
+              a.display = a.display ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+            setClientList(lisData);
+            setClientListTemp(lisData);
+            if (type !== "") {
+              setSnackMsg("Client " + type);
+              setSnackbarType("success");
+              setOpen(true);
+            }
+          }
+        } else {
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setSnackMsg(e.message);
+        setSnackbarType("error");
+        setOpen(false);
+        setLoading(false);
+      });
+  };
+
+  const onChangeSearch = () => {
+    if (searchName === "" && searchMobile === "") {
+      setClientListTemp(clientList);
+    } else {
+      setClientListTemp(
+        clientList.filter((el: ClientModel) => {
+          if (searchMobile === "" && searchName !== "") return el.companyName.toString().toLowerCase().includes(searchName.toLowerCase());
+          else if (searchMobile !== "" && searchName === "") return el.contactMobileNumber.toString().toLowerCase().includes(searchMobile.toLowerCase());
+          else {
+            return el.companyName.toString().toLowerCase().includes(searchName.toLowerCase()) || el.contactMobileNumber.toString().toLowerCase().includes(searchMobile.toLowerCase());
+          }
+        })
+      );
+    }
+  };
 
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
@@ -99,12 +158,56 @@ const ContractorClientPage = () => {
           </Grid>
 
           <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
-            <Button variant="contained">Search</Button>
-            <Typography>OR</Typography>
-            <Button variant="contained">Create Client</Button>
+            <div style={{ marginTop: "30px", float: "left" }}>
+              <div style={{ float: "left" }}>
+                <Button variant="contained" onClick={onChangeSearch}>
+                  Search
+                </Button>
+              </div>
+              <div style={{ float: "left", marginLeft: "16px", marginTop: "8px" }}>
+                <Typography>OR</Typography>
+              </div>
+              <div style={{ float: "left", marginLeft: "16px" }}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    cardDisplay[1]("block");
+                  }}
+                >
+                  Create Client
+                </Button>
+              </div>
+            </div>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
-            <CreateClient client={aaa} saveCallBack={() => {}} cancelCallBack={() => {}} type={"add"} />
+            <CreateClient
+              client={selectedData[0]}
+              saveCallBack={(data, actionType) => {
+                try {
+                  if (data.data && data.data.code === 200) {
+                    FetchData(CookieUserID, actionType);
+                    cardDisplay[1]("none");
+                  } else if (data.data.code === 304) {
+                    setSnackMsg(communication.ExistsError);
+                    setOpen(true);
+                    setSnackbarType("error");
+                  } else {
+                    setSnackMsg(communication.Error);
+                    setOpen(true);
+                    setSnackbarType("error");
+                  }
+                } catch (e) {
+                  setSnackMsg(communication.Error);
+                  setOpen(true);
+                  setSnackbarType("error");
+                }
+              }}
+              cancelCallBack={() => {
+                cardDisplay[1]("none");
+              }}
+              type={dataType[0]}
+              cardDisplay={cardDisplay[0]}
+            />
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
@@ -113,7 +216,7 @@ const ContractorClientPage = () => {
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {activityNamesList.length === 0 ? (
+                {clientList.length === 0 ? (
                   <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
@@ -123,15 +226,21 @@ const ContractorClientPage = () => {
                         pointerEvents: dataGridPointer,
                       }}
                       autoHeight={true}
-                      rows={activityNamesListTemp}
-                      columns={activityColumns}
+                      getRowHeight={() => "auto"}
+                      rows={clientListTemp}
+                      columns={clientColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        // const arrActivity = [...activityNamesList];
-                        // let a: ActivityRoleNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        const arrActivity = [...clientList];
+                        debugger;
+                        cardDisplay[1]("block");
+                        dataType[1]("edit");
+                        let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+
+                        selectedData[1](a);
                         // handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{

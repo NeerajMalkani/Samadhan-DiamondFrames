@@ -1,11 +1,14 @@
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import Cookies from "universal-cookie";
 import Provider from "../api/Provider";
 import { ClientModel } from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import { GetStringifyJson } from "../utils/CommonFunctions";
 import { communication } from "../utils/communication";
+import { retrunSumID } from "../utils/JSCommonFunction";
 import { restrictNumericMobile, ValidateGSTNumber, ValidatePanNumber } from "../utils/validations";
 
 interface props {
@@ -13,9 +16,13 @@ interface props {
   cancelCallBack: Function;
   saveCallBack: Function;
   type: string;
+  cardDisplay: string;
 }
 
-const CreateClient = ({ client, cancelCallBack, saveCallBack, type }: props) => {
+const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay }: props) => {
+  const [CookieUserID, SetCookieUseID] = useState(0);
+  const [cookies, setCookie] = useCookies(["dfc"]);
+  const id = useState(0);
   const name = useState("");
   const isNameError = useState(false);
   const nameError = useState("");
@@ -60,18 +67,26 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type }: props) => 
   const sprError = useState("");
 
   const [display, setDisplay] = useState("Yes");
-  const [buttonDisplay, setButtonDisplay] = useState<string>("none");
+  // const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [buttonLoading, setButtonLoading] = useState(false);
 
+  const serviceType = useState([
+    { key: "Vendor", isSelected: false, id: 1 },
+    { key: "Supplier", isSelected: false, id: 2 },
+    { key: "Client", isSelected: false, id: 3 },
+  ]);
+
   useEffect(() => {
+    SetCookieUseID(cookies.dfc.UserID);
     if (type === "edit") {
       PrefillData(client);
     } else {
       FetchStates();
     }
-  }, []);
+  }, [type]);
 
   const PrefillData = (data: ClientModel) => {
+    id[1](data.id);
     isNameError[1](false);
     nameError[1]("");
     name[1](data.companyName);
@@ -109,6 +124,38 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type }: props) => 
     gst[1](data.gstNumber);
     isGSTError[1](false);
     gstError[1]("");
+
+    let arrService = [...serviceType[0]];
+    switch (data.serviceType) {
+      case 1:
+        arrService[0].isSelected = true;
+        break;
+      case 2:
+        arrService[1].isSelected = true;
+        break;
+      case 3:
+        arrService[2].isSelected = true;
+        break;
+      case 12:
+        arrService[0].isSelected = true;
+        arrService[1].isSelected = true;
+        break;
+      case 13:
+        arrService[0].isSelected = true;
+        arrService[2].isSelected = true;
+        break;
+      case 23:
+        arrService[2].isSelected = true;
+        arrService[1].isSelected = true;
+        break;
+      case 123:
+        arrService[0].isSelected = true;
+        arrService[1].isSelected = true;
+        arrService[2].isSelected = true;
+        break;
+    }
+
+    serviceType[1](arrService);
   };
 
   const FetchStates = () => {
@@ -196,6 +243,16 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type }: props) => 
     gst[1]("");
     isGSTError[1](false);
     gstError[1]("");
+
+    isSPRError[1](false);
+    sprError[1]("");
+    serviceType[1]([
+      { key: "Vendor", isSelected: false, id: 1 },
+      { key: "Supplier", isSelected: false, id: 2 },
+      { key: "Client", isSelected: false, id: 3 },
+    ]);
+
+    cancelCallBack();
   };
 
   const handleSubmitClick = () => {
@@ -237,26 +294,89 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type }: props) => 
       pcError[1]("Please enter Pincode");
     }
 
-    if (!ValidatePanNumber(pan[0])) {
+    if (pan[0].trim() !== "" && !ValidatePanNumber(pan[0])) {
       isValid = false;
       isPANError[1](true);
       panError[1]("Please enter valid PAN No.");
     }
 
-    if (!ValidateGSTNumber(gst[0])) {
+    if (gst[0].trim() !== "" && !ValidateGSTNumber(gst[0])) {
       isValid = false;
       isGSTError[1](true);
       gstError[1]("Please enter valid GST No.");
     }
 
+    let blankData = serviceType[0].filter((el) => el.isSelected);
+    if (blankData.length === 0) {
+      isValid = false;
+      isSPRError[1](true);
+      sprError[1]("Please select Service Provider Role");
+    }
+
     if (isValid) {
+      setButtonLoading(true);
+      InsertUpdateData(retrunSumID(blankData));
+    }
+  };
+
+  const InsertUpdateData = (serviceType: number) => {
+    if (type === "add") {
+      Provider.create("contractorquotationestimation/insertclient", {
+        AddedByUserID: CookieUserID,
+        CompanyName: name[0],
+        ContactPerson: contactName[0],
+        ContactMobileNumber: cmn[0],
+        Address1: address[0],
+        StateID: selectedStateID,
+        CityID: selectedCityID,
+        Pincode: pc[0],
+        GSTNumber: gst[0],
+        PAN: pan[0],
+        ServiceType: serviceType,
+        Display: display === "Yes",
+      })
+        .then((response) => {
+          saveCallBack(response, "added");
+          setButtonLoading(false);
+        })
+        .catch((e) => {
+          saveCallBack(e);
+          setButtonLoading(false);
+        });
+    } else if (type === "edit") {
+      Provider.create("contractorquotationestimation/updateclient", {
+        ID: id[0],
+        AddedByUserID: CookieUserID,
+        CompanyName: name[0],
+        ContactPerson: contactName[0],
+        ContactMobileNumber: cmn[0],
+        Address1: address[0],
+        StateID: selectedStateID,
+        CityID: selectedCityID,
+        Pincode: pc[0],
+        GSTNumber: gst[0],
+        PAN: pan[0],
+        ServiceType: serviceType,
+        Display: display === "Yes",
+      })
+        .then((response) => {
+          saveCallBack(response, "updated");
+          setButtonLoading(false);
+        })
+        .catch((e) => {
+          saveCallBack(e);
+          setButtonLoading(false);
+        });
     }
   };
 
   return (
-    <Box sx={{ mt: 1 }}>
-      <Paper>
+    <Box sx={{ mt: 1, display: cardDisplay }}>
+      <Paper sx={{ padding: 2 }}>
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ mt: 1, borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">Client (Add New / Edit)</Typography>
+          </Grid>
           <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Name / Company Name</b>
@@ -462,9 +582,35 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type }: props) => 
             <FormControl component="fieldset" error={isSPRError[0]}>
               <FormLabel component="legend">Service Provider Role</FormLabel>
               <FormGroup aria-label="position" row>
-                <FormControlLabel value="Vendor" control={<Checkbox />} label="Vendor" labelPlacement="end" />
+                {serviceType[0].map((data, index) => {
+                  return (
+                    <FormControlLabel
+                      value={data.id}
+                      control={
+                        <Checkbox
+                          checked={data.isSelected}
+                          tabIndex={-1}
+                          onClick={() => {
+                            isSPRError[1](false);
+                            sprError[1]("");
+                            const newChecked = [...serviceType[0]];
+                            newChecked.find((item, i) => {
+                              if (item.id === data.id) {
+                                item.isSelected = !item.isSelected;
+                              }
+                            });
+                            serviceType[1](newChecked);
+                          }}
+                        />
+                      }
+                      label={data.key}
+                      labelPlacement="end"
+                    />
+                  );
+                })}
+                {/* <FormControlLabel value="Vendor" control={<Checkbox />} label="Vendor" labelPlacement="end" />
                 <FormControlLabel value="Supplier" control={<Checkbox />} label="Supplier" labelPlacement="end" />
-                <FormControlLabel value="Client" control={<Checkbox />} label="Client" labelPlacement="end" />
+                <FormControlLabel value="Client" control={<Checkbox />} label="Client" labelPlacement="end" /> */}
               </FormGroup>
               <FormHelperText>{sprError[0]}</FormHelperText>
             </FormControl>
@@ -483,7 +629,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type }: props) => 
           </Grid>
 
           <Grid item xs={4} sm={8} md={12}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleCancelClick}>
               Cancel
             </Button>
             <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
