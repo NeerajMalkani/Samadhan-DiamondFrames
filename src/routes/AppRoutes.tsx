@@ -91,6 +91,8 @@ const AppRoutes = () => {
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
               <Route path="contractor/employee/employeeedit" element={<EmployeeEdit />} />
+              <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
+              <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
             </Routes>
           </BrowserRouter>
         </Box>

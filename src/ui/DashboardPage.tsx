@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertColor,
   Avatar,
   Box,
   Button,
@@ -78,7 +79,8 @@ const DashboardPage = () => {
 
   const [galleryWidth, setGalleryWidth] = useState(896);
   const [galleryHeight, setGalleryHeight] = useState(504);
-  const [arnID, setArnID] = useState<number>(0);
+  const [arnID, setArnID] = useState<number>(2);
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   // const arrQuickLinks = [
   //   { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
   //   { title: "Feedbacks", icon: "AnnouncementIcon", backgroundColor: "" },
@@ -112,6 +114,7 @@ const DashboardPage = () => {
   useEffect(() => {
     GetServiceCatalogue();
     FetchActvityRoles();
+    FetchImageGalleryData();
   }, []);
 
   const FetchActvityRoles = () => {
@@ -120,13 +123,34 @@ const DashboardPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "Contractor";
+              return el.display && el.activityRoleName === "General User";
             });
             setArnID(response.data.data[0].id);
           }
         }
       })
       .catch((e) => {});
+  };
+
+  const FetchImageGalleryData = () => {
+    Provider.getAll("generaluserenquiryestimations/getimagegallery")
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setCatalogueCategoryImages(response.data.data);
+          }
+        } else {
+          setCatalogueCategoryImages([]);
+          setSnackbarMessage(communication.NoData);
+          setSnackbarType("info");
+          setIsSnackbarOpen(true);
+        }
+      })
+      .catch((e) => {
+        setSnackbarMessage(communication.NetworkError);
+        setSnackbarType("error");
+        setIsSnackbarOpen(true);
+      });
   };
 
   const GetUserCount = () => {
@@ -166,7 +190,7 @@ const DashboardPage = () => {
                 url: data.designImage,
               });
             });
-            setCatalogueCategoryImages(response.data.data);
+            // setCatalogueCategoryImages(response.data.data);
             setCatalogueImages(sliderImageData);
           }
         } else {
@@ -422,7 +446,7 @@ const DashboardPage = () => {
         </Dialog>
       </div>
       <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert severity="error" sx={{ width: "100%" }}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
