@@ -50,7 +50,7 @@ import {
   import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
   import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
   import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
- 
+  import { BloodGroup } from "../../../utils/JSCommonFunction";
 
   
   interface TabPanelProps {
@@ -102,6 +102,7 @@ import {
         setDOJ(new Date());
         setCardValidity(new Date());
         setLastWorkingDate(new Date());
+        setBloodGroupList(BloodGroup);
       }
     }, []);
   
@@ -674,10 +675,10 @@ import {
     const handleBNChange = (event: SelectChangeEvent) => {
       debugger;
       let bloodGroup: string = event.target.value;
-      let ac = bloodGroupList.find((el) => el.bloodGroup === bloodGroup);
+      let ac = bloodGroupList.find((el) => el.Name === bloodGroup);
       if (ac !== undefined) {
         setBloodGroup(bloodgroup);
-        setBloodGroupID(ac?.id);
+        setBloodGroupID(ac?.ID);
         setIsBloodGroupError(false);
         setBloodGroupError("");
       }
@@ -958,8 +959,8 @@ import {
                       </MenuItem>
                       {bloodGroupList.map((item, index) => {
                         return (
-                          <MenuItem key={index} value={item.bloodGroup}>
-                            {item.bloodGroup}
+                          <MenuItem key={index} value={item.Name}>
+                            {item.Name}
                           </MenuItem>
                         );
                       })}

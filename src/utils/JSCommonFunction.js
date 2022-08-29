@@ -14,13 +14,37 @@ export const retrunSumID = (blankData) => {
   return blankData.map((bill) => bill.id).reduce((acc, amount) => acc.toString() + amount.toString());
 };
 
-const BloodGroup = {
-  "A+": 1,
-  "O+": 2,
-  "B+": 3,
-  "AB+":4,
-  "A-": 5,
-  "O-": 6,
-  "B-": 7,
-  "AB-":8
-};
+export const BloodGroup = [
+  {
+    ID:1,
+    Name:"A+"
+  },
+  {
+    ID:2,
+    Name:"O+"
+  },
+  {
+    ID:3,
+    Name:"B+"
+  },
+  {
+    ID:4,
+    Name:"AB+"
+  },
+  {
+    ID:5,
+    Name:"A-"
+  },
+  {
+    ID:6,
+    Name:"O-"
+  },
+  {
+    ID:7,
+    Name:"B-"
+  },
+  {
+    ID:8,
+    Name:"AB-"
+  },
+]

@@ -303,10 +303,8 @@ export interface CityModel {
 }
 
 export interface BloodGroupModel {
-  id: number;
-  bloodGroup: string;
-  bloodGroupID: number;
-  isActive: string;
+  ID: number;
+  Name: string;
 }
 
 export interface DOBModel {
