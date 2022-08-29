@@ -77,13 +77,13 @@ import { ForkRight } from "@mui/icons-material";
   const [branchType, setBranchType] = useState("--Select--");
   const [branchTypeID, setBranchTypeID] = useState<number>(0);
   const [branchTypeError, setBranchTypeError] = useState("");
-  const [isbranchTypeError, isSetBranchTypeError] = useState(false);
+  const [isbranchTypeError, SetIsBranchTypeError] = useState(false);
   const [branchTypeList, setBranchTypeList] = useState<Array<BranchTypeModel>>([]);
 
   const [assignBranchAdmin, setAssignBranchAdmin] = useState("--Select--");
   const [assignBranchAdminID, setAssignBranchAdminID] = useState<number>(0);
   const [assignBranchAdminError, setAssignBranchAdminError] = useState("");
-  const [isAssignBranchAdminError, isSetAssignBranchAdminError] = useState(false);
+  const [isAssignBranchAdminError, SetIsAssignBranchAdminError] = useState(false);
   const [assignBranchAdminList, setAssignBranchAdminList] = useState<Array<BranchTypeModel>>([]);
 
   const [companyName, setCompanyName] = useState("");
@@ -147,6 +147,8 @@ import { ForkRight } from "@mui/icons-material";
     FetchStates();
     //FetchCity();
     FetchData();
+    FetchBranchType();
+    FetchCompanyName();
   }, []);
   
     
@@ -178,9 +180,11 @@ import { ForkRight } from "@mui/icons-material";
           .catch((e) => {});
       };
     
-      const BranchType =() =>{
-        Provider.getAll("")
+      const FetchBranchType =() =>{
+        debugger;
+        Provider.getAll("master/getuserbranchtypes")
         .then((response:any)=> {
+          debugger;
           if(response.data && response.data.code === 200){
             if (response.data.data){
               setBranchTypeList(response.data.data);
@@ -190,8 +194,8 @@ import { ForkRight } from "@mui/icons-material";
         .catch((e)=>{});
       };
 
-      const CompanyName =() =>{
-        Provider.getAll("")
+      const FetchCompanyName =() =>{
+        Provider.getAll("master/getusercompany")
         .then((response:any)=>{
           if(response.data && response.data.code === 200){
             if(response.data.data){
@@ -204,6 +208,7 @@ import { ForkRight } from "@mui/icons-material";
 
       const AssignBranchAdmin=() =>{
         Provider.getAll("")
+
         .then((response:any)=>{
           if(response.data && response.data.code === 200){
             if(response.data.data){
@@ -438,6 +443,18 @@ import { ForkRight } from "@mui/icons-material";
         }
       };
 
+      const handleBTChange = (event: SelectChangeEvent) => {
+        debugger;
+        let branchType: string = event.target.value;
+        let ac = branchTypeList.find((el) => el.branchType === branchType);
+        if (ac !== undefined) {
+          setBranchType(branchType);
+          setBranchTypeID(ac?.id);
+          SetIsBranchTypeError(false);
+          setBranchTypeError("");
+        }
+      };
+
       const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDisplay((event.target as HTMLInputElement).value);
       };
@@ -476,7 +493,7 @@ import { ForkRight } from "@mui/icons-material";
       //       setBranchList(a?.BranchModel);
       //       setSelectedID(a.id);
       //       setBranchError("");
-      //       isSetBranchError(false);
+      //       SetIsBranchError(false);
       //       setButtonDisplay("unset");
       //       setActionStatus("edit");
       //     }
@@ -551,7 +568,7 @@ return(
           </Grid>
           <Grid item sm={2}>
             <FormControl fullWidth size="small" error={isbranchTypeError}>
-              <Select value={branchType} onChange={handleCNChange}>
+              <Select value={branchType} onChange={handleBTChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>

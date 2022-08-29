@@ -42,9 +42,10 @@ import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEs
 import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductEstimationDetails";
 import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
 import ContractorClientPage from "../ui/Contractor/Client/CClient";
-
 import AddBranch from "../ui/Contractor/Organization/AddBranch";
 import EmployeeEdit from "../ui/Contractor/Employee/EmployeeEdit";
+import EmployeeListPage from "../ui/Contractor/Employee/EmployeeList";
+// import EmpEditNew from "../ui/Contractor/Employee/EmpEditNew";
 
 const AppRoutes = () => {
   return (
@@ -95,6 +96,10 @@ const AppRoutes = () => {
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
               <Route path="contractor/clientlist" element={<ContractorClientPage />}/>
+              <Route path="contractor/employee/employeelist" element={<EmployeeList />} />
+               {/* <Route path="contractor/employee/empeditnew" element={<EmpEditNew />} />  */}
+              {/* <Route path="contractor/employee/abc" element={<Abc />} /> */}
+             
             </Routes>
           </BrowserRouter>
         </Box>

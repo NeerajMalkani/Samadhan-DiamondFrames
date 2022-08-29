@@ -6,6 +6,11 @@ export interface ActivityRoleNameModel {
   action: string;
 }
 
+export interface ReportNameModel {
+  id: number;
+  reportName: string;
+}
+
 export interface CategoryModel {
   id: number;
   srno: number;
@@ -318,10 +323,16 @@ export interface DOJModel {
   isActive: string;
 }
 
+export interface IdCardModel {
+  id: number;
+  idCard: string;
+  idCardID: number;
+  isActive: string;
+}
 export interface BranchModel {
   id: number;
-  branchName: string;
-  branchID: number;
+  locationName: string;
+  //branchID: number;
   isActive: string;
 }
 
