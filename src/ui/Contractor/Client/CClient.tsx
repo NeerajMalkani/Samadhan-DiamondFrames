@@ -235,7 +235,6 @@ const ContractorClientPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...clientList];
-                        debugger;
                         cardDisplay[1]("block");
                         dataType[1]("edit");
                         let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);

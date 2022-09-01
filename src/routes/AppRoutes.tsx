@@ -42,10 +42,10 @@ import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEs
 import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductEstimationDetails";
 import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
 import ContractorClientPage from "../ui/Contractor/Client/CClient";
+import EmployeeListPage from "../ui/Contractor/Employee/EmployeeList";
 import AddBranch from "../ui/Contractor/Organization/AddBranch";
 import EmployeeEdit from "../ui/Contractor/Employee/EmployeeEdit";
-import EmployeeListPage from "../ui/Contractor/Employee/EmployeeList";
-// import EmpEditNew from "../ui/Contractor/Employee/EmpEditNew";
+import DesignWisePage from "../ui/Contractor/QuotationAndEstimation/DesignWise/DesignWise";
 
 const AppRoutes = () => {
   return (
@@ -82,24 +82,22 @@ const AppRoutes = () => {
               <Route path="dealer/buyercategory" element={<BuyerCategory />} />
               <Route path="dealer/basicdetails" element={<Basic />} />
               <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
-              <Route path="contractor/companyprofile/cbasic" element={<CBasic/>}/>
-              <Route path="contractor/companyprofile/cmyservice" element={<CMyService/>}/>
-              <Route path="contractor/organization/adddepartment" element={<AddDepartment/>}/>
-              <Route path="contractor/organization/adddesignation" element={<AddDesignation/>}/>
-              <Route path="contractor/organization/addbranch" element={<AddBranch/>}/>
-              <Route path="dealer/organization/addepartment" element={<AddDDepartment/>}/>
-              <Route path="dealer/organization/addesignation" element={<AddDDesignation/>}/>
+              <Route path="contractor/companyprofile/cbasic" element={<CBasic />} />
+              <Route path="contractor/companyprofile/cmyservice" element={<CMyService />} />
+              <Route path="contractor/organization/adddepartment" element={<AddDepartment />} />
+              <Route path="contractor/organization/adddesignation" element={<AddDesignation />} />
+              <Route path="contractor/organization/addbranch" element={<AddBranch />} />
+              <Route path="dealer/organization/addepartment" element={<AddDDepartment />} />
+              <Route path="dealer/organization/addesignation" element={<AddDDesignation />} />
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
               <Route path="contractor/employee/employeeedit" element={<EmployeeEdit />} />
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
-              <Route path="contractor/clientlist" element={<ContractorClientPage />}/>
+              <Route path="contractor/clientlist" element={<ContractorClientPage />} />
+              <Route path="contractor/quotationandestimation/designwise" element={<DesignWisePage />} />
               <Route path="contractor/employee/employeelist" element={<EmployeeList />} />
-               {/* <Route path="contractor/employee/empeditnew" element={<EmpEditNew />} />  */}
-              {/* <Route path="contractor/employee/abc" element={<Abc />} /> */}
-             
             </Routes>
           </BrowserRouter>
         </Box>

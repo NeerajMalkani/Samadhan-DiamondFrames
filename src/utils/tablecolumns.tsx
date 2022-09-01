@@ -1,5 +1,6 @@
 import { Button, Grid, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
+import { CalculateSqfeet } from "./CommonFunctions";
 
 export const categoryColumns: GridColDef[] = [
   {
@@ -1232,50 +1233,6 @@ export const employeeColumns: GridColDef[] = [
   },
 ];
 
-export const employeeSearchResult: GridColDef[]=[
-  {
-    field: "srno",
-    headerName: "Sr. No.",
-    flex: 0.8,
-    minWidth: 60,
-    sortable: false,
-  },
-  {
-    field: "employeeName",
-    headerName: "Employee Name / Code",
-    flex: 1.8,
-    minWidth: 140,
-  },
-  {
-    field: "aadharNo",
-    headerName: "Aadhar No",
-    flex: 1.8,
-    minWidth: 140,
-    sortable: false,
-  },
-  {
-    field: "mobileNo",
-    headerName: "Mobile No",
-    flex: 1.8,
-    minWidth: 140,
-    sortable: false,
-  },
-  {
-    field: "action",
-    headerName: "Action",
-    flex: 1,
-    minWidth: 100,
-    sortable: false,
-    renderCell: (e) => (
-      <Grid>
-        <Button variant="text" sx={{ mr: 1 }}>
-          Add to My Employee List 
-        </Button>
-      </Grid>
-    ),
-  },
-];
-
 export const yourEstimationColumns: GridColDef[] = [
   {
     field: "view",
@@ -1449,7 +1406,7 @@ export const clientColumns: GridColDef[] = [
     minWidth: 140,
     sortable: false,
     renderCell: (e) => {
-       return (
+      return (
         <Grid>
           <Typography>{e.row.companyName}</Typography>
           <Typography>{e.row.address1}</Typography>
@@ -1511,6 +1468,433 @@ export const clientColumns: GridColDef[] = [
       <Grid>
         <Button variant="text" sx={{ mr: 1 }}>
           Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const contractorPendingQuotation: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "clientDetails",
+    headerName: "Client Details",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+    renderCell: (e) => {
+      return (
+        <Grid>
+          <Typography>{e.row.fullName}</Typography>
+          <Typography>{e.row.username}</Typography>
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "designTypeImage",
+    headerName: "Design Image",
+    flex: 0.8,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      return <img src={params.value} alt="" style={{ width: "98px", height: "96px" }} />;
+    },
+  },
+  {
+    field: "estimationDetails",
+    headerName: "Estimation & Product Details",
+    flex: 1.8,
+    minWidth: 240,
+    sortable: false,
+    renderCell: (e) => {
+      let length = e.row.length.toString().split(".");
+      let width = e.row.width.toString().split(".");
+      const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
+      return (
+        <Grid sx={{ padding: "4px" }}>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Estimation No.: </span>
+            <b style={{ marginLeft: 8 }}>{"AUG" + e.row.id}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Service:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.serviceName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Category:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.categoryName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Product:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.productName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Design Type:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.designTypeName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Design No.:</span>
+            <b style={{ marginLeft: 8 }}>{"DS-" + e.row.designTypeID}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Total Sq.Ft.:</span>
+            <b style={{ marginLeft: 8 }}>{destinationSqFt.toFixed(4)}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Material Cost:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.subtotalAmount.toFixed(4)}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Labour Cost:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.labourCost.toFixed(4)}</b>
+          </Typography>
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "approvalStatus",
+    headerName: "Status",
+    flex: 1,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      return "Pending";
+    },
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1.5,
+    minWidth: 160,
+    sortable: false,
+    renderCell: (e) => (
+      <>
+        <Grid>
+          <Button variant="text" sx={{ mr: 1 }}>
+            Edit
+          </Button>
+        </Grid>
+        <Grid>
+          <Button variant="text" sx={{ mr: 1 }}>
+            Self Approve
+          </Button>
+        </Grid>
+        <Grid>
+          <Button variant="text" sx={{ mr: 1 }}>
+            Reject
+          </Button>
+        </Grid>
+      </>
+    ),
+  },
+];
+
+export const contractorApprovedQuotation: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "clientDetails",
+    headerName: "Client Details",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+    renderCell: (e) => {
+      return (
+        <Grid>
+          <Typography>{e.row.fullName}</Typography>
+          <Typography>{e.row.username}</Typography>
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "designTypeImage",
+    headerName: "Design Image",
+    flex: 0.8,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      return <img src={params.value} alt="" style={{ width: "98px", height: "96px" }} />;
+    },
+  },
+  {
+    field: "estimationDetails",
+    headerName: "Estimation & Product Details",
+    flex: 1.8,
+    minWidth: 240,
+    sortable: false,
+    renderCell: (e) => {
+      let length = e.row.length.toString().split(".");
+      let width = e.row.width.toString().split(".");
+      const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
+      return (
+        <Grid sx={{ padding: "4px" }}>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Estimation No.: </span>
+            <b style={{ marginLeft: 8 }}>{"AUG" + e.row.id}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Service:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.serviceName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Category:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.categoryName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Product:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.productName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Design Type:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.designTypeName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Design No.:</span>
+            <b style={{ marginLeft: 8 }}>{"DS-" + e.row.designTypeID}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Total Sq.Ft.:</span>
+            <b style={{ marginLeft: 8 }}>{destinationSqFt.toFixed(4)}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Material Cost:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.subtotalAmount.toFixed(4)}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Labour Cost:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.labourCost.toFixed(4)}</b>
+          </Typography>
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "approvalStatus",
+    headerName: "Status",
+    flex: 0.8,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      return "Approved";
+    },
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+    renderCell: (e) => (
+      <>
+        <Grid>
+          <Button variant="text" sx={{ mr: 1 }}>
+            Finally Take Project
+          </Button>
+        </Grid>
+        <Grid>
+          <Button variant="text" sx={{ mr: 1 }}>
+            Edit
+          </Button>
+        </Grid>
+        <Grid>
+          <Button variant="text" sx={{ mr: 1 }}>
+            Reject
+          </Button>
+        </Grid>
+      </>
+    ),
+  },
+];
+
+export const contractorRejectedQuotation: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "clientDetails",
+    headerName: "Client Details",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+    renderCell: (e) => {
+      return (
+        <Grid>
+          <Typography>{e.row.fullName}</Typography>
+          <Typography>{e.row.username}</Typography>
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "designTypeImage",
+    headerName: "Design Image",
+    flex: 0.8,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      return <img src={params.value} alt="" style={{ width: "98px", height: "96px" }} />;
+    },
+  },
+  {
+    field: "estimationDetails",
+    headerName: "Estimation & Product Details",
+    flex: 1.8,
+    minWidth: 240,
+    sortable: false,
+    renderCell: (e) => {
+      let length = e.row.length.toString().split(".");
+      let width = e.row.width.toString().split(".");
+      const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
+      return (
+        <Grid sx={{ padding: "4px" }}>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Estimation No.: </span>
+            <b style={{ marginLeft: 8 }}>{"AUG" + e.row.id}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Service:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.serviceName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Category:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.categoryName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Product:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.productName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Design Type:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.designTypeName}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Design No.:</span>
+            <b style={{ marginLeft: 8 }}>{"DS-" + e.row.designTypeID}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Total Sq.Ft.:</span>
+            <b style={{ marginLeft: 8 }}>{destinationSqFt.toFixed(4)}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Material Cost:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.subtotalAmount.toFixed(4)}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{ mb: "8px" }}>
+            <span>Labour Cost:</span>
+            <b style={{ marginLeft: 8 }}>{e.row.labourCost.toFixed(4)}</b>
+          </Typography>
+        </Grid>
+      );
+    },
+  },
+  {
+    field: "approvalStatus",
+    headerName: "Status",
+    flex: 1,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      return "Rejected";
+    },
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+];
+
+export const searchClientColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.5,
+    sortable: false,
+  },
+  {
+    field: "companyName",
+    headerName: "Name / Company Name",
+    flex: 1,
+  },
+  {
+    field: "contactMobileNumber",
+    headerName: "Mobile No.",
+    flex: 1,
+  },
+
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 2,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Add to My Client List
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const employeeSearchResult: GridColDef[]=[
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "employeeName",
+    headerName: "Employee Name / Code",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "aadharNo",
+    headerName: "Aadhar No",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "mobileNo",
+    headerName: "Mobile No",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Add to My Employee List 
         </Button>
       </Grid>
     ),

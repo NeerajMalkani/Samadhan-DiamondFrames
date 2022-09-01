@@ -6,11 +6,6 @@ export interface ActivityRoleNameModel {
   action: string;
 }
 
-export interface ReportNameModel {
-  id: number;
-  reportName: string;
-}
-
 export interface CategoryModel {
   id: number;
   srno: number;
@@ -321,16 +316,9 @@ export interface DOJModel {
   isActive: string;
 }
 
-export interface IdCardModel {
-  id: number;
-  idCard: string;
-  idCardID: number;
-  isActive: string;
-}
 export interface BranchModel {
   id: number;
   locationName: string;
-  //branchID: number;
   isActive: string;
 }
 
@@ -488,4 +476,37 @@ export interface ClientModel {
   serviceType: number;
   stateID: number;
   stateName: string;
+  addedBy: boolean;
+}
+
+export interface QuotationDataModel {
+  id: number;
+  srno: number;
+  designTypeID: number;
+  fullName: string;
+  username: string;
+  serviceName: string;
+  categoryName: string;
+  designTypeName: string;
+  designTypeImage: string;
+  productName: string;
+  length: number;
+  width: number;
+  subtotalAmount: number;
+  labourCost: number;
+  totalAmount: number;
+  status: boolean;
+  approvalStatus: number;
+}
+
+export interface ReportNameModel {
+  id: number;
+  reportName: string;
+}
+
+export interface IdCardModel {
+  id: number;
+  idCard: string;
+  idCardID: number;
+  isActive: string;
 }

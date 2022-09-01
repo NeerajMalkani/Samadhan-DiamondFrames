@@ -10,9 +10,9 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import HailIcon from "@mui/icons-material/Hail";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
 import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
-import InstallDesktopIcon from '@mui/icons-material/InstallDesktop';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
-import PaidIcon from '@mui/icons-material/Paid';
+import InstallDesktopIcon from "@mui/icons-material/InstallDesktop";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import PaidIcon from "@mui/icons-material/Paid";
 import ShopIcon from "@mui/icons-material/Shop";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../theme/AppTheme";
@@ -293,7 +293,6 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
-        
       ],
     },
     {
@@ -621,7 +620,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
     {
       title: "Rate Card",
-      icon: <PaidIcon/>,
+      icon: <PaidIcon />,
       expanded: true,
       items: [
         {
@@ -652,7 +651,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       expanded: true,
       items: [
         {
-          title: "Client List",
+          title: "Clients",
           isActive: window.location.href.toLowerCase().includes("clientlist"),
           navigation: () => {
             open[1](false);
@@ -664,32 +663,22 @@ const DrawerItems = ({ open }: OpenObj) => {
       ],
     },
     {
-      title: "Quotation & Enquiries",
-      icon: <PointOfSaleIcon/>,
+      title: "Quotation & Estimation",
+      icon: <PointOfSaleIcon />,
       expanded: true,
       items: [
         {
-          title: "App User Enquiry Wise",
-          isActive: window.location.href.toLowerCase().includes("appuserenquirywise"),
+          title: "Design Wise",
+          isActive: window.location.href.toLowerCase().includes("quotationandestimation/designwise"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/appuserenquirywise`);
+              navigate(`/contractor/quotationandestimation/designwise`);
             }, 300);
           },
         },
         {
-          title: "Contractor Design Wise",
-          isActive: window.location.href.toLowerCase().includes("contractordesignwise"),
-          navigation: () => {
-            open[1](false);
-            setTimeout(() => {
-              navigate(`/master/contractordesignwise`);
-            }, 300);
-          },
-        },
-        {
-          title: "Contractor Quotation Wise",
+          title: "Quotation Wise",
           isActive: window.location.href.toLowerCase().includes("contractorquotationwise"),
           navigation: () => {
             open[1](false);
@@ -701,8 +690,35 @@ const DrawerItems = ({ open }: OpenObj) => {
       ],
     },
     {
+      title: "Enquiries",
+      icon: <InstallDesktopIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "App User Enquiry Wise",
+          isActive: window.location.href.toLowerCase().includes("ongoing"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/master/ongoing`);
+            }, 300);
+          },
+        },
+        {
+          title: "Architech & Consultant-Boq",
+          isActive: window.location.href.toLowerCase().includes("completed"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/master/completed`);
+            }, 300);
+          },
+        },
+      ],
+    },
+    {
       title: "Projects",
-      icon: <InstallDesktopIcon/>,
+      icon: <InstallDesktopIcon />,
       expanded: true,
       items: [
         {

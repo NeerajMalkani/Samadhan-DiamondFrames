@@ -15,6 +15,7 @@ import { EstimationCostDetails, ProductItemModel } from "../../../models/Model";
 const ProductEstimationDetailsPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
+  const [type, setType] = useState("");
   const location = useLocation();
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const ProductEstimationDetailsPage = () => {
   useEffect(() => {
     setSelectedID(parseInt(retrunValueFromLocation(location, "userDesignEstimationID")));
     FetchEstimationData(parseInt(retrunValueFromLocation(location, "userDesignEstimationID")));
+    setType(retrunValueFromLocation(location, "type"));
   }, []);
 
   const FetchEstimationData = (id: number) => {
@@ -117,12 +119,7 @@ const ProductEstimationDetailsPage = () => {
         {productItem.map((row: ProductItemModel, index: number) => {
           let length = row.length.toString().split(".");
           let width = row.width.toString().split(".");
-          const destinationSqFt = CalculateSqfeet(
-            parseInt(length[0]),
-            parseInt(length[1] === undefined ? "0" : length[1]),
-            parseInt(width[0]),
-            parseInt(width[1] === undefined ? "0" : width[1])
-          );
+          const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
 
           const newRate = (totalSqFt * row.rate) / destinationSqFt;
           const newQuant = (totalSqFt * row.quantity) / destinationSqFt;
@@ -165,7 +162,7 @@ const ProductEstimationDetailsPage = () => {
         </TableRow>
         <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
           <TableCell colSpan={4} sx={{ textAlign: "right" }}>
-            <Button variant="contained">Add to Cart</Button>
+            <Button variant="contained">Pay</Button>
           </TableCell>
         </TableRow>
       </TableBody>
@@ -259,15 +256,19 @@ const ProductEstimationDetailsPage = () => {
                           <Typography variant="h5" sx={{ mt: 2 }}>
                             {(materialCost + materialCost * (5 / 100)).toFixed(4)}
                           </Typography>
-                          <Button
-                            variant="text"
-                            startIcon={<VisibilityIcon />}
-                            onClick={() => {
-                              setOpac(true);
-                            }}
-                          >
-                            View Materials
-                          </Button>
+                          {type !== "contractor" ? (
+                            <Button
+                              variant="text"
+                              startIcon={<VisibilityIcon />}
+                              onClick={() => {
+                                setOpac(true);
+                              }}
+                            >
+                              View Materials
+                            </Button>
+                          ) : (
+                            <></>
+                          )}
                         </Paper>
                         <Typography sx={{ fontSize: 48, ml: "48px" }}>+</Typography>
                       </Grid>
@@ -289,7 +290,7 @@ const ProductEstimationDetailsPage = () => {
                   {!estimationData[0].status ? (
                     <Grid item xs={4} sm={8} md={12} sx={{ textAlign: "center", mt: 2 }}>
                       <LoadingButton startIcon={<EmailIcon />} loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={InsertDesignEstimationEnquiry}>
-                        Send Enquiry
+                        {type !== "contractor" ? "Send Enquiry" : "Send Quote to Client"}
                       </LoadingButton>
                     </Grid>
                   ) : (

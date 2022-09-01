@@ -3,10 +3,12 @@ export const uniqueByKey = (array, key) => {
 };
 
 export const retrunValueFromLocation = (arr, key, isState = false) => {
-  if (isState) {
-    return arr.state;
-  } else {
-    return arr.state[key];
+  if (arr.state) {
+    if (isState) {
+      return arr.state;
+    } else {
+      return arr.state[key];
+    }
   }
 };
 
@@ -47,4 +49,4 @@ export const BloodGroup = [
     ID:8,
     Name:"AB-"
   },
-]
+] 
