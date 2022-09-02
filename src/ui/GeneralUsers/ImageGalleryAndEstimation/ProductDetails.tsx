@@ -181,6 +181,7 @@ const ImageGalleryProductDetailsPage = () => {
     const params = {
       UserID: CookieUserID,
       DesignTypeID: selectedData.designTypeID,
+      WorkLocationID: selectedData.workLocationID,
       Length: parseFloat(lengthFeet + "." + lengthInches),
       Width: parseFloat(widthHeightFeet + "." + widthHeightInches),
       Status: false,
@@ -674,6 +675,10 @@ const ImageGalleryProductDetailsPage = () => {
                 client={dummyClient}
                 saveCallBack={() => {
                   handleImageClose();
+                  setSnackMsg("Client Added");
+                  setSnackbarType("success");
+                  setOpen(true);
+                  FetchClients(CookieUserID);
                 }}
                 cancelCallBack={() => {
                   FetchClients(CookieUserID);

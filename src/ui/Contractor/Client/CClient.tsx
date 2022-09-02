@@ -188,6 +188,8 @@ const ContractorClientPage = () => {
                   if (data.data && data.data.code === 200) {
                     FetchData(CookieUserID, actionType);
                     cardDisplay[1]("none");
+                    setDataGridOpacity(1);
+                    setDataGridPointer("auto");
                   } else if (data.data.code === 304) {
                     setSnackMsg(communication.ExistsError);
                     setOpen(true);
