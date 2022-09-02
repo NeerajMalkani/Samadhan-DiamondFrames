@@ -90,4 +90,7 @@ export const communication = {
   BlankEmployeeName: "Please enter Employee Name",
   BlankMobileNo: "Please enter valid Mobile number",
   BlankAadharNo: "Please enter valid Aadhar number",
+
+  QuoteApproved: "You have approved the quotation successfully",
+  QuoteRejected: "You have rejected the quotation successfully",
 };

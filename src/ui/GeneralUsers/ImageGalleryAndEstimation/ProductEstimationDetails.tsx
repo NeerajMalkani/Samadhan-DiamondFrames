@@ -1,4 +1,26 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, Grid, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormHelperText,
+  Grid,
+  MenuItem,
+  Paper,
+  Select,
+  SelectChangeEvent,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,7 +31,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import { GetStringifyJson, CalculateSqfeet } from "../../../utils/CommonFunctions";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
-import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
+import { retrunValueFromLocation, uniqueByKey } from "../../../utils/JSCommonFunction";
 import { EstimationCostDetails, ProductItemModel } from "../../../models/Model";
 
 const ProductEstimationDetailsPage = () => {
@@ -17,6 +39,21 @@ const ProductEstimationDetailsPage = () => {
   let navigate = useNavigate();
   const [type, setType] = useState("");
   const location = useLocation();
+
+  interface BrandItemModel {
+    brandID: number;
+    brandName: string;
+    categoryName: string;
+  }
+
+  interface BrandProductItemModel {
+    brandID: number;
+    brandName: string;
+    productID: number;
+    price: number;
+    unitValue: number;
+    categoryName: string;
+  }
 
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
@@ -40,10 +77,14 @@ const ProductEstimationDetailsPage = () => {
   const [labourCost, setLabourCost] = useState<number>(0);
   const [selectedID, setSelectedID] = useState<number>(0);
 
+  const [brandProductList, setBrandProductList] = useState<Array<BrandProductItemModel>>([]);
+  const [brandList, setBrandList] = useState<Array<BrandItemModel>>([]);
+  const [selectedBrand, setSelectedBrand] = useState<number>(0);
+
   useEffect(() => {
     setSelectedID(parseInt(retrunValueFromLocation(location, "userDesignEstimationID")));
-    FetchEstimationData(parseInt(retrunValueFromLocation(location, "userDesignEstimationID")));
     setType(retrunValueFromLocation(location, "type"));
+    FetchEstimationData(parseInt(retrunValueFromLocation(location, "userDesignEstimationID")));
   }, []);
 
   const FetchEstimationData = (id: number) => {
@@ -87,6 +128,9 @@ const ProductEstimationDetailsPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setProductItem(response.data.data);
+            if (retrunValueFromLocation(location, "type") === "designWiseContractor") {
+              FetchProductBrandFromProductID(response.data.data);
+            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -119,13 +163,16 @@ const ProductEstimationDetailsPage = () => {
         {productItem.map((row: ProductItemModel, index: number) => {
           let length = row.length.toString().split(".");
           let width = row.width.toString().split(".");
-          const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
+          // const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
 
-          const newRate = (totalSqFt * row.rate) / destinationSqFt;
-          const newQuant = (totalSqFt * row.quantity) / destinationSqFt;
-          let newAmount = (totalSqFt * row.amount) / destinationSqFt;
-          newAmount = newAmount - newAmount * (row.generalDiscount / 100);
-          subtotalCal += newAmount;
+          const newQuant = totalSqFt / parseFloat(row.formula);
+          let newAmount = newQuant * parseFloat(row.rate);
+          let discountedAmount = newAmount - newAmount * (row.generalDiscount / 100);
+
+          // const newRate = (totalSqFt * parseFloat(row.rate)) / destinationSqFt;
+
+          // newAmount = newAmount - newAmount * (row.generalDiscount / 100);
+          subtotalCal += discountedAmount;
           if (index === productItem.length - 1) {
             transportCharges = subtotalCal * (5 / 100);
             setMaterialCost(subtotalCal);
@@ -136,33 +183,37 @@ const ProductEstimationDetailsPage = () => {
                 {row.productName + " » " + row.brandName}
               </TableCell>
               <TableCell align="right">{newQuant.toFixed(4)}</TableCell>
-              <TableCell align="right">{newRate.toFixed(4)}</TableCell>
+              <TableCell align="right">{parseFloat(row.rate).toFixed(4)}</TableCell>
               <TableCell align="right">{newAmount.toFixed(4)}</TableCell>
+              <TableCell align="right">{discountedAmount.toFixed(4)}</TableCell>
             </TableRow>
           );
         })}
         <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-          <TableCell colSpan={3} sx={{ textAlign: "right" }}>
-            Sub Total
+          <TableCell colSpan={4} sx={{ textAlign: "right" }}>
+            <b>Sub Total</b>
           </TableCell>
           <TableCell align="right">{subtotalCal.toFixed(4)}</TableCell>
         </TableRow>
 
         <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-          <TableCell colSpan={3} sx={{ textAlign: "right" }}>
-            Transportation Charges
+          <TableCell colSpan={4} sx={{ textAlign: "right" }}>
+            <b> Transportation Charges</b>
           </TableCell>
           <TableCell align="right">{transportCharges.toFixed(4)}</TableCell>
         </TableRow>
         <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-          <TableCell colSpan={3} sx={{ textAlign: "right" }}>
-            Total
+          <TableCell colSpan={4} sx={{ textAlign: "right" }}>
+            <b>Total</b>
           </TableCell>
           <TableCell align="right">{(transportCharges + subtotalCal).toFixed(4)}</TableCell>
         </TableRow>
         <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-          <TableCell colSpan={4} sx={{ textAlign: "right" }}>
-            <Button variant="contained">Pay</Button>
+          <TableCell colSpan={2} sx={{ textAlign: "right" }}>
+            To buy material
+          </TableCell>
+          <TableCell colSpan={3} sx={{ textAlign: "right" }}>
+            <Button variant="contained">Add to Cart</Button>
           </TableCell>
         </TableRow>
       </TableBody>
@@ -194,6 +245,51 @@ const ProductEstimationDetailsPage = () => {
         setOpen(true);
         setButtonLoading(false);
       });
+  };
+
+  const handleBrandChange = (event: SelectChangeEvent) => {
+    let brandData: number = parseInt(event.target.value);
+    if (brandData > 0) {
+      setSelectedBrand(brandData);
+      let ProductData1 = brandProductList.filter((el: BrandProductItemModel) => el.brandID === brandData);
+      let ProductData: Array<ProductItemModel> = [...productItem];
+      ProductData.map((value: ProductItemModel, index: number) => {
+        ProductData1.find(function (item: BrandProductItemModel, i: number) {
+          if (item.productID === value.productID) {
+            value.brandName = item.brandName;
+            value.brandID = item.brandID;
+            value.rate = item.price.toFixed(4);
+            if (parseFloat(value.formula) !== 0) {
+              value.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(value.formula)).toFixed(4);
+              value.amount = (parseFloat(value.quantity) * parseFloat(value.rate === "0" ? "1" : value.rate)).toFixed(4);
+            }
+            return i;
+          }
+        });
+      });
+    }
+  };
+
+  const FetchProductBrandFromProductID = (data: any) => {
+    let productids = null;
+    if (data === "") productids = productItem.map((data1) => data1.productID);
+    else productids = data.map((data1) => data1.productID);
+
+    let params = {
+      ProductID: productids.join(","),
+    };
+
+    Provider.getAll(`servicecatalogue/getbrandsbyproductids?${new URLSearchParams(params)}`)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setBrandProductList(response.data.data);
+            let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
+            setBrandList(BrandData);
+          }
+        }
+      })
+      .catch((e) => {});
   };
 
   return (
@@ -256,7 +352,7 @@ const ProductEstimationDetailsPage = () => {
                           <Typography variant="h5" sx={{ mt: 2 }}>
                             {(materialCost + materialCost * (5 / 100)).toFixed(4)}
                           </Typography>
-                          {type !== "contractor" ? (
+                          {type !== "contractor" && type !== "designWiseContractor" ? (
                             <Button
                               variant="text"
                               startIcon={<VisibilityIcon />}
@@ -287,10 +383,36 @@ const ProductEstimationDetailsPage = () => {
                     <></>
                   )}
 
-                  {!estimationData[0].status ? (
+                  {type === "designWiseContractor" ? (
+                    <Grid item xs={4} sm={4} md={12} sx={{ mt: 1 }}>
+                      <FormControl style={{ width: 240 }} size="small" error={false}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                          <b>Brand Name</b>
+                          <label style={{ color: "#ff0000" }}>*</label>
+                        </Typography>
+                        <Select value={selectedBrand.toString()} onChange={handleBrandChange}>
+                          <MenuItem disabled={true} value="0">
+                            --Select--
+                          </MenuItem>
+                          {brandList.map((item, index) => {
+                            return (
+                              <MenuItem key={index} value={item.brandID}>
+                                {item.brandName + " (" + item.categoryName + ")"}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                        <FormHelperText>{""}</FormHelperText>
+                      </FormControl>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
+
+                  {!estimationData[0].status || type === "designWiseContractor" ? (
                     <Grid item xs={4} sm={8} md={12} sx={{ textAlign: "center", mt: 2 }}>
                       <LoadingButton startIcon={<EmailIcon />} loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={InsertDesignEstimationEnquiry}>
-                        {type !== "contractor" ? "Send Enquiry" : "Send Quote to Client"}
+                        {type === "contractor" ? "Send Quote to Client" : type === "designWiseContractor" ? "Update Quote & Send to Client" : "Send Enquiry"}
                       </LoadingButton>
                     </Grid>
                   ) : (
@@ -307,6 +429,7 @@ const ProductEstimationDetailsPage = () => {
                           <TableCell sx={{ width: "140px" }}>Quantity</TableCell>
                           <TableCell sx={{ width: "140px" }}>Rate</TableCell>
                           <TableCell sx={{ width: "140px" }}>Amount</TableCell>
+                          <TableCell sx={{ width: "140px" }}>Discounted Amount</TableCell>
                         </TableRow>
                       </TableHead>
                       <CreateProductDetails />

@@ -423,16 +423,18 @@ export interface EstimationCostDetails {
 }
 
 export interface ProductItemModel {
-  amount: number;
-  brandName: number;
-  formula: number;
+  amount: string;
+  brandName: string;
+  formula: string;
   generalDiscount: number;
   length: number;
   materialSetupID: number;
   productName: string;
-  quantity: number;
-  rate: number;
+  quantity: string;
+  rate: string;
   width: number;
+  productID: number;
+  brandID: number;
 }
 
 export interface YourEstimationModel {

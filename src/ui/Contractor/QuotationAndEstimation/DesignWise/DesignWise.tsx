@@ -47,17 +47,13 @@ import Provider from "../../../../api/Provider";
 import { communication } from "../../../../utils/communication";
 import { CalculateSqfeet, GetStringifyJson } from "../../../../utils/CommonFunctions";
 import { retrunValueFromLocation } from "../../../../utils/JSCommonFunction";
+import { UploadImageToS3WithNativeSdk } from "../../../../utils/AWSFileUpload";
+import uuid from "react-uuid";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
-}
-
-interface BrandItemModel {
-  brandID: number;
-  brandName: string;
-  categoryName: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -104,16 +100,6 @@ const DesignWisePage = () => {
   const [imageOpen, setImageOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<ImageGalleryEstimation>();
 
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const [isShowDeatils, setIsShowDeatils] = useState<Boolean>(false);
-  const [estimationData, setEstimationData] = useState<Array<EstimationCostDetails>>([]);
-
-  const [isBrandError, setIsBrandError] = useState(false);
-  const [brandError, setBrandError] = useState("");
-
-  const [brandList, setBrandList] = useState<Array<BrandItemModel>>([]);
-  const [selectedBrand, setSelectedBrand] = useState<number>(0);
-
   const [searchQueryPending, setSearchQueryPending] = useState("");
   const [searchQueryApproved, setSearchQueryApproved] = useState("");
   const [searchQueryRejected, setSearchQueryRejected] = useState("");
@@ -131,9 +117,13 @@ const DesignWisePage = () => {
 
   const selectedItem = useState<QuotationDataModel>();
 
+  const estStatus = useState(0);
+
   const reason = useState("");
   const reasonError = useState(false);
   const reasonErrorText = useState("");
+  const isApprovedThroughError = useState(false);
+  const approvedThroughErrorText = useState("");
 
   const approvedThrough = useState("");
 
@@ -300,33 +290,6 @@ const DesignWisePage = () => {
     }
   };
 
-  const InsertDesignEstimationEnquiry = () => {
-    setButtonLoading(true);
-    // const params = {
-    //   ID: selectedID,
-    //   Status: true,
-    //   TotalAmount: materialCost + materialCost * (5 / 100),
-    // };
-
-    Provider.create("generaluserenquiryestimations/insertdesignestimateenquiries", {})
-      .then((response) => {
-        if (response.data && response.data.code === 200) {
-          navigate(`/generaluser/userestimation`);
-        } else {
-          setSnackMsg(communication.Error);
-          setSnackbarType("error");
-          setOpen(true);
-          setButtonLoading(false);
-        }
-      })
-      .catch((e) => {
-        setSnackMsg(communication.NetworkError);
-        setSnackbarType("error");
-        setOpen(true);
-        setButtonLoading(false);
-      });
-  };
-
   const CreateGallery = (props) => {
     if (props.screenType === "first") {
       return (
@@ -365,136 +328,109 @@ const DesignWisePage = () => {
           )}
         </div>
       );
-    } else if (props.screenType === "pending") {
-      let length = selectedItem[0].length.toString().split(".");
-      let width = selectedItem[0].width.toString().split(".");
-      const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
-
-      return (
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-          <Grid item xs={2} sm={4} md={3} sx={{ mt: 2 }}>
-            <Paper className="flex-column flex-center padding-16">
-              <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-                Total Sq.Ft
-              </Typography>
-              <Typography variant="h5" sx={{ mt: 2 }}>
-                {destinationSqFt.toFixed(4)}
-              </Typography>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={2} sm={4} md={3} sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-            <Paper className="flex-column flex-center padding-16">
-              <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-                Total Amount
-              </Typography>
-              <Typography variant="h5" sx={{ mt: 2 }}>
-                {(selectedItem[0].subtotalAmount + selectedItem[0].subtotalAmount * (5 / 100) + selectedItem[0].labourCost).toFixed(4)}0
-              </Typography>
-              <Button
-                startIcon={<VisibilityIcon />}
-                variant="text"
-                onClick={() => {
-                  setIsShowDeatils(true);
-                }}
-              >
-                View details
-              </Button>
-            </Paper>
-            {isShowDeatils ? <Typography sx={{ fontSize: 48, ml: "48px" }}>=</Typography> : <></>}
-          </Grid>
-
-          {isShowDeatils ? (
-            <>
-              <Grid item xs={2} sm={4} md={3} sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-                <Paper className="flex-column flex-center padding-16">
-                  <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-                    Material Cost
-                  </Typography>
-                  <Typography variant="h5" sx={{ mt: 2 }}>
-                    {(selectedItem[0].subtotalAmount + selectedItem[0].subtotalAmount * (5 / 100)).toFixed(4)}0
-                  </Typography>
-                </Paper>
-                <Typography sx={{ fontSize: 48, ml: "48px" }}>+</Typography>
-              </Grid>
-              <Grid item xs={2} sm={4} md={3} sx={{ mt: 2 }}>
-                <Paper className="flex-column flex-center padding-16">
-                  <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-                    Labour Cost
-                  </Typography>
-                  <Typography variant="h5" sx={{ mt: 2 }}>
-                    {selectedItem[0].labourCost.toFixed(4)}0
-                  </Typography>
-                </Paper>
-              </Grid>
-            </>
-          ) : (
-            <></>
-          )}
-
-          <Grid item xs={4} sm={4} md={12} sx={{ mt: 1 }}>
-            <FormControl style={{ width: 240 }} size="small" error={isBrandError}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Brand Name</b>
-                <label style={{ color: "#ff0000" }}>*</label>
-              </Typography>
-              <Select value={selectedBrand.toString()} onChange={handleBrandChange}>
-                <MenuItem disabled={true} value="0">
-                  --Select--
-                </MenuItem>
-                {brandList.map((item, index) => {
-                  return (
-                    <MenuItem key={index} value={item.brandID}>
-                      {item.brandName + " (" + item.categoryName + ")"}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{brandError}</FormHelperText>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={4} sm={8} md={12} sx={{ textAlign: "center", mt: 2 }}>
-            <LoadingButton startIcon={<EmailIcon />} loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={InsertDesignEstimationEnquiry}>
-              Update & Send Quote
-            </LoadingButton>
-          </Grid>
-        </Grid>
-      );
     }
+    //  else if (props.screenType === "pending") {
+    //   let length = selectedItem[0].length.toString().split(".");
+    //   let width = selectedItem[0].width.toString().split(".");
+    //   const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
+
+    //   return (
+    //     <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+    //       <Grid item xs={2} sm={4} md={3} sx={{ mt: 2 }}>
+    //         <Paper className="flex-column flex-center padding-16">
+    //           <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
+    //             Total Sq.Ft
+    //           </Typography>
+    //           <Typography variant="h5" sx={{ mt: 2 }}>
+    //             {destinationSqFt.toFixed(4)}
+    //           </Typography>
+    //         </Paper>
+    //       </Grid>
+
+    //       <Grid item xs={2} sm={4} md={3} sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+    //         <Paper className="flex-column flex-center padding-16">
+    //           <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
+    //             Total Amount
+    //           </Typography>
+    //           <Typography variant="h5" sx={{ mt: 2 }}>
+    //             {(selectedItem[0].subtotalAmount + selectedItem[0].subtotalAmount * (5 / 100) + selectedItem[0].labourCost).toFixed(4)}0
+    //           </Typography>
+    //           <Button
+    //             startIcon={<VisibilityIcon />}
+    //             variant="text"
+    //             onClick={() => {
+    //               setIsShowDeatils(true);
+    //             }}
+    //           >
+    //             View details
+    //           </Button>
+    //         </Paper>
+    //         {isShowDeatils ? <Typography sx={{ fontSize: 48, ml: "48px" }}>=</Typography> : <></>}
+    //       </Grid>
+
+    //       {isShowDeatils ? (
+    //         <>
+    //           <Grid item xs={2} sm={4} md={3} sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+    //             <Paper className="flex-column flex-center padding-16">
+    //               <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
+    //                 Material Cost
+    //               </Typography>
+    //               <Typography variant="h5" sx={{ mt: 2 }}>
+    //                 {(selectedItem[0].subtotalAmount + selectedItem[0].subtotalAmount * (5 / 100)).toFixed(4)}0
+    //               </Typography>
+    //             </Paper>
+    //             <Typography sx={{ fontSize: 48, ml: "48px" }}>+</Typography>
+    //           </Grid>
+    //           <Grid item xs={2} sm={4} md={3} sx={{ mt: 2 }}>
+    //             <Paper className="flex-column flex-center padding-16">
+    //               <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
+    //                 Labour Cost
+    //               </Typography>
+    //               <Typography variant="h5" sx={{ mt: 2 }}>
+    //                 {selectedItem[0].labourCost.toFixed(4)}0
+    //               </Typography>
+    //             </Paper>
+    //           </Grid>
+    //         </>
+    //       ) : (
+    //         <></>
+    //       )}
+
+    //       <Grid item xs={4} sm={4} md={12} sx={{ mt: 1 }}>
+    //         <FormControl style={{ width: 240 }} size="small" error={isBrandError}>
+    //           <Typography variant="subtitle2" sx={{ mb: 1 }}>
+    //             <b>Brand Name</b>
+    //             <label style={{ color: "#ff0000" }}>*</label>
+    //           </Typography>
+    //           <Select value={selectedBrand.toString()} onChange={handleBrandChange}>
+    //             <MenuItem disabled={true} value="0">
+    //               --Select--
+    //             </MenuItem>
+    //             {brandList.map((item, index) => {
+    //               return (
+    //                 <MenuItem key={index} value={item.brandID}>
+    //                   {item.brandName + " (" + item.categoryName + ")"}
+    //                 </MenuItem>
+    //               );
+    //             })}
+    //           </Select>
+    //           <FormHelperText>{brandError}</FormHelperText>
+    //         </FormControl>
+    //       </Grid>
+
+    //       <Grid item xs={4} sm={8} md={12} sx={{ textAlign: "center", mt: 2 }}>
+    //         <LoadingButton startIcon={<EmailIcon />} loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={InsertDesignEstimationEnquiry}>
+    //           Update & Send Quote
+    //         </LoadingButton>
+    //       </Grid>
+    //     </Grid>
+    //   );
+    // }
   };
 
   const handleImageClose = () => {
     setImageOpen(false);
-  };
-
-  const handleBrandChange = (event: SelectChangeEvent) => {
-    // let brandData: number = parseInt(event.target.value);
-    // if (brandData > 0) {
-    //   setSelectedBrand(brandData);
-    //   let ProductData1 = brandProductList.filter((el: BrandProductItemModel) => el.brandID === brandData);
-    //   let ProductData: Array<ProductItemModel> = [...productItem];
-    //   ProductData.map((value: ProductItemModel, index: number) => {
-    //     ProductData1.find(function (item: BrandProductItemModel, i: number) {
-    //       if (item.productID === value.productID) {
-    //         value.brandName = item.brandName;
-    //         value.brandID = item.brandID;
-    //         value.rate = item.price.toFixed(4);
-    //         if (parseFloat(value.formula) !== 0) {
-    //           value.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(value.formula)).toFixed(4);
-    //           value.amount = (parseFloat(value.quantity) * parseFloat(value.rate === "0" ? "1" : value.rate)).toFixed(4);
-    //         }
-    //         return i;
-    //       }
-    //     });
-    //   });
-    //   const newChecked = [...ProductData];
-    //   const productids = newChecked.map((data) => data.amount);
-    //   setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
-    //   setProductItem(ProductData);
-    //   setIsBrandError(false);
-    //   setBrandError("");
-    // }
+    ClearPopup();
   };
 
   const FetchData = (userID: number) => {
@@ -543,6 +479,105 @@ const DesignWisePage = () => {
     approvedThrough[1]((event.target as HTMLInputElement).value);
   };
 
+  const handleConfirmApprove = () => {
+    let isValid = true;
+    if (reason[0].trim() === "") {
+      isValid = false;
+      reasonError[1](true);
+      reasonErrorText[1]("Please enter reason");
+    }
+
+    if (approvedThrough[0].trim() === "") {
+      isValid = false;
+      reasonError[1](true);
+      reasonErrorText[1]("Please enter reason");
+    }
+
+    if (isValid) {
+      if (uploadFileUpload !== null) {
+        uploadImage();
+      } else {
+        InsertEstimationStatusData("Success", "");
+      }
+    }
+  };
+
+  const uploadImage = () => {
+    let imageName: string = uuid();
+    let fileExtension = uploadedImage.split(".").pop();
+    setUploadedImage(imageName + "." + fileExtension);
+    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertEstimationStatusData);
+  };
+  //const InsertData = (Status: string, fileName: string) => {};
+  const InsertEstimationStatusData = (Status: string, fileName: string) => {
+    const params = {
+      UserEstimationID: selectedItem[0].id,
+      Remarks: reason[1],
+      ApprovedThrough: approvedThrough[0],
+      ApproveProof: fileName,
+    };
+    Provider.create("contractorquotationestimation/insertapprovedestimations", params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          InsertDesignEstimationEnquiry();
+        } else {
+          setSnackMsg(communication.NoData);
+          setSnackbarType("error");
+          setOpen(true);
+          ClearPopup();
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+        ClearPopup();
+      });
+  };
+
+  const InsertDesignEstimationEnquiry = () => {
+    const params = {
+      ID: selectedItem[0].id,
+      ApprovalStatus: estStatus[0],
+    };
+    Provider.create("generaluserenquiryestimations/insertdesignestimateenquiries", params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          setSnackMsg(estStatus[0] === 1 ? communication.QuoteApproved : communication.QuoteRejected);
+          setSnackbarType("success");
+          setOpen(true);
+        } else {
+          setSnackMsg(communication.NoData);
+          setSnackbarType("error");
+          setOpen(true);
+        }
+        ClearPopup();
+      })
+      .catch((e) => {
+        console.log(e);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+        ClearPopup();
+      });
+  };
+
+  const ClearPopup = () => {
+    setImageOpen(false);
+    setDIErrorText("");
+    setImage("");
+    setUploadedImage("");
+    reason[1]("");
+    reasonError[1](false);
+    reasonErrorText[1]("");
+    approvedThrough[1]("0");
+    isApprovedThroughError[1](false);
+    approvedThroughErrorText[1]("");
+    estStatus[1](0);
+
+    selectedItem[1](null);
+  };
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
@@ -626,12 +661,15 @@ const DesignWisePage = () => {
                             let a: QuotationDataModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                             if (a) {
                               const clickType = (e.target as any).textContent;
+                              selectedItem[1](a);
                               if (clickType.toLowerCase() === "edit") {
-                                selectedItem[1](a);
-                                setValue(0);
-                                setCurrentScreen("pending");
+                                navigate(`/generaluser/imagegallery/productestimationdetails`, { state: { userDesignEstimationID: a.id, type: "designWiseContractor" } });
                               } else if (clickType.toLowerCase() === "self approve") {
                                 setImageOpen(true);
+                                estStatus[1](1);
+                              } else if (clickType.toLowerCase() === "reject") {
+                                setImageOpen(true);
+                                estStatus[1](2);
                               }
                             }
                           }}
@@ -701,11 +739,13 @@ const DesignWisePage = () => {
                             let a: QuotationDataModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                             if (a) {
                               const clickType = (e.target as any).textContent;
+                              selectedItem[1](a);
                               if (clickType.toLowerCase() === "edit") {
-                                selectedItem[1](a);
-                                setValue(0);
-                                setCurrentScreen("pending");
-                              } //handelEditAndDelete(clickType, a);
+                                navigate(`/generaluser/imagegallery/productestimationdetails`, { state: { userDesignEstimationID: a.id, type: "designWiseContractor" } });
+                              } else if (clickType.toLowerCase() === "reject") {
+                                setImageOpen(true);
+                                estStatus[1](2);
+                              }
                             }
                           }}
                           sx={{
@@ -828,7 +868,7 @@ const DesignWisePage = () => {
                   <b>Client Approved through</b>
                   <label style={{ color: "#ff0000" }}>*</label>
                 </Typography>
-                <FormControl>
+                <FormControl error={isApprovedThroughError[0]}>
                   <RadioGroup row name="row-radio-buttons-group" value={approvedThrough[0]} onChange={handleDisplayChange}>
                     <FormControlLabel value="1" control={<Radio />} label="WhatApp" />
                     <FormControlLabel value="2" control={<Radio />} label="Email" />
@@ -837,6 +877,7 @@ const DesignWisePage = () => {
                     <FormControlLabel value="5" control={<Radio />} label="Own Approve" />
                   </RadioGroup>
                 </FormControl>
+                <FormHelperText>{approvedThroughErrorText[0]}</FormHelperText>
               </Grid>
 
               <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
@@ -882,6 +923,7 @@ const DesignWisePage = () => {
                 selectedData["type"] = "contractor";
                 navigate(`/generaluser/imagegallery/productdetails`, { state: selectedData });
               } else {
+                handleConfirmApprove();
               }
             }}
           >

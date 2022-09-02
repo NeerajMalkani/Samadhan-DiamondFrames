@@ -151,7 +151,7 @@ const ImageGalleryProductDetailsPage = () => {
               let length = k.length.toString().split(".");
               let width = k.width.toString().split(".");
               const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
-              let newAmount = (targetSqFt * k.amount) / destinationSqFt;
+              let newAmount = (targetSqFt * parseFloat(k.amount)) / destinationSqFt;
               newAmount = newAmount - newAmount * (k.generalDiscount / 100);
               subtotalCal += newAmount;
             });
