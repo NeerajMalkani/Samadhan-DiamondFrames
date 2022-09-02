@@ -40,7 +40,7 @@ import { theme } from "../../../../theme/AppTheme";
 import { contractorApprovedQuotation, contractorPendingQuotation, contractorRejectedQuotation, materialSetupColumns } from "../../../../utils/tablecolumns";
 import { ArrowBack } from "@mui/icons-material";
 import PrismaZoom from "react-prismazoom";
-import { LoadingButton } from "@mui/lab";
+import { LoadingButton, useTabContext } from "@mui/lab";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EmailIcon from "@mui/icons-material/Email";
 import Provider from "../../../../api/Provider";
@@ -170,6 +170,13 @@ const DesignWisePage = () => {
       }
       FetchImageGalleryData();
       FetchData(cookies.dfc.UserID);
+
+      try {
+        let redirecttab = retrunValueFromLocation(location, "redirecttab");
+        if (redirecttab === "pending") {
+          setValue(1);
+        }
+      } catch (e) {}
     }
   }, []);
 
@@ -329,103 +336,6 @@ const DesignWisePage = () => {
         </div>
       );
     }
-    //  else if (props.screenType === "pending") {
-    //   let length = selectedItem[0].length.toString().split(".");
-    //   let width = selectedItem[0].width.toString().split(".");
-    //   const destinationSqFt = CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
-
-    //   return (
-    //     <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-    //       <Grid item xs={2} sm={4} md={3} sx={{ mt: 2 }}>
-    //         <Paper className="flex-column flex-center padding-16">
-    //           <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-    //             Total Sq.Ft
-    //           </Typography>
-    //           <Typography variant="h5" sx={{ mt: 2 }}>
-    //             {destinationSqFt.toFixed(4)}
-    //           </Typography>
-    //         </Paper>
-    //       </Grid>
-
-    //       <Grid item xs={2} sm={4} md={3} sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-    //         <Paper className="flex-column flex-center padding-16">
-    //           <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-    //             Total Amount
-    //           </Typography>
-    //           <Typography variant="h5" sx={{ mt: 2 }}>
-    //             {(selectedItem[0].subtotalAmount + selectedItem[0].subtotalAmount * (5 / 100) + selectedItem[0].labourCost).toFixed(4)}0
-    //           </Typography>
-    //           <Button
-    //             startIcon={<VisibilityIcon />}
-    //             variant="text"
-    //             onClick={() => {
-    //               setIsShowDeatils(true);
-    //             }}
-    //           >
-    //             View details
-    //           </Button>
-    //         </Paper>
-    //         {isShowDeatils ? <Typography sx={{ fontSize: 48, ml: "48px" }}>=</Typography> : <></>}
-    //       </Grid>
-
-    //       {isShowDeatils ? (
-    //         <>
-    //           <Grid item xs={2} sm={4} md={3} sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-    //             <Paper className="flex-column flex-center padding-16">
-    //               <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-    //                 Material Cost
-    //               </Typography>
-    //               <Typography variant="h5" sx={{ mt: 2 }}>
-    //                 {(selectedItem[0].subtotalAmount + selectedItem[0].subtotalAmount * (5 / 100)).toFixed(4)}0
-    //               </Typography>
-    //             </Paper>
-    //             <Typography sx={{ fontSize: 48, ml: "48px" }}>+</Typography>
-    //           </Grid>
-    //           <Grid item xs={2} sm={4} md={3} sx={{ mt: 2 }}>
-    //             <Paper className="flex-column flex-center padding-16">
-    //               <Typography variant="h6" sx={{ mt: 1, color: "rgba(0,0,0,0.54)" }}>
-    //                 Labour Cost
-    //               </Typography>
-    //               <Typography variant="h5" sx={{ mt: 2 }}>
-    //                 {selectedItem[0].labourCost.toFixed(4)}0
-    //               </Typography>
-    //             </Paper>
-    //           </Grid>
-    //         </>
-    //       ) : (
-    //         <></>
-    //       )}
-
-    //       <Grid item xs={4} sm={4} md={12} sx={{ mt: 1 }}>
-    //         <FormControl style={{ width: 240 }} size="small" error={isBrandError}>
-    //           <Typography variant="subtitle2" sx={{ mb: 1 }}>
-    //             <b>Brand Name</b>
-    //             <label style={{ color: "#ff0000" }}>*</label>
-    //           </Typography>
-    //           <Select value={selectedBrand.toString()} onChange={handleBrandChange}>
-    //             <MenuItem disabled={true} value="0">
-    //               --Select--
-    //             </MenuItem>
-    //             {brandList.map((item, index) => {
-    //               return (
-    //                 <MenuItem key={index} value={item.brandID}>
-    //                   {item.brandName + " (" + item.categoryName + ")"}
-    //                 </MenuItem>
-    //               );
-    //             })}
-    //           </Select>
-    //           <FormHelperText>{brandError}</FormHelperText>
-    //         </FormControl>
-    //       </Grid>
-
-    //       <Grid item xs={4} sm={8} md={12} sx={{ textAlign: "center", mt: 2 }}>
-    //         <LoadingButton startIcon={<EmailIcon />} loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={InsertDesignEstimationEnquiry}>
-    //           Update & Send Quote
-    //         </LoadingButton>
-    //       </Grid>
-    //     </Grid>
-    //   );
-    // }
   };
 
   const handleImageClose = () => {
@@ -547,6 +457,7 @@ const DesignWisePage = () => {
           setSnackMsg(estStatus[0] === 1 ? communication.QuoteApproved : communication.QuoteRejected);
           setSnackbarType("success");
           setOpen(true);
+          FetchData(CookieUserID);
         } else {
           setSnackMsg(communication.NoData);
           setSnackbarType("error");
@@ -927,7 +838,7 @@ const DesignWisePage = () => {
               }
             }}
           >
-            {currentScreen === "second" ? "Go to Estimation" : "Confirm Approve"}
+            {currentScreen === "second" ? "Go to Estimation" : estStatus[0] === 1 ? "Confirm Approve" : "Confirm Reject"}
           </Button>
         </DialogActions>
       </Dialog>

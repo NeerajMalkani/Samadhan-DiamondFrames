@@ -231,7 +231,11 @@ const ProductEstimationDetailsPage = () => {
     Provider.create("generaluserenquiryestimations/insertdesignestimateenquiries", params)
       .then((response) => {
         if (response.data && response.data.code === 200) {
-          navigate(`/generaluser/userestimation`);
+          if (type === "contractor" || type === "designWiseContractor") {
+            navigate(`/contractor/quotationandestimation/designwise`, { state: { redirecttab: "pending" } });
+          } else {
+            navigate(`/generaluser/userestimation`);
+          }
         } else {
           setSnackMsg(communication.Error);
           setSnackbarType("error");
