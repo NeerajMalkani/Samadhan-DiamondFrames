@@ -193,8 +193,8 @@ const ImageGalleryProductDetailsPage = () => {
     if (fromCount === 2) {
       params["ID"] = userDesignEstimationID;
     }
-
-    if (selectedData.type === "") {
+ 
+    if (selectedData.type === "contractor") {
       params["ClientID"] = selectedUserNameID;
       params["ApprovalStatus"] = 0;
     }
