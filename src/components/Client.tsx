@@ -66,7 +66,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
   const isSPRError = useState(false);
   const sprError = useState("");
 
-  const editValues = useState(true);
+  const editValues = useState(false);
 
   const [display, setDisplay] = useState("Yes");
   // const [buttonDisplay, setButtonDisplay] = useState<string>("none");
@@ -88,9 +88,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
   }, [client, type]);
 
   const PrefillData = (data: ClientModel) => {
-    if (data.addedBy === 0) {
-      editValues[1](false);
-    }
+    editValues[1](!data.addedBy);
 
     id[1](data.id);
     isNameError[1](false);
@@ -249,6 +247,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
     gst[1]("");
     isGSTError[1](false);
     gstError[1]("");
+    editValues[1](true);
 
     isSPRError[1](false);
     sprError[1]("");

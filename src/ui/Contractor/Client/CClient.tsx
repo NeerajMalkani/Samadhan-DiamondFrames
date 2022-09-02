@@ -51,6 +51,7 @@ const ContractorClientPage = () => {
     Provider.getAll(`contractorquotationestimation/getclients?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
+          console.log(JSON.stringify(response.data.data));
           if (response.data.data) {
             const lisData = [...response.data.data];
             lisData.map(function (a: any, index: number) {

@@ -1458,7 +1458,7 @@ export const clientColumns: GridColDef[] = [
     sortable: false,
     maxWidth: 140,
     renderCell: (e) => {
-      return e.value === 1 ? "Create" : "Add";
+      return e.value ? "Create" : "Add";
     },
   },
   {
