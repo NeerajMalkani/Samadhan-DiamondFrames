@@ -1350,8 +1350,8 @@ export const clientColumns: GridColDef[] = [
   {
     field: "ServiceProviderRole",
     headerName: "Service Provider Role",
-    flex: 1.8,
-    maxWidth: 180,
+    flex: 2,
+    maxWidth: 240,
     renderCell: (e) => {
       let arrService = [];
       switch (e.row.serviceType) {
@@ -1402,8 +1402,8 @@ export const clientColumns: GridColDef[] = [
   {
     field: "address1",
     headerName: "Address",
-    flex: 1.8,
-    minWidth: 140,
+    flex: 2,
+    minWidth: 200,
     sortable: false,
     renderCell: (e) => {
       return (
@@ -1452,11 +1452,14 @@ export const clientColumns: GridColDef[] = [
     maxWidth: 140,
   },
   {
-    field: "sds",
+    field: "addedBy",
     headerName: "Created/Added",
     flex: 1.8,
     sortable: false,
     maxWidth: 140,
+    renderCell: (e) => {
+      return e.value === 1 ? "Create" : "Add";
+    },
   },
   {
     field: "action",
@@ -1857,7 +1860,7 @@ export const searchClientColumns: GridColDef[] = [
   },
 ];
 
-export const employeeSearchResult: GridColDef[]=[
+export const employeeSearchResult: GridColDef[] = [
   {
     field: "srno",
     headerName: "Sr. No.",
@@ -1894,7 +1897,7 @@ export const employeeSearchResult: GridColDef[]=[
     renderCell: (e) => (
       <Grid>
         <Button variant="text" sx={{ mr: 1 }}>
-          Add to My Employee List 
+          Add to My Employee List
         </Button>
       </Grid>
     ),

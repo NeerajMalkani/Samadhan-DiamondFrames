@@ -66,6 +66,8 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
   const isSPRError = useState(false);
   const sprError = useState("");
 
+  const editValues = useState(true);
+
   const [display, setDisplay] = useState("Yes");
   // const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -83,9 +85,13 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
     } else {
       FetchStates();
     }
-  }, [type]);
+  }, [client, type]);
 
   const PrefillData = (data: ClientModel) => {
+    if (data.addedBy === 0) {
+      editValues[1](false);
+    }
+
     id[1](data.id);
     isNameError[1](false);
     nameError[1]("");
@@ -383,6 +389,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              disabled={editValues[0]}
               fullWidth
               placeholder="Name"
               variant="outlined"
@@ -402,6 +409,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <b>Contact Person</b>
             </Typography>
             <TextField
+              disabled={editValues[0]}
               fullWidth
               placeholder="Name"
               variant="outlined"
@@ -422,6 +430,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              disabled={editValues[0]}
               fullWidth
               placeholder="Mobile No."
               variant="outlined"
@@ -448,6 +457,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              disabled={editValues[0]}
               fullWidth
               placeholder="Address"
               variant="outlined"
@@ -469,6 +479,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <Autocomplete
+              disabled={editValues[0]}
               disablePortal
               fullWidth
               options={statesFullData}
@@ -495,6 +506,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <Autocomplete
+              disabled={editValues[0]}
               disablePortal
               fullWidth
               options={cityFullData}
@@ -517,6 +529,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <TextField
+              disabled={editValues[0]}
               fullWidth
               placeholder="Pincode"
               variant="outlined"
@@ -543,6 +556,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <b>GST Number</b>
             </Typography>
             <TextField
+              disabled={editValues[0]}
               fullWidth
               placeholder="GST"
               variant="outlined"
@@ -563,6 +577,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
               <b>PAN Number</b>
             </Typography>
             <TextField
+              disabled={editValues[0]}
               fullWidth
               placeholder="PAN"
               variant="outlined"
@@ -608,9 +623,6 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
                     />
                   );
                 })}
-                {/* <FormControlLabel value="Vendor" control={<Checkbox />} label="Vendor" labelPlacement="end" />
-                <FormControlLabel value="Supplier" control={<Checkbox />} label="Supplier" labelPlacement="end" />
-                <FormControlLabel value="Client" control={<Checkbox />} label="Client" labelPlacement="end" /> */}
               </FormGroup>
               <FormHelperText>{sprError[0]}</FormHelperText>
             </FormControl>

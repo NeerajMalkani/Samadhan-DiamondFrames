@@ -204,6 +204,8 @@ const ContractorClientPage = () => {
               }}
               cancelCallBack={() => {
                 cardDisplay[1]("none");
+                setDataGridOpacity(1);
+                setDataGridPointer("auto");
               }}
               type={dataType[0]}
               cardDisplay={cardDisplay[0]}
@@ -240,7 +242,8 @@ const ContractorClientPage = () => {
                         let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
 
                         selectedData[1](a);
-                        // handelEditAndDelete((e.target as any).textContent, a);
+                        setDataGridOpacity(0.3);
+                        setDataGridPointer("none");
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {

@@ -113,24 +113,24 @@ const DashboardPage = () => {
 
   useEffect(() => {
     GetServiceCatalogue();
-    FetchActvityRoles();
+   // FetchActvityRoles();
     FetchImageGalleryData();
   }, []);
 
-  const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "General User";
-            });
-            setArnID(response.data.data[0].id);
-          }
-        }
-      })
-      .catch((e) => {});
-  };
+  // const FetchActvityRoles = () => {
+  //   Provider.getAll("master/getmainactivities")
+  //     .then((response: any) => {
+  //       if (response.data && response.data.code === 200) {
+  //         if (response.data.data) {
+  //           response.data.data = response.data.data.filter((el: any) => {
+  //             return el.display && el.activityRoleName === "General User";
+  //           });
+  //           setArnID(response.data.data[0].id);
+  //         }
+  //       }
+  //     })
+  //     .catch((e) => {});
+  // };
 
   const FetchImageGalleryData = () => {
     Provider.getAll("generaluserenquiryestimations/getimagegallery")
@@ -356,7 +356,7 @@ const DashboardPage = () => {
                     console.log(index);
                   }}
                 /> */}
-                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={CookieRoleID === arnID ? handleCardClick : () => {}} type="category" />
+                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID === 2 || CookieRoleID === 3 )? handleCardClick : () => {}} type="category" />
               </Grid>
             </Grid>
             <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>

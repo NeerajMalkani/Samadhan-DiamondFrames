@@ -478,7 +478,7 @@ export interface ClientModel {
   serviceType: number;
   stateID: number;
   stateName: string;
-  addedBy: boolean;
+  addedBy: number;
 }
 
 export interface QuotationDataModel {
