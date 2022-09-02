@@ -293,7 +293,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
       setCityError(communication.BlankCity);
     }
 
-    if (pc[0].trim() === "") {
+    if (pc[0].toString().trim() === "") {
       isValid = false;
       isPCError[1](true);
       pcError[1]("Please enter Pincode");
