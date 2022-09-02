@@ -24,6 +24,8 @@ const UnitPage = () => {
   const [display, setDisplay] = React.useState("Yes");
   const [unit1Name, setUnit1Name] = React.useState("");
   const [unit2Name, setUnit2Name] = React.useState("");
+  const [unit1ID, setUnit1ID] = React.useState(0);
+  const [unit2ID, setUnit2ID] = React.useState(0);
   const [unitNamesList, setUnitNamesList] = useState<Array<UnitOfSalesModel>>([]);
   // React.useContext(DataContext).unitOfSalesList;
   const [unit1Error, setUnit1Error] = useState("");
@@ -137,6 +139,8 @@ const UnitPage = () => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
+      setUnit1ID(a.unit1ID);
+      setUnit2ID(a.unit2ID);
       setDisplay(a.display);
       setUnit1Name(a.displayUnit.split("/")[0].trim());
       setUnit2Name(a.displayUnit.split("/")[1].trim());
@@ -148,24 +152,6 @@ const UnitPage = () => {
       setButtonDisplay("unset");
       setActionStatus("edit");
     }
-    // else if (type?.toLowerCase() === "delete" && a !== undefined) {
-    //   setSelectedID(a.id);
-    //   Provider.deleteAllParams("master/deleteunitofsales", { ID: a.id })
-    //     .then((response) => {
-    //       if (response.data && response.data.code === 200) {
-    //         FetchData();
-    //       } else {
-    //         ResetFields();
-    //         setSnackMsg("your request cannot be processed");
-    //         setOpen(true);
-    //       }
-    //     })
-    //     .catch((e) => {
-    //       ResetFields();
-    //       setSnackMsg("your request cannot be processed");
-    //       setOpen(true);
-    //     });
-    // }
   };
 
   const InsertUpdateData = (unit1: string, unit2: string, checked: boolean) => {
@@ -199,13 +185,14 @@ const UnitPage = () => {
         });
     } else if (actionStatus === "edit") {
       Provider.create("master/updateunitofsales", {
-        id: selectedID,
         Unit1Name: unit1,
         Unit2Name: unit2,
+        Unit1ID: unit1ID,
+        Unit2ID: unit2ID,
         Display: checked,
       })
         .then((response: any) => {
-          if (response.data && response.data.code === 200) {
+          if (response.data && (response.data.code === 200 || response.data.code === 204)) {
             FetchData("updated");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
@@ -328,7 +315,7 @@ const UnitPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {unitNamesList.length === 0 ? (
-                 <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>

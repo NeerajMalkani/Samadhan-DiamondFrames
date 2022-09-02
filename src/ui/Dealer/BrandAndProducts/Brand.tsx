@@ -1,25 +1,4 @@
-
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header";
@@ -96,6 +75,7 @@ const BrandPage = () => {
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
 
+  const [selectedUnit, setSelectedUnit] = useState<string>("");
   const [selectedUnitID, setSelectedUnitID] = useState<number>(0);
 
   const [display, setDisplay] = useState("Yes");
@@ -240,7 +220,10 @@ const BrandPage = () => {
             response.data.data = response.data.data.filter((el: any) => {
               return el.display;
             });
+            console.log(JSON.stringify(response.data.data));
             setUnitOfSalesList(response.data.data);
+            const units = response.data.data.map((data: any) => data.displayUnit);
+            setUnitList(units[0].split(" / "));
           }
         }
       })
@@ -388,13 +371,15 @@ const BrandPage = () => {
   };
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
-    let unitName: string = event.target.value;
-    let ac = unitOfSalesList.find((el) => el.displayUnit === unitName);
-    if (ac !== undefined) {
-      setUnitsOfSales(event.target.value as string);
-      setSelectedUnitID(ac.id);
-      SetResetUnit(false);
+    setUnitsOfSales(event.target.value);
+    if (unitOfSalesList[0].unit1Name === event.target.value) {
+      setSelectedUnit(unitOfSalesList[0].unit2Name);
+      setSelectedUnitID(unitOfSalesList[0].unit1ID);
+    } else {
+      setSelectedUnit(unitOfSalesList[0].unit1Name);
+      setSelectedUnitID(unitOfSalesList[0].unit2ID);
     }
+    SetResetUnit(false);
   };
 
   const handleCancelClick = () => {
@@ -505,7 +490,7 @@ const BrandPage = () => {
       uosid = objUnits1.unit1ID;
       uosid2 = objUnits1.unit2ID;
     }
-    
+
     if (actionStatus === "new") {
       Provider.create("dealerbrand/insertbrandsetup", {
         BrandID: bnID,
@@ -584,33 +569,33 @@ const BrandPage = () => {
       return parseFloat(el.BuyerCategoryDiscount) > 0;
     });
     //if (data !== undefined && data !== null && data.length > 0) {
-      let DealerJson = [];
-      data.map(function (a: any, index: number) {
-        DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
-      });
+    let DealerJson = [];
+    data.map(function (a: any, index: number) {
+      DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
+    });
 
-      Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
-        .then((response) => {
-          if (response.data && (response.data.code === 200 || response.data.code === 204)) {
-            FetchData(mode === "new" ? "added" : "updated", CookieUserID);
-          } else if (response.data.code === 304) {
-            setSnackMsg(communication.ExistsError);
-            setOpen(true);
-            setSnackbarType("error");
-            handleCancelClick();
-          } else {
-            handleCancelClick();
-            setSnackMsg(communication.Error);
-            setSnackbarType("error");
-            setOpen(true);
-          }
-        })
-        .catch((e) => {
+    Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
+      .then((response) => {
+        if (response.data && (response.data.code === 200 || response.data.code === 204)) {
+          FetchData(mode === "new" ? "added" : "updated", CookieUserID);
+        } else if (response.data.code === 304) {
+          setSnackMsg(communication.ExistsError);
+          setOpen(true);
+          setSnackbarType("error");
           handleCancelClick();
-          setSnackMsg(communication.NetworkError);
+        } else {
+          handleCancelClick();
+          setSnackMsg(communication.Error);
           setSnackbarType("error");
           setOpen(true);
-        });
+        }
+      })
+      .catch((e) => {
+        handleCancelClick();
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
     // } else {
     //   FetchData(mode === "new" ? "added" : "updated", CookieUserID);
     // }
@@ -650,7 +635,7 @@ const BrandPage = () => {
     if (isBlank) {
       setUnitsOfSales("--Select--");
       setSelectedUnitID(0);
-      setUnitOfSalesList([]);
+      setUnitList([]);
     }
     setUnitErrorText("");
     setUnitError(false);
@@ -866,17 +851,17 @@ const BrandPage = () => {
             <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
               <FormControl fullWidth size="small" error={unitError}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                  <b>Unit Name</b>
+                  <b>Unit of Sales</b>
                   <label style={{ color: "#ff0000" }}>*</label>
                 </Typography>
                 <Select value={unitsOfSales} onChange={handleUnitChange}>
                   <MenuItem disabled={true} value="--Select--">
                     --Select--
                   </MenuItem>
-                  {unitOfSalesList.map((item, index) => {
+                  {unitList.map((item, index) => {
                     return (
-                      <MenuItem key={index} value={item.displayUnit}>
-                        {item.displayUnit}
+                      <MenuItem key={index} value={item}>
+                        {item}
                       </MenuItem>
                     );
                   })}
@@ -1032,7 +1017,7 @@ const BrandPage = () => {
               ) : (
                 <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                   {brandList.length === 0 ? (
-                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                    <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                   ) : (
                     <>
                       <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
