@@ -69,14 +69,16 @@ const BrandPage = () => {
   const [bnID, setBnID] = useState<number>(0);
   const [brandError, setbrandError] = useState("");
   const [isBrandError, setIsBrandError] = useState(false);
-
+  interface unitIn {
+    unitName: string;
+    unitID: number;
+  }
   const [unitsOfSales, setUnitsOfSales] = useState<string>("--Select--");
-  const [unitList, setUnitList] = useState<string[]>([]);
+  const [unitList, setUnitList] = useState<unitIn[]>([]);
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
 
   const [selectedUnit, setSelectedUnit] = useState<string>("");
-  const [selectedUnitID, setSelectedUnitID] = useState<number>(0);
 
   const [display, setDisplay] = useState("Yes");
   const [searchQuery, setSearchQuery] = useState("");
@@ -215,15 +217,24 @@ const BrandPage = () => {
     Provider.getAll(`master/getunitbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          console.log(response.data.data);
           if (response.data.data) {
             response.data.data = response.data.data.filter((el: any) => {
               return el.display;
             });
-            console.log(JSON.stringify(response.data.data));
             setUnitOfSalesList(response.data.data);
-            const units = response.data.data.map((data: any) => data.displayUnit);
-            setUnitList(units[0].split(" / "));
+            const units = [];
+            response.data.data.map((data: any) => {
+              units.push({
+                unitName: data.unit1Name,
+                unitID: data.unit1ID,
+              });
+              units.push({
+                unitName: data.unit2Name,
+                unitID: data.unit2ID,
+              });
+              return units;
+            });
+            setUnitList(units);
           }
         }
       })
@@ -317,11 +328,6 @@ const BrandPage = () => {
               });
               if (matchingData) {
                 el.BuyerCategoryDiscount = matchingData.buyerCategoryDiscount;
-                // arrSelectedBuyerDiscountData.push({
-                //   buyerCategoryID: matchingData.buyerCategoryID,
-                //   buyerCategoryDiscount: matchingData.buyerCategoryDiscount,
-                // });
-                // el.buyerCategoryDiscount = matchingData.buyerCategoryDiscount.toFixed(2);
               }
               arrBuyerDiscountData.push(el);
             });
@@ -372,12 +378,17 @@ const BrandPage = () => {
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
     setUnitsOfSales(event.target.value);
-    if (unitOfSalesList[0].unit1Name === event.target.value) {
-      setSelectedUnit(unitOfSalesList[0].unit2Name);
-      setSelectedUnitID(unitOfSalesList[0].unit1ID);
-    } else {
-      setSelectedUnit(unitOfSalesList[0].unit1Name);
-      setSelectedUnitID(unitOfSalesList[0].unit2ID);
+    const unit1NameValue = unitOfSalesList.find((el) => {
+      return el.unit1ID === parseInt(event.target.value);
+    });
+    const unit2NameValue = unitOfSalesList.find((el) => {
+      return el.unit2ID === parseInt(event.target.value);
+    });
+    if (unit1NameValue) {
+      setSelectedUnit(unit1NameValue.unit1Name);
+    }
+    if (unit2NameValue) {
+      setSelectedUnit(unit2NameValue.unit2Name);
     }
     SetResetUnit(false);
   };
@@ -446,7 +457,7 @@ const BrandPage = () => {
       setbrandError(communication.SelectBrandName);
     }
 
-    if (unitsOfSales.trim() === "--Select--") {
+    if (unitsOfSales === "--Select--") {
       isValid = false;
       setUnitError(true);
       setUnitErrorText(communication.SelectUnitName);
@@ -483,14 +494,18 @@ const BrandPage = () => {
     let uosid = 0;
     let uosid2 = 0;
     const objUnits1 = unitOfSalesList.find((el) => {
-      return el.displayUnit && el.displayUnit === unitsOfSales;
+      return el.unit1Name && el.unit1Name === selectedUnit;
     });
-
+    const objUnits2 = unitOfSalesList.find((el) => {
+      return el.unit2Name && el.unit2Name === selectedUnit;
+    });
     if (objUnits1) {
       uosid = objUnits1.unit1ID;
       uosid2 = objUnits1.unit2ID;
+    } else if (objUnits2) {
+      uosid = objUnits2.unit2ID;
+      uosid2 = objUnits2.unit2ID;
     }
-
     if (actionStatus === "new") {
       Provider.create("dealerbrand/insertbrandsetup", {
         BrandID: bnID,
@@ -508,7 +523,6 @@ const BrandPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            //FetchData("added", CookieUserID);
             InsertUpdateBrandMapping("new");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
@@ -546,7 +560,6 @@ const BrandPage = () => {
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
-            // FetchData("updated", CookieUserID);
             InsertUpdateBrandMapping("edit");
           } else {
             handleCancelClick();
@@ -568,7 +581,6 @@ const BrandPage = () => {
     let data = buyerCategoryFullData.filter((el) => {
       return parseFloat(el.BuyerCategoryDiscount) > 0;
     });
-    //if (data !== undefined && data !== null && data.length > 0) {
     let DealerJson = [];
     data.map(function (a: any, index: number) {
       DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
@@ -596,9 +608,6 @@ const BrandPage = () => {
         setSnackbarType("error");
         setOpen(true);
       });
-    // } else {
-    //   FetchData(mode === "new" ? "added" : "updated", CookieUserID);
-    // }
   };
 
   const SetResetServiceName = (isBlank: boolean) => {
@@ -634,7 +643,6 @@ const BrandPage = () => {
   const SetResetUnit = (isBlank: boolean) => {
     if (isBlank) {
       setUnitsOfSales("--Select--");
-      setSelectedUnitID(0);
       setUnitList([]);
     }
     setUnitErrorText("");
@@ -665,14 +673,13 @@ const BrandPage = () => {
           FetchUnitsFromCategory(ac.id);
         }
       });
-
       setBrandPrefix(a.brandPrefixName);
       setIsBrandPrefixError(false);
       setBrandPrefixError("");
       setBn(a.brandName);
       setBnID(a.brandID);
       SetResetBrandName(false);
-      setUnitsOfSales(a.unitName + " / " + a.unitName2);
+      setUnitsOfSales(a.unitOfSalesID ? a.unitOfSalesID.toString() : "");
 
       SetResetUnit(false);
       setGD(a.generalDiscount);
@@ -860,8 +867,8 @@ const BrandPage = () => {
                   </MenuItem>
                   {unitList.map((item, index) => {
                     return (
-                      <MenuItem key={index} value={item}>
-                        {item}
+                      <MenuItem key={index} value={item.unitID}>
+                        {item.unitName}
                       </MenuItem>
                     );
                   })}
@@ -967,7 +974,7 @@ const BrandPage = () => {
                 </Grid>
                 {buyerCategoryFullData.map((k, i) => {
                   return (
-                    <Grid item xs={4} sm={3} md={3} sx={{ mt: 2, pl: "8px", pr: "8px" }}>
+                    <Grid item key={i} xs={4} sm={3} md={3} sx={{ mt: 2, pl: "8px", pr: "8px" }}>
                       <Typography variant="subtitle2" sx={{ mb: 1 }}>
                         <b>{k.buyerCategoryName} (%)</b>
                       </Typography>

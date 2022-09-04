@@ -944,10 +944,10 @@ export const brandColumns: GridColDef[] = [
   },
   {
     field: "Unit of Sale",
-    headerName: "unitOfSale",
+    headerName: "Unit Of Sale",
     flex: 1.8,
     renderCell: (params) => {
-      return params.row.unitName + " / " + params.row.unitName2;
+      return params.row.unitName;
     },
   },
   {
@@ -1027,6 +1027,9 @@ export const productSetupColumns: GridColDef[] = [
     field: "unitOfSale",
     headerName: "Unit of Sale",
     flex: 1,
+    renderCell: (params) => {
+      return params.row.unitName;
+    },
   },
   {
     field: "price",

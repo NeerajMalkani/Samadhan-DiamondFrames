@@ -244,6 +244,8 @@ export interface BrandModel {
   unitID: number;
   unitName: string;
   unitName2: string;
+  unitOfSalesID: number;
+  unitOfSalesID2: number;
   generalDiscount: string;
   appProviderDiscount: string;
   referralPoints: string;
