@@ -323,6 +323,7 @@ const EmployeeEdit = () => {
     FetchBranch();
     FetchDepartment();
     FetchDesignation();
+    FetchReport();
   }, []);
 
   const FetchBranch = () => {
@@ -337,6 +338,20 @@ const EmployeeEdit = () => {
         }
       })
       .catch((e) => {});
+  };
+
+  const FetchReport =() =>{
+    debugger;
+    Provider.getAll("master/getreportingemployee")
+    .then((response:any)=> {
+      debugger;
+      if(response.data && response.data.code === 200){
+        if (response.data.data){
+          setReportNameList(response.data.data);
+        }
+      }
+    })
+    .catch((e)=>{});
   };
 
   const handleBranchChange = (event: SelectChangeEvent) => {

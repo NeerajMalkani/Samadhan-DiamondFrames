@@ -514,3 +514,42 @@ export interface IdCardModel {
   idCardID: number;
   isActive: string;
 }
+
+
+export interface ApprovredModel {
+  id: number;
+  userID: number;
+  srno: number;
+  company:string;
+  activityrole:string;
+  department:string;
+  designation:string;
+  username:string;
+  password:string;
+  status:boolean;
+  action: boolean;
+}
+
+export interface PendingModel {
+  id: number;
+  srno: number;
+  role:string;
+  companyName:string;
+  contactName:string;
+  mobileNo:number;
+  status:boolean;
+  action: boolean;
+}
+export interface DeclinedModel {
+  id: number;
+  userID: number;
+  srno: number;
+  company:string;
+  activityrole:string;
+  department:string;
+  designation:string;
+  username:string;
+  password:string;
+  status:boolean;
+  action: boolean;
+}

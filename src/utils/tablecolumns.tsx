@@ -1,6 +1,7 @@
 import { Button, Grid, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { CalculateSqfeet } from "./CommonFunctions";
+import { NullOrEmpty } from "./CommonFunctions";
 
 export const categoryColumns: GridColDef[] = [
   {
@@ -1904,5 +1905,194 @@ export const employeeSearchResult: GridColDef[] = [
         </Button>
       </Grid>
     ),
+  },
+];
+
+export const approvedColumns:GridColDef[]=[
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "company",
+    headerName: "Company & Contact Details",
+    flex: 4,
+    minWidth: 160,
+    renderCell: (params) => (
+      <div>
+        <Typography>{NullOrEmpty(params.row.company) ? "" : params.row.company.split(',')[0]}</Typography>
+        <Typography>{NullOrEmpty(params.row.company) ? "" : params.row.company.split(',')[1]}</Typography>
+        <Typography>{NullOrEmpty(params.row.company) ? "" : params.row.company.split(',')[2]}</Typography>
+      </div>
+    )
+  },
+   {
+    field: "activityRoleName",
+    headerName: "Activity Role",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "department",
+    headerName: "Department",
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "designation",
+    headerName: "Designation",
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "username",
+    headerName: "User Name",
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "password",
+    headerName: "Password",
+    flex: 1.5,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.5,
+    maxWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <label>Approved</label>
+      </Grid>
+    ),
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 2,
+    maxWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Decline
+        </Button>
+      </Grid>
+    ),
+  },
+
+];
+
+export const declinedColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "role",
+    headerName: "Role",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "companyName",
+    headerName: "ComapnyName",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "contactName",
+    headerName: "Contact Name",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "mobileNo",
+    headerName: "Mobile No",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "status",
+    headerName: "Status",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "action",
+    headerName: "Action",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+];
+
+export const pendingColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "role",
+    headerName: "Role",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "companyName",
+    headerName: "ComapnyName",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "contactName",
+    headerName: "Contact Name",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "mobileNo",
+    headerName: "Mobile No",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "status",
+    headerName: "Status",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+   {
+    field: "action",
+    headerName: "Action",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
   },
 ];

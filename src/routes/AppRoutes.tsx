@@ -46,6 +46,9 @@ import EmployeeListPage from "../ui/Contractor/Employee/EmployeeList";
 import AddBranch from "../ui/Contractor/Organization/AddBranch";
 import EmployeeEdit from "../ui/Contractor/Employee/EmployeeEdit";
 import DesignWisePage from "../ui/Contractor/QuotationAndEstimation/DesignWise/DesignWise";
+import Approved from "../ui/Admin/Users/Approved";
+import Pending from "../ui/Admin/Users/Pending";
+import Declined from "../ui/Admin/Users/Declined";
 
 const AppRoutes = () => {
   return (
@@ -98,6 +101,9 @@ const AppRoutes = () => {
               <Route path="contractor/clientlist" element={<ContractorClientPage />} />
               <Route path="contractor/quotationandestimation/designwise" element={<DesignWisePage />} />
               <Route path="contractor/employee/employeelist" element={<EmployeeList />} />
+              <Route path="users/approved" element={<Approved/>}/>
+              <Route path="users/pending" element={<Pending/>}/>
+              <Route path="users/declined" element={<Declined/>}/>
             </Routes>
           </BrowserRouter>
         </Box>

@@ -165,7 +165,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/user/pending`);
+              navigate(`/users/pending`);
             }, 300);
           },
         },
@@ -175,7 +175,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/user/approved`);
+              navigate(`/users/approved`);
             }, 300);
           },
         },
@@ -185,7 +185,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/user/declined`);
+              navigate(`/users/declined`);
             }, 300);
           },
         },

@@ -17,3 +17,14 @@ export const  GetStringifyJson = (params:any) => {
       return 0;
     }
   };
+
+
+  export const NullOrEmpty = (param) => {
+    if (param === undefined || param === null || param === "") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+
