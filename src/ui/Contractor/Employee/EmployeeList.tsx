@@ -3,7 +3,9 @@ import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormContro
 DialogActions,
 DialogContent,
 DialogContentText,
-DialogTitle,} from "@mui/material";
+DialogTitle,
+Stack
+} from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -386,86 +388,89 @@ const searchToggle = () =>{
           <Typography variant="h6">EMPLOYEE SEARCH</Typography>
           </Grid>
 
-          </Grid>
+        </Grid>
 <br></br>
 <br></br>
-<Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
-<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
+          <Grid container direction="row" justifyContent="center" alignItems="center"  rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
             <Grid item xs={4}>
-      <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-            <Grid item sm={6}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b style={{float:'right',}}>Employee Aadhar No</b>
-            </Typography>
-            </Grid>
-            <Grid item sm={6}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setAadharNo((e.target as HTMLInputElement).value);
-                isSetAadharNoError(false);
-                setAadharNoErrorText("");
-              }}
-              error={isAadharNoError}
-              helperText={aadharNoErrorText}
-              value={aadharNo}
-            />
-            </Grid>
-      </Grid>
-            </Grid>
+              <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
+                <Grid item sm={6}>
+                  
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    <b style={{float:'right',}}>Employee Aadhar No</b>
+                  </Typography>
+                  
+                </Grid>
+                <Grid item sm={6}>
 
-            <Grid item xs={4}>
-<Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-      <Grid item sm={4}>
-<Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label>Mobile No</b>
-            </Typography>
-        </Grid>
-        <Grid item sm={6}>
-  <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setMobileNo((e.target as HTMLInputElement).value);
-                isSetMobileNoError(false);
-                setMobileErrorText("");
-              }}
-              error={isMobileNoError}
-              helperText={mobileErrorText}
-              value={mobileNo}
-            />
-        </Grid>
-</Grid>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    onChange={(e) => {
+                      setAadharNo((e.target as HTMLInputElement).value);
+                      isSetAadharNoError(false);
+                      setAadharNoErrorText("");
+                    }}
+                    error={isAadharNoError}
+                    helperText={aadharNoErrorText}
+                    value={aadharNo}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
 
             <Grid item xs={4}>
-<Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-            <Grid item sm={5}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={()=>{handleSearchClick(); searchToggle()}}>
-              Search
-            </Button>
+              <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} direction="row" justifyContent="center" alignItems="center">
+                      <Grid item sm={4}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                            <b style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label>Mobile No</b>
+                          </Typography>
+                      </Grid>
+                      <Grid item sm={6}>
+                          <TextField
+                            fullWidth
+                            variant="outlined"
+                            size="small"
+                            onChange={(e) => {
+                              setMobileNo((e.target as HTMLInputElement).value);
+                              isSetMobileNoError(false);
+                              setMobileErrorText("");
+                            }}
+                            error={isMobileNoError}
+                            helperText={mobileErrorText}
+                            value={mobileNo}
+                          />
+                      </Grid>
               </Grid>
-              <Grid item sm={2}>
-              <Typography variant="h6">[OR]</Typography>
-              </Grid>
-              <Grid item sm={5}>
-              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={toggle}>
-              Create New
-            </Button>
-              </Grid>
+            </Grid>
+
+            <Grid item xs={4} direction="row" justifyContent="center" alignItems="center" >
+              <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
+                <Grid item sm={5}>
+                <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={()=>{handleSearchClick(); searchToggle()}}>
+                  Search
+                </Button>
+                </Grid>
+                <Grid item sm={2}>
+                  <Typography variant="h6">[OR]</Typography>
+                </Grid>
+                <Grid item sm={5}>
+                  <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={toggle}>
+                  Create New
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
           
 
-</Grid>
+        </Grid>
 <br></br>
 <br></br>
-<Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
           
 
@@ -520,88 +525,83 @@ const searchToggle = () =>{
 <br></br>
 
 
-        
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{display:`${active}`}}>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)", }}>
+        <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)"}}>
           <Typography variant="h6">EMPLOYEE (ADD NEW / EDIT)</Typography>
           </Grid>
-      <br></br>
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={4}>
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                    <Grid item sm={6}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Employee Name</b>
-            </Typography>
-            </Grid>
-            <Grid item sm={6}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setAddEmployeeName((e.target as HTMLInputElement).value);
-                isSetAddEmployeeNameError(false);
-                setAddEmployeeNameErrorText("");
-              }}
-              error={isAddEmployeeNameError}
-              helperText={addEmployeeNameErrorText}
-              value={addEmployeeName}
-            />
-            </Grid>
-            </Grid>
-          </Grid>
-                  
-                 
-
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{display:`${active}`}}>
+          <Grid container direction="row" alignItems="center" justifyContent="center" rowSpacing={1} columnSpacing={{ xs: 1, sm: 2}}>
                   <Grid item xs={4}>
-                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                    <Grid item sm={6}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Mobile No</b>
-            </Typography>
-            </Grid>
-            <Grid item sm={6}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setAddMobileNo((e.target as HTMLInputElement).value);
-                isSetAddMobileNoError(false);
-                setAddMobileErrorText("");
-              }}
-              error={isAddMobileNoError}
-              helperText={addMobileErrorText}
-              value={addMobileNo}
-            />
-            </Grid>
-          </Grid>
-          </Grid>
-
-          <Grid item xs={4}>
-          <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                    <Grid item sm={6}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Aadhar No</b>
-            </Typography>
-            </Grid>
-            <Grid item sm={6}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setAddAadharNo((e.target as HTMLInputElement).value);
-                isSetAddAadharNoError(false);
-                setAddAadharNoErrorText("");
-              }}
-              error={isAddAadharNoError}
-              helperText={addAadharNoErrorText}
-              value={addAadharNo}
-            />
-            </Grid>
-          </Grid>
+                    <Grid container direction="row" alignItems="center" justifyContent="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                        <Grid item sm={5}>
+                          <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                            <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Employee Name</b>
+                          </Typography>
+                        </Grid>
+                        <Grid item sm={7}>
+                          <TextField
+                          
+                            fullWidth
+                            variant="outlined"
+                            size="small"
+                            onChange={(e) => {
+                              setAddEmployeeName((e.target as HTMLInputElement).value);
+                              isSetAddEmployeeNameError(false);
+                              setAddEmployeeNameErrorText("");
+                            }}
+                            error={isAddEmployeeNameError}
+                            helperText={addEmployeeNameErrorText}
+                            value={addEmployeeName}
+                          />
+                        </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Grid container direction="row" alignItems="center" justifyContent="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                      <Grid item sm={5}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }} >
+                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Mobile No</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={7}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      size="small"
+                      onChange={(e) => {
+                        setAddMobileNo((e.target as HTMLInputElement).value);
+                        isSetAddMobileNoError(false);
+                        setAddMobileErrorText("");
+                      }}
+                      error={isAddMobileNoError}
+                      helperText={addMobileErrorText}
+                      value={addMobileNo}
+                    />
+                    </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Grid container direction="row" alignItems="center" justifyContent="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                      <Grid item sm={5}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                          <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Aadhar No</b>
+                        </Typography>
+                      </Grid>
+                      <Grid item sm={7}>
+                        <TextField
+                          fullWidth
+                          variant="outlined"
+                          size="small"
+                          onChange={(e) => {
+                            setAddAadharNo((e.target as HTMLInputElement).value);
+                            isSetAddAadharNoError(false);
+                            setAddAadharNoErrorText("");
+                          }}
+                          error={isAddAadharNoError}
+                          helperText={addAadharNoErrorText}
+                          value={addAadharNo}
+                        />
+                      </Grid>
+                  </Grid>
           </Grid>
 
           <Grid item xs={4} sm={8} md={12}>
@@ -610,12 +610,12 @@ const searchToggle = () =>{
             </LoadingButton>
           </Grid>
           </Grid>
-          </Grid>
+        </Grid>
 <br></br>
 <br></br>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">
-            MY EMPLOYEE LIST
+             MY EMPLOYEE LIST
             </Typography>
           </Grid>
           <br></br>
