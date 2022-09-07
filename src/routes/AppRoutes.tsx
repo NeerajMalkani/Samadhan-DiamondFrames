@@ -93,7 +93,7 @@ const AppRoutes = () => {
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
-              <Route path="contractor/employee/employeeedit" element={<EmployeeEdit />} />
+              <Route path="contractor/employee/employeeedit/:id" element={<EmployeeEdit />} />
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
               <Route path="contractor/clientlist" element={<ContractorClientPage />} />

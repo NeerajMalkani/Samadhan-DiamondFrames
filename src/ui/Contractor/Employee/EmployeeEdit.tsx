@@ -51,6 +51,9 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { BloodGroup } from "../../../utils/JSCommonFunction";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { get } from "https";
+import { NullOrEmpty } from "../../../utils/CommonFunctions";
+
+
 //import { URLSearchParams } from "url";
 
 interface TabPanelProps {
@@ -103,6 +106,8 @@ const EmployeeEdit = () => {
       setBloodGroupList(BloodGroup);
     }
   }, []);
+
+  const [employeeID, setEmployeeID] = useState<number>(0);
 
   const [companyName, setCompanyName] = useState("");
   const [companyNameError, setCompanyNameError] = useState("");
@@ -326,6 +331,14 @@ const EmployeeEdit = () => {
     FetchDepartment();
     FetchDesignation();
     FetchReport();
+    debugger;
+    let search = window.location.search;
+    let params = new URLSearchParams(search);
+    let id = params.get('id');
+    if(!NullOrEmpty(id)) {
+        setEmployeeID(parseInt(id));
+    }
+
   }, []);
 
   const FetchBranch = () => {
