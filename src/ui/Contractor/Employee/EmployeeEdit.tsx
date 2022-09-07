@@ -325,7 +325,6 @@ const EmployeeEdit = () => {
 
   useEffect(() => {
     debugger;
-    FetchBasicDetails();
     FetchStates();
     FetchBranch();
     FetchDepartment();
@@ -337,6 +336,7 @@ const EmployeeEdit = () => {
     let id = params.get('id');
     if(!NullOrEmpty(id)) {
         setEmployeeID(parseInt(id));
+        FetchBasicDetails(employeeID);
     }
 
   }, []);
@@ -513,11 +513,11 @@ const EmployeeEdit = () => {
     setValue(newValue);
   };
 
-  const FetchBasicDetails = () => {
+  const FetchBasicDetails = (id:number) => {
     let params = {
-      UserID: cookies.dfc.UserID,
+      ID:id,
     };
-    Provider.getAll(`master/getuserprofile?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/getemployeedetailsbyid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
