@@ -21,6 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { NullOrEmpty } from "../../../utils/CommonFunctions";
 
 const EmployeeListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -71,6 +72,12 @@ const EmployeeListPage = () => {
   const [addMobileErrorText, setAddMobileErrorText] = useState("");
   const [isAddMobileNoError, isSetAddMobileNoError] = useState(false);
 
+  const [otp, setOtp] = React.useState<string>("");
+  const [otpErrorText, setOtpErrorText] = useState("");
+  const [isOtpError, isSetOtpError] = useState(false);
+
+  const [employeeID, setEmployeeID] = React.useState<number>();
+
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
@@ -98,6 +105,7 @@ const EmployeeListPage = () => {
     setAddEmployeeName("");
     setAddMobileNo("");
     setAddAadharNo("");
+    setOpen(false);
   };
 
   const FetchData = (type: string) => {
@@ -217,54 +225,18 @@ const EmployeeListPage = () => {
         setAddAadharNoErrorText("please Enter Aadhar No");
       }
       if (isValid){
-        InsertUpdateData();
+        InsertUpdateData(addEmployeeName,addMobileNo,addAadharNo);
       }
        };
 
-  // const handleSubmitClick = () => {
-  //   let isValid: boolean = true;
 
-  //   if (addEmployeeName === "") {
-  //     isValid = false;
-  //     isSetAddEmployeeNameError(true);
-  //     setAddEmployeeNameErrorText(communication.BlankEmployeeName);
-  //   }
-
-  //   if (addMobileNo === "") {
-  //     isValid = false;
-  //     isSetAddMobileNoError(true);
-  //     setAddMobileErrorText(communication.BlankMobileNo);
-  //   }
-
-  //   if (addAadharNo === "") {
-  //     isValid = false;
-  //     isSetAddAadharNoError(true);
-  //     setAddAadharNoErrorText(communication.BlankAadharNo);
-  //   }
-
-  //   if (isValid) {
-  //     InsertUpdateData();
-  //     setAddEmployeeName("");
-  //     setAddEmployeeNameErrorText("");
-  //     isSetAddEmployeeNameError(false);
-
-  //     setAddAadharNo("");
-  //     setAddAadharNoErrorText("");
-  //     isSetAddAadharNoError(false);
-
-  //     setAddMobileNo("");
-  //     setAddMobileErrorText("");
-  //     isSetAddMobileNoError(false);
-  //   }
-  // };
-
-  const InsertUpdateData = () => {
+  const InsertUpdateData = (employeeName: string, mobileNo: string, aadharNo:string ) => {
     if (actionStatus === "new") {
       Provider.create("master/insertuseremployees", {
         AddedByUserID:cookies.dfc.UserID,
-        EmployeeName:addEmployeeName,
-        MobileNo:addMobileNo,
-        AadharNo:addAadharNo,
+        EmployeeName:employeeName,
+        MobileNo:mobileNo,
+        AadharNo:aadharNo,
 
       })
         .then((response) => {
@@ -273,53 +245,55 @@ const EmployeeListPage = () => {
             FetchData("added");
           }else if (response.data.code === 304) {
             setSnackMsg(response.data.message);
-            setOpen(true);
             setSnackbarType("error");
             ResetFields();
           } else {
             ResetFields();
             setSnackMsg(communication.Error);
             setSnackbarType("error");
-            setOpen(true);
           }
         })
         .catch((e) => {
           ResetFields();
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
-          setOpen(true);
         });
-    // } else if (actionStatus === "edit") {
-    //   Provider.create("master/updateemployeeverificationstatus", {
-    //     id: selectedID,
-    //     EmployeeName:employeeName,
-    //     MobileNo:mobileNo,
-    //     AadharNo:aadharNo,
-    //   })
-    //     .then((response) => {
-    //       if (response.data && response.data.code === 200) {
-    //         FetchData("updated");
-    //       }else if (response.data.code === 304) {
-    //         setSnackMsg(communication.ExistsError);
-    //         setOpen(true);
-    //         setSnackbarType("error");
-    //         ResetFields();
-    //       } else {
-    //         ResetFields();
-    //         setSnackMsg(communication.Error);
-    //         setSnackbarType("error");
-    //         setOpen(true);
-    //       }
-    //     })
-    //     .catch((e) => {
-    //       ResetFields();
-    //       setSnackMsg(communication.NetworkError);
-    //       setSnackbarType("error");
-    //       setOpen(true);
-    //     });
-    // }
       }
   };
+
+  const SubmitVerify = () => {
+    if (actionStatus === "new") {
+      Provider.create("master/updateemployeeverification", {
+        EmployeeID:employeeID,
+        OTP:otp,
+      })
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            FetchData("updated");
+          }else if (response.data.code === 304) {
+            setSnackMsg(response.data.message);
+            setSnackbarType("error");
+            ResetFields();
+          } else {
+            ResetFields();
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+          }
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+        });
+      }
+  };
+
+  const handleSubmitVerify = () =>{
+    debugger;
+    SubmitVerify();
+  };
+
   const handleClose = () => {
           setOpen(false);
         };
@@ -345,7 +319,9 @@ const EmployeeListPage = () => {
     // }
   };
 
-  const setOTPDialog = (id: number) => {
+
+
+  const setOTPDialog = () => {
     setOpen(true);
   };
 
@@ -472,8 +448,6 @@ const searchToggle = () =>{
 <br></br>
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
-          
-
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)" ,display:`${searchActive}`}} >
           <Typography variant="h6">EMPLOYEE SEARCH  RESULT</Typography>
           </Grid>
@@ -504,9 +478,13 @@ const searchToggle = () =>{
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        debugger;
                         const arrActivity = [...gridEmployeeSearchList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                       // handelEditAndDelete((e.target as any).textContent, a);
+                       //handelEditAndDelete((e.target as any).textContent, a);
+                       
+                       //InsertUpdateData();
+                       
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {
@@ -665,7 +643,7 @@ const searchToggle = () =>{
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        debugger;
+                       
                         if(param.field === 'action')
                         {
                         // const arrActivity = [...employeeList];
@@ -673,9 +651,13 @@ const searchToggle = () =>{
                         // handelEditAndDelete((e.target as any).textContent, a);
                         }
                         else if(param.field === 'verifyStatus'){
-                          setOTPDialog(param.row.id);
+                         
+                          const arrActivity = [...employeeList];
+                          let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                          setOtp(NullOrEmpty(a.otp) ? "" : a.otp.toString());
+                          setEmployeeID(a.id);
+                          setOTPDialog();
                         }
-                        
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {
@@ -710,21 +692,21 @@ const searchToggle = () =>{
                         fullWidth
                         variant="outlined"
                         size="small"
-                        // onChange={(e) => {
-                        //   setEmergencyCName((e.target as HTMLInputElement).value);
-                        //   setIsEmergencyCNameError(false);
-                        //   setEmergencyCNameError("");
-                        // }}
-                        // error={isEmergencyCNameError}
-                        // helperText={emergencyCNameError}
-                        // value={emergencyCName}
+                        onChange={(e) => {
+                          setOtp((e.target as HTMLInputElement).value);
+                          isSetOtpError(false);
+                          setOtpErrorText("");
+                        }}
+                        error={isOtpError}
+                        helperText={otpErrorText}
+                        value={otp}
                       />
                     </Grid>
                 </Grid>
                 <br></br>
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} style={{display:'flex',justifyContent:'center',alignItems:'center',}}>
                  
-                           <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}>
+                           <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleSubmitVerify}>
                                 Submit & Verify
                           </Button>
                  
@@ -732,17 +714,7 @@ const searchToggle = () =>{
 
 
           </DialogContent>
-{/*           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button
-              onClick={() => {
-                //UpdateUserStatus();
-              }}
-              autoFocus
-            >
-              Submit & Verify
-            </Button>
-          </DialogActions> */}
+
         </Dialog>
       </div>
 
