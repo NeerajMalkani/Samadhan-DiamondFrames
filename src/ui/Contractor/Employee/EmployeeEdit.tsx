@@ -39,17 +39,19 @@ import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
 import { border } from "@mui/system";
 import Provider from "../../../api/Provider";
 import { LoadingButton } from "@mui/lab";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { AWSImagePath } from "../../../utils/paths";
 import { communication } from "../../../utils/communication";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import uuid from "react-uuid";
 import { CityModel, StateModel, BloodGroupModel, DOBModel, DOJModel, BranchModel, DepartmentNameModel, DesignationNameModel, IdCardModel, ReportNameModel } from "../../../models/Model";
 import { SelectChangeEvent } from "@mui/material";
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { BloodGroup } from "../../../utils/JSCommonFunction";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { get } from "https";
+//import { URLSearchParams } from "url";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -327,8 +329,13 @@ const EmployeeEdit = () => {
   }, []);
 
   const FetchBranch = () => {
+
     debugger;
-    Provider.getAll("master/getuserbranchforemployee")
+    let params = {
+      AddedByUserID : cookies.dfc.UserID,
+    };
+    
+    Provider.getAll(`master/getuserbranchforemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -342,7 +349,10 @@ const EmployeeEdit = () => {
 
   const FetchReport =() =>{
     debugger;
-    Provider.getAll("master/getreportingemployee")
+    let params = {
+      AddedByUserID : cookies.dfc.UserID,
+    };
+    Provider.getAll(`master/getreportingemployee?${new URLSearchParams(GetStringifyJson(params))}`)
     .then((response:any)=> {
       debugger;
       if(response.data && response.data.code === 200){
@@ -368,7 +378,12 @@ const EmployeeEdit = () => {
 
   const FetchDepartment = () => {
     debugger;
-    Provider.getAll("master/getuserdepartmentforbranchemployee")
+    let params = {
+      UserID : cookies.dfc.UserID,
+      UserType:3,
+    };
+    
+    Provider.getAll(`master/getuserdepartmentforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -382,6 +397,7 @@ const EmployeeEdit = () => {
 
   const handleDepartmentChange = (event: SelectChangeEvent) => {
     debugger;
+   
     let departmentName: string = event.target.value;
     let ac = departmentList.find((el) => el.departmentName === departmentName);
     if (ac !== undefined) {
@@ -394,7 +410,11 @@ const EmployeeEdit = () => {
 
   const FetchDesignation = () => {
     debugger;
-    Provider.getAll("master/getuserdesignationforbranchemployee")
+    let params = {
+      UserID : cookies.dfc.UserID,
+      UserType:3,
+    };
+    Provider.getAll(`master/getuserdesignationforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -681,10 +701,10 @@ const EmployeeEdit = () => {
 
   const handleBNChange = (event: SelectChangeEvent) => {
     debugger;
-    let bloodGroup: string = event.target.value;
-    let ac = bloodGroupList.find((el) => el.Name === bloodGroup);
+    let Name: string = event.target.value;
+    let ac = bloodGroupList.find((el) => el.Name === Name);
     if (ac !== undefined) {
-      setBloodGroup(bloodgroup);
+      setBloodGroup(Name);
       setBloodGroupID(ac?.ID);
       setIsBloodGroupError(false);
       setBloodGroupError("");
@@ -977,9 +997,15 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DesktopDatePicker inputFormat="MM/dd/yyyy" value={DOB} onChange={handleDOBChange} renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
-                      </LocalizationProvider> */}
+                    
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                  inputFormat="MM/dd/yyyy"
+                  value={DOB}
+                  onChange={handleDOBChange}
+                  renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+        </LocalizationProvider>
+                
                     </Grid>
                   </Grid>
                   <br></br>
@@ -990,9 +1016,13 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DesktopDatePicker inputFormat="MM/dd/yyyy" value={DOJ} onChange={handleDOJChange} renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
-                      </LocalizationProvider> */}
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DesktopDatePicker
+          inputFormat="MM/dd/yyyy"
+          value={DOJ}
+          onChange={handleDOJChange}
+          renderInput={(params) => <TextField size="small"{...params} />}></DesktopDatePicker>
+  </LocalizationProvider>
                     </Grid>
                   </Grid>
                   <br></br>
@@ -1049,14 +1079,14 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DesktopDatePicker
-                          inputFormat="MM/dd/yyyy"
-                          value={CardValidity}
-                          onChange={handleCardValidityChange}
-                          renderInput={(params) => <TextField size="small" {...params} />}
-                        ></DesktopDatePicker>
-                      </LocalizationProvider> */}
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DesktopDatePicker
+          inputFormat="MM/dd/yyyy"
+          value={CardValidity}
+          onChange={handleCardValidityChange}
+          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+        
+  </LocalizationProvider>
                     </Grid>
                   </Grid>
                   <br></br>
@@ -1273,14 +1303,14 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6} style={{ height: "30" }}>
-                      {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                           inputFormat="MM/dd/yyyy"
                           value={LastWorkingDate}
                           onChange={handleLastWorkingDateChange}
                           renderInput={(params) => <TextField size="small" {...params} />}
                         ></DesktopDatePicker>
-                      </LocalizationProvider> */}
+                      </LocalizationProvider>
                     </Grid>
                   </Grid>
                 </Grid>

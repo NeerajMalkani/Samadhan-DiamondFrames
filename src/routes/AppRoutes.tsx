@@ -42,7 +42,6 @@ import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEs
 import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductEstimationDetails";
 import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
 import ContractorClientPage from "../ui/Contractor/Client/CClient";
-import EmployeeListPage from "../ui/Contractor/Employee/EmployeeList";
 import AddBranch from "../ui/Contractor/Organization/AddBranch";
 import EmployeeEdit from "../ui/Contractor/Employee/EmployeeEdit";
 import DesignWisePage from "../ui/Contractor/QuotationAndEstimation/DesignWise/DesignWise";
@@ -84,7 +83,6 @@ const AppRoutes = () => {
               <Route path="dealer/myservices" element={<MyServices />} />
               <Route path="dealer/buyercategory" element={<BuyerCategory />} />
               <Route path="dealer/basicdetails" element={<Basic />} />
-              <Route path="contractor/employee/employee-list" element={<EmployeeList />} />
               <Route path="contractor/companyprofile/cbasic" element={<CBasic />} />
               <Route path="contractor/companyprofile/cmyservice" element={<CMyService />} />
               <Route path="contractor/organization/adddepartment" element={<AddDepartment />} />

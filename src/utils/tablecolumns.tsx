@@ -1176,50 +1176,63 @@ export const employeeColumns: GridColDef[] = [
     field: "mobileNo",
     headerName: "Mobile No",
     flex: 1.8,
-    minWidth: 140,
+    minWidth: 120,
     sortable: false,
   },
   {
     field: "locationName",
     headerName: "Branch",
     flex: 1.8,
-    minWidth: 140,
+    minWidth: 120,
     sortable: false,
   },
   {
     field: "departmentName",
     headerName: "Department",
-    flex: 1.8,
-    minWidth: 140,
+    flex: 1.5,
+    minWidth: 120,
     sortable: false,
   },
   {
     field: "designationName",
     headerName: "Designation",
-    flex: 1.8,
-    minWidth: 140,
+    flex: 1.5,
+    minWidth: 120,
     sortable: false,
   },
   {
     field: "profileStatus",
     headerName: "Profile Status",
-    flex: 1.8,
-    minWidth: 140,
+    flex: 1,
+    minWidth: 120,
     sortable: false,
   },
   {
     field: "loginStatus",
     headerName: "Login Status",
-    flex: 1.8,
-    minWidth: 140,
+    flex: 1,
+    minWidth: 120,
     sortable: false,
   },
   {
     field: "verifyStatus",
     headerName: "Verify Status",
-    flex: 1.8,
-    minWidth: 140,
+    flex: 1,
+    minWidth: 120,
     sortable: false,
+    renderCell: params => {
+      if (params.row.verifyStatus === false) {
+        return <Button variant="contained" size="small" sx={{ mr: 1 }}
+        >
+                  Send OTP
+                </Button>;
+      }
+      else {
+        return <Grid>
+         <Typography>Verified</Typography>
+      </Grid>;
+      }
+    }
   },
   {
     field: "action",

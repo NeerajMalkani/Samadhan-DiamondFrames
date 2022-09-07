@@ -1,11 +1,16 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography ,
+  Dialog,
+DialogActions,
+DialogContent,
+DialogContentText,
+DialogTitle,} from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Provider from "../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
-import { activityColumns, employeeColumns,employeeSearchResult } from "../../../utils/tablecolumns";
+import { activityColumns, employeeColumns, employeeSearchResult } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
 import { ActivityRoleNameModel, EmployeeModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
@@ -13,9 +18,11 @@ import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { GetStringifyJson } from "../../../utils/CommonFunctions";
 
 const EmployeeListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
+  const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +38,13 @@ const EmployeeListPage = () => {
   const [gridEmployeeList, setGridEmployeeList] = useState<Array<EmployeeModel>>([]);
   const [gridEmployeeListTemp, setGridEmployeeListTemp] = useState<Array<EmployeeModel>>([]);
 
+
+  const [employeeSearchList, setEmployeeSearchList] =useState<Array<EmployeeModel>>([]);
+  const [employeeSearchListTemp, setEmployeeSearchListTemp] = React.useState<Array<any>>([]);
+
+  const [gridEmployeeSearchList, setGridEmployeeSearchList] = useState<Array<EmployeeModel>>([]);
+  const [gridEmployeeSearchListTemp, setGridEmployeeSearchListTemp] = useState<Array<EmployeeModel>>([]);
+
   const [mobileNo, setMobileNo] = React.useState("");
   const [mobileErrorText, setMobileErrorText] = useState("");
   const [isMobileNoError, isSetMobileNoError] = useState(false);
@@ -41,13 +55,13 @@ const EmployeeListPage = () => {
 
   const [employeeName, SetEmployeeName] = React.useState("");
   const [employeeNameErrorText, setEmployeeNameErrorText] = useState("");
-  const [isEmployeeNameError, isSetemployeeNameError] = useState(false);
+  const [isEmployeeNameError, isSetEmployeeNameError] = useState(false);
 
   const [addEmployeeName, setAddEmployeeName] = React.useState("");
   const [addEmployeeNameErrorText, setAddEmployeeNameErrorText] = useState("");
-  const [addEmployeeNameError, setAddEmployeeNameError] = useState(false);
+  const [isAddEmployeeNameError, isSetAddEmployeeNameError] = useState(false);
 
-  const [addAadharNo, setaddAadharNo] = React.useState("");
+  const [addAadharNo, setAddAadharNo] = React.useState("");
   const [addAadharNoErrorText, setAddAadharNoErrorText] = useState("");
   const [isAddAadharNoError, isSetAddAadharNoError] = useState(false);
 
@@ -70,7 +84,6 @@ const EmployeeListPage = () => {
 
   useEffect(() => {
     FetchData("");
-   // FetchSearchData("");
   }, []);
 
   const ResetFields = () => {
@@ -80,21 +93,25 @@ const EmployeeListPage = () => {
     setDataGridPointer("auto");
     setButtonDisplay("none");
     setButtonLoading(false);
+    setAddEmployeeName("");
+    setAddMobileNo("");
+    setAddAadharNo("");
   };
 
   const FetchData = (type: string) => {
     let params = {
-      UserId:cookies.dfc.UserID,
-      UserType:7, 
+      AddedByUserID:cookies.dfc.UserID,
     };
     ResetFields();
-    Provider.getAll("master/getuseremployeelist")
+   Provider.getAll(`master/getuseremployeelist?${new URLSearchParams(GetStringifyJson(params))}`)
+    
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.profileStatus = a.profileStatus ? "complete" : "Incomplete";
+              a.loginStatus = a.loginStatus ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -123,20 +140,25 @@ const EmployeeListPage = () => {
   };
 
   const FetchSearchData= () => {
+    debugger;
     let params = {
-      UserId:cookies.dfc.UserID,
-      UserType:7,
+      AddedByUserID:cookies.dfc.UserID,
       AadharNo:aadharNo,
       MobileNo:mobileNo
     };
     ResetFields();
-    Provider.getAll("master/getemployeesearchlist")
+    Provider.getAll(`master/getemployeesearchlist?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
-            setGridEmployeeList(arrList);
-            setGridEmployeeListTemp(arrList);
+            arrList.map(function (a: any, index: number) {
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+            setGridEmployeeSearchList(arrList);
+            setGridEmployeeSearchListTemp(arrList);
           }
         } else {
           setSnackbarType("info");
@@ -161,74 +183,94 @@ const EmployeeListPage = () => {
     if(aadharNo.trim() === "" && mobileNo.trim() === "")
     {
       isValid = false;
-      isSetAadharNoError(true);
-      setAadharNoErrorText("Please Enter Aadhar No");
-      
-      isValid = false;
       isSetMobileNoError(true);
       setMobileErrorText("Please Enter Mobile No");
 
-
+      isSetAadharNoError(true);
+      setAadharNoErrorText("Please Enter Aadhar No");
     }
+
     if (isValid){
-      //InsertUpdateData(addAadharNo,addMobileNo);
+      FetchSearchData();
     }
 
      };
 
+   
+    const handleValidateClick = () => {
+      let isValid: boolean = true;
+  
+      if(addEmployeeName.trim() === "" && addMobileNo.trim() === "" && addAadharNo.trim() === "")
+      {
+        isValid = false;
+        isSetAddEmployeeNameError(true);
+        setAddEmployeeNameErrorText("Please Enter Employee Name");
 
+        isValid = false;
+        isSetAddMobileNoError(true);
+        setAddMobileErrorText("Please Enter Mobile No");
 
+        isValid= false;
+        isSetAddAadharNoError(true);
+        setAddAadharNoErrorText("please Enter Aadhar No");
+      }
+      if (isValid){
+        InsertUpdateData();
+      }
+       };
 
-  const handleSubmitClick = () => {
-    let isValid: boolean = true;
+  // const handleSubmitClick = () => {
+  //   let isValid: boolean = true;
 
-    if (addEmployeeName === "") {
-      isValid = false;
-      setAddEmployeeNameError(true);
-      setAddEmployeeNameErrorText(communication.BlankEmployeeName);
-    }
+  //   if (addEmployeeName === "") {
+  //     isValid = false;
+  //     isSetAddEmployeeNameError(true);
+  //     setAddEmployeeNameErrorText(communication.BlankEmployeeName);
+  //   }
 
-    if (addMobileNo === "") {
-      isValid = false;
-      isSetAddMobileNoError(true);
-      setAddMobileErrorText(communication.BlankMobileNo);
-    }
+  //   if (addMobileNo === "") {
+  //     isValid = false;
+  //     isSetAddMobileNoError(true);
+  //     setAddMobileErrorText(communication.BlankMobileNo);
+  //   }
 
-    if (addAadharNo === "") {
-      isValid = false;
-      isSetAddAadharNoError(true);
-      setAddAadharNoErrorText(communication.BlankAadharNo);
-    }
+  //   if (addAadharNo === "") {
+  //     isValid = false;
+  //     isSetAddAadharNoError(true);
+  //     setAddAadharNoErrorText(communication.BlankAadharNo);
+  //   }
 
-    if (isValid) {
-      InsertUpdateData();
-      setAddEmployeeName("");
-      setAddEmployeeNameErrorText("");
-      setAddEmployeeNameError(false);
+  //   if (isValid) {
+  //     InsertUpdateData();
+  //     setAddEmployeeName("");
+  //     setAddEmployeeNameErrorText("");
+  //     isSetAddEmployeeNameError(false);
 
-      setaddAadharNo("");
-      setAddAadharNoErrorText("");
-      isSetAddAadharNoError(false);
+  //     setAddAadharNo("");
+  //     setAddAadharNoErrorText("");
+  //     isSetAddAadharNoError(false);
 
-      setAddMobileNo("");
-      setAddMobileErrorText("");
-      isSetAddMobileNoError(false);
-    }
-  };
-
+  //     setAddMobileNo("");
+  //     setAddMobileErrorText("");
+  //     isSetAddMobileNoError(false);
+  //   }
+  // };
 
   const InsertUpdateData = () => {
     if (actionStatus === "new") {
       Provider.create("master/insertuseremployees", {
-        // ActivityRoleName: paramActivityName,
-        // Display: checked,
+        AddedByUserID:cookies.dfc.UserID,
+        EmployeeName:addEmployeeName,
+        MobileNo:addMobileNo,
+        AadharNo:addAadharNo,
 
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
           }else if (response.data.code === 304) {
-            setSnackMsg(communication.ExistsError);
+            setSnackMsg(response.data.message);
             setOpen(true);
             setSnackbarType("error");
             ResetFields();
@@ -245,35 +287,41 @@ const EmployeeListPage = () => {
           setSnackbarType("error");
           setOpen(true);
         });
-    } else if (actionStatus === "edit") {
-      Provider.create("master/updateactivityroles", {
-        id: selectedID,
-        // ActivityRoleName: paramActivityName,
-        // Display: checked,
-      })
-        .then((response) => {
-          if (response.data && response.data.code === 200) {
-            FetchData("updated");
-          }else if (response.data.code === 304) {
-            setSnackMsg(communication.ExistsError);
-            setOpen(true);
-            setSnackbarType("error");
-            ResetFields();
-          } else {
-            ResetFields();
-            setSnackMsg(communication.Error);
-            setSnackbarType("error");
-            setOpen(true);
-          }
-        })
-        .catch((e) => {
-          ResetFields();
-          setSnackMsg(communication.NetworkError);
-          setSnackbarType("error");
-          setOpen(true);
-        });
-    }
+    // } else if (actionStatus === "edit") {
+    //   Provider.create("master/updateemployeeverificationstatus", {
+    //     id: selectedID,
+    //     EmployeeName:employeeName,
+    //     MobileNo:mobileNo,
+    //     AadharNo:aadharNo,
+    //   })
+    //     .then((response) => {
+    //       if (response.data && response.data.code === 200) {
+    //         FetchData("updated");
+    //       }else if (response.data.code === 304) {
+    //         setSnackMsg(communication.ExistsError);
+    //         setOpen(true);
+    //         setSnackbarType("error");
+    //         ResetFields();
+    //       } else {
+    //         ResetFields();
+    //         setSnackMsg(communication.Error);
+    //         setSnackbarType("error");
+    //         setOpen(true);
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       ResetFields();
+    //       setSnackMsg(communication.NetworkError);
+    //       setSnackbarType("error");
+    //       setOpen(true);
+    //     });
+    // }
+      }
   };
+  const handleClose = () => {
+          setOpen(false);
+        };
+    
 
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
@@ -295,6 +343,34 @@ const EmployeeListPage = () => {
     // }
   };
 
+  const setOTPDialog = (id: number) => {
+    setOpen(true);
+  };
+
+/*coding creat button toggle */
+  const [active,setActive] = useState("none");
+  const toggle = () =>{
+    if(active === "none")
+    {
+      setActive("inline")
+    }
+    else{
+      setActive("none")
+    }
+  }
+/*end create button toggle*/
+/*start search toggle coding*/
+const [searchActive,setSearchActive] = useState("none");
+const searchToggle = () =>{
+    if(searchActive === "none")
+    {
+      setSearchActive("inline")
+    }
+    else{
+      setSearchActive("none")
+    }
+  }
+/*end search toggle coding*/
   
   return (
     <Box sx={{ mt: 11 }}>
@@ -306,12 +382,17 @@ const EmployeeListPage = () => {
             <Typography variant="h4">EMPLOYEE</Typography>
           </Grid>
 
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)" }}>
           <Typography variant="h6">EMPLOYEE SEARCH</Typography>
-          <br></br>
+          </Grid>
 
-          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-      <Grid item xs={4}>
+          </Grid>
+<br></br>
+<br></br>
+<Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
+            <Grid item xs={4}>
       <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
             <Grid item sm={6}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -334,9 +415,9 @@ const EmployeeListPage = () => {
             />
             </Grid>
       </Grid>
-</Grid>
+            </Grid>
 
-<Grid item xs={4}>
+            <Grid item xs={4}>
 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
       <Grid item sm={4}>
 <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -359,12 +440,12 @@ const EmployeeListPage = () => {
             />
         </Grid>
 </Grid>
-</Grid>
+            </Grid>
 
-<Grid item xs={4}>
+            <Grid item xs={4}>
 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
             <Grid item sm={5}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleSearchClick}>
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={()=>{handleSearchClick(); searchToggle()}}>
               Search
             </Button>
               </Grid>
@@ -372,23 +453,33 @@ const EmployeeListPage = () => {
               <Typography variant="h6">[OR]</Typography>
               </Grid>
               <Grid item sm={5}>
-              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} >
+              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={toggle}>
               Create New
             </Button>
               </Grid>
               </Grid>
-</Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+          
+
+</Grid>
+<br></br>
+<br></br>
+<Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+          
+
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)" ,display:`${searchActive}`}} >
           <Typography variant="h6">EMPLOYEE SEARCH  RESULT</Typography>
-          </Grid><Grid item xs={4} sm={8} md={12}>
+          </Grid>
+          <Grid item xs={4} sm={8} md={12} sx={{display:`${searchActive}`}}>
             {loading ? (
               <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
-              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {gridEmployeeList.length === 0 ? (
+              <div style={{ height: 300, width: "100%", marginBottom: "20px" }}>
+                {gridEmployeeSearchList.length === 0 ? (
                     <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
@@ -401,14 +492,14 @@ const EmployeeListPage = () => {
                         pointerEvents: dataGridPointer,
                       }}
                       autoHeight={true}
-                      rows={gridEmployeeListTemp}
+                      rows={gridEmployeeSearchListTemp}
                       columns={employeeSearchResult}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...gridEmployeeList];
+                        const arrActivity = [...gridEmployeeSearchList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                        // handelEditAndDelete((e.target as any).textContent, a);
                       }}
@@ -425,39 +516,52 @@ const EmployeeListPage = () => {
               </div>
             )}
           </Grid>
+        </Grid>
+<br></br>
 
 
-
-          </Grid>
-
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+        
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{display:`${active}`}}>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)", }}>
           <Typography variant="h6">EMPLOYEE (ADD NEW / EDIT)</Typography>
-
-          <Grid item xs={4} sm={5} md={12} sx={{ mt: 1 }}>
+          </Grid>
+      <br></br>
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid item xs={4}>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={6}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Employee Name</b>
-              <label style={{ color: "#ff0000" }}>*</label>
+              <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Employee Name</b>
             </Typography>
+            </Grid>
+            <Grid item sm={6}>
             <TextField
               fullWidth
               variant="outlined"
               size="small"
               onChange={(e) => {
                 setAddEmployeeName((e.target as HTMLInputElement).value);
-                setAddEmployeeNameError(false);
+                isSetAddEmployeeNameError(false);
                 setAddEmployeeNameErrorText("");
               }}
-              error={isAddAadharNoError}
-              helperText={aadharNoErrorText}
-              value={aadharNo}
+              error={isAddEmployeeNameError}
+              helperText={addEmployeeNameErrorText}
+              value={addEmployeeName}
             />
+            </Grid>
+            </Grid>
           </Grid>
+                  
+                 
 
-          <Grid item xs={4} sm={5} md={12} sx={{ mt: 1 }}>
+                  <Grid item xs={4}>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={6}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Mobile No</b>
-              <label style={{ color: "#ff0000" }}>*</label>
+              <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Mobile No</b>
             </Typography>
+            </Grid>
+            <Grid item sm={6}>
             <TextField
               fullWidth
               variant="outlined"
@@ -471,19 +575,24 @@ const EmployeeListPage = () => {
               helperText={addMobileErrorText}
               value={addMobileNo}
             />
+            </Grid>
+          </Grid>
           </Grid>
 
-          <Grid item xs={4} sm={5} md={12} sx={{ mt: 1 }}>
+          <Grid item xs={4}>
+          <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={6}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Aadhar No</b>
-              <label style={{ color: "#ff0000" }}>*</label>
+              <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Aadhar No</b>
             </Typography>
+            </Grid>
+            <Grid item sm={6}>
             <TextField
               fullWidth
               variant="outlined"
               size="small"
               onChange={(e) => {
-                setaddAadharNo((e.target as HTMLInputElement).value);
+                setAddAadharNo((e.target as HTMLInputElement).value);
                 isSetAddAadharNoError(false);
                 setAddAadharNoErrorText("");
               }}
@@ -491,23 +600,25 @@ const EmployeeListPage = () => {
               helperText={addAadharNoErrorText}
               value={addAadharNo}
             />
+            </Grid>
+          </Grid>
           </Grid>
 
           <Grid item xs={4} sm={8} md={12}>
-            
-            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleValidateClick}>
                 Validate & Generate Employee ID
             </LoadingButton>
           </Grid>
-
           </Grid>
-
-
+          </Grid>
+<br></br>
+<br></br>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">
             MY EMPLOYEE LIST
             </Typography>
           </Grid>
+          <br></br>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
               <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
@@ -554,9 +665,17 @@ const EmployeeListPage = () => {
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        debugger;
+                        if(param.field === 'action')
+                        {
                         // const arrActivity = [...employeeList];
                         // let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         // handelEditAndDelete((e.target as any).textContent, a);
+                        }
+                        else if(param.field === 'verifyStatus'){
+                          setOTPDialog(param.row.id);
+                        }
+                        
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {
@@ -571,8 +690,62 @@ const EmployeeListPage = () => {
               </div>
             )}
           </Grid>
-          </Grid>
+          
       </Container>
+      <div>
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+          <DialogTitle>EMPLOYEE OTP NO VERIFICATION & LOGIN ACTIVATION
+</DialogTitle>
+          <DialogContent>
+{/*             <DialogContentText>Confirm to Decline?</DialogContentText> */}
+
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={5}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Enter OTP No</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={5}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        // onChange={(e) => {
+                        //   setEmergencyCName((e.target as HTMLInputElement).value);
+                        //   setIsEmergencyCNameError(false);
+                        //   setEmergencyCNameError("");
+                        // }}
+                        // error={isEmergencyCNameError}
+                        // helperText={emergencyCNameError}
+                        // value={emergencyCName}
+                      />
+                    </Grid>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} style={{display:'flex',justifyContent:'center',alignItems:'center',}}>
+                 
+                           <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}>
+                                Submit & Verify
+                          </Button>
+                 
+                </Grid>
+
+
+          </DialogContent>
+{/*           <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button
+              onClick={() => {
+                //UpdateUserStatus();
+              }}
+              autoFocus
+            >
+              Submit & Verify
+            </Button>
+          </DialogActions> */}
+        </Dialog>
+      </div>
+
       <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}

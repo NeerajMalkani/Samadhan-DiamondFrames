@@ -458,9 +458,10 @@ export interface EmployeeModel {
   branchName: string;
   departmentName: string;
   designationName: string;
-  profileStatus: string;
-  loginStatus: string;
-  verifyStatus: string;
+  profileStatus: boolean;
+  loginStatus: boolean;
+  verifyStatus: boolean;
+  otp:number;
   action: string;
 }
 
