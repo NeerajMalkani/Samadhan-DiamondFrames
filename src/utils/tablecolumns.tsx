@@ -1240,13 +1240,9 @@ export const employeeColumns: GridColDef[] = [
     flex: 1,
     minWidth: 100,
     sortable: false,
-    renderCell: (e) => (
-      <Grid>
-        <Button variant="text" sx={{ mr: 1 }}>
-          Edit
-        </Button>
-      </Grid>
-    ),
+    renderCell: (e) => {
+      return <Link href={`employeeedit/${e.row.id}`}>Edit</Link>;
+    }
   },
 ];
 

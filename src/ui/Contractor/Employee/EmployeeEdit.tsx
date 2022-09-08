@@ -94,7 +94,6 @@ const EmployeeEdit = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    debugger;
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
     } else {
@@ -107,11 +106,7 @@ const EmployeeEdit = () => {
     }
   }, []);
 
-  const [employeeID, setEmployeeID] = useState<number>(0);
-
-  const [companyName, setCompanyName] = useState("");
-  const [companyNameError, setCompanyNameError] = useState("");
-  const [isCompanyNameError, setIsCompanyNameError] = useState(false);
+  const [employeeID, setEmployeeID] = React.useState<number>(0);
 
   const [employeeName, setEmployeeName] = useState("");
   const [employeeNameError, setEmployeeNameError] = useState("");
@@ -141,6 +136,10 @@ const EmployeeEdit = () => {
   const [emergencyCNoError, setEmergencyCNoError] = useState("");
   const [isEmergencyCNoError, setIsEmergencyCNoError] = useState(false);
 
+  const [reporting, setReporting] = useState("");
+  const [reportingError, setReportingError] = useState("");
+  const [isReportingError, setIsReportingError] = useState(false);
+
   const [cardValid, setCardValid] = useState("");
   const [cardValidError, setCardValidError] = useState("");
   const [isCardValidError, setIsCardValidError] = useState(false);
@@ -165,39 +164,9 @@ const EmployeeEdit = () => {
   const [accountHNameError, setAccountHNameError] = useState("");
   const [isAccountHNameError, setIsAccountHNameError] = useState(false);
 
-  const [contact, setContact] = useState("");
-  const [contactError, setContactError] = useState("");
-  const [isContactError, setIsContactError] = useState(false);
-
-  const [contactNo, setContactNo] = useState("");
-  const [contactNoError, setContactNoError] = useState("");
-  const [isContactNoError, setIsContactNoError] = useState(false);
-
-  const [gstNo, setGSTNo] = useState("");
-  const [gstNoError, setGSTNoError] = useState("");
-  const [isGSTNoError, setIsGSTNoError] = useState(false);
-
-  const [panNo, setPanNo] = useState("");
-  const [panNoError, setPanNoError] = useState("");
-  const [isPanNoError, setIsPanNoError] = useState(false);
-
-  const [locationName, setLocationName] = useState("");
-  const [locatoinNameError, setLocationNameError] = useState("");
-  const [isLocationNameError, setIsLocationNameError] = useState(false);
-
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState("");
   const [isAddressError, setIsAddressError] = useState(false);
-
-  const [selectedStateName, setSelectedStateName] = useState("");
-  const [selectedStateID, setSelectedStateID] = useState(0);
-  const [statesFullData, setStatesFullData] = useState([]);
-  const [stateList, setStateList] = useState<Array<StateModel>>([]);
-
-  const [selectedCityName, setSelectedCityName] = useState("");
-  const [selectedCityID, setSelectedCityID] = useState(0);
-  const [cityFullData, setCityFullData] = useState([]);
-  const [cityList, setCityList] = useState<Array<CityModel>>([]);
 
   const [pincode, setPincode] = useState("");
   const [pincodeError, setPincodeError] = useState("");
@@ -223,26 +192,6 @@ const EmployeeEdit = () => {
   const [wages, setWages] = useState("Yes");
   const [login, setLogin] = useState("Yes");
 
-  const [cnp, setCNP] = useState("");
-  const [cnpError, setCNPError] = useState("");
-  const [isCNPError, setIsCNPError] = useState(false);
-
-  const [qbnp, setQBNP] = useState("");
-  const [qbnpError, setQBNPError] = useState("");
-  const [isqbnpError, setIsQBNPError] = useState(false);
-
-  const [ecp, setECP] = useState("");
-  const [ecpError, setECPError] = useState("");
-  const [isECPError, setIsECPError] = useState(false);
-
-  const [pop, setPOP] = useState("");
-  const [popError, setPOPError] = useState("");
-  const [isPOPError, setIsPOPError] = useState(false);
-
-  const [sop, setSOP] = useState("");
-  const [sopError, setSOPError] = useState("");
-  const [isSOPError, setIsSOPError] = useState(false);
-
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Photo");
   const [image, setImage] = useState("");
@@ -255,17 +204,18 @@ const EmployeeEdit = () => {
 
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [state, setState] = useState("--Select--");
-  const [stateID, setStateID] = useState<number>(0);
   const [stateError, setStateError] = useState("");
   const [isStateError, setIsStateError] = useState(false);
-  const [stateNameList, setStateNameList] = useState<Array<StateModel>>([]);
+  const [selectedStateName, setSelectedStateName] = useState("");
+  const [selectedStateID, setSelectedStateID] = useState(0);
+  const [statesFullData, setStatesFullData] = useState([]);
 
-  const [city, setCity] = useState("--Select--");
-  const [cityID, setCityID] = useState<number>(0);
   const [cityError, setCityError] = useState("");
   const [isCityError, setIsCityError] = useState(false);
-  const [cityNameList, setCityNameList] = useState<Array<CityModel>>([]);
+  const [selectedCityName, setSelectedCityName] = useState("");
+  const [selectedCityID, setSelectedCityID] = useState(0);
+  const [cityFullData, setCityFullData] = useState([]);
+
 
   const [bloodgroup, setBloodGroup] = useState("--Select--");
   const [bloodGroupID, setBloodGroupID] = useState<number>(0);
@@ -325,32 +275,31 @@ const EmployeeEdit = () => {
 
   useEffect(() => {
     debugger;
+    
+    let id = window.location.pathname.split('/').at(-1);
+    if(!NullOrEmpty(id)) {
+        setEmployeeID(parseInt(id));
+        FetchBasicDetails(employeeID);
+    }
+    else {
+        setEmployeeID(0);
+        FetchBasicDetails(0);
+    }
     FetchStates();
     FetchBranch();
     FetchDepartment();
     FetchDesignation();
     FetchReport();
-    debugger;
-    let search = window.location.search;
-    let params = new URLSearchParams(search);
-    let id = params.get('id');
-    if(!NullOrEmpty(id)) {
-        setEmployeeID(parseInt(id));
-        FetchBasicDetails(employeeID);
-    }
 
   }, []);
 
   const FetchBranch = () => {
-
-    debugger;
     let params = {
       AddedByUserID : cookies.dfc.UserID,
     };
     
     Provider.getAll(`master/getuserbranchforemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setBranchList(response.data.data);
@@ -361,13 +310,11 @@ const EmployeeEdit = () => {
   };
 
   const FetchReport =() =>{
-    debugger;
     let params = {
       AddedByUserID : cookies.dfc.UserID,
     };
     Provider.getAll(`master/getreportingemployee?${new URLSearchParams(GetStringifyJson(params))}`)
     .then((response:any)=> {
-      debugger;
       if(response.data && response.data.code === 200){
         if (response.data.data){
           setReportNameList(response.data.data);
@@ -378,7 +325,6 @@ const EmployeeEdit = () => {
   };
 
   const handleBranchChange = (event: SelectChangeEvent) => {
-    debugger;
     let locationName: string = event.target.value;
     let ac = branchList.find((el) => el.locationName === locationName);
     if (ac !== undefined) {
@@ -390,7 +336,6 @@ const EmployeeEdit = () => {
   };
 
   const FetchDepartment = () => {
-    debugger;
     let params = {
       UserID : cookies.dfc.UserID,
       UserType:3,
@@ -398,7 +343,6 @@ const EmployeeEdit = () => {
     
     Provider.getAll(`master/getuserdepartmentforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setDepartmentList(response.data.data);
@@ -409,8 +353,6 @@ const EmployeeEdit = () => {
   };
 
   const handleDepartmentChange = (event: SelectChangeEvent) => {
-    debugger;
-   
     let departmentName: string = event.target.value;
     let ac = departmentList.find((el) => el.departmentName === departmentName);
     if (ac !== undefined) {
@@ -422,14 +364,12 @@ const EmployeeEdit = () => {
   };
 
   const FetchDesignation = () => {
-    debugger;
     let params = {
       UserID : cookies.dfc.UserID,
       UserType:3,
     };
     Provider.getAll(`master/getuserdesignationforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setDesignationList(response.data.data);
@@ -440,7 +380,6 @@ const EmployeeEdit = () => {
   };
 
   const handleDesignationChange = (event: SelectChangeEvent) => {
-    debugger;
     let designationName: string = event.target.value;
     let ac = designationList.find((el) => el.designationName === designationName);
     if (ac !== undefined) {
@@ -490,22 +429,18 @@ const EmployeeEdit = () => {
   };
 
   const handleDOBChange = (newValueDate: Date | null) => {
-    debugger;
     setDOB(newValueDate);
   };
 
   const handleDOJChange = (newValueDate: Date | null) => {
-    debugger;
     setDOJ(newValueDate);
   };
 
   const handleCardValidityChange = (newValueDate: Date | null) => {
-    debugger;
     setCardValidity(newValueDate);
   };
 
   const handleLastWorkingDateChange = (newValueDate: Date | null) => {
-    debugger;
     setLastWorkingDate(newValueDate);
   };
 
@@ -514,47 +449,72 @@ const EmployeeEdit = () => {
   };
 
   const FetchBasicDetails = (id:number) => {
+    debugger;
     let params = {
-      ID:id,
+      ID:1,
     };
     Provider.getAll(`master/getemployeedetailsbyid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+
+            var employee_data= response.data.data[0].employee[0];
+            var bankDetails_data= response.data.data[0].bankDetails[0];
+            var reporting_data= response.data.data[0].employeeReportingAuthority[0];
+
             console.log(response.data.data);
-            setCompanyName(response.data.data[0].companyName ? response.data.data[0].companyName : "");
-            setContact(response.data.data[0].contactPersonName ? response.data.data[0].contactPersonName : "");
-            setContactNo(response.data.data[0].contactPersonNumber ? response.data.data[0].contactPersonNumber : "");
-            setGSTNo(response.data.data[0].gstNumber ? response.data.data[0].gstNumber : "");
-            setPanNo(response.data.data[0].pan ? response.data.data[0].pan : "");
-            setLocationName(response.data.data[0].locationName ? response.data.data[0].locationName : "");
-            setAddress(response.data.data[0].addressLine ? response.data.data[0].addressLine : "");
-            setSelectedStateName(response.data.data[0].stateName === null ? "" : response.data.data[0].stateName);
-            setSelectedStateID(response.data.data[0].stateID);
-            setSelectedCityName(response.data.data[0].cityName === null ? "" : response.data.data[0].cityName);
-            setSelectedCityID(response.data.data[0].cityID);
+            setEmployeeName(employee_data.employeeName ? employee_data.employeeName : "");
+            setEmployeeCode(employee_data.employeeCode ? employee_data.employeeCode : "");
+            setMobile(employee_data.mobileNo ? employee_data.mobileNo : "");
+            setAadhar(employee_data.aadharNo ? employee_data.aadharNo : "");
+            setFatherName(employee_data.fatherName ? employee_data.fatherName : "");
+            setAddress(employee_data.address ? employee_data.address : "");
             debugger;
-            setPincode(response.data.data[0].pincode !== 0 ? response.data.data[0].pincode.toString() : "");
-            debugger;
-            setAccountNo(response.data.data[0].accountNumber !== 0 ? response.data.data[0].accountNumber.toString() : "");
-            setBankName(response.data.data[0].bankName ? response.data.data[0].bankName : "");
-            //setBankBranchName(response.data.data[0].branchName ? response.data.data[0].branchName : "");
-            setIFSCCode(response.data.data[0].ifscCode ? response.data.data[0].ifscCode : "");
-            setCNP(response.data.data[0].companyNamePrefix ? response.data.data[0].companyNamePrefix : "");
-            setQBNP(response.data.data[0].quotationBudgetPrefix ? response.data.data[0].quotationBudgetPrefix : "");
-            setECP(response.data.data[0].employeeCodePrefix ? response.data.data[0].employeeCodePrefix : "");
-            setPOP(response.data.data[0].purchaseOrderPrefix ? response.data.data[0].purchaseOrderPrefix : "");
-            setSOP(response.data.data[0].salesOrderPrefix ? response.data.data[0].salesOrderPrefix : "");
-            setDisplay(response.data.data[0].showBrand ? "Yes" : "No");
-            setUploadedImage(response.data.data[0].companyLogo);
-            setImage(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : AWSImagePath + "placeholder-image.png");
+          
+            if(!NullOrEmpty(employee_data.stateID)){
+              debugger;
+              setSelectedStateID(employee_data.stateID);
+
+              let a = statesFullData.filter((el: StateModel) => {
+                return el.id.toString() === employee_data.stateID;
+              });
+              debugger;
+              }
+
+          setSelectedStateName(employee_data.stateName === null ? "" : employee_data.stateName);
+          
+          setSelectedCityName(employee_data.cityName === null ? "" : employee_data.cityName);
+          setSelectedCityID(employee_data.cityID);
+            setPincode(employee_data.pincode !== 0 ? employee_data.pincode.toString() : "");
+            setBloodGroup(employee_data.bloodGroup === null ? "" : employee_data.bloodGroup);
+            setDOB(employee_data.dob === null ? "" : employee_data.dob);
+            setDOJ(employee_data.doj === null ? "" : employee_data.doj);
+            setEmergencyCName(employee_data.emergencyContactName ? employee_data.emergencyContactName : "");
+            setEmergencyCNo(employee_data.emergencyContactNo ? employee_data.emergencyContactNo : "");
+            setIdCard(employee_data.idCardValidity ? employee_data.idCardValidity : "");
+            setLogin(employee_data.loginActiveStatus ? employee_data.loginActiveStatus : "");
+            setBranch(bankDetails_data.branchID ? bankDetails_data.branchID : "");
+            setDepartment(bankDetails_data.department ? bankDetails_data.department : "");
+            setDesignation(bankDetails_data.designation ? bankDetails_data.designation : "");
+            setReporting(bankDetails_data.reporting ? bankDetails_data.reporting : "" );
+            setEmployeeType(bankDetails_data.employeeType ? bankDetails_data.employeeType : "" );
+            setLastWorkingDate(bankDetails_data.LastWorkingDate ? bankDetails_data.LastWorkingDate : "" );
+            setWages(reporting_data.wagesType ? reporting_data.wagesType : "");
+            setSalary(reporting_data.salary ? reporting_data.salary : "");
+            setAccountHName(reporting_data.accountHName ? reporting_data.accountHName: "");
+            setAccountNo(reporting_data.accountNo ? reporting_data.accountNo: "");
+            //setAccountNo(reporting_data.accountNo ! == 0 ? reporting_data.accountNo.toString: "");
+            setBankName(reporting_data.bankName ? reporting_data.bankName: "");
+            setBankBranchName(reporting_data.bankBranchName ? reporting_data.bankBranchName: "");
+            setIFSCCode(reporting_data.ifscCode ? reporting_data.ifscCode: "");
+            setUploadedImage(employee_data.companyLogo);
+            setImage(employee_data.companyLogo ? employee_data.companyLogo : AWSImagePath + "placeholder-image.png");
             // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
-            if (response.data.data[0].stateID !== 0) {
-              FetchCity(response.data.data[0].stateID);
+            if (employee_data.stateID !== 0) {
+              FetchCities(employee_data.stateID);
             }
           }
-
           setLoading(false);
         }
       })
@@ -562,59 +522,74 @@ const EmployeeEdit = () => {
         setLoading(false);
       });
   };
-
+  
   const FetchStates = () => {
+
     Provider.getAll("master/getstates")
       .then((response: any) => {
+debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            setStateNameList(response.data.data);
+            const stateData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              stateData.push({
+                id: data.id,
+                label: data.stateName,
+                // setStateNameList(response.data.data);
+              });
+            });
+            setStatesFullData(stateData);
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchCity = (stateID) => {
+  const FetchCities = (stateID: number) => {
     let params = {
       ID: stateID,
     };
     Provider.getAll(`master/getcitiesbyid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            setCityNameList(response.data.data);
+            const cityData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              cityData.push({
+                id: data.id,
+                label: data.cityName,
+              });
+            });
+            setCityFullData(cityData);
           }
         }
       })
       .catch((e) => {});
   };
 
-  const handleSNChange = (event: SelectChangeEvent) => {
-    debugger;
-    let stateName: string = event.target.value;
-    let ac = stateNameList.find((el) => el.stateName === stateName);
-    if (ac !== undefined) {
-      setState(stateName);
-      setStateID(ac?.id);
-      setIsStateError(false);
-      setStateError("");
-      FetchCity(ac.id);
-    }
-  };
+  // const handleSNChange = (event: SelectChangeEvent) => {
+  //   let stateName: string = event.target.value;
+  //   let ac = stateNameList.find((el) => el.stateName === stateName);
+  //   if (ac !== undefined) {
+  //     setState(stateName);
+  //     setStateID(ac?.id);
+  //     setIsStateError(false);
+  //     setStateError("");
+  //     FetchCity(ac.id);
+  //   }
+  // };
 
-  const handleCNChange = (event: SelectChangeEvent) => {
-    debugger;
-    let cityName: string = event.target.value;
-    let ac = cityNameList.find((el) => el.cityName === cityName);
-    if (ac !== undefined) {
-      setCity(cityName);
-      setCityID(ac?.id);
-      setIsCityError(false);
-      setCityError("");
-    }
-  };
+  // const handleCNChange = (event: SelectChangeEvent) => {
+  //   let cityName: string = event.target.value;
+  //   let ac = cityNameList.find((el) => el.cityName === cityName);
+  //   if (ac !== undefined) {
+  //     setCity(cityName);
+  //     setCityID(ac?.id);
+  //     setIsCityError(false);
+  //     setCityError("");
+  //   }
+  // };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -625,7 +600,7 @@ const EmployeeEdit = () => {
   };
 
   const handleLoginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDisplay((event.target as HTMLInputElement).value);
+    setLogin((event.target as HTMLInputElement).value);
   };
 
   const handleWagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -649,30 +624,11 @@ const EmployeeEdit = () => {
   };
 
   const InsertData = (status: string, fileName: string) => {
-    debugger;
     if (status.toLowerCase() === "success") {
       const params = {
-        UserID: CookieUserID,
-        CompanyName: companyName,
+//UserID: CookieUserID,
+       
         CompanyLogo: fileName ? AWSImagePath + fileName : "",
-        ContactPersonName: contact,
-        ContactPersonNumber: contactNo,
-        AddressLine: address,
-        LocationName: locationName,
-        StateID: selectedStateID,
-        CityID: selectedCityID,
-        Pincode: pincode ? pincode : 0,
-        GSTNumber: gstNo,
-        PAN: panNo,
-        AccountNumber: accountNo ? accountNo : 0,
-        BankName: bankName,
-        BranchName: bankBranchName,
-        IFSCCode: ifscCode,
-        CompanyNamePrefix: cnp,
-        EmployeeCodePrefix: ecp,
-        PurchaseOrderPrefix: pop,
-        SalesOrderPrefix: sop,
-        ShowBrand: display === "Yes",
       };
       Provider.create("master/insertuserprofile", params)
         .then((response) => {
@@ -873,12 +829,35 @@ const EmployeeEdit = () => {
                   <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                     <Grid item sm={4}>
                       <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b style={{ float: "right" }}>Address</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setAddress ((e.target as HTMLInputElement).value);
+                          setIsAddressError (false);
+                          setAddressError ("");
+                        }}
+                        error={isAddressError }
+                        helperText={addressError }
+                        value={address}
+                      />
+                    </Grid>
+                  </Grid>
+                  <br></br>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={4}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
                         <b style={{ float: "right" }}>State</b>
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isStateError}>
-                        <Select value={state} onChange={handleSNChange}>
+                        {/* <Select value={state} onChange={handleSNChange}>
                           <MenuItem disabled={true} value="--Select--">
                             --Select--
                           </MenuItem>
@@ -889,7 +868,28 @@ const EmployeeEdit = () => {
                               </MenuItem>
                             );
                           })}
-                        </Select>
+                        </Select> */}
+                        <Autocomplete
+                          disablePortal
+                          fullWidth
+                          options={statesFullData}
+                          //sx={{ width: 300 }}
+                          onChange={(event: React.SyntheticEvent, value: any) => {
+                            setIsStateError(false);
+                            setStateError("");
+                            if (value !== null) {
+                              setSelectedStateName(value.label);
+                              setSelectedStateID(value.id);
+                              setCityFullData([]);
+                              setSelectedCityName("");
+                              setSelectedCityID(0);
+                              FetchCities(value.id);
+                            }
+                          }}
+                          value={selectedStateName}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
+                        />
+
                         <FormHelperText>{stateError}</FormHelperText>
                       </FormControl>
                     </Grid>
@@ -903,18 +903,22 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isCityError}>
-                        <Select value={city} onChange={handleCNChange}>
-                          <MenuItem disabled={true} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {cityNameList.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.cityName}>
-                                {item.cityName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
+                      <Autocomplete
+                          disablePortal
+                          fullWidth
+                          options={cityFullData}
+                          // sx={{ width: 300 }}
+                          onChange={(event: React.SyntheticEvent, value: any) => {
+                            setIsCityError(false);
+                            setCityError("");
+                            if (value !== null) {
+                              setSelectedCityName(value.label);
+                              setSelectedCityID(value.id);
+                            }
+                          }}
+                          value={selectedCityName}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCityError} helperText={cityError} />}
+                        />
                         <FormHelperText>{cityError}</FormHelperText>
                       </FormControl>
                     </Grid>
