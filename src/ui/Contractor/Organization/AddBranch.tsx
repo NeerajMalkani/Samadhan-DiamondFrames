@@ -34,6 +34,7 @@ import { CityModel,BranchTypeModel,  StateModel,  } from "../../../models/Model"
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { SelectChangeEvent } from "@mui/material";
 import { ForkRight } from "@mui/icons-material";
+import id from "date-fns/esm/locale/id";
 
     const AddBranch = () => {
         debugger;
@@ -77,7 +78,7 @@ import { ForkRight } from "@mui/icons-material";
   const [branchType, setBranchType] = useState("--Select--");
   const [branchTypeID, setBranchTypeID] = useState<number>(0);
   const [branchTypeError, setBranchTypeError] = useState("");
-  const [isbranchTypeError, SetIsBranchTypeError] = useState(false);
+  const [isbranchTypeError, IsSetBranchTypeError] = useState(false);
   const [branchTypeList, setBranchTypeList] = useState<Array<BranchTypeModel>>([]);
 
   const [assignBranchAdmin, setAssignBranchAdmin] = useState("--Select--");
@@ -147,8 +148,8 @@ import { ForkRight } from "@mui/icons-material";
     FetchStates();
     //FetchCity();
     FetchData();
-    FetchBranchType();
-    FetchCompanyName();
+    //FetchBranchType();
+    //FetchCompanyName();
   }, []);
   
     
@@ -180,31 +181,39 @@ import { ForkRight } from "@mui/icons-material";
           .catch((e) => {});
       };
     
-      const FetchBranchType =() =>{
-        debugger;
-        Provider.getAll("master/getuserbranchtypes")
-        .then((response:any)=> {
-          debugger;
-          if(response.data && response.data.code === 200){
-            if (response.data.data){
-              setBranchTypeList(response.data.data);
-            }
-          }
-        })
-        .catch((e)=>{});
-      };
+      // const FetchBranchType =() =>{
+      //   let params = {
+      //     UserType:4,
+      //     UserId:cookies.dfc.UserID,
+      //   };
+      //   debugger;
+      //   Provider.getAll(`master/getuserbranchtypes?${new URLSearchParams(GetStringifyJson(params))}`)
+      //   .then((response:any)=> {
+      //     debugger;
+      //     if(response.data && response.data.code === 200){
+      //       if (response.data.data){
+      //         setBranchTypeList(response.data.data);
+      //       }
+      //     }
+      //   })
+      //   .catch((e)=>{});
+      // };
 
-      const FetchCompanyName =() =>{
-        Provider.getAll("master/getusercompany")
-        .then((response:any)=>{
-          if(response.data && response.data.code === 200){
-            if(response.data.data){
-              setCompanyName(response.data.data);
-            }
-          }
-        })
-        .catch((e)=>{});
-      };
+      // const FetchCompanyName =() =>{
+      //   let params = {
+      //     UserType:4,
+      //     UserId:cookies.dfc.UserID,
+      //   };
+      //   Provider.getAll(`master/getusercompany?${new URLSearchParams(GetStringifyJson(params))}`)
+      //   .then((response:any)=>{
+      //     if(response.data && response.data.code === 200){
+      //       if(response.data.data){
+      //         setCompanyName(response.data.data);
+      //       }
+      //     }
+      //   })
+      //   .catch((e)=>{});
+      // };
 
       const AssignBranchAdmin=() =>{
         Provider.getAll("")
@@ -222,7 +231,7 @@ import { ForkRight } from "@mui/icons-material";
       const FetchData = () => {
         debugger;
         let params = {
-          UserType: 3,
+          UserType: 4,
           UserId:cookies.dfc.UserID
         };
         Provider.getAll(`master/getuserbranches?${new URLSearchParams(GetStringifyJson(params))}`)
@@ -232,7 +241,6 @@ import { ForkRight } from "@mui/icons-material";
               if (response.data.data) {
                 const arrList = [...response.data.data];
                 arrList.map(function (a: any, index: number) {
-                  a.display = a.display ? "Yes" : "No";
                   let sr = { srno: index + 1 };
                   a = Object.assign(a, sr);
                 });
@@ -366,7 +374,7 @@ import { ForkRight } from "@mui/icons-material";
         if (actionStatus === "new") {
           Provider.create("master/insertuserbranch", {
             UserId: cookies.dfc.UserID,
-            UserType: 3,
+            UserType: 4,
           })
             .then((response) => {
               if (response.data && response.data.code === 200) {
@@ -392,7 +400,7 @@ import { ForkRight } from "@mui/icons-material";
           Provider.create("master/updateuserbranch", {
             // ServiceID: departmentID,
             UserId: cookies.dfc.UserID,
-            UserType: 3,
+            UserType: 4,
            
           })
             .then((response) => {
@@ -450,10 +458,22 @@ import { ForkRight } from "@mui/icons-material";
         if (ac !== undefined) {
           setBranchType(branchType);
           setBranchTypeID(ac?.id);
-          SetIsBranchTypeError(false);
+          IsSetBranchTypeError(false);
           setBranchTypeError("");
         }
       };
+
+      // const handleSelectedReginalChange = (event: SelectChangeEvent) => {
+      //   debugger;
+      //   let selectedRegional: string = event.target.value;
+      //   let ac = selectedRegionalList.find((el) => el.regionaloffice === selectedRegional);
+      //   if (ac !== undefined) {
+      //     setSelectedRegional(selectedRegional);
+      //     setSelectedRegionalID(ac?.id);
+      //     IsSetSelectedRegionalError(false);
+      //     setSelectedRegionalError("");
+      //   }
+      // };
 
       const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDisplay((event.target as HTMLInputElement).value);
@@ -541,67 +561,45 @@ return(
                 </Grid>
            </Grid>
            <br></br>
-           <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-           <Grid item sm={2}> 
-            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Company/Firm Name</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small" ></TextField>
-            </Grid>
-            <Grid item sm={2}> 
-            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Branch / location name</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            <Grid item sm={2}> 
-            <label style={{float:'right',}}> Account No</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            </Grid>
-            <br></br>
-            <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-           <Grid item sm={2}> 
-            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Branch Type</label>
-          </Grid>
-          <Grid item sm={2}>
-            <FormControl fullWidth size="small" error={isbranchTypeError}>
-              <Select value={branchType} onChange={handleBTChange}>
-                <MenuItem disabled={true} value="--Select--">
-                  --Select--
-                </MenuItem>
-                {branchTypeList.map((item, index) => {
-                  return (
-                    <MenuItem key={index} value={item.branchType}>
+           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+              <Grid item xs={4}>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={6}> 
+                    <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Company/Firm Name</label>
+                    </Grid>
+                    <Grid item sm={6}>
+                    <TextField  variant="outlined" size="small" ></TextField>
+                    </Grid>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={6}> 
+                    <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Branch Type</label>
+                    </Grid>
+                    <Grid item sm={6}>
+                    <FormControl fullWidth size="small" error={isbranchTypeError}>
+                      <Select value={branchType} onChange={handleBTChange}>
+                      <MenuItem disabled={true} value="--Select--">
+                      --Select--
+                      </MenuItem>
+                      {branchTypeList.map((item, index) => {
+                      return (
+                      <MenuItem key={index} value={item.branchType}>
                       {item.branchType}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{branchTypeError}</FormHelperText>
-            </FormControl>  
-            </Grid>
-            <Grid item sm={2} className="float-right"> 
-            <label style={{float:'right',}}>Address</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            <Grid item sm={2}> 
-            <label style={{float:'right',}}> Bank Name</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            </Grid>
-            <br></br>
-            <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-           <Grid item sm={2}> 
+                      </MenuItem>
+                      );
+                      })}
+                      </Select>
+                      <FormHelperText>{branchTypeError}</FormHelperText>
+                    </FormControl>  
+              </Grid>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
             <label style={{float:'right',}}> Assign Branch Admin</label>
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={6}>
             <FormControl fullWidth size="small" error={isAssignBranchAdminError}>
               <Select value={city} onChange={handleCNChange}>
                 <MenuItem disabled={true} value="--Select--">
@@ -618,10 +616,76 @@ return(
               <FormHelperText>{assignBranchAdminError}</FormHelperText>
             </FormControl>
             </Grid>
-            <Grid item sm={2}> 
-            <label style={{float:'right',}}>State</label>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+            <label style={{float:'right',}}> Contact Person No</label>
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={6}>
+                <TextField  variant="outlined" size="small"></TextField>
+            </Grid>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+            <label style={{float:'right',}}> GST No</label>
+          </Grid>
+          <Grid item sm={6}>
+                <TextField  variant="outlined" size="small"></TextField>
+            </Grid>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+            <label style={{float:'right',}}> PAN No</label>
+          </Grid>
+          <Grid item sm={6}>
+                <TextField  variant="outlined" size="small"></TextField>
+            </Grid>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+            <label style={{float:'right',}}> Display</label>
+          </Grid>
+          <Grid item sm={6}>
+               {/* <Checkbox></Checkbox> */}
+               <FormControl>
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="No" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+            </Grid>
+
+                  </Grid>
+              </Grid>
+
+              <Grid item xs={4}>
+              <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                  <Grid item sm={6}> 
+            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> Branch/Location Name</label>
+                  </Grid>
+                  <Grid item sm={6}>
+                <TextField  variant="outlined" size="small"></TextField>
+                  </Grid>
+              </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+                    <label style={{float:'right',}}>Address</label>
+                </Grid>
+                <Grid item sm={6}>
+                    <TextField  variant="outlined" size="small"></TextField>
+                </Grid>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label>State</label>
+          </Grid>
+          <Grid item sm={6}>
             <FormControl fullWidth size="small" error={isStateError}>
               <Select value={city} onChange={handleCNChange}>
                 <MenuItem disabled={true} value="--Select--">
@@ -638,25 +702,13 @@ return(
               <FormHelperText>{stateError}</FormHelperText>
             </FormControl>
             </Grid>
-            <Grid item sm={2}> 
-            <label style={{float:'right',}}> Bank  Branch Name</label>
+                </Grid>
+                <br></br>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+            <label style={{float:'right',}}><label style={{ color: "#ff0000" }}>*</label> City</label>
           </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            </Grid>
-            <br></br>
-            <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-           <Grid item sm={2}> 
-            <label style={{float:'right',}}> Contact Person No</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            <Grid item sm={2}> 
-            <label style={{float:'right',}}> City</label>
-          </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={6}>
             <FormControl fullWidth size="small" error={isCityError}>
               <Select value={city} onChange={handleCNChange}>
                 <MenuItem disabled={true} value="--Select--">
@@ -673,52 +725,62 @@ return(
               <FormHelperText>{cityError}</FormHelperText>
             </FormControl>
             </Grid>
-            <Grid item sm={2}> 
-            <label style={{float:'right',}}> IFSC Code</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            </Grid>
-            <br></br>
-            <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-           <Grid item sm={2}> 
-            <label style={{float:'right',}}> GST No</label>
-          </Grid>
-          <Grid item sm={2}>
-                <TextField  variant="outlined" size="small"></TextField>
-            </Grid>
-            <Grid item sm={2}> 
+                  </Grid>
+                  <br></br>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                  <Grid item sm={6}> 
             <label style={{float:'right',}}> Pincode</label>
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={6}>
                 <TextField  variant="outlined" size="small"></TextField>
             </Grid>
-            </Grid>
-            <br></br>
-            <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-           <Grid item sm={2}> 
-            <label style={{float:'right',}}> PAN No</label>
+                  </Grid>
+
+              </Grid>
+
+                <Grid item xs={4}>
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                <Grid item sm={6}> 
+            <label style={{float:'right',}}> Account No</label>
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={6}>
                 <TextField  variant="outlined" size="small"></TextField>
             </Grid>
-            </Grid>
-            <br></br>
-            <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:9,md:12}}>
-           <Grid item sm={2}> 
-            <label style={{float:'right',}}> Display</label>
+                  </Grid>
+                  <br></br>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                  <Grid item sm={6}> 
+            <label style={{float:'right',}}> Bank Name</label>
           </Grid>
-          <Grid item sm={2}>
-               {/* <Checkbox></Checkbox> */}
-               <FormControl>
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
-                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                <FormControlLabel value="No" control={<Radio />} label="No" />
-              </RadioGroup>
-            </FormControl>
+          <Grid item sm={6}>
+                <TextField  variant="outlined" size="small"></TextField>
             </Grid>
+                  </Grid>
+                  <br></br>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                  <Grid item sm={6}> 
+            <label style={{float:'right',}}> Bank Branch Name</label>
+          </Grid>
+          <Grid item sm={6}>
+                <TextField  variant="outlined" size="small"></TextField>
             </Grid>
+                  </Grid>
+
+                  <br></br>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                  <Grid item sm={6}> 
+            <label style={{float:'right',}}> IFSC Code</label>
+          </Grid>
+          <Grid item sm={6}>
+                <TextField  variant="outlined" size="small"></TextField>
+            </Grid>
+
+                    </Grid>
+
+                  </Grid>
+
+                </Grid>
+
             <br></br>
             <Grid container spacing={{xs:1,md:2}} columns={{xs:4,sm:10,md:15}} style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',}}>
         <Grid > 

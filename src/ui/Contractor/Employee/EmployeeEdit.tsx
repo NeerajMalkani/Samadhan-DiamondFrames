@@ -27,6 +27,7 @@ import {
   Theme,
   OutlinedInput,
 } from "@mui/material";
+
 import TextField from "@mui/material/TextField";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
@@ -53,39 +54,35 @@ import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { get } from "https";
 import { NullOrEmpty } from "../../../utils/CommonFunctions";
 
-
-//import { URLSearchParams } from "url";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  debugger;
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index: number) {
-  debugger;
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
 const EmployeeEdit = () => {
+
+  interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+  }
+  
+  function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+  
+  function a11yProps(index: number) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
+
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [value, setValue] = useState(0);
   const [CookieUserID, SetCookieUseID] = useState(0);
@@ -105,6 +102,8 @@ const EmployeeEdit = () => {
       setBloodGroupList(BloodGroup);
     }
   }, []);
+
+//#region Variables
 
   const [employeeID, setEmployeeID] = React.useState<number>(0);
 
@@ -127,82 +126,10 @@ const EmployeeEdit = () => {
   const [fatherName, setFatherName] = useState("");
   const [fatherNameError, setFatherNameError] = useState("");
   const [isFatherNameError, setIsFatherNameError] = useState(false);
-
-  const [emergencyCName, setEmergencyCName] = useState("");
-  const [emergencyCNameError, setEmergencyCNameError] = useState("");
-  const [isEmergencyCNameError, setIsEmergencyCNameError] = useState(false);
-
-  const [emergencyCNo, setEmergencyCNo] = useState("");
-  const [emergencyCNoError, setEmergencyCNoError] = useState("");
-  const [isEmergencyCNoError, setIsEmergencyCNoError] = useState(false);
-
-  const [reporting, setReporting] = useState("");
-  const [reportingError, setReportingError] = useState("");
-  const [isReportingError, setIsReportingError] = useState(false);
-
-  const [cardValid, setCardValid] = useState("");
-  const [cardValidError, setCardValidError] = useState("");
-  const [isCardValidError, setIsCardValidError] = useState(false);
-
-  const [employeeType, setEmployeeType] = useState("");
-  const [employeeTypeError, setEmployeeTypeError] = useState("");
-  const [isEmployeeTypeError, setIsEmployeeTypeError] = useState(false);
-
-  const [wagesType, setWagesType] = useState("");
-  const [wagesTypeError, setWagesTypeError] = useState("");
-  const [isWagesTypeError, setIsWagesTypeError] = useState(false);
-
-  const [salary, setSalary] = useState("");
-  const [salaryError, setSalaryError] = useState("");
-  const [isSalaryError, setIsSalaryError] = useState(false);
-
-  const [bankDetails, setBankDetails] = useState("");
-  const [bankDetailsError, setBankDetailsError] = useState("");
-  const [isBankDetailsError, setIsBankDetailsError] = useState(false);
-
-  const [accountHName, setAccountHName] = useState("");
-  const [accountHNameError, setAccountHNameError] = useState("");
-  const [isAccountHNameError, setIsAccountHNameError] = useState(false);
-
+  
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState("");
   const [isAddressError, setIsAddressError] = useState(false);
-
-  const [pincode, setPincode] = useState("");
-  const [pincodeError, setPincodeError] = useState("");
-  const [isPincodeError, setIsPincodeError] = useState(false);
-
-  const [accountNo, setAccountNo] = useState("");
-  const [accountNoError, setAccountNoError] = useState("");
-  const [isAccountNoError, setIsAccountNoError] = useState(false);
-
-  const [bankName, setBankName] = useState("");
-  const [bankNameError, setBankNameError] = useState("");
-  const [isBankNameError, setIsBankNameError] = useState(false);
-
-  const [bankBranchName, setBankBranchName] = useState("");
-  const [bankBranchNameError, setBankBranchNameError] = useState("");
-  const [isBankBranchNameError, setIsBankBranchNameError] = useState(false);
-
-  const [ifscCode, setIFSCCode] = useState("");
-  const [ifscCodeError, setIFSCCodeError] = useState("");
-  const [isIFSCCodeError, setIsIFSCCodeError] = useState(false);
-
-  const [display, setDisplay] = useState("Yes");
-  const [wages, setWages] = useState("Yes");
-  const [login, setLogin] = useState("Yes");
-
-  const [errorDIText, setDIErrorText] = useState("");
-  const [designButtonText, setDesignButtonText] = useState("Upload Photo");
-  const [image, setImage] = useState("");
-  const [uploadedImage, setUploadedImage] = useState("");
-  const [uploadFileUpload, setUploadFileUpload] = useState<any>();
-
-  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-  const [open, setOpen] = useState(false);
-  const [snackMsg, setSnackMsg] = useState("");
-
-  const [buttonLoading, setButtonLoading] = useState(false);
 
   const [stateError, setStateError] = useState("");
   const [isStateError, setIsStateError] = useState(false);
@@ -216,12 +143,36 @@ const EmployeeEdit = () => {
   const [selectedCityID, setSelectedCityID] = useState(0);
   const [cityFullData, setCityFullData] = useState([]);
 
+  const [pincode, setPincode] = useState("");
+  const [pincodeError, setPincodeError] = useState("");
+  const [isPincodeError, setIsPincodeError] = useState(false);
 
   const [bloodgroup, setBloodGroup] = useState("--Select--");
   const [bloodGroupID, setBloodGroupID] = useState<number>(0);
   const [bloodGroupError, setBloodGroupError] = useState("");
   const [isBloodGroupError, setIsBloodGroupError] = useState(false);
   const [bloodGroupList, setBloodGroupList] = useState<Array<BloodGroupModel>>([]);
+
+  const [DOB, setDOB] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
+  const [DOJ, setDOJ] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
+  const [CardValidity, setCardValidity] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
+  const [LastWorkingDate, setLastWorkingDate] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
+
+  const [emergencyCName, setEmergencyCName] = useState("");
+  const [emergencyCNameError, setEmergencyCNameError] = useState("");
+  const [isEmergencyCNameError, setIsEmergencyCNameError] = useState(false);
+
+  const [emergencyCNo, setEmergencyCNo] = useState("");
+  const [emergencyCNoError, setEmergencyCNoError] = useState("");
+  const [isEmergencyCNoError, setIsEmergencyCNoError] = useState(false);
+
+  const [idcard, setIdCard] = useState("--Select--");
+  const [idCardID, setIdCardID] = useState<number>(0);
+  const [idCardError, setIdCardError] = useState("");
+  const [isIdCardError, setIsIdCardError] = useState(false);
+  const [idCardList, setIdCardList] = useState<Array<IdCardModel>>([]);
+
+  const [login, setLogin] = useState("Yes");
 
   const [branch, setBranch] = useState("--Select--");
   const [branchID, setBranchID] = useState<number>(0);
@@ -241,12 +192,6 @@ const EmployeeEdit = () => {
   const [isDesignationError, setIsDesignationError] = useState(false);
   const [designationList, setDesignationList] = useState<Array<DesignationNameModel>>([]);
 
-  const [idcard, setIdCard] = useState("--Select--");
-  const [idCardID, setIdCardID] = useState<number>(0);
-  const [idCardError, setIdCardError] = useState("");
-  const [isIdCardError, setIsIdCardError] = useState(false);
-  const [idCardList, setIdCardList] = useState<Array<IdCardModel>>([]);
-
   const [reportList, setReportList] = useState<string[]>([]);
   const [reportListID, setReportListID] = useState<number[]>([]);
   const [reportError, setReportError] = useState<boolean>(false);
@@ -254,11 +199,57 @@ const EmployeeEdit = () => {
   const [reportNameList, setReportNameList] = useState<Array<ReportNameModel>>([]);
   const [reportSelectAll, setReportSelectAll] = useState<string>("Select All");
 
-  const [DOB, setDOB] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
-  const [DOJ, setDOJ] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
-  const [CardValidity, setCardValidity] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
-  const [LastWorkingDate, setLastWorkingDate] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
+  const [reporting, setReporting] = useState("");
+  const [reportingError, setReportingError] = useState("");
+  const [isReportingError, setIsReportingError] = useState(false);
 
+  const [employeeType, setEmployeeType] = useState("");
+  const [employeeTypeError, setEmployeeTypeError] = useState("");
+  const [isEmployeeTypeError, setIsEmployeeTypeError] = useState(false);
+
+  const [wagesType, setWagesType] = useState("");
+  const [wagesTypeError, setWagesTypeError] = useState("");
+  const [isWagesTypeError, setIsWagesTypeError] = useState(false);
+
+  const [salary, setSalary] = useState("");
+  const [salaryError, setSalaryError] = useState("");
+  const [isSalaryError, setIsSalaryError] = useState(false);
+
+  const [accountHName, setAccountHName] = useState("");
+  const [accountHNameError, setAccountHNameError] = useState("");
+  const [isAccountHNameError, setIsAccountHNameError] = useState(false);
+
+  const [accountNo, setAccountNo] = useState("");
+  const [accountNoError, setAccountNoError] = useState("");
+  const [isAccountNoError, setIsAccountNoError] = useState(false);
+
+  const [bankName, setBankName] = useState("");
+  const [bankNameError, setBankNameError] = useState("");
+  const [isBankNameError, setIsBankNameError] = useState(false);
+
+  const [bankBranchName, setBankBranchName] = useState("");
+  const [bankBranchNameError, setBankBranchNameError] = useState("");
+  const [isBankBranchNameError, setIsBankBranchNameError] = useState(false);
+
+  const [ifscCode, setIFSCCode] = useState("");
+  const [ifscCodeError, setIFSCCodeError] = useState("");
+  const [isIFSCCodeError, setIsIFSCCodeError] = useState(false);
+
+  const [display, setDisplay] = useState("Yes");
+  const [wages, setWages] = useState("Yes");
+  
+  const [errorDIText, setDIErrorText] = useState("");
+  const [designButtonText, setDesignButtonText] = useState("Upload Photo");
+  const [image, setImage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState("");
+  const [uploadFileUpload, setUploadFileUpload] = useState<any>();
+
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  const [open, setOpen] = useState(false);
+  const [snackMsg, setSnackMsg] = useState("");
+
+  const [buttonLoading, setButtonLoading] = useState(false);
+//#endregion 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -279,19 +270,15 @@ const EmployeeEdit = () => {
     let id = window.location.pathname.split('/').at(-1);
     if(!NullOrEmpty(id)) {
         setEmployeeID(parseInt(id));
-        FetchBasicDetails(employeeID);
+        FetchEmployeeDetails(parseInt(id));
     }
     else {
         setEmployeeID(0);
-        FetchBasicDetails(0);
+        FetchEmployeeDetails(0);
     }
-    FetchStates();
-    FetchBranch();
-    FetchDepartment();
-    FetchDesignation();
-    FetchReport();
-
   }, []);
+
+  //#region Functions
 
   const FetchBranch = () => {
     let params = {
@@ -448,7 +435,7 @@ const EmployeeEdit = () => {
     setValue(newValue);
   };
 
-  const FetchBasicDetails = (id:number) => {
+  const FetchEmployeeDetails = (id: number) => {
     debugger;
     let params = {
       ID:1,
@@ -463,59 +450,71 @@ const EmployeeEdit = () => {
             var bankDetails_data= response.data.data[0].bankDetails[0];
             var reporting_data= response.data.data[0].employeeReportingAuthority[0];
 
-            console.log(response.data.data);
-            setEmployeeName(employee_data.employeeName ? employee_data.employeeName : "");
-            setEmployeeCode(employee_data.employeeCode ? employee_data.employeeCode : "");
-            setMobile(employee_data.mobileNo ? employee_data.mobileNo : "");
-            setAadhar(employee_data.aadharNo ? employee_data.aadharNo : "");
-            setFatherName(employee_data.fatherName ? employee_data.fatherName : "");
-            setAddress(employee_data.address ? employee_data.address : "");
+            setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
+            setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
+            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+            setAadhar(!NullOrEmpty(employee_data.aadharNo) ? employee_data.aadharNo : "");
+            setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
+            setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
             debugger;
           
-            if(!NullOrEmpty(employee_data.stateID)){
+            if(!NullOrEmpty(employee_data.stateID)) {
               debugger;
               setSelectedStateID(employee_data.stateID);
-
-              let a = statesFullData.filter((el: StateModel) => {
-                return el.id.toString() === employee_data.stateID;
-              });
-              debugger;
               }
 
-          setSelectedStateName(employee_data.stateName === null ? "" : employee_data.stateName);
+              if(!NullOrEmpty(employee_data.cityID)) {
+                debugger;
+                setSelectedCityID(employee_data.cityID);
+                }
+
+                if(!NullOrEmpty(employee_data.bloodGroup)) {
+                  debugger;
+                  setBloodGroupID(employee_data.bloodGroup);
+                  }
+
+          // setSelectedStateName(employee_data.stateName === null ? "" : employee_data.stateName);
           
-          setSelectedCityName(employee_data.cityName === null ? "" : employee_data.cityName);
-          setSelectedCityID(employee_data.cityID);
-            setPincode(employee_data.pincode !== 0 ? employee_data.pincode.toString() : "");
-            setBloodGroup(employee_data.bloodGroup === null ? "" : employee_data.bloodGroup);
-            setDOB(employee_data.dob === null ? "" : employee_data.dob);
-            setDOJ(employee_data.doj === null ? "" : employee_data.doj);
-            setEmergencyCName(employee_data.emergencyContactName ? employee_data.emergencyContactName : "");
-            setEmergencyCNo(employee_data.emergencyContactNo ? employee_data.emergencyContactNo : "");
-            setIdCard(employee_data.idCardValidity ? employee_data.idCardValidity : "");
-            setLogin(employee_data.loginActiveStatus ? employee_data.loginActiveStatus : "");
-            setBranch(bankDetails_data.branchID ? bankDetails_data.branchID : "");
-            setDepartment(bankDetails_data.department ? bankDetails_data.department : "");
-            setDesignation(bankDetails_data.designation ? bankDetails_data.designation : "");
-            setReporting(bankDetails_data.reporting ? bankDetails_data.reporting : "" );
-            setEmployeeType(bankDetails_data.employeeType ? bankDetails_data.employeeType : "" );
-            setLastWorkingDate(bankDetails_data.LastWorkingDate ? bankDetails_data.LastWorkingDate : "" );
-            setWages(reporting_data.wagesType ? reporting_data.wagesType : "");
-            setSalary(reporting_data.salary ? reporting_data.salary : "");
-            setAccountHName(reporting_data.accountHName ? reporting_data.accountHName: "");
-            setAccountNo(reporting_data.accountNo ? reporting_data.accountNo: "");
-            //setAccountNo(reporting_data.accountNo ! == 0 ? reporting_data.accountNo.toString: "");
-            setBankName(reporting_data.bankName ? reporting_data.bankName: "");
-            setBankBranchName(reporting_data.bankBranchName ? reporting_data.bankBranchName: "");
-            setIFSCCode(reporting_data.ifscCode ? reporting_data.ifscCode: "");
-            setUploadedImage(employee_data.companyLogo);
-            setImage(employee_data.companyLogo ? employee_data.companyLogo : AWSImagePath + "placeholder-image.png");
-            // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
-            if (employee_data.stateID !== 0) {
-              FetchCities(employee_data.stateID);
-            }
+          // setSelectedCityName(employee_data.cityName === null ? "" : employee_data.cityName);
+          // setSelectedCityID(employee_data.cityID);
+
+            setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
+            // setBloodGroup(employee_data.bloodGroup === null ? "" : employee_data.bloodGroup);
+            setDOB(!NullOrEmpty(employee_data.dob) === null ? "" : employee_data.dob);
+            setDOJ(!NullOrEmpty(employee_data.doj) === null ? "" : employee_data.doj);
+            setEmergencyCName(!NullOrEmpty(employee_data.emergencyContactName) ? employee_data.emergencyContactName : "");
+            setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
+            setIdCard(!NullOrEmpty(employee_data.idCardValidity) ? employee_data.idCardValidity : "");
+            setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? employee_data.loginActiveStatus : "");
+            setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
+            setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
+            setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
+            setReporting(!NullOrEmpty(employee_data.reporting) ? employee_data.reporting : "" );
+            setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "" );
+            setLastWorkingDate(!NullOrEmpty(employee_data.LastWorkingDate) ? employee_data.LastWorkingDate : "" );
+            setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType : "");
+            setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
+
+            setAccountHName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountHolderName) ? bankDetails_data.accountHolderName: "" : "");
+
+            setAccountNo(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountNumber) ? bankDetails_data.accountNumber: "" : "");
+            setBankName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.bankName) ? bankDetails_data.bankName: "" : "");
+            setBankBranchName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.branchName) ? bankDetails_data.branchName: "" : "");
+            setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode: "" : "");
+            setUploadedImage(employee_data.profilePhoto);
+            setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
+            // setFilePath(response.data.data[0].profilePhoto ? response.data.data[0].profilePhoto : null);
+            // if (!NullOrEmpty(employee_data.stateID !== 0)) {
+            //   FetchCities(employee_data.stateID);
+            // }
           }
+          debugger;
           setLoading(false);
+          FetchStates();
+          FetchBranch();
+         FetchDepartment();
+         FetchDesignation();
+         FetchReport();
         }
       })
       .catch((e) => {
@@ -527,7 +526,7 @@ const EmployeeEdit = () => {
 
     Provider.getAll("master/getstates")
       .then((response: any) => {
-debugger;
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const stateData: any = [];
@@ -535,10 +534,16 @@ debugger;
               stateData.push({
                 id: data.id,
                 label: data.stateName,
-                // setStateNameList(response.data.data);
               });
             });
+            debugger;
             setStatesFullData(stateData);
+
+            let a = statesFullData.filter((el: StateModel) => {
+              return el.id === selectedStateID;
+            });
+            
+            //setSelectedStateName(a.stateName);
           }
         }
       })
@@ -567,29 +572,6 @@ debugger;
       })
       .catch((e) => {});
   };
-
-  // const handleSNChange = (event: SelectChangeEvent) => {
-  //   let stateName: string = event.target.value;
-  //   let ac = stateNameList.find((el) => el.stateName === stateName);
-  //   if (ac !== undefined) {
-  //     setState(stateName);
-  //     setStateID(ac?.id);
-  //     setIsStateError(false);
-  //     setStateError("");
-  //     FetchCity(ac.id);
-  //   }
-  // };
-
-  // const handleCNChange = (event: SelectChangeEvent) => {
-  //   let cityName: string = event.target.value;
-  //   let ac = cityNameList.find((el) => el.cityName === cityName);
-  //   if (ac !== undefined) {
-  //     setCity(cityName);
-  //     setCityID(ac?.id);
-  //     setIsCityError(false);
-  //     setCityError("");
-  //   }
-  // };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -664,10 +646,6 @@ debugger;
     }
   };
 
-  // const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDisplay((event.target as HTMLInputElement).value);
-  // };
-
   const handleBNChange = (event: SelectChangeEvent) => {
     debugger;
     let Name: string = event.target.value;
@@ -686,6 +664,7 @@ debugger;
     }
     setOpen(false);
   };
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
