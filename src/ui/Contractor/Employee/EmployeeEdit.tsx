@@ -178,11 +178,11 @@ const EmployeeEdit = () => {
   const [branch, setBranch] = useState("--Select--");
   const [branchID, setBranchID] = useState<number>(0);
   const [branchError, setBranchError] = useState("");
-  const [isBranchError, setIsBranchError] = useState(false);
+  const [isBranchError, isSetBranchError] = useState(false);
   //const [branchList, setBranchList] = useState<Array<BranchModel>>([]);
   const [selectedBranchName, setSelectedBranchName] = useState("");
   const [selectedBranchID, setSelectedBranchID] = useState(0);
-  const [BranchFullData, setBranchFullData] = useState([]);
+  const [branchFullData, setBranchFullData] = useState([]);
 
 
   const [department, setDepartment] = useState("--Select--");
@@ -194,7 +194,7 @@ const EmployeeEdit = () => {
   const [designation, setDesignation] = useState("--Select--");
   const [designationID, setDesignationID] = useState<number>(0);
   const [designationError, setDesignationError] = useState("");
-  const [isDesignationError, setIsDesignationError] = useState(false);
+  const [isDesignationError, isSetDesignationError] = useState(false);
   const [designationList, setDesignationList] = useState<Array<DesignationNameModel>>([]);
 
   const [reportList, setReportList] = useState<string[]>([]);
@@ -1176,7 +1176,7 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isBranchError}>
-                        <Select value={branch} onChange={handleBranchChange}>
+                        {/* <Select value={branch} onChange={handleBranchChange}>
                           <MenuItem disabled={true} value="--Select--">
                             --Select--
                           </MenuItem>
@@ -1187,7 +1187,24 @@ const EmployeeEdit = () => {
                               </MenuItem>
                             );
                           })}
-                        </Select>
+                        </Select> */}
+                        <Autocomplete
+                          disablePortal
+                          fullWidth
+                          options={branchFullData}
+                          //sx={{ width: 300 }}
+                          onChange={(event: React.SyntheticEvent, value: any) => {
+                            isSetBranchError(false);
+                            setBranchError("");
+                            if (value !== null) {
+                              setSelectedBranchName(value.label);
+                              setSelectedBranchID(value.id);
+                            }
+                          }}
+                          value={selectedBranchName}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isBranchError } helperText={branchError} />}
+                        />
+                        <FormHelperText>{branchError }</FormHelperText>
                       </FormControl>
                     </Grid>
                   </Grid>
@@ -1200,7 +1217,7 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isDesignationError}>
-                        <Select value={designation} onChange={handleDesignationChange}>
+                        {/* <Select value={designation} onChange={handleDesignationChange}>
                           <MenuItem disabled={true} value="--Select--">
                             --Select--
                           </MenuItem>
@@ -1211,7 +1228,24 @@ const EmployeeEdit = () => {
                               </MenuItem>
                             );
                           })}
-                        </Select>
+                        </Select> */}
+                        <Autocomplete
+                          disablePortal
+                          fullWidth
+                          options={designationList }
+                          //sx={{ width: 300 }}
+                          onChange={(event: React.SyntheticEvent, value: any) => {
+                            isSetDesignationError (false);
+                            setDesignationError("");
+                            if (value !== null) {
+                              setDesignation(value.label);
+                              setDesignationID(value.id);
+                            }
+                          }}
+                          value={designation}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDesignationError  } helperText={designationError} />}
+                        />
+                        <FormHelperText>{designationError}</FormHelperText>
                       </FormControl>
                     </Grid>
                   </Grid>
@@ -1266,7 +1300,7 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isDepartmentError}>
-                        <Select value={department} onChange={handleDepartmentChange}>
+                        {/* <Select value={department} onChange={handleDepartmentChange}>
                           <MenuItem disabled={true} value="--Select--">
                             --Select--
                           </MenuItem>
@@ -1277,7 +1311,24 @@ const EmployeeEdit = () => {
                               </MenuItem>
                             );
                           })}
-                        </Select>
+                        </Select> */}
+                        <Autocomplete
+                          disablePortal
+                          fullWidth
+                          options={departmentList }
+                          //sx={{ width: 300 }}
+                          onChange={(event: React.SyntheticEvent, value: any) => {
+                            setIsDeapartmentError(false);
+                            setDepartmentError("");
+                            if (value !== null) {
+                              setDepartment(value.label);
+                              setDepartmentID(value.id);
+                            }
+                          }}
+                          value={department}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDepartmentError } helperText={departmentError} />}
+                        />
+                        <FormHelperText>{departmentError}</FormHelperText>
                       </FormControl>
                     </Grid>
                   </Grid>
