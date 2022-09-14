@@ -51,37 +51,38 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { BloodGroup } from "../../../utils/JSCommonFunction";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
-import { get } from "https";
 import { NullOrEmpty } from "../../../utils/CommonFunctions";
 
-const EmployeeEdit = () => {
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
 
-  interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-  }
-  
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-  
-    return (
-      <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-  
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
+let st_ID = 0, ct_ID = 0, bg_ID = 0, b_ID = 0, d_ID = 0, de_ID = 0;
+
+const EmployeeEdit = () => {
 
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [value, setValue] = useState(0);
@@ -103,7 +104,7 @@ const EmployeeEdit = () => {
     }
   }, []);
 
-//#region Variables
+  //#region Variables
 
   const [employeeID, setEmployeeID] = React.useState<number>(0);
 
@@ -126,7 +127,7 @@ const EmployeeEdit = () => {
   const [fatherName, setFatherName] = useState("");
   const [fatherNameError, setFatherNameError] = useState("");
   const [isFatherNameError, setIsFatherNameError] = useState(false);
-  
+
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState("");
   const [isAddressError, setIsAddressError] = useState(false);
@@ -178,7 +179,11 @@ const EmployeeEdit = () => {
   const [branchID, setBranchID] = useState<number>(0);
   const [branchError, setBranchError] = useState("");
   const [isBranchError, setIsBranchError] = useState(false);
-  const [branchList, setBranchList] = useState<Array<BranchModel>>([]);
+  //const [branchList, setBranchList] = useState<Array<BranchModel>>([]);
+  const [selectedBranchName, setSelectedBranchName] = useState("");
+  const [selectedBranchID, setSelectedBranchID] = useState(0);
+  const [BranchFullData, setBranchFullData] = useState([]);
+
 
   const [department, setDepartment] = useState("--Select--");
   const [departmentID, setDepartmentID] = useState<number>(0);
@@ -237,7 +242,7 @@ const EmployeeEdit = () => {
 
   const [display, setDisplay] = useState("Yes");
   const [wages, setWages] = useState("Yes");
-  
+
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Photo");
   const [image, setImage] = useState("");
@@ -249,7 +254,8 @@ const EmployeeEdit = () => {
   const [snackMsg, setSnackMsg] = useState("");
 
   const [buttonLoading, setButtonLoading] = useState(false);
-//#endregion 
+  //#endregion 
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -265,16 +271,14 @@ const EmployeeEdit = () => {
   }
 
   useEffect(() => {
-    debugger;
-    
     let id = window.location.pathname.split('/').at(-1);
-    if(!NullOrEmpty(id)) {
-        setEmployeeID(parseInt(id));
-        FetchEmployeeDetails(parseInt(id));
+    if (!NullOrEmpty(id)) {
+      setEmployeeID(parseInt(id));
+      FetchEmployeeDetails(parseInt(id));
     }
     else {
-        setEmployeeID(0);
-        FetchEmployeeDetails(0);
+      setEmployeeID(0);
+      FetchEmployeeDetails(0);
     }
   }, []);
 
@@ -282,38 +286,53 @@ const EmployeeEdit = () => {
 
   const FetchBranch = () => {
     let params = {
-      AddedByUserID : cookies.dfc.UserID,
+      AddedByUserID: cookies.dfc.UserID,
     };
-    
+
     Provider.getAll(`master/getuserbranchforemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            setBranchList(response.data.data);
+            const branchData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              branchData.push({
+                id: data.id,
+                label: data.branchName,
+              });
+            });
+            console.log(branchData);
+            setBranchFullData(branchData);
+
+            if (b_ID > 0) {
+              let a = branchData.filter((el) => {
+                return el.id === b_ID;
+              });
+              setSelectedBranchName(a[0].label);
+            }
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
-  const FetchReport =() =>{
+  const FetchReport = () => {
     let params = {
-      AddedByUserID : cookies.dfc.UserID,
+      AddedByUserID: cookies.dfc.UserID,
     };
     Provider.getAll(`master/getreportingemployee?${new URLSearchParams(GetStringifyJson(params))}`)
-    .then((response:any)=> {
-      if(response.data && response.data.code === 200){
-        if (response.data.data){
-          setReportNameList(response.data.data);
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setReportNameList(response.data.data);
+          }
         }
-      }
-    })
-    .catch((e)=>{});
+      })
+      .catch((e) => { });
   };
 
   const handleBranchChange = (event: SelectChangeEvent) => {
     let locationName: string = event.target.value;
-    let ac = branchList.find((el) => el.locationName === locationName);
+    let ac = BranchFullData.find((el) => el.locationName === locationName);
     if (ac !== undefined) {
       setBranch(locationName);
       setBranchID(ac?.id);
@@ -324,10 +343,10 @@ const EmployeeEdit = () => {
 
   const FetchDepartment = () => {
     let params = {
-      UserID : cookies.dfc.UserID,
-      UserType:3,
+      UserID: cookies.dfc.UserID,
+      UserType: 3,
     };
-    
+
     Provider.getAll(`master/getuserdepartmentforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -336,7 +355,7 @@ const EmployeeEdit = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleDepartmentChange = (event: SelectChangeEvent) => {
@@ -352,8 +371,8 @@ const EmployeeEdit = () => {
 
   const FetchDesignation = () => {
     let params = {
-      UserID : cookies.dfc.UserID,
-      UserType:3,
+      UserID: cookies.dfc.UserID,
+      UserType: 3,
     };
     Provider.getAll(`master/getuserdesignationforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
@@ -363,7 +382,7 @@ const EmployeeEdit = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleDesignationChange = (event: SelectChangeEvent) => {
@@ -436,19 +455,17 @@ const EmployeeEdit = () => {
   };
 
   const FetchEmployeeDetails = (id: number) => {
-    debugger;
     let params = {
-      ID:1,
+      ID: 1,
     };
     Provider.getAll(`master/getemployeedetailsbyid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
 
-            var employee_data= response.data.data[0].employee[0];
-            var bankDetails_data= response.data.data[0].bankDetails[0];
-            var reporting_data= response.data.data[0].employeeReportingAuthority[0];
+            var employee_data = response.data.data[0].employee[0];
+            var bankDetails_data = response.data.data[0].bankDetails[0];
+            var reporting_data = response.data.data[0].employeeReportingAuthority[0];
 
             setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
             setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
@@ -456,27 +473,37 @@ const EmployeeEdit = () => {
             setAadhar(!NullOrEmpty(employee_data.aadharNo) ? employee_data.aadharNo : "");
             setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
             setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
+
             debugger;
-          
-            if(!NullOrEmpty(employee_data.stateID)) {
-              debugger;
+            if (!NullOrEmpty(employee_data.stateID)) {
               setSelectedStateID(employee_data.stateID);
-              }
+              st_ID = employee_data.stateID;
+            }
 
-              if(!NullOrEmpty(employee_data.cityID)) {
-                debugger;
-                setSelectedCityID(employee_data.cityID);
-                }
+            if (!NullOrEmpty(employee_data.cityID)) {
+              setSelectedCityID(employee_data.cityID);
+              ct_ID = employee_data.cityID;
+            }
 
-                if(!NullOrEmpty(employee_data.bloodGroup)) {
-                  debugger;
-                  setBloodGroupID(employee_data.bloodGroup);
-                  }
+            if (!NullOrEmpty(employee_data.bloodGroup)) {
+              setBloodGroupID(employee_data.bloodGroup);
+              bg_ID = employee_data.bloodGroup;
+            }
 
-          // setSelectedStateName(employee_data.stateName === null ? "" : employee_data.stateName);
-          
-          // setSelectedCityName(employee_data.cityName === null ? "" : employee_data.cityName);
-          // setSelectedCityID(employee_data.cityID);
+            if (!NullOrEmpty(employee_data.branchID)) {
+              setBranchID(employee_data.branchID);
+              b_ID = employee_data.branchID;
+            }
+
+            if (!NullOrEmpty(employee_data.departmentID)) {
+              setDepartmentID(employee_data.departmentID);
+              d_ID = employee_data.departmentID;
+            }
+
+            if (!NullOrEmpty(employee_data.designationID)) {
+              setDesignationID(employee_data.designationID);
+              de_ID = employee_data.designationID;
+            }
 
             setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
             // setBloodGroup(employee_data.bloodGroup === null ? "" : employee_data.bloodGroup);
@@ -489,18 +516,18 @@ const EmployeeEdit = () => {
             setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
             setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
             setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
-            setReporting(!NullOrEmpty(employee_data.reporting) ? employee_data.reporting : "" );
-            setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "" );
-            setLastWorkingDate(!NullOrEmpty(employee_data.LastWorkingDate) ? employee_data.LastWorkingDate : "" );
+            setReporting(!NullOrEmpty(employee_data.reporting) ? employee_data.reporting : "");
+            setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "");
+            setLastWorkingDate(!NullOrEmpty(employee_data.LastWorkingDate) ? employee_data.LastWorkingDate : "");
             setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType : "");
             setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
 
-            setAccountHName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountHolderName) ? bankDetails_data.accountHolderName: "" : "");
+            setAccountHName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountHolderName) ? bankDetails_data.accountHolderName : "" : "");
 
-            setAccountNo(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountNumber) ? bankDetails_data.accountNumber: "" : "");
-            setBankName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.bankName) ? bankDetails_data.bankName: "" : "");
-            setBankBranchName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.branchName) ? bankDetails_data.branchName: "" : "");
-            setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode: "" : "");
+            setAccountNo(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountNumber) ? bankDetails_data.accountNumber : "" : "");
+            setBankName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.bankName) ? bankDetails_data.bankName : "" : "");
+            setBankBranchName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.branchName) ? bankDetails_data.branchName : "" : "");
+            setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode : "" : "");
             setUploadedImage(employee_data.profilePhoto);
             setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
             // setFilePath(response.data.data[0].profilePhoto ? response.data.data[0].profilePhoto : null);
@@ -508,20 +535,19 @@ const EmployeeEdit = () => {
             //   FetchCities(employee_data.stateID);
             // }
           }
-          debugger;
           setLoading(false);
           FetchStates();
           FetchBranch();
-         FetchDepartment();
-         FetchDesignation();
-         FetchReport();
+          FetchDepartment();
+          FetchDesignation();
+          FetchReport();
         }
       })
       .catch((e) => {
         setLoading(false);
       });
   };
-  
+
   const FetchStates = () => {
 
     Provider.getAll("master/getstates")
@@ -536,18 +562,18 @@ const EmployeeEdit = () => {
                 label: data.stateName,
               });
             });
-            debugger;
             setStatesFullData(stateData);
-
-            let a = statesFullData.filter((el: StateModel) => {
-              return el.id === selectedStateID;
-            });
-            
-            //setSelectedStateName(a.stateName);
+            if (st_ID > 0) {
+              let a = stateData.filter((el) => {
+                return el.id === st_ID;
+              });
+              setSelectedStateName(a[0].label);
+            }
           }
+          FetchCities(st_ID);
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCities = (stateID: number) => {
@@ -567,10 +593,16 @@ const EmployeeEdit = () => {
               });
             });
             setCityFullData(cityData);
+            if (ct_ID > 0) {
+              let a = cityData.filter((el) => {
+                return el.id === ct_ID;
+              });
+              setSelectedCityName(a[0].label);
+            }
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -608,8 +640,8 @@ const EmployeeEdit = () => {
   const InsertData = (status: string, fileName: string) => {
     if (status.toLowerCase() === "success") {
       const params = {
-//UserID: CookieUserID,
-       
+        //UserID: CookieUserID,
+
         CompanyLogo: fileName ? AWSImagePath + fileName : "",
       };
       Provider.create("master/insertuserprofile", params)
@@ -647,7 +679,6 @@ const EmployeeEdit = () => {
   };
 
   const handleBNChange = (event: SelectChangeEvent) => {
-    debugger;
     let Name: string = event.target.value;
     let ac = bloodGroupList.find((el) => el.Name === Name);
     if (ac !== undefined) {
@@ -817,12 +848,12 @@ const EmployeeEdit = () => {
                         variant="outlined"
                         size="small"
                         onChange={(e) => {
-                          setAddress ((e.target as HTMLInputElement).value);
-                          setIsAddressError (false);
-                          setAddressError ("");
+                          setAddress((e.target as HTMLInputElement).value);
+                          setIsAddressError(false);
+                          setAddressError("");
                         }}
-                        error={isAddressError }
-                        helperText={addressError }
+                        error={isAddressError}
+                        helperText={addressError}
                         value={address}
                       />
                     </Grid>
@@ -868,7 +899,6 @@ const EmployeeEdit = () => {
                           value={selectedStateName}
                           renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
                         />
-
                         <FormHelperText>{stateError}</FormHelperText>
                       </FormControl>
                     </Grid>
@@ -882,7 +912,7 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isCityError}>
-                      <Autocomplete
+                        <Autocomplete
                           disablePortal
                           fullWidth
                           options={cityFullData}
@@ -993,15 +1023,15 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                    
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DesktopDatePicker
-                  inputFormat="MM/dd/yyyy"
-                  value={DOB}
-                  onChange={handleDOBChange}
-                  renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
-        </LocalizationProvider>
-                
+
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          value={DOB}
+                          onChange={handleDOBChange}
+                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+                      </LocalizationProvider>
+
                     </Grid>
                   </Grid>
                   <br></br>
@@ -1012,13 +1042,13 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DesktopDatePicker
-          inputFormat="MM/dd/yyyy"
-          value={DOJ}
-          onChange={handleDOJChange}
-          renderInput={(params) => <TextField size="small"{...params} />}></DesktopDatePicker>
-  </LocalizationProvider>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          value={DOJ}
+                          onChange={handleDOJChange}
+                          renderInput={(params) => <TextField size="small"{...params} />}></DesktopDatePicker>
+                      </LocalizationProvider>
                     </Grid>
                   </Grid>
                   <br></br>
@@ -1075,14 +1105,14 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DesktopDatePicker
-          inputFormat="MM/dd/yyyy"
-          value={CardValidity}
-          onChange={handleCardValidityChange}
-          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
-        
-  </LocalizationProvider>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          value={CardValidity}
+                          onChange={handleCardValidityChange}
+                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+
+                      </LocalizationProvider>
                     </Grid>
                   </Grid>
                   <br></br>
@@ -1150,7 +1180,7 @@ const EmployeeEdit = () => {
                           <MenuItem disabled={true} value="--Select--">
                             --Select--
                           </MenuItem>
-                          {branchList.map((item, index) => {
+                          {BranchFullData.map((item, index) => {
                             return (
                               <MenuItem key={index} value={item.locationName}>
                                 {item.locationName}
@@ -1299,7 +1329,7 @@ const EmployeeEdit = () => {
                       </Typography>
                     </Grid>
                     <Grid item sm={6} style={{ height: "30" }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                           inputFormat="MM/dd/yyyy"
                           value={LastWorkingDate}
