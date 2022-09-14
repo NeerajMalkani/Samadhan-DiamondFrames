@@ -48,6 +48,9 @@ import DesignWisePage from "../ui/Contractor/QuotationAndEstimation/DesignWise/D
 import Approved from "../ui/Admin/Users/Approved";
 import Pending from "../ui/Admin/Users/Pending";
 import Declined from "../ui/Admin/Users/Declined";
+import EmployeeDList from "../ui/Dealer/Employee/EmployeeDList";
+import EmployeeDEdit from "../ui/Dealer/Employee/EmployeeDEdit";
+
 
 const AppRoutes = () => {
   return (
@@ -93,7 +96,7 @@ const AppRoutes = () => {
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
-              <Route path="contractor/employee/employeeedit/:id" element={<EmployeeEdit />} />
+              <Route path="contractor/employee/employee/edit/:id" element={<EmployeeEdit />} />
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
               <Route path="contractor/clientlist" element={<ContractorClientPage />} />
@@ -102,6 +105,8 @@ const AppRoutes = () => {
               <Route path="users/approved" element={<Approved/>}/>
               <Route path="users/pending" element={<Pending/>}/>
               <Route path="users/declined" element={<Declined/>}/>
+              <Route path="dealer/employee/employeedlist" element={<EmployeeDList />} />
+              <Route path="dealer/employee/employee/edit/:id" element={<EmployeeDEdit />} />
             </Routes>
           </BrowserRouter>
         </Box>

@@ -43,7 +43,7 @@ import {
         const [declinedName, setDeclinedName] = React.useState("");
         const [declinedNamesList, setDeclinedNameList] =useState<Array<DeclinedModel>>([]);
         const [declinedNamesListTemp, setDeclinedNameListTemp] = React.useState<Array<any>>([]);
-    
+
         const [declinedNameError, setDeclinedNameError] = useState("");
         const [isDeclinedNameError, setIsDeclinedNameError] = useState(false);
     
@@ -126,9 +126,11 @@ import {
         };
     
         const FetchData = () => {
+          debugger;
           ResetFields();
           Provider.getAll("master/getdeclinedusers")
             .then((response: any) => {
+              debugger;
               if (response.data && response.data.code === 200) {
                 if (response.data.data) {
                   const arrList = [...response.data.data];
@@ -136,8 +138,10 @@ import {
                     let sr = { srno: index + 1 };
                     a = Object.assign(a, sr);
                   });
-                  setDeclinedNameList(response.data.data);
-                  setDeclinedNameListTemp(response.data.data);
+                  // setDeclinedNameList(response.data.data);
+                  // setDeclinedNameListTemp(response.data.data);
+                  setDeclinedNameList(arrList);
+                  setDeclinedNameListTemp(arrList);
                 }
               } else {
                 // setSnackMsg(communication.Error);
@@ -179,7 +183,6 @@ import {
                       justifyContent="center"
                       sx={{ m: 2 }}
                     >
-    
                       <CircularProgress />
                     </Box>
                   ) : (
@@ -219,7 +222,7 @@ import {
                             pageSize={pageSize}
                             rowsPerPageOptions={[5, 10, 20]}
                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                            disableSelectionOnClick
+                            disableSelectionOnClick={true}
                             onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                               const arrActivity = [...declinedNamesList];
                               let a: DeclinedModel | undefined =

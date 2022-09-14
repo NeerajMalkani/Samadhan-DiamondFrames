@@ -1241,7 +1241,7 @@ export const employeeColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`employeeedit/${e.row.id}`}>Edit</Link>;
+      return <Link href={`employee/edit/${e.row.id}`}>Edit</Link>;
     }
   },
 ];
@@ -2011,14 +2011,14 @@ export const declinedColumns: GridColDef[] = [
     sortable: false,
   },
    {
-    field: "role",
+    field: "activityRoleName",
     headerName: "Role",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
    {
-    field: "companyName",
+    field: "company",
     headerName: "ComapnyName",
     flex: 0.8,
     minWidth: 60,
@@ -2063,14 +2063,14 @@ export const pendingColumns: GridColDef[] = [
     sortable: false,
   },
    {
-    field: "role",
+    field: "activityRoleName",
     headerName: "Role",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
    {
-    field: "companyName",
+    field: "company",
     headerName: "ComapnyName",
     flex: 0.8,
     minWidth: 60,
