@@ -588,11 +588,11 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Add Department",
-          isActive: window.location.href.toLowerCase().includes("addepartment"),
+          isActive: window.location.href.toLowerCase().includes("department"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/addepartment`);
+              navigate(`/contractor/organization/department`);
             }, 300);
           },
         },
@@ -602,7 +602,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/addbranch`);
+              navigate(`/contractor/organization/branch`);
             }, 300);
           },
         },
@@ -612,7 +612,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/addesignation`);
+              navigate(`/contractor/organization/designation`);
             }, 300);
           },
         },

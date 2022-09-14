@@ -100,6 +100,7 @@ const EmployeeEdit = () => {
       setDOJ(new Date());
       setCardValidity(new Date());
       setLastWorkingDate(new Date());
+      debugger;
       setBloodGroupList(BloodGroup);
     }
   }, []);
@@ -148,11 +149,11 @@ const EmployeeEdit = () => {
   const [pincodeError, setPincodeError] = useState("");
   const [isPincodeError, setIsPincodeError] = useState(false);
 
-  const [bloodgroup, setBloodGroup] = useState("--Select--");
-  const [bloodGroupID, setBloodGroupID] = useState<number>(0);
-  const [bloodGroupError, setBloodGroupError] = useState("");
-  const [isBloodGroupError, setIsBloodGroupError] = useState(false);
-  const [bloodGroupList, setBloodGroupList] = useState<Array<BloodGroupModel>>([]);
+  const [bloodgroup, setBloodGroup] = React.useState("--Select--");
+  const [bloodGroupID, setBloodGroupID] = React.useState<number>(0);
+  const [bloodGroupError, setBloodGroupError] = React.useState("");
+  const [isBloodGroupError, setIsBloodGroupError] = React.useState(false);
+  const [bloodGroupList, setBloodGroupList] = React.useState<Array<BloodGroupModel>>([]);
 
   const [DOB, setDOB] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
   const [DOJ, setDOJ] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
@@ -179,7 +180,6 @@ const EmployeeEdit = () => {
   const [branchID, setBranchID] = useState<number>(0);
   const [branchError, setBranchError] = useState("");
   const [isBranchError, isSetBranchError] = useState(false);
-  //const [branchList, setBranchList] = useState<Array<BranchModel>>([]);
   const [selectedBranchName, setSelectedBranchName] = useState("");
   const [selectedBranchID, setSelectedBranchID] = useState(0);
   const [branchFullData, setBranchFullData] = useState([]);
@@ -300,9 +300,7 @@ const EmployeeEdit = () => {
                 label: data.branchName,
               });
             });
-            console.log(branchData);
             setBranchFullData(branchData);
-
             if (b_ID > 0) {
               let a = branchData.filter((el) => {
                 return el.id === b_ID;
@@ -332,11 +330,11 @@ const EmployeeEdit = () => {
 
   const handleBranchChange = (event: SelectChangeEvent) => {
     let locationName: string = event.target.value;
-    let ac = BranchFullData.find((el) => el.locationName === locationName);
+    let ac = branchFullData.find((el) => el.locationName === locationName);
     if (ac !== undefined) {
       setBranch(locationName);
       setBranchID(ac?.id);
-      setIsBranchError(false);
+      isSetBranchError(false);
       setBranchError("");
     }
   };
@@ -391,7 +389,7 @@ const EmployeeEdit = () => {
     if (ac !== undefined) {
       setDesignation(designationName);
       setDesignationID(ac?.id);
-      setIsDesignationError(false);
+      isSetDesignationError(false);
       setDesignationError("");
     }
   };
@@ -474,7 +472,6 @@ const EmployeeEdit = () => {
             setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
             setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
 
-            debugger;
             if (!NullOrEmpty(employee_data.stateID)) {
               setSelectedStateID(employee_data.stateID);
               st_ID = employee_data.stateID;
@@ -484,10 +481,18 @@ const EmployeeEdit = () => {
               setSelectedCityID(employee_data.cityID);
               ct_ID = employee_data.cityID;
             }
-
+            debugger;
             if (!NullOrEmpty(employee_data.bloodGroup)) {
               setBloodGroupID(employee_data.bloodGroup);
               bg_ID = employee_data.bloodGroup;
+              //bloodGroupList
+
+              // if (bg_ID > 0) {
+              //   let a = bloodGroupList.filter((el) => {
+              //     return el.ID === bg_ID;
+              //   });
+              //   setBloodGroup(a[0].Name);
+              // }
             }
 
             if (!NullOrEmpty(employee_data.branchID)) {
@@ -552,7 +557,6 @@ const EmployeeEdit = () => {
 
     Provider.getAll("master/getstates")
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const stateData: any = [];
@@ -562,6 +566,7 @@ const EmployeeEdit = () => {
                 label: data.stateName,
               });
             });
+            debugger;
             setStatesFullData(stateData);
             if (st_ID > 0) {
               let a = stateData.filter((el) => {
@@ -1202,9 +1207,9 @@ const EmployeeEdit = () => {
                             }
                           }}
                           value={selectedBranchName}
-                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isBranchError } helperText={branchError} />}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isBranchError} helperText={branchError} />}
                         />
-                        <FormHelperText>{branchError }</FormHelperText>
+                        <FormHelperText>{branchError}</FormHelperText>
                       </FormControl>
                     </Grid>
                   </Grid>
@@ -1232,10 +1237,10 @@ const EmployeeEdit = () => {
                         <Autocomplete
                           disablePortal
                           fullWidth
-                          options={designationList }
+                          options={designationList}
                           //sx={{ width: 300 }}
                           onChange={(event: React.SyntheticEvent, value: any) => {
-                            isSetDesignationError (false);
+                            isSetDesignationError(false);
                             setDesignationError("");
                             if (value !== null) {
                               setDesignation(value.label);
@@ -1243,7 +1248,7 @@ const EmployeeEdit = () => {
                             }
                           }}
                           value={designation}
-                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDesignationError  } helperText={designationError} />}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDesignationError} helperText={designationError} />}
                         />
                         <FormHelperText>{designationError}</FormHelperText>
                       </FormControl>
@@ -1315,7 +1320,7 @@ const EmployeeEdit = () => {
                         <Autocomplete
                           disablePortal
                           fullWidth
-                          options={departmentList }
+                          options={departmentList}
                           //sx={{ width: 300 }}
                           onChange={(event: React.SyntheticEvent, value: any) => {
                             setIsDeapartmentError(false);
@@ -1326,7 +1331,7 @@ const EmployeeEdit = () => {
                             }
                           }}
                           value={department}
-                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDepartmentError } helperText={departmentError} />}
+                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDepartmentError} helperText={departmentError} />}
                         />
                         <FormHelperText>{departmentError}</FormHelperText>
                       </FormControl>

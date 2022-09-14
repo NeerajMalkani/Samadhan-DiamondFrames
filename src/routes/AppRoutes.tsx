@@ -85,9 +85,9 @@ const AppRoutes = () => {
               <Route path="dealer/basicdetails" element={<Basic />} />
               <Route path="contractor/companyprofile/cbasic" element={<CBasic />} />
               <Route path="contractor/companyprofile/cmyservice" element={<CMyService />} />
-              <Route path="contractor/organization/adddepartment" element={<AddDepartment />} />
-              <Route path="contractor/organization/adddesignation" element={<AddDesignation />} />
-              <Route path="contractor/organization/addbranch" element={<AddBranch />} />
+              <Route path="contractor/organization/department" element={<AddDepartment />} />
+              <Route path="contractor/organization/designation" element={<AddDesignation />} />
+              <Route path="contractor/organization/branch" element={<AddBranch />} />
               <Route path="dealer/organization/addepartment" element={<AddDDepartment />} />
               <Route path="dealer/organization/addesignation" element={<AddDDesignation />} />
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
