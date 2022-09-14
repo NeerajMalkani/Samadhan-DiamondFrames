@@ -506,7 +506,7 @@ export interface QuotationDataModel {
 
 export interface ReportNameModel {
   id: number;
-  reportName: string;
+  employee: string;
 }
 
 export interface IdCardModel {

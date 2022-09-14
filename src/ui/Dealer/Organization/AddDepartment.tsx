@@ -85,8 +85,7 @@ const AddDDepartment = () => {
 
   const FetchData = (type: string) => {
     let params = {
-      UserType: 4,
-      UserId: cookies.dfc.UserID,
+      AddedByUserID: cookies.dfc.UserID,
     };
     Provider.getAll(`master/getuserdepartments?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
@@ -220,10 +219,10 @@ const AddDDepartment = () => {
     setButtonLoading(true);
     if (actionStatus === "new") {
       Provider.create("master/insertuserdepartments", {
-        UserId: cookies.dfc.UserID,
-        UserType: 4,
+        AddedByUserID: cookies.dfc.UserID,
         DepartmentID: departmentID,
         Display: checked,
+        ID: 0
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -247,10 +246,10 @@ const AddDDepartment = () => {
         });
     } else if (actionStatus === "edit") {
       Provider.create("master/updateuserdepartment", {
-        UserId: cookies.dfc.UserID,
-        UserType: 4,
+        AddedByUserID: cookies.dfc.UserID,
         DepartmentID: departmentID,
         Display: checked,
+        ID: selectedID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {

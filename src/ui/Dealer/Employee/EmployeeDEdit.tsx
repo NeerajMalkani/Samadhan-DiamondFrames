@@ -406,11 +406,11 @@ import {
         //navigate(`/master/unit`);
         let arrAct: any = [];
         reportNameList.map(function (a: ReportNameModel) {
-          arrAct.push(a.reportName);
+          arrAct.push(a.employee);
         });
         setReportList(arrAct);
         let aID: any = reportNameList.filter((el: ReportNameModel) => {
-          return arrAct.indexOf(el.reportName) !== -1;
+          return arrAct.indexOf(el.employee) !== -1;
         });
   
         const unitID = aID.map((data: any) => data.id);
@@ -422,7 +422,7 @@ import {
         setReportSelectAll("Select All");
       } else {
         let a: any = reportNameList.filter((el: ReportNameModel) => {
-          return un.indexOf(el.reportName) !== -1;
+          return un.indexOf(el.employee) !== -1;
         });
   
         const unitID = a.map((data: any) => data.id);
@@ -1365,8 +1365,8 @@ import {
                             <b>{reportSelectAll}</b>
                           </MenuItem>
                           {reportNameList.map((units: ReportNameModel) => (
-                            <MenuItem selected={true} key={units.id} value={units.reportName} style={getStyles(units.reportName, reportList, theme)}>
-                              {units.reportName}
+                            <MenuItem selected={true} key={units.id} value={units.employee} style={getStyles(units.employee, reportList, theme)}>
+                              {units.employee}
                             </MenuItem>
                           ))}
                         </Select>

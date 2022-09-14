@@ -86,8 +86,7 @@ const AddDesignation = () => {
 
   const FetchData = (type: string) => {
     let params = {
-      UserType: 3,
-      UserId: cookies.dfc.UserID,
+      AddedByUserID: cookies.dfc.UserID,
     };
     Provider.getAll(`master/getuserdesignation?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
@@ -229,7 +228,8 @@ const AddDesignation = () => {
     setButtonLoading(true);
     if (actionStatus === "new") {
       Provider.create("master/insertuserdesignation", {
-        UserId: cookies.dfc.UserID,
+        ID: 0,
+        AddedByUserID: cookies.dfc.UserID,
         UserType: 3,
         DesignationID: designationID,
         ReportingAuthority: reportingAuthority,
@@ -257,9 +257,7 @@ const AddDesignation = () => {
         });
     } else if (actionStatus === "edit") {
       Provider.create("master/updateuserdesignation", {
-        // ServiceID: departmentID,
-        UserId: cookies.dfc.UserID,
-        UserType: 3,
+        AddedByUserID: cookies.dfc.UserID,
         DesignationID: designationID,
         ReportingAuthority: reportingAuthority,
         Display: checked,

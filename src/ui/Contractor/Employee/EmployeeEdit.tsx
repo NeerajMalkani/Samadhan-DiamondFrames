@@ -100,7 +100,6 @@ const EmployeeEdit = () => {
       setDOJ(new Date());
       setCardValidity(new Date());
       setLastWorkingDate(new Date());
-      debugger;
       setBloodGroupList(BloodGroup);
     }
   }, []);
@@ -189,13 +188,15 @@ const EmployeeEdit = () => {
   const [departmentID, setDepartmentID] = useState<number>(0);
   const [departmentError, setDepartmentError] = useState("");
   const [isDepartmentError, setIsDeapartmentError] = useState(false);
-  const [departmentList, setDepartmentList] = useState<Array<DepartmentNameModel>>([]);
+  const [selectedDepartmentName, setSelectedDepartmentName] = useState("");
+  const [departmentFullData, setDepartmentFullData] = useState([]);
 
   const [designation, setDesignation] = useState("--Select--");
   const [designationID, setDesignationID] = useState<number>(0);
   const [designationError, setDesignationError] = useState("");
+  const [selectedDesignationName, setSelectedDesignationName] = useState("");
   const [isDesignationError, isSetDesignationError] = useState(false);
-  const [designationList, setDesignationList] = useState<Array<DesignationNameModel>>([]);
+  const [designationFullData, setDesignationFullData] = useState([]);
 
   const [reportList, setReportList] = useState<string[]>([]);
   const [reportListID, setReportListID] = useState<number[]>([]);
@@ -297,7 +298,7 @@ const EmployeeEdit = () => {
             response.data.data.map((data: any, i: number) => {
               branchData.push({
                 id: data.id,
-                label: data.branchName,
+                label: data.locationName,
               });
             });
             setBranchFullData(branchData);
@@ -314,11 +315,13 @@ const EmployeeEdit = () => {
   };
 
   const FetchReport = () => {
+    debugger;
     let params = {
       AddedByUserID: cookies.dfc.UserID,
     };
-    Provider.getAll(`master/getreportingemployee?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/getreportingemployeelist?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setReportNameList(response.data.data);
@@ -341,15 +344,27 @@ const EmployeeEdit = () => {
 
   const FetchDepartment = () => {
     let params = {
-      UserID: cookies.dfc.UserID,
-      UserType: 3,
+      AddedByUserID: cookies.dfc.UserID,
     };
-
     Provider.getAll(`master/getuserdepartmentforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            setDepartmentList(response.data.data);
+            const deptData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              deptData.push({
+                id: data.departmentID,
+                label: data.departmentName,
+              });
+            });
+            setDepartmentFullData(deptData);
+            if (d_ID > 0) {
+              let a = deptData.filter((el) => {
+                return el.id === d_ID;
+              });
+              setSelectedDepartmentName(a[0].label);
+            }
           }
         }
       })
@@ -358,7 +373,7 @@ const EmployeeEdit = () => {
 
   const handleDepartmentChange = (event: SelectChangeEvent) => {
     let departmentName: string = event.target.value;
-    let ac = departmentList.find((el) => el.departmentName === departmentName);
+    let ac = departmentFullData.find((el) => el.departmentName === departmentName);
     if (ac !== undefined) {
       setDepartment(departmentName);
       setDepartmentID(ac?.id);
@@ -369,14 +384,27 @@ const EmployeeEdit = () => {
 
   const FetchDesignation = () => {
     let params = {
-      UserID: cookies.dfc.UserID,
-      UserType: 3,
+      AddedByUserID: cookies.dfc.UserID,
     };
     Provider.getAll(`master/getuserdesignationforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            setDesignationList(response.data.data);
+            const desgData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              desgData.push({
+                id: data.designationID,
+                label: data.designationName,
+              });
+            });
+            setDesignationFullData(desgData);
+            if (de_ID > 0) {
+              let a = desgData.filter((el) => {
+                return el.id === de_ID;
+              });
+              setSelectedDesignationName(a[0].label);
+            }
           }
         }
       })
@@ -385,7 +413,7 @@ const EmployeeEdit = () => {
 
   const handleDesignationChange = (event: SelectChangeEvent) => {
     let designationName: string = event.target.value;
-    let ac = designationList.find((el) => el.designationName === designationName);
+    let ac = designationFullData.find((el) => el.designationName === designationName);
     if (ac !== undefined) {
       setDesignation(designationName);
       setDesignationID(ac?.id);
@@ -404,11 +432,11 @@ const EmployeeEdit = () => {
       //navigate(`/master/unit`);
       let arrAct: any = [];
       reportNameList.map(function (a: ReportNameModel) {
-        arrAct.push(a.reportName);
+        arrAct.push(a.employee);
       });
       setReportList(arrAct);
       let aID: any = reportNameList.filter((el: ReportNameModel) => {
-        return arrAct.indexOf(el.reportName) !== -1;
+        return arrAct.indexOf(el.employee) !== -1;
       });
 
       const unitID = aID.map((data: any) => data.id);
@@ -420,7 +448,7 @@ const EmployeeEdit = () => {
       setReportSelectAll("Select All");
     } else {
       let a: any = reportNameList.filter((el: ReportNameModel) => {
-        return un.indexOf(el.reportName) !== -1;
+        return un.indexOf(el.employee) !== -1;
       });
 
       const unitID = a.map((data: any) => data.id);
@@ -481,7 +509,6 @@ const EmployeeEdit = () => {
               setSelectedCityID(employee_data.cityID);
               ct_ID = employee_data.cityID;
             }
-            debugger;
             if (!NullOrEmpty(employee_data.bloodGroup)) {
               setBloodGroupID(employee_data.bloodGroup);
               bg_ID = employee_data.bloodGroup;
@@ -566,7 +593,6 @@ const EmployeeEdit = () => {
                 label: data.stateName,
               });
             });
-            debugger;
             setStatesFullData(stateData);
             if (st_ID > 0) {
               let a = stateData.filter((el) => {
@@ -1237,7 +1263,7 @@ const EmployeeEdit = () => {
                         <Autocomplete
                           disablePortal
                           fullWidth
-                          options={designationList}
+                          options={designationFullData}
                           //sx={{ width: 300 }}
                           onChange={(event: React.SyntheticEvent, value: any) => {
                             isSetDesignationError(false);
@@ -1247,7 +1273,7 @@ const EmployeeEdit = () => {
                               setDesignationID(value.id);
                             }
                           }}
-                          value={designation}
+                          value={selectedDesignationName}
                           renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDesignationError} helperText={designationError} />}
                         />
                         <FormHelperText>{designationError}</FormHelperText>
@@ -1320,7 +1346,7 @@ const EmployeeEdit = () => {
                         <Autocomplete
                           disablePortal
                           fullWidth
-                          options={departmentList}
+                          options={departmentFullData}
                           //sx={{ width: 300 }}
                           onChange={(event: React.SyntheticEvent, value: any) => {
                             setIsDeapartmentError(false);
@@ -1330,7 +1356,7 @@ const EmployeeEdit = () => {
                               setDepartmentID(value.id);
                             }
                           }}
-                          value={department}
+                          value={selectedDepartmentName}
                           renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isDepartmentError} helperText={departmentError} />}
                         />
                         <FormHelperText>{departmentError}</FormHelperText>
@@ -1370,8 +1396,8 @@ const EmployeeEdit = () => {
                           <b>{reportSelectAll}</b>
                         </MenuItem>
                         {reportNameList.map((units: ReportNameModel) => (
-                          <MenuItem selected={true} key={units.id} value={units.reportName} style={getStyles(units.reportName, reportList, theme)}>
-                            {units.reportName}
+                          <MenuItem selected={true} key={units.id} value={units.employee} style={getStyles(units.employee, reportList, theme)}>
+                            {units.employee}
                           </MenuItem>
                         ))}
                       </Select>
