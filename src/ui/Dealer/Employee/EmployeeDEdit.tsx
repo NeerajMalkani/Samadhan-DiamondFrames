@@ -755,6 +755,7 @@ import {
                           fullWidth
                           variant="outlined"
                           size="small"
+                          disabled={true}
                           onChange={(e) => {
                             setEmployeeCode((e.target as HTMLInputElement).value);
                             setIsEmployeeCodeError(false);
@@ -1156,6 +1157,7 @@ import {
                           fullWidth
                           variant="outlined"
                           size="small"
+                          disabled={true}
                           onChange={(e) => {
                             setEmployeeName((e.target as HTMLInputElement).value);
                             setIsEmployeeNameError(false);
@@ -1270,16 +1272,17 @@ import {
   
                   <Grid item xs={6}>
                     <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                      <Grid item sm={3}>
+                      <Grid item sm={2}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b style={{ float: "right" }}>Employee Code</b>
                         </Typography>
                       </Grid>
-                      <Grid item sm={6}>
+                      <Grid item sm={8}>
                         <TextField
                           fullWidth
                           variant="outlined"
                           size="small"
+                          disabled={true}
                           onChange={(e) => {
                             setEmployeeCode((e.target as HTMLInputElement).value);
                             setIsEmployeeCodeError(false);
@@ -1293,12 +1296,12 @@ import {
                     </Grid>
                     <br></br>
                     <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                      <Grid item sm={3}>
+                      <Grid item sm={2}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b style={{ float: "right" }}>Deapartment</b>
                         </Typography>
                       </Grid>
-                      <Grid item sm={6}>
+                      <Grid item sm={8}>
                         <FormControl fullWidth size="small" error={isDepartmentError}>
                           {/* <Select value={department} onChange={handleDepartmentChange}>
                             <MenuItem disabled={true} value="--Select--">
@@ -1334,12 +1337,12 @@ import {
                     </Grid>
                     <br></br>
                     <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                      <Grid item sm={3}>
+                      <Grid item sm={2}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b style={{ float: "right" }}>Reporting To</b>
                         </Typography>
                       </Grid>
-                      <Grid item sm={6}>
+                      <Grid item sm={10}>
                         <Select
                           size="small"
                           multiple
@@ -1374,18 +1377,18 @@ import {
                     </Grid>
                     <br></br>
                     <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                      <Grid item sm={3}>
+                      <Grid item sm={2}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b style={{ float: "right" }}>Last Work Date</b>
                         </Typography>
                       </Grid>
-                      <Grid item sm={6} style={{ height: "30" }}>
+                      <Grid item sm={8} style={{ height: "30" }}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                           <DesktopDatePicker
                             inputFormat="MM/dd/yyyy"
                             value={LastWorkingDate}
                             onChange={handleLastWorkingDateChange}
-                            renderInput={(params) => <TextField size="small" {...params} />}
+                            renderInput={(params) => <TextField size="small" style={{width:"100%"}}  {...params} />}
                           ></DesktopDatePicker>
                         </LocalizationProvider>
                       </Grid>
@@ -1412,6 +1415,7 @@ import {
                           fullWidth
                           variant="outlined"
                           size="small"
+                          disabled={true}
                           onChange={(e) => {
                             setEmployeeName((e.target as HTMLInputElement).value);
                             setIsEmployeeNameError(false);
@@ -1435,6 +1439,7 @@ import {
                           fullWidth
                           variant="outlined"
                           size="small"
+                          disabled={true}
                           onChange={(e) => {
                             setEmployeeCode((e.target as HTMLInputElement).value);
                             setIsEmployeeCodeError(false);

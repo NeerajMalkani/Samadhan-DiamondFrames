@@ -377,11 +377,11 @@ const [searchActive,setSearchActive] = useState("none");
                   
                 </Grid>
                 <Grid item sm={6}>
-
                   <TextField
                     fullWidth
                     variant="outlined"
                     size="small"
+                    type="number"
                     onChange={(e) => {
                       setAadharNo((e.target as HTMLInputElement).value);
                       isSetAadharNoError(false);
@@ -405,8 +405,12 @@ const [searchActive,setSearchActive] = useState("none");
                       <Grid item sm={6}>
                           <TextField
                             fullWidth
+                            inputProps={{
+                              maxLength: 10,
+                            }}
                             variant="outlined"
                             size="small"
+                            type="number"
                             onChange={(e) => {
                               setMobileNo((e.target as HTMLInputElement).value);
                               isSetMobileNoError(false);
@@ -515,7 +519,6 @@ const [searchActive,setSearchActive] = useState("none");
                         </Grid>
                         <Grid item sm={7}>
                           <TextField
-                          
                             fullWidth
                             variant="outlined"
                             size="small"
@@ -541,8 +544,12 @@ const [searchActive,setSearchActive] = useState("none");
                     <Grid item sm={7}>
                     <TextField
                       fullWidth
+                      inputProps={{
+                        maxLength: 10,
+                      }}
                       variant="outlined"
                       size="small"
+                      type="number"
                       onChange={(e) => {
                         setAddMobileNo((e.target as HTMLInputElement).value);
                         isSetAddMobileNoError(false);
@@ -564,9 +571,13 @@ const [searchActive,setSearchActive] = useState("none");
                       </Grid>
                       <Grid item sm={7}>
                         <TextField
-                          fullWidth
+                       fullWidth
+                       inputProps={{
+                       maxLength: 12,
+                      }}
                           variant="outlined"
                           size="small"
+                          // type="number"
                           onChange={(e) => {
                             setAddAadharNo((e.target as HTMLInputElement).value);
                             isSetAddAadharNoError(false);

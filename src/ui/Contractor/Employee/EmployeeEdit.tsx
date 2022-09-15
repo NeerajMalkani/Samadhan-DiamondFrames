@@ -786,6 +786,7 @@ const EmployeeEdit = () => {
                         fullWidth
                         variant="outlined"
                         size="small"
+                        disabled={true}
                         onChange={(e) => {
                           setEmployeeCode((e.target as HTMLInputElement).value);
                           setIsEmployeeCodeError(false);
@@ -898,18 +899,6 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isStateError}>
-                        {/* <Select value={state} onChange={handleSNChange}>
-                          <MenuItem disabled={true} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {stateNameList.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.stateName}>
-                                {item.stateName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select> */}
                         <Autocomplete
                           disablePortal
                           fullWidth
@@ -1187,6 +1176,7 @@ const EmployeeEdit = () => {
                         fullWidth
                         variant="outlined"
                         size="small"
+                        disabled={true}
                         onChange={(e) => {
                           setEmployeeName((e.target as HTMLInputElement).value);
                           setIsEmployeeNameError(false);
@@ -1207,18 +1197,6 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isBranchError}>
-                        {/* <Select value={branch} onChange={handleBranchChange}>
-                          <MenuItem disabled={true} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {BranchFullData.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.locationName}>
-                                {item.locationName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select> */}
                         <Autocomplete
                           disablePortal
                           fullWidth
@@ -1248,18 +1226,6 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isDesignationError}>
-                        {/* <Select value={designation} onChange={handleDesignationChange}>
-                          <MenuItem disabled={true} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {designationList.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.designationName}>
-                                {item.designationName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select> */}
                         <Autocomplete
                           disablePortal
                           fullWidth
@@ -1271,6 +1237,7 @@ const EmployeeEdit = () => {
                             if (value !== null) {
                               setDesignation(value.label);
                               setDesignationID(value.id);
+                              setSelectedDesignationName(value.label);
                             }
                           }}
                           value={selectedDesignationName}
@@ -1311,6 +1278,7 @@ const EmployeeEdit = () => {
                         fullWidth
                         variant="outlined"
                         size="small"
+                        disabled={true}
                         onChange={(e) => {
                           setEmployeeCode((e.target as HTMLInputElement).value);
                           setIsEmployeeCodeError(false);
@@ -1331,18 +1299,6 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={6}>
                       <FormControl fullWidth size="small" error={isDepartmentError}>
-                        {/* <Select value={department} onChange={handleDepartmentChange}>
-                          <MenuItem disabled={true} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {departmentList.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.departmentName}>
-                                {item.departmentName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select> */}
                         <Autocomplete
                           disablePortal
                           fullWidth
@@ -1354,6 +1310,7 @@ const EmployeeEdit = () => {
                             if (value !== null) {
                               setDepartment(value.label);
                               setDepartmentID(value.id);
+                              setSelectedDepartmentName(value.label);
                             }
                           }}
                           value={selectedDepartmentName}
@@ -1443,6 +1400,7 @@ const EmployeeEdit = () => {
                         fullWidth
                         variant="outlined"
                         size="small"
+                        disabled={true}
                         onChange={(e) => {
                           setEmployeeName((e.target as HTMLInputElement).value);
                           setIsEmployeeNameError(false);
@@ -1466,6 +1424,7 @@ const EmployeeEdit = () => {
                         fullWidth
                         variant="outlined"
                         size="small"
+                        disabled={true}
                         onChange={(e) => {
                           setEmployeeCode((e.target as HTMLInputElement).value);
                           setIsEmployeeCodeError(false);

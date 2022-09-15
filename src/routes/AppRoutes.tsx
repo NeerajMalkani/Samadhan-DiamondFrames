@@ -105,7 +105,7 @@ const AppRoutes = () => {
               <Route path="users/approved" element={<Approved/>}/>
               <Route path="users/pending" element={<Pending/>}/>
               <Route path="users/declined" element={<Declined/>}/>
-              <Route path="dealer/employee/employeedlist" element={<EmployeeDList />} />
+              <Route path="dealer/employee/employeedlist" element={<EmployeeDList />} />z
               <Route path="dealer/employee/employee/edit/:id" element={<EmployeeDEdit />} />
             </Routes>
           </BrowserRouter>
