@@ -587,8 +587,7 @@ const [searchActive,setSearchActive] = useState("none");
           </Grid>
           </Grid>
         </Grid>
-<br></br>
-<br></br>
+          
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">
              MY EMPLOYEE LIST
