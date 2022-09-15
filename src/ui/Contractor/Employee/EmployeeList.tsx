@@ -192,10 +192,13 @@ const EmployeeListPage = () => {
 
       isSetAadharNoError(true);
       setAadharNoErrorText("Please Enter Aadhar No");
+      setActive("none");
+      
     }
 
     if (isValid){
       FetchSearchData();
+      setSearchActive("inline");
     }
 
      };
@@ -333,15 +336,15 @@ const EmployeeListPage = () => {
 /*end create button toggle*/
 /*start search toggle coding*/
 const [searchActive,setSearchActive] = useState("none");
-const searchToggle = () =>{
-    if(searchActive === "none")
-    {
-      setSearchActive("inline")
-    }
-    else{
-      setSearchActive("none")
-    }
-  }
+// const searchToggle = () =>{
+//     if(searchActive === "none")
+//     {
+//       setSearchActive("inline")
+//     }
+//     else{
+//       setSearchActive("none")
+//     }
+//   }
 /*end search toggle coding*/
   
   return (
@@ -359,8 +362,8 @@ const searchToggle = () =>{
           </Grid>
 
         </Grid>
-<br></br>
-<br></br>
+        <br></br>
+        <br></br>
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
 
           <Grid container direction="row" justifyContent="center" alignItems="center"  rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
@@ -420,7 +423,7 @@ const searchToggle = () =>{
             <Grid item xs={4} direction="row" justifyContent="center" alignItems="center" >
               <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
                 <Grid item sm={5}>
-                <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={()=>{handleSearchClick(); searchToggle()}}>
+                <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={()=>{handleSearchClick()}}>
                   Search
                 </Button>
                 </Grid>
@@ -438,22 +441,23 @@ const searchToggle = () =>{
           
 
         </Grid>
-<br></br>
-<br></br>
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <br></br>
+        <br></br>
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} >
 
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)" ,display:`${searchActive}`}} >
           <Typography variant="h6">EMPLOYEE SEARCH  RESULT</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{display:`${searchActive}`}}>
+          <Grid item xs={4} sm={8} md={12} >
             {loading ? (
               <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
-              <div style={{ height: 300, width: "100%", marginBottom: "20px" }}>
+              <div style={{ height:"auto", width: "100%", marginBottom: "20px" }}>
                 {gridEmployeeSearchList.length === 0 ? (
-                    <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                    // <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                    <div></div>
                 ) : (
                   <>
                     {/* <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
@@ -497,7 +501,7 @@ const searchToggle = () =>{
 <br></br>
 
 
-        <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)"}}>
+        <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)",display:`${active}`}} >
           <Typography variant="h6">EMPLOYEE (ADD NEW / EDIT)</Typography>
           </Grid>
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{display:`${active}`}}>
