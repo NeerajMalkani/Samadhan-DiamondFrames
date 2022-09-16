@@ -379,6 +379,9 @@ const [searchActive,setSearchActive] = useState("none");
                 <Grid item sm={6}>
                   <TextField
                     fullWidth
+                    inputProps={{
+                      maxLength: 11,
+                    }}
                     variant="outlined"
                     size="small"
                     type="number"
@@ -390,6 +393,8 @@ const [searchActive,setSearchActive] = useState("none");
                     error={isAadharNoError}
                     helperText={aadharNoErrorText}
                     value={aadharNo}
+                    
+
                   />
                 </Grid>
               </Grid>

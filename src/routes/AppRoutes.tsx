@@ -1,4 +1,5 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import 'material-icons/iconfont/material-icons.css';
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
@@ -8,6 +9,7 @@ import ServicePage from "../ui/Admin/Master/ServicePage";
 import UnitPage from "../ui/Admin/Master/UnitPage";
 import CategoryPage from "../ui/Admin/Master/CategoryPage";
 import DashboardPage from "../ui/DashboardPage";
+import DashboardPocket from "../ui/DashboardPocket";
 import LoginPage from "../ui/LoginPage";
 import ProductPage from "../ui/Admin/Master/Product";
 import SignupPage from "../ui/Signup";
@@ -65,6 +67,8 @@ const AppRoutes = () => {
               <Route path="signup" element={<SignupPage />} />
               <Route path="forgotpassword" element={<ForgotPasswordPage />} />
               <Route path="dashboard" element={<DashboardPage />} />
+              /*pocketDashboard*/
+              <Route path="dashboardpocket" element={<DashboardPocket />} />
               <Route path="master/activity" element={<ActivityPage />} />
               <Route path="master/service" element={<ServicePage />} />
               <Route path="master/unit" element={<UnitPage />} />

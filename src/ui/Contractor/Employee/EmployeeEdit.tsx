@@ -581,7 +581,7 @@ const EmployeeEdit = () => {
   };
 
   const FetchStates = () => {
-
+    debugger;
     Provider.getAll("master/getstates")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -593,18 +593,20 @@ const EmployeeEdit = () => {
                 label: data.stateName,
               });
             });
+            debugger;
             setStatesFullData(stateData);
+
             if (st_ID > 0) {
-              let a = stateData.filter((el) => {
+              let a = statesFullData.filter((el) => {
                 return el.id === st_ID;
               });
               setSelectedStateName(a[0].label);
             }
           }
-          FetchCities(st_ID);
         }
       })
       .catch((e) => { });
+      
   };
 
   const FetchCities = (stateID: number) => {

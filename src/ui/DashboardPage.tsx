@@ -308,7 +308,7 @@ const DashboardPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={4} sm={5} md={4} style={{ float: "right" }}>
-                <Button variant="contained" startIcon={<CalculateIcon />}>
+                <Button variant="contained" startIcon={<CalculateIcon />} onClick={()=>navigate("/dashboardpocket")}>
                   Pocket Diary
                 </Button>
                 <Button sx={{ ml: 1 }} variant="contained" startIcon={<AnnouncementIcon />}>
