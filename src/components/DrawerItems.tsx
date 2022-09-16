@@ -289,7 +289,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generaluser/profileupdate`);
+              navigate(`/generaluser/userbasic`);
             }, 300);
           },
         },

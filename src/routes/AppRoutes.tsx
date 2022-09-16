@@ -52,6 +52,7 @@ import Pending from "../ui/Admin/Users/Pending";
 import Declined from "../ui/Admin/Users/Declined";
 import EmployeeDList from "../ui/Dealer/Employee/EmployeeDList";
 import EmployeeDEdit from "../ui/Dealer/Employee/EmployeeDEdit";
+import Userbasic from "../ui/GeneralUsers/Userbasic";
 
 
 const AppRoutes = () => {
@@ -111,6 +112,7 @@ const AppRoutes = () => {
               <Route path="users/declined" element={<Declined/>}/>
               <Route path="dealer/employee/employeedlist" element={<EmployeeDList />} />z
               <Route path="dealer/employee/employee/edit/:id" element={<EmployeeDEdit />} />
+              <Route path="generaluser/userbasic" element={<Userbasic />}/>
             </Routes>
           </BrowserRouter>
         </Box>

@@ -104,7 +104,7 @@ const Userbasic = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCity = (stateID) => {
@@ -120,20 +120,21 @@ const Userbasic = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchUserData = (type: string) => {
+    debugger;
     let params = {
       UserID: cookies.dfc.UserID,
     };
-    Provider.getAll(`master/getuserprofile?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/getusergeneralprofile?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
-
+            debugger;
             setUserID(arrList[0].userID);
             setCompanyName(arrList[0].companyName);
             setContactPerson(arrList[0].contactPersonName);
@@ -269,7 +270,7 @@ const Userbasic = () => {
   const InsertUpdateData = () => {
     debugger;
     if (actionStatus === "new") {
-      Provider.create("master/insertuserprofile", {
+      Provider.create("master/updategeneraluserprofile", {
         UserID: userID,
         CompanyName: companyName,
         ContactPersonName: contactPerson,
