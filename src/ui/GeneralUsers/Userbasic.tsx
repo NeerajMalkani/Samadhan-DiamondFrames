@@ -9,11 +9,14 @@ import { communication } from "../../utils/communication";
 import CheckIcon from "@mui/icons-material/Check";
 import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
 import { border } from "@mui/system";
-import { GetStringifyJson } from "../../utils/CommonFunctions";
+import { GetStringifyJson, NullOrEmpty } from "../../utils/CommonFunctions";
 import { CityModel, CompanyModel, StateModel, UserModel, UserProfile } from "../../models/Model";
 import Provider from "../../api/Provider";
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+
+let st_ID = 0, ct_ID = 0;
+
 
 const Userbasic = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -28,6 +31,8 @@ const Userbasic = () => {
     }
   }, []);
 
+
+  //#region Variables
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [myUserNameList, setMyUserNameList] = useState<Array<UserModel>>([]);
   const [myUserNameListTemp, setMyUserNameListTemp] = useState<Array<UserModel>>([]);
@@ -88,10 +93,11 @@ const Userbasic = () => {
   const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [display, setDisplay] = React.useState("Yes");
+  //#endregion
 
   useEffect(() => {
     FetchUserData("");
-    FetchStates();
+    // FetchStates();
     //FetchCity();
   }, []);
 
@@ -100,7 +106,23 @@ const Userbasic = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            const stateData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              stateData.push({
+                id: data.id,
+                label: data.stateName,
+              });
+            });
             setStateNameList(response.data.data);
+
+            if (st_ID > 0) {
+              let a = stateData.filter((el) => {
+                return el.id === st_ID;
+              });
+              setState(a[0].label);
+            }
+
+            FetchCity(st_ID);
           }
         }
       })
@@ -108,6 +130,7 @@ const Userbasic = () => {
   };
 
   const FetchCity = (stateID) => {
+    debugger;
     let params = {
       ID: stateID,
     };
@@ -116,8 +139,34 @@ const Userbasic = () => {
         debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            const cityData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              cityData.push({
+                id: data.id,
+                label: data.cityName,
+              });
+            });
+
             setCityNameList(response.data.data);
+            if (ct_ID > 0) {
+              let a = cityData.filter((el) => {
+                return el.id === ct_ID;
+              });
+              setCity(a[0].label);
+            }
           }
+          else {
+            setCityNameList([]);
+            setCity("");
+            ct_ID=0;
+            setCityID(0);
+          }
+        }
+        else {
+          setCityNameList([]);
+            setCity("");
+            ct_ID=0;
+            setCityID(0);
         }
       })
       .catch((e) => { });
@@ -140,14 +189,26 @@ const Userbasic = () => {
             setContactPerson(arrList[0].contactPersonName);
             setMobile(arrList[0].contactPersonNumber);
             setProfileAddress(arrList[0].addressLine);
-            setState(arrList[0].stateName);
-            setStateID(arrList[0].stateID);
-            if (arrList[0].stateID > 0) {
-              debugger;
-              FetchCity(arrList[0].stateID);
-              setCity(arrList[0].cityName);
-              setCityID(arrList[0].cityID);
+            // setState(arrList[0].stateName);
+
+            if (!NullOrEmpty(arrList[0].stateID)) {
+              setStateID(arrList[0].stateID);
+              st_ID = arrList[0].stateID;
             }
+
+            if (!NullOrEmpty(arrList[0].cityID)) {
+              setStateID(arrList[0].cityID);
+              ct_ID = arrList[0].cityID;
+            }
+
+            setCityID(arrList[0].cityID);
+
+            // if (arrList[0].stateID > 0) {
+            //   debugger;
+            //   FetchCity(arrList[0].stateID);
+            //   setCity(arrList[0].cityName);
+            //   setCityID(arrList[0].cityID);
+            // }
 
             setPincode(arrList[0].pincode);
             setGst(arrList[0].gstNumber);
@@ -164,6 +225,8 @@ const Userbasic = () => {
           setOpen(true);
           setSnackbarType("info");
         }
+
+        FetchStates();
         setLoading(false);
       })
       .catch((e) => {
@@ -404,7 +467,7 @@ const Userbasic = () => {
               <label style={{ color: "#ff0000" }}>*</label> State
             </label>
           </Grid>
-          <Grid item sm={6}>
+          <Grid item sm={3}>
             <FormControl fullWidth size="small" error={isStateError}>
               <Select value={state} onChange={handleSNChange}>
                 <MenuItem disabled={true} value="--Select--">
@@ -429,7 +492,7 @@ const Userbasic = () => {
               <label style={{ color: "#ff0000" }}>*</label> City
             </label>
           </Grid>
-          <Grid item sm={6}>
+          <Grid item sm={3}>
             <FormControl fullWidth size="small" error={isCityError}>
               <Select value={city} onChange={handleCNChange}>
                 <MenuItem disabled={true} value="--Select--">

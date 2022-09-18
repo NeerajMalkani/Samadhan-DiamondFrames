@@ -1,5 +1,4 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-//import 'material-icons/iconfont/material-icons.css';
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
