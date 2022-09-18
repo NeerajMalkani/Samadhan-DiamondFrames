@@ -686,21 +686,21 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "App User Enquiry Wise",
-          isActive: window.location.href.toLowerCase().includes("ongoing"),
+          isActive: window.location.href.toLowerCase().includes("enquiries/appuserenquiry"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/ongoing`);
+              navigate(`/contractor/enquiries/appuserenquiry`);
             }, 300);
           },
         },
         {
           title: "Architech & Consultant-Boq",
-          isActive: window.location.href.toLowerCase().includes("completed"),
+          isActive: window.location.href.toLowerCase().includes("enquiries/architectandconsultant"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/completed`);
+              navigate(`/contractor/enquiries/architectandconsultant`);
             }, 300);
           },
         },
@@ -713,31 +713,31 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Yet Start",
-          isActive: window.location.href.toLowerCase().includes("yetstart"),
+          isActive: window.location.href.toLowerCase().includes("projects/yetstartproject"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/yetstart`);
+              navigate(`/contractor/projects/yetstartproject`);
             }, 300);
           },
         },
         {
           title: "On Going",
-          isActive: window.location.href.toLowerCase().includes("ongoing"),
+          isActive: window.location.href.toLowerCase().includes("projects/Ongoingproject"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/ongoing`);
+              navigate(`/contractor/projects/Ongoingproject`);
             }, 300);
           },
         },
         {
           title: "Completed",
-          isActive: window.location.href.toLowerCase().includes("completed"),
+          isActive: window.location.href.toLowerCase().includes("projects/completedproject"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/completed`);
+              navigate(`/contractor/projects/completedproject`);
             }, 300);
           },
         },

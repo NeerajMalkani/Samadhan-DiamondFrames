@@ -1,5 +1,5 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-import 'material-icons/iconfont/material-icons.css';
+//import 'material-icons/iconfont/material-icons.css';
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
@@ -53,6 +53,11 @@ import Declined from "../ui/Admin/Users/Declined";
 import EmployeeDList from "../ui/Dealer/Employee/EmployeeDList";
 import EmployeeDEdit from "../ui/Dealer/Employee/EmployeeDEdit";
 import Userbasic from "../ui/GeneralUsers/Userbasic";
+import AppUserEnquiry from "../ui/Contractor/Enquiries/AppUserEnquiry";
+import ArchitectAndConsultant from "../ui/Contractor/Enquiries/ArchitectAndConsultant";
+import YetStartProject from "../ui/Contractor/Projects/YetStartProject";
+import OngoingProject from "../ui/Contractor/Projects/OngoingProject";
+import CompletedProject from "../ui/Contractor/Projects/CompletedProject";
 
 
 const AppRoutes = () => {
@@ -113,6 +118,12 @@ const AppRoutes = () => {
               <Route path="dealer/employee/employeedlist" element={<EmployeeDList />} />z
               <Route path="dealer/employee/employee/edit/:id" element={<EmployeeDEdit />} />
               <Route path="generaluser/userbasic" element={<Userbasic />}/>
+
+              <Route path="contractor/enquiries/appuserenquiry" element={<AppUserEnquiry />} />
+              <Route path="contractor/enquiries/architectandconsultant" element={<ArchitectAndConsultant />} />
+              <Route path="contractor/projects/yetstartproject" element={<YetStartProject />} />
+              <Route path="contractor/projects/Ongoingproject" element={<OngoingProject />} />
+              <Route path="contractor/projects/completedproject" element={<CompletedProject />} />
             </Routes>
           </BrowserRouter>
         </Box>

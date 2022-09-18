@@ -2105,3 +2105,320 @@ export const pendingColumns: GridColDef[] = [
     sortable: false,
   },
 ];
+
+export const userNewEnquiry: GridColDef[] = [
+  { field: 'id', headerName: 'Sr.No.', flex: 1 },
+  {
+    field: 'clientDetails',
+    headerName: 'Client Details',
+    flex: 1,
+  },
+  {
+    field: 'designImage',
+    headerName: 'Design Image',
+    flex: 1,
+    
+  },
+  {
+    field: 'estimation_product_details',
+    headerName:'Estimation and Product Details',
+    type: 'number',
+    flex: 1,
+    align:"center"
+  },
+  {
+    field: 'labourCost',
+    headerName: 'Labour Cost',
+    description: 'This column has a value getter and is not sortable.',
+    sortable: true,
+    editable: true,
+    flex: 1,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Accept
+        </Button>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Reject
+        </Button>
+      </Grid>
+    ),
+  }
+];
+
+export const userAcceptedEnquiry: GridColDef[] = [
+  { field: 'id', headerName: 'Sr.No.', flex: 1 },
+  {
+    field: 'clientDetails',
+    headerName: 'Client Details',
+    flex: 1,
+  },
+  {
+    field: 'designImage',
+    headerName: 'Design Image',
+    flex: 1,
+    
+  },
+  {
+    field: 'estimation_product_details',
+    headerName:'Estimation & Product Details',
+    type: 'number',
+    flex: 1,
+    align:"center"
+  },
+  {
+    field: 'labourCost',
+    headerName: 'Your Labour Cost',
+    sortable: true,
+    editable: true,
+    flex: 1,
+  },
+  {
+    field: 'status',
+    headerName: 'Status',
+    sortable: true,
+    editable: true,
+    flex: 1,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Cancel My Quotation
+        </Button>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Cancel & Re-Quotation
+        </Button>
+      </Grid>
+    ),
+  }
+];
+
+export const userRejectedEnquiry: GridColDef[] = [
+  { field: 'id', headerName: 'Sr.No.', flex: 1},
+  {
+    field: 'clientDetails',
+    headerName: 'Client Details',
+    
+    flex: 1
+  },
+  {
+    field: 'designImage',
+    headerName: 'Design Image',
+    flex: 1
+    
+  },
+  {
+    field: 'estimation_product_details',
+    headerName:'Estimation & Product Details',
+    type: 'number',
+    flex: 1,
+    align:"center"
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    
+    // renderCell: (e) => (
+    //   <Grid>
+    //     <Button variant="text" sx={{ mr: 1 }}>
+    //       Cancel My Quotation
+    //     </Button>
+    //     <Button variant="text" sx={{ mr: 1 }}>
+    //       Cancel & Re-Quotation
+    //     </Button>
+    //   </Grid>
+    //),
+  }
+];
+
+export const archNewCol: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "Sr. No.",
+    sortable: false,
+  },
+  {
+    field: "details",
+    headerName: "Architecht & Consultant Details",
+    // flex: 2.5,
+    flex:1,
+  },
+  {
+    field: "boq",
+    headerName: "BOQ No.",
+    // flex: 1.8,
+    flex: 1,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    // maxWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          View & Accept
+        </Button>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Reject
+        </Button>
+      </Grid>
+    ),
+  }
+];
+
+export const archAccepted: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "Sr. No.",
+    sortable: false,
+  },
+  {
+    field: "details",
+    headerName: "Architecht & Consultant Details",
+    // flex: 2.5,
+    flex:1,
+  },
+  {
+    field: "boq",
+    headerName: "BOQ No.",
+    // flex: 1.8,
+    flex: 1,
+  },
+  {
+    field:"boq_status",
+    headerName:"BOQ Work Allot Status",
+    flex:1,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          View
+        </Button>
+      </Grid>
+    ),
+  }
+];
+
+
+export const yetStartProject: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "Sr. No.",
+    sortable: false,
+  },
+  {
+    field: "by_project",
+    headerName: "By Project",
+    // flex: 2.5,
+    flex:1,
+  },
+  {
+    field: "project_name",
+    headerName: "Project Name",
+    // flex: 1.8,
+    flex: 1,
+  },
+  {
+    field:"contact",
+    headerName:"Contact Person & Number",
+    flex:1,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          View & Update Assign Supervisor
+        </Button>
+      </Grid>
+    ),
+  }
+
+];
+
+export const ongoingProject: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "Sr. No.",
+    sortable: false,
+  },
+  {
+    field: "by_project",
+    headerName: "By Project",
+    // flex: 2.5,
+    flex:1,
+  },
+  {
+    field: "project_name",
+    headerName: "Project Name",
+    // flex: 1.8,
+    flex: 1,
+  },
+  {
+    field:"contact",
+    headerName:"Contact Person & Number",
+    flex:1,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Approve Material & Labour Request
+        </Button>
+      </Grid>
+    ),
+  }
+
+];
+
+export const completedProject: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "Sr. No.",
+    sortable: false,
+  },
+  {
+    field: "by_project",
+    headerName: "By Project",
+    // flex: 2.5,
+    flex:1,
+  },
+  {
+    field: "project_name",
+    headerName: "Project Name",
+    // flex: 1.8,
+    flex: 1,
+  },
+  {
+    field:"contact",
+    headerName:"Contact Person & Number",
+    flex:1,
+  },
+];
