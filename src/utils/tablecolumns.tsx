@@ -2,6 +2,8 @@ import { Button, Grid, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { CalculateSqfeet } from "./CommonFunctions";
 import { NullOrEmpty } from "./CommonFunctions";
+import Box from "@mui/material/Box";
+
 
 export const categoryColumns: GridColDef[] = [
   {
@@ -2116,15 +2118,75 @@ export const userNewEnquiry: GridColDef[] = [
   {
     field: 'designImage',
     headerName: 'Design Image',
-    flex: 1,
+    // flex: 1,
+    width: 250,
+    renderCell: (params) => {
+      return (
+        <>
+          <Box p={1}>
+            <img
+              height="150"
+              width="200"
+              src={params.value}
+              alt="abc"
+            />
+          </Box>
+        </>
+      );
+    }
     
   },
   {
     field: 'estimation_product_details',
     headerName:'Estimation and Product Details',
     type: 'number',
-    flex: 1,
-    align:"center"
+    // flex: 1,
+    width:250,
+    align:"center",
+    renderCell: (params) => {
+      return (
+        <>
+          <ul>
+            <li style={{ listStyleType: "none" }}>
+              Estimation No :
+              <span style={{ fontWeight: "bold" }}>{params.value.est_no}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+              Service :
+              <span style={{ fontWeight: "bold" }}>{params.value.service}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Category :
+              <span style={{ fontWeight: "bold" }}>{params.value.category}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+              Product :
+              <span style={{ fontWeight: "bold" }}>{params.value.product}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Design Type :
+              <span style={{ fontWeight: "bold" }}>{params.value.design_type}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Design No :
+              <span style={{ fontWeight: "bold" }}>{params.value.design_no}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Total Sq.Ft :
+              <span style={{ fontWeight: "bold" }}>{params.value.sq_ft}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Actual Materials Cost :
+              <span style={{ fontWeight: "bold" }}>{params.value.material_cost}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Actual Labour Cost :
+              <span style={{ fontWeight: "bold" }}>{params.value.labour_cost}</span>
+            </li>
+          </ul>
+        </>
+      );
+    }
   },
   {
     field: 'labourCost',
@@ -2153,7 +2215,7 @@ export const userNewEnquiry: GridColDef[] = [
 ];
 
 export const userAcceptedEnquiry: GridColDef[] = [
-  { field: 'id', headerName: 'Sr.No.', flex: 1 },
+  { field: 'id', headerName: 'Sr.No.', width:50 },
   {
     field: 'clientDetails',
     headerName: 'Client Details',
@@ -2162,21 +2224,81 @@ export const userAcceptedEnquiry: GridColDef[] = [
   {
     field: 'designImage',
     headerName: 'Design Image',
-    flex: 1,
+    // flex: 1,
+    width: 250,
+    renderCell: (params) => {
+      return (
+        <>
+          <Box p={1}>
+            <img
+              height="150"
+              width="200"
+              src={params.value}
+              alt="abc"
+            />
+          </Box>
+        </>
+      );
+    }
     
   },
   {
     field: 'estimation_product_details',
     headerName:'Estimation & Product Details',
     type: 'number',
-    flex: 1,
-    align:"center"
+    width:250,
+    // align:"left",
+    renderCell: (params) => {
+      return (
+        <>
+          <ul>
+            <li style={{ listStyleType: "none" }}>
+              Estimation No :
+              <span style={{ fontWeight: "bold" }}>{params.value.est_no}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+              Service :
+              <span style={{ fontWeight: "bold" }}>{params.value.service}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Category :
+              <span style={{ fontWeight: "bold" }}>{params.value.category}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+              Product :
+              <span style={{ fontWeight: "bold" }}>{params.value.product}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Design Type :
+              <span style={{ fontWeight: "bold" }}>{params.value.design_type}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Design No :
+              <span style={{ fontWeight: "bold" }}>{params.value.design_no}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Total Sq.Ft :
+              <span style={{ fontWeight: "bold" }}>{params.value.sq_ft}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Actual Materials Cost :
+              <span style={{ fontWeight: "bold" }}>{params.value.material_cost}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Actual Labour Cost :
+              <span style={{ fontWeight: "bold" }}>{params.value.labour_cost}</span>
+            </li>
+          </ul>
+        </>
+      );
+    }
   },
   {
     field: 'labourCost',
     headerName: 'Your Labour Cost',
     sortable: true,
     editable: true,
+    align:"center",
     flex: 1,
   },
   {
@@ -2205,7 +2327,7 @@ export const userAcceptedEnquiry: GridColDef[] = [
 ];
 
 export const userRejectedEnquiry: GridColDef[] = [
-  { field: 'id', headerName: 'Sr.No.', flex: 1},
+  { field: 'id', headerName: 'Sr.No.', width: 80},
   {
     field: 'clientDetails',
     headerName: 'Client Details',
@@ -2215,7 +2337,22 @@ export const userRejectedEnquiry: GridColDef[] = [
   {
     field: 'designImage',
     headerName: 'Design Image',
-    flex: 1
+    // flex: 1
+    width: 250,
+    renderCell: (params) => {
+      return (
+        <>
+          <Box p={1}>
+            <img
+              height="150"
+              width="200"
+              src={params.value}
+              alt="abc"
+            />
+          </Box>
+        </>
+      );
+    }
     
   },
   {
@@ -2223,24 +2360,57 @@ export const userRejectedEnquiry: GridColDef[] = [
     headerName:'Estimation & Product Details',
     type: 'number',
     flex: 1,
-    align:"center"
+    align:"center",
+    renderCell: (params) => {
+      return (
+        <>
+          <ul>
+            <li style={{ listStyleType: "none" }}>
+              Estimation No :
+              <span style={{ fontWeight: "bold" }}>{params.value.est_no}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+              Service :
+              <span style={{ fontWeight: "bold" }}>{params.value.service}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Category :
+              <span style={{ fontWeight: "bold" }}>{params.value.category}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+              Product :
+              <span style={{ fontWeight: "bold" }}>{params.value.product}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Design Type :
+              <span style={{ fontWeight: "bold" }}>{params.value.design_type}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Design No :
+              <span style={{ fontWeight: "bold" }}>{params.value.design_no}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Total Sq.Ft :
+              <span style={{ fontWeight: "bold" }}>{params.value.sq_ft}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Actual Materials Cost :
+              <span style={{ fontWeight: "bold" }}>{params.value.material_cost}</span>
+            </li>
+            <li style={{ listStyleType: "none" }}>
+            Actual Labour Cost :
+              <span style={{ fontWeight: "bold" }}>{params.value.labour_cost}</span>
+            </li>
+          </ul>
+        </>
+      );
+    }
   },
   {
     field: "action",
     headerName: "Action",
     flex: 1,
     sortable: false,
-    
-    // renderCell: (e) => (
-    //   <Grid>
-    //     <Button variant="text" sx={{ mr: 1 }}>
-    //       Cancel My Quotation
-    //     </Button>
-    //     <Button variant="text" sx={{ mr: 1 }}>
-    //       Cancel & Re-Quotation
-    //     </Button>
-    //   </Grid>
-    //),
   }
 ];
 

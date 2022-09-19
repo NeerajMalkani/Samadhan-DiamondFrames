@@ -42,15 +42,79 @@ interface TabPanelProps {
 
 
 const dummyRow  = [
-  { id: 1, clientDetails: 'Snow', designImage: 'IMAGE', estimation_product_details: 35,labourCost : 123,action: " Accept OR Reject" },
-  { id: 2, clientDetails: 'white', designImage: 'IMAGE', estimation_product_details: 235,labourCost : 1445523,action: "Accept OR Reject" },
-  { id: 3, clientDetails: 'Sparrow', designImage: 'IMAGE', estimation_product_details: 1235,labourCost : 1445523,action: "Accept OR Reject" },
-  { id: 4, clientDetails: 'Alberto', designImage: 'IMAGE', estimation_product_details: 2235,labourCost : 140523,action: "Accept OR Reject" },
-  { id: 5, clientDetails: 'Jessica', designImage: 'IMAGE', estimation_product_details: 2355,labourCost : 14523,action: "Accept OR Reject" }
+  { id: 1, clientDetails: 'Snow', designImage: 'https://dfsolutions.in/uploads/ServiceCatelogueDesign/designimage_2_3_1652627009.jpeg', 
+  estimation_product_details: {
+    est_no:"AUG0004",
+    service:"GYPSUM & POP",
+    category:"DRYWALL PARTITION",
+    product:" 127 MM GYPSUM PARTITION",
+    design_type:"92mm board side",
+    design_no:"DS-0012",
+    sq_ft:"1.0000",
+    material_cost:"286.47",
+    labour_cost:"83.00"
+  },
+  labourCost : 1445523,
+  action: " Accept OR Reject" 
+},
+  { id: 2, clientDetails: 'white', designImage: 'https://dfsolutions.in/uploads/ServiceCatelogueDesign/designimage_25_9_1652627202.jpeg', estimation_product_details: {
+    est_no:"AUG0004",
+    service:"GYPSUM & POP",
+    category:"DRYWALL PARTITION",
+    product:" 127 MM GYPSUM PARTITION",
+    design_type:"92mm board side",
+    design_no:"DS-0012",
+    sq_ft:"1.0000",
+    material_cost:"286.47",
+    labour_cost:"83.00"
+  },labourCost : 1445523,action: "Accept OR Reject" },
+  { id: 3, clientDetails: 'Sparrow', designImage: 'https://dfsolutions.in/uploads/ServiceCatelogueDesign/designimage_2_15_1660751109.jpeg', estimation_product_details: {
+    est_no:"AUG0004",
+    service:"GYPSUM & POP",
+    category:"DRYWALL PARTITION",
+    product:" 127 MM GYPSUM PARTITION",
+    design_type:"92mm board side",
+    design_no:"DS-0012",
+    sq_ft:"1.0000",
+    material_cost:"286.47",
+    labour_cost:"83.00"
+  },labourCost : 1445523,action: "Accept OR Reject" },
+  { id: 4, clientDetails: 'Alberto', designImage: 'https://dfsolutions.in/uploads/ServiceCatelogueDesign/designimage_51_12_1657984955.png', estimation_product_details: {
+    est_no:"AUG0004",
+    service:"GYPSUM & POP",
+    category:"DRYWALL PARTITION",
+    product:" 127 MM GYPSUM PARTITION",
+    design_type:"92mm board side",
+    design_no:"DS-0012",
+    sq_ft:"1.0000",
+    material_cost:"286.47",
+    labour_cost:"83.00"
+  },labourCost : 140523,action: "Accept OR Reject" },
+  { id: 5, clientDetails: 'Jessica', designImage: 'https://dfsolutions.in/uploads/ServiceCatelogueDesign/designimage_2_3_1652627009.jpeg', estimation_product_details: {
+    est_no:"AUG0004",
+    service:"GYPSUM & POP",
+    category:"DRYWALL PARTITION",
+    product:" 127 MM GYPSUM PARTITION",
+    design_type:"92mm board side",
+    design_no:"DS-0012",
+    sq_ft:"1.0000",
+    material_cost:"286.47",
+    labour_cost:"83.00"
+  },labourCost : 14523,action: "Accept OR Reject" }
 ];
 
 const dummyRow_Accepted = [
-  {id: 1, clientDetails: 'Snow', designImage: 'IMAGE', estimation_product_details: 35,labourCost : 123, status: "Waiting for client Approval", action: " Accept OR Reject"}
+  {id: 1, clientDetails: 'Snow', designImage: 'https://dfsolutions.in/uploads/ServiceCatelogueDesign/designimage_2_15_1660751109.jpeg', estimation_product_details: {
+    est_no:"AUG0004",
+    service:"GYPSUM & POP",
+    category:"DRYWALL PARTITION",
+    product:" 127 MM GYPSUM PARTITION",
+    design_type:"92mm board side",
+    design_no:"DS-0012",
+    sq_ft:"1.0000",
+    material_cost:"286.47",
+    labour_cost:"83.00"
+  },labourCost : 123, status: "Waiting for client Approval", action: " Accept OR Reject"}
 ]
 
 
@@ -108,7 +172,8 @@ const onChangeSearch = (query: string) => {
                             <Tab label="Accepted" {...a11yProps(1)} />
                             <Tab label="Rejected" {...a11yProps(2)} />
                         </Tabs>
-                        <TabPanel value={value} index={0}>                            
+                        {/* New Tab */}
+                        <TabPanel value={value} index={0}>                        
                         <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
                         placeholder="Search"
@@ -155,7 +220,7 @@ const onChangeSearch = (query: string) => {
                     {/* </Grid> */}
                         </TabPanel>
 
-                        {/* Insert a new data grid here, make a model in utils/tablecolumns like userNewEnquiry and dummy row data like dummyrow  */}
+                        {/* Accepted Tab */}
                         <TabPanel value={value} index={1}>
                         <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
@@ -202,7 +267,7 @@ const onChangeSearch = (query: string) => {
                         </TabPanel>
 
                         {/* Insert a new data grid here, make a model in utils/tablecolumns like userNewEnquiry and dummy row data like dummyrow  */}
-
+                        {/* Rejected Panel */}
                         <TabPanel value={value} index={2}>
                         <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                       <TextField
