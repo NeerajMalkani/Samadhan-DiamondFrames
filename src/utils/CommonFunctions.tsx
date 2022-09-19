@@ -20,9 +20,12 @@ export const  GetStringifyJson = (params:any) => {
 
 
   export const NullOrEmpty = (param) => {
-    if (param === undefined || param === null || param === "") {
+    if (param === undefined || param === null) {
       return true;
-    } else {
+    } else if(param.toString() === "") {
+      return true;
+    }
+    else {
       return false;
     }
   };

@@ -52,6 +52,7 @@ import Declined from "../ui/Admin/Users/Declined";
 import EmployeeDList from "../ui/Dealer/Employee/EmployeeDList";
 import EmployeeDEdit from "../ui/Dealer/Employee/EmployeeDEdit";
 import Userbasic from "../ui/GeneralUsers/Userbasic";
+import UserBasic from "../ui/Common/UserProfile/Userbasic";
 import AppUserEnquiry from "../ui/Contractor/Enquiries/AppUserEnquiry";
 import ArchitectAndConsultant from "../ui/Contractor/Enquiries/ArchitectAndConsultant";
 import YetStartProject from "../ui/Contractor/Projects/YetStartProject";
@@ -116,7 +117,7 @@ const AppRoutes = () => {
               <Route path="users/declined" element={<Declined/>}/>
               <Route path="dealer/employee/employeedlist" element={<EmployeeDList />} />z
               <Route path="dealer/employee/employee/edit/:id" element={<EmployeeDEdit />} />
-              <Route path="generaluser/userbasic" element={<Userbasic />}/>
+              <Route path="user/profile" element={<UserBasic />}/>
 
               <Route path="contractor/enquiries/appuserenquiry" element={<AppUserEnquiry />} />
               <Route path="contractor/enquiries/architectandconsultant" element={<ArchitectAndConsultant />} />

@@ -285,11 +285,11 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Profile Update",
-          isActive: window.location.href.toLowerCase().includes("profileupdate"),
+          isActive: window.location.href.toLowerCase().includes("user/profile"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generaluser/userbasic`);
+              navigate(`/user/profile`);
             }, 300);
           },
         },
@@ -745,6 +745,53 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
   ];
 
+  const MenuItemsClients = [
+    {
+      title: "Profile Update",
+      icon: <BusinessIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Profile Update",
+          isActive: window.location.href.toLowerCase().includes("user/profile"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/user/profile`);
+            }, 300);
+          },
+        },
+      ],
+    },
+    // {
+    //   title: "Enquiry & Estimation",
+    //   icon: <Inventory2Icon />,
+    //   expanded: true,
+    //   items: [
+    //     {
+    //       title: "Image Gallery",
+    //       isActive: window.location.href.toLowerCase().includes("imagegallery/category"),
+    //       navigation: () => {
+    //         open[1](false);
+    //         setTimeout(() => {
+    //           navigate(`/generaluser/imagegallery/category`);
+    //         }, 300);
+    //       },
+    //     },
+    //     {
+    //       title: "Your Estimations",
+    //       isActive: window.location.href.toLowerCase().includes("userestimation"),
+    //       navigation: () => {
+    //         open[1](false);
+    //         setTimeout(() => {
+    //           navigate(`/generaluser/userestimation`);
+    //         }, 300);
+    //       },
+    //     },
+    //   ],
+    // },
+  ];
+
   let MenuArr: Array<any> = [];
 
   switch (CookieRoleID) {
@@ -759,6 +806,9 @@ const DrawerItems = ({ open }: OpenObj) => {
       break;
     case 4:
       MenuArr = [...MenuItemsDealer];
+      break;
+      case 6:
+      MenuArr = [...MenuItemsClients];
       break;
   }
 

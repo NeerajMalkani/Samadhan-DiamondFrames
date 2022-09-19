@@ -32,11 +32,12 @@ import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
 import { border } from "@mui/system";
 import Provider from "../../../api/Provider";
 import { LoadingButton } from "@mui/lab";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
 import { AWSImagePath } from "../../../utils/paths";
 import { communication } from "../../../utils/communication";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import uuid from "react-uuid";
+
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -187,34 +188,38 @@ const Basic = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            console.log(response.data.data);
-            setCompanyName(response.data.data[0].companyName ? response.data.data[0].companyName : "");
-            setContact(response.data.data[0].contactPersonName ? response.data.data[0].contactPersonName : "");
-            setContactNo(response.data.data[0].contactPersonNumber ? response.data.data[0].contactPersonNumber : "");
-            setGSTNo(response.data.data[0].gstNumber ? response.data.data[0].gstNumber : "");
-            setPanNo(response.data.data[0].pan ? response.data.data[0].pan : "");
-            setLocationName(response.data.data[0].locationName ? response.data.data[0].locationName : "");
-            setAddress(response.data.data[0].addressLine ? response.data.data[0].addressLine : "");
-            setSelectedStateName(response.data.data[0].stateName === null ? "" : response.data.data[0].stateName);
-            setSelectedStateID(response.data.data[0].stateID === null ? 0 : response.data.data[0].stateID);
-            setSelectedCityName(response.data.data[0].cityName === null ? "" : response.data.data[0].cityName);
-            setSelectedCityID(response.data.data[0].cityID === null ? 0 : response.data.data[0].cityID);
-            setPincode(response.data.data[0].pincode === null ? "" : response.data.data[0].pincode.toString() !== "" ? response.data.data[0].pincode.toString() : "");
-            setAccountNo(response.data.data[0].accountNumber === null ? "" : response.data.data[0].accountNumber.toString() !== "" ? response.data.data[0].accountNumber.toString() : "");
-            setBankName(response.data.data[0].bankName ? response.data.data[0].bankName : "");
-            setBankBranchName(response.data.data[0].branchName ? response.data.data[0].branchName : "");
-            setIFSCCode(response.data.data[0].ifscCode ? response.data.data[0].ifscCode : "");
-            setCNP(response.data.data[0].companyNamePrefix ? response.data.data[0].companyNamePrefix : "");
-            setECP(response.data.data[0].employeeCodePrefix ? response.data.data[0].employeeCodePrefix : "");
-            setPOP(response.data.data[0].purchaseOrderPrefix ? response.data.data[0].purchaseOrderPrefix : "");
-            setSOP(response.data.data[0].salesOrderPrefix ? response.data.data[0].salesOrderPrefix : "");
-            setDisplay(response.data.data[0].showBrand ? "Yes" : "No");
-            setUploadedImage(response.data.data[0].companyLogo);
-            setProfileImage(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : AWSImagePath + "placeholder-image.png");
-            // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
-           
-            if (response.data.data[0].stateID !== 0) {
-              FetchCities(response.data.data[0].stateID);
+          debugger;
+            if (response.data.data[0] != null) {
+              setCompanyName(!NullOrEmpty(response.data.data[0].companyName) ? response.data.data[0].companyName : "");
+              setContact(!NullOrEmpty(response.data.data[0].contactPersonName) ? response.data.data[0].contactPersonName : "");
+              setContactNo(!NullOrEmpty(response.data.data[0].contactPersonNumber) ? response.data.data[0].contactPersonNumber : "");
+              setGSTNo(!NullOrEmpty(response.data.data[0].gstNumber) ? response.data.data[0].gstNumber : "");
+              setPanNo(!NullOrEmpty(response.data.data[0].pan)? response.data.data[0].pan : "");
+              setLocationName(!NullOrEmpty(response.data.data[0].locationName) ? response.data.data[0].locationName : "");
+              setAddress(!NullOrEmpty(response.data.data[0].addressLine) ? response.data.data[0].addressLine : "");
+              setSelectedStateName(NullOrEmpty(response.data.data[0].stateName) ? "" : response.data.data[0].stateName);
+              setSelectedStateID(NullOrEmpty(response.data.data[0].stateID) ? 0 : response.data.data[0].stateID);
+              setSelectedCityName(NullOrEmpty(response.data.data[0].cityName) ? "" : response.data.data[0].cityName);
+              setSelectedCityID(NullOrEmpty(response.data.data[0].cityID) ? 0 : response.data.data[0].cityID);
+              setPincode(NullOrEmpty(response.data.data[0].pincode) ? "" : response.data.data[0].pincode.toString());
+              setAccountNo(NullOrEmpty(response.data.data[0].accountNumber) ? "" : response.data.data[0].accountNumber.toString());
+              setBankName(!NullOrEmpty(response.data.data[0].bankName) ? response.data.data[0].bankName : "");
+              setBankBranchName(!NullOrEmpty(response.data.data[0].branchName) ? response.data.data[0].branchName : "");
+              setIFSCCode(!NullOrEmpty(response.data.data[0].ifscCode) ? response.data.data[0].ifscCode : "");
+              setCNP(!NullOrEmpty(response.data.data[0].companyNamePrefix) ? response.data.data[0].companyNamePrefix : "");
+              setECP(!NullOrEmpty(response.data.data[0].employeeCodePrefix) ? response.data.data[0].employeeCodePrefix : "");
+              setPOP(!NullOrEmpty(response.data.data[0].purchaseOrderPrefix) ? response.data.data[0].purchaseOrderPrefix : "");
+              setSOP(!NullOrEmpty(response.data.data[0].salesOrderPrefix) ? response.data.data[0].salesOrderPrefix : "");
+              setDisplay(NullOrEmpty(response.data.data[0].showBrand) ? "No" : response.data.data[0].showBrand ? "Yes" : "No");
+              setUploadedImage(response.data.data[0].companyLogo);
+              setProfileImage(!NullOrEmpty(response.data.data[0].companyLogo) ? response.data.data[0].companyLogo : AWSImagePath + "placeholder-image.png");
+              // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
+              debugger;
+              if (!NullOrEmpty(response.data.data[0].stateID) && response.data.data[0].stateID != 0) {
+
+                FetchCities(response.data.data[0].stateID);
+              }
+
             }
           }
           FetchStates();
@@ -227,7 +232,7 @@ const Basic = () => {
   };
 
   const FetchStates = () => {
-    
+
     Provider.getAll("master/getstates")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -243,7 +248,7 @@ const Basic = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCities = (stateID: number) => {
@@ -265,11 +270,11 @@ const Basic = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleSubmitClick = () => {
-
+    debugger;
     setButtonLoading(true);
     if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
       uploadImage();
@@ -286,6 +291,7 @@ const Basic = () => {
   };
 
   const InsertData = (status: string, fileName: string) => {
+    debugger;
     if (status.toLowerCase() === "success") {
       const params = {
         UserID: CookieUserID,
@@ -305,15 +311,16 @@ const Basic = () => {
         BranchName: bankBranchName,
         IFSCCode: IFSCCode,
         CompanyNamePrefix: cnp,
+        QuotationBudgetPrefix:"",
         EmployeeCodePrefix: ecp,
         PurchaseOrderPrefix: pop,
         SalesOrderPrefix: sop,
         ShowBrand: display === "Yes",
       };
-  
+
       Provider.create("master/insertuserprofile", params)
         .then((response) => {
-
+          debugger;
           if (response.data && response.data.code === 200) {
             if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
               setProfileImage(fileName ? AWSImagePath + fileName : "");
