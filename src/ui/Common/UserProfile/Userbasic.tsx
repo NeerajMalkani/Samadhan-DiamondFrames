@@ -334,7 +334,7 @@ const Userbasic = () => {
     debugger;
     if (actionStatus === "new") {
       Provider.create("master/updategeneraluserprofile", {
-        UserID: userID,
+        UserID: CookieUserID,
         CompanyName: companyName,
         ContactPersonName: contactPerson,
         ContactPersonNumber: mobile,
@@ -348,7 +348,7 @@ const Userbasic = () => {
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
-            //FetchData("added");
+            FetchUserData("added");
           } else {
             setSnackMsg(communication.Error);
             setSnackbarType("error");

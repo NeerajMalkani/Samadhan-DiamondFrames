@@ -63,6 +63,9 @@ import PocketSource from "../ui/Pocket/PocketSource";
 import PocketReport from "../ui/Pocket/PocketReport";
 import PocketCashcheck from "../ui/Pocket/PocketCashcheck";
 import PocketInbox from "../ui/Pocket/PocketInbox";
+import ClientList from "../ui/Common/Client/ClientList";
+
+
 const AppRoutes = () => {
   return (
     <CookiesProvider>
@@ -132,6 +135,7 @@ const AppRoutes = () => {
               <Route path="pocketreport" element={<PocketReport />} />
               <Route path="pocketcashcheck" element={<PocketCashcheck />} />
               <Route path="pocketinbox" element={<PocketInbox />} />
+              <Route path="contractor/client/clientlist" element={<ClientList />}/>
             </Routes>
           </BrowserRouter>
         </Box>

@@ -1277,6 +1277,89 @@ export const employeeColumns: GridColDef[] = [
   },
 ];
 
+export const clientListColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "serviceproviderrole",
+    headerName: "Service provider Role",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "companyname",
+    headerName: "Company / Firm Name",
+    flex: 1.8,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "Address",
+    headerName: "Address",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "gstno",
+    headerName: "GST No",
+    flex: 1,
+    minWidth: 80,
+    sortable: false,
+  },
+  {
+    field: "panno",
+    headerName: "PAN No",
+    flex: 1,
+    minWidth: 80,
+    sortable: false,
+  },
+  {
+    field: "contactperson",
+    headerName: "Contact Person",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "phoneno",
+    headerName: "Phone No",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "Createadd",
+    headerName: "Create Add",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => {
+      return <Link href={`employee/edit/${e.row.id}`}>Edit</Link>;
+    }
+  },
+];
+
+
 export const yourEstimationColumns: GridColDef[] = [
   {
     field: "view",
@@ -1942,6 +2025,43 @@ export const employeeSearchResult: GridColDef[] = [
       <Grid>
         <Button variant="text" sx={{ mr: 1 }}>
           Add to My Employee List
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const clientSearchResult: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "compnayName",
+    headerName: " Name / Company Name",
+    flex: 1.3,
+    minWidth: 120,
+  },
+  {
+    field: "mobileNo",
+    headerName: "Mobile No",
+    flex: 1.3,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1.5,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Add to My Client List
         </Button>
       </Grid>
     ),
