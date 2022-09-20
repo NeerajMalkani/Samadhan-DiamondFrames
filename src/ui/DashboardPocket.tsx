@@ -32,7 +32,7 @@ const DashboardPocket = () =>{
     const Pocket = ({items}) =>{
         const design = (
             <>
-                <Grid item  sx={{width:"23%",height:"200px",border:"1px solid #ddd",background:"#FFFFFF",ml:3,borderRadius:2,flexDirection:"row",p:2, backgroundColor:"#fff",'&:hover': {boxShadow: 2} ,cursor:"pointer"}} >
+                <Grid item  sx={{width:"23%",height:"200px",border:"1px solid #ddd",background:"#FFFFFF",ml:3,borderRadius:2,flexDirection:"row",p:2, backgroundColor:"#fff",'&:hover': {boxShadow: 6,transition:"0.4s"} ,cursor:"pointer"}} >
                     <Grid container >
                         <Grid item sx={{width:"70%"}}>
                             <Typography variant="h6">{items.name}</Typography>

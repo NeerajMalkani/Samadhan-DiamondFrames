@@ -58,8 +58,11 @@ import ArchitectAndConsultant from "../ui/Contractor/Enquiries/ArchitectAndConsu
 import YetStartProject from "../ui/Contractor/Projects/YetStartProject";
 import OngoingProject from "../ui/Contractor/Projects/OngoingProject";
 import CompletedProject from "../ui/Contractor/Projects/CompletedProject";
-
-
+import Pocketscreen from "../ui/Pocket/PocketScreen";
+import PocketSource from "../ui/Pocket/PocketSource";
+import PocketReport from "../ui/Pocket/PocketReport";
+import PocketCashcheck from "../ui/Pocket/PocketCashcheck";
+import PocketInbox from "../ui/Pocket/PocketInbox";
 const AppRoutes = () => {
   return (
     <CookiesProvider>
@@ -124,6 +127,11 @@ const AppRoutes = () => {
               <Route path="contractor/projects/yetstartproject" element={<YetStartProject />} />
               <Route path="contractor/projects/Ongoingproject" element={<OngoingProject />} />
               <Route path="contractor/projects/completedproject" element={<CompletedProject />} />
+              <Route path="pocketscreen" element={<Pocketscreen />} />
+              <Route path="pocketsource" element={<PocketSource />} />
+              <Route path="pocketreport" element={<PocketReport />} />
+              <Route path="pocketcashcheck" element={<PocketCashcheck />} />
+              <Route path="pocketinbox" element={<PocketInbox />} />
             </Routes>
           </BrowserRouter>
         </Box>

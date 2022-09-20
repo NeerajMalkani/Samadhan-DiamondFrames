@@ -142,7 +142,36 @@ export const activityColumns: GridColDef[] = [
     ),
   },
 ];
+export const pocketInbox: GridColDef[] =[
+  {
+    field:"date",
+    headerName:"Date"
+  },
+  {
+    field:"contactname",
+    headerName:"Contact Name"
+  },
+  {
+    field:"contact",
+    headerName:"Contact#"
+  },
+  {
+    field:"amount",
+    headerName:"Amount"
+  },
+  {
+    field:"status",
+    headerName:"Status",
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="contained">Remove</Button>
+      </Grid>
+      
+    )
 
+  }
+  
+]
 export const serviceColumns: GridColDef[] = [
   {
     field: "srno",
