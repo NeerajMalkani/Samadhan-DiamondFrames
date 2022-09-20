@@ -512,14 +512,6 @@ const EmployeeEdit = () => {
             if (!NullOrEmpty(employee_data.bloodGroup)) {
               setBloodGroupID(employee_data.bloodGroup);
               bg_ID = employee_data.bloodGroup;
-              //bloodGroupList
-
-              // if (bg_ID > 0) {
-              //   let a = bloodGroupList.filter((el) => {
-              //     return el.ID === bg_ID;
-              //   });
-              //   setBloodGroup(a[0].Name);
-              // }
             }
 
             if (!NullOrEmpty(employee_data.branchID)) {
@@ -538,7 +530,6 @@ const EmployeeEdit = () => {
             }
 
             setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
-            // setBloodGroup(employee_data.bloodGroup === null ? "" : employee_data.bloodGroup);
             setDOB(!NullOrEmpty(employee_data.dob) === null ? "" : employee_data.dob);
             setDOJ(!NullOrEmpty(employee_data.doj) === null ? "" : employee_data.doj);
             setEmergencyCName(!NullOrEmpty(employee_data.emergencyContactName) ? employee_data.emergencyContactName : "");
@@ -563,9 +554,6 @@ const EmployeeEdit = () => {
             setUploadedImage(employee_data.profilePhoto);
             setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
             // setFilePath(response.data.data[0].profilePhoto ? response.data.data[0].profilePhoto : null);
-            // if (!NullOrEmpty(employee_data.stateID !== 0)) {
-            //   FetchCities(employee_data.stateID);
-            // }
           }
           setLoading(false);
           FetchStates();
@@ -581,7 +569,6 @@ const EmployeeEdit = () => {
   };
 
   const FetchStates = () => {
-    debugger;
     Provider.getAll("master/getstates")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -593,7 +580,6 @@ const EmployeeEdit = () => {
                 label: data.stateName,
               });
             });
-            debugger;
             setStatesFullData(stateData);
 
             if (st_ID > 0) {
@@ -671,6 +657,7 @@ const EmployeeEdit = () => {
   };
 
   const InsertData = (status: string, fileName: string) => {
+    debugger;
     if (status.toLowerCase() === "success") {
       const params = {
         //UserID: CookieUserID,
