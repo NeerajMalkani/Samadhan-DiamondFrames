@@ -145,15 +145,23 @@ export const activityColumns: GridColDef[] = [
 export const pocketInbox: GridColDef[] =[
   {
     field:"date",
-    headerName:"Date"
+    headerName:"Date",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
   },
   {
     field:"contactname",
-    headerName:"Contact Name"
+    headerName:"Contact Name",
+    flex: 1.8,
+    minWidth: 140,
   },
   {
     field:"contact",
-    headerName:"Contact#"
+    headerName:"Contact#",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
   },
   {
     field:"amount",
@@ -162,11 +170,61 @@ export const pocketInbox: GridColDef[] =[
   {
     field:"status",
     headerName:"Status",
+    sortable: false,
+    flex: 1,
+    minWidth: 100,
     renderCell: (e) => (
       <Grid>
         <Button variant="contained">Remove</Button>
       </Grid>
-      
+    )
+
+  }
+  
+]
+
+export const pocketRemainder: GridColDef[] =[
+  {
+    field:"event",
+    headerName:"Event",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field:"date",
+    headerName:"Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field:"eventname",
+    headerName:"Event Name",
+    flex: 1.8,
+    minWidth: 140
+  },
+  {
+    field:"amount",
+    headerName:"Amount",
+    flex: 1.8,
+    minWidth: 140
+  },
+  {
+    field:"dayselapsed",
+    headerName:"Days Elapsed",
+    flex: 1.8,
+    minWidth: 140
+  },
+  {
+    field:"action",
+    headerName:"Action",
+    sortable: false,
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="contained">Remove</Button>
+      </Grid>
     )
 
   }

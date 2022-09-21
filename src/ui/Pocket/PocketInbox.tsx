@@ -4,35 +4,8 @@ import Header from "../../components/Header";
 import {TabContext, TabList, TabPanel} from "@mui/lab";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { pocketInbox } from "../../utils/tablecolumns";
-import {serviceColumns} from "../../utils/tablecolumns";
 import { ServiceNameModel } from "../../models/Model";
 import { Theme, useTheme } from "@mui/material/styles";
-const rows = [
-    {
-        id:"1",
-        date:"10-12-2015",
-        contactname:"9004070123",
-        contact:"9000",
-        amount:"900",
-        status:"one"
-    },
-    {
-        id:"2",
-        date:"10-12-2015",
-        contactname:"9004070123",
-        contact:"9000",
-        amount:"900",
-        status:"one"
-    },
-    {
-        id:"3",
-        date:"10-12-2015",
-        contactname:"9004070123",
-        contact:"9000",
-        amount:"900",
-        status:"two"
-    }
-]
 const PocketInbox = () =>{
     const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -111,7 +84,7 @@ const PocketInbox = () =>{
                                         pointerEvents: dataGridPointer,
                                     }}
                                     rows={gridServicesListTemp}
-                                    columns={serviceColumns}
+                                    columns={pocketInbox}
                                     getRowHeight={() => "auto"}
                                     autoHeight={true}
                                     pageSize={pageSize}
@@ -132,8 +105,64 @@ const PocketInbox = () =>{
                                     />
                                 </Grid>
                             </TabPanel>
-                            <TabPanel value="2">Pael two</TabPanel>
-                            <TabPanel value="3">Panel three</TabPanel>
+                            <TabPanel value="2">
+                                <Grid item xs={4} sm={8} md={12}>
+                                    <DataGrid
+                                        style={{
+                                        opacity: dataGridOpacity,
+                                        pointerEvents: dataGridPointer,
+                                    }}
+                                    rows={gridServicesListTemp}
+                                    columns={pocketInbox}
+                                    getRowHeight={() => "auto"}
+                                    autoHeight={true}
+                                    pageSize={pageSize}
+                                    rowsPerPageOptions={[5, 10, 20]}
+                                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                                    disableSelectionOnClick
+                                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                                        const arrActivity = [...gridServicesList];
+                                        let a: ServiceNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                                        handelEditAndDelete((e.target as any).textContent, a);
+                                    }}
+                                    sx={{
+                                        "& .MuiDataGrid-columnHeaders": {
+                                        backgroundColor: theme.palette.primary.main,
+                                        color: theme.palette.primary.contrastText,
+                                        },
+                                        }}
+                                    />
+                                </Grid>
+                            </TabPanel>
+                            <TabPanel value="3">
+                                <Grid item xs={4} sm={8} md={12}>
+                                    <DataGrid
+                                        style={{
+                                        opacity: dataGridOpacity,
+                                        pointerEvents: dataGridPointer,
+                                    }}
+                                    rows={gridServicesListTemp}
+                                    columns={pocketInbox}
+                                    getRowHeight={() => "auto"}
+                                    autoHeight={true}
+                                    pageSize={pageSize}
+                                    rowsPerPageOptions={[5, 10, 20]}
+                                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                                    disableSelectionOnClick
+                                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                                        const arrActivity = [...gridServicesList];
+                                        let a: ServiceNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                                        handelEditAndDelete((e.target as any).textContent, a);
+                                    }}
+                                    sx={{
+                                        "& .MuiDataGrid-columnHeaders": {
+                                        backgroundColor: theme.palette.primary.main,
+                                        color: theme.palette.primary.contrastText,
+                                        },
+                                        }}
+                                    />
+                                </Grid>
+                            </TabPanel>
                         </TabContext>
                     </Grid>
                 </Grid>

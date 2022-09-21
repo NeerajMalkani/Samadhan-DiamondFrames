@@ -64,7 +64,7 @@ import PocketReport from "../ui/Pocket/PocketReport";
 import PocketCashcheck from "../ui/Pocket/PocketCashcheck";
 import PocketInbox from "../ui/Pocket/PocketInbox";
 import ClientList from "../ui/Common/Client/ClientList";
-
+import PocketRemainder from "../ui/Pocket/PocketRemainder";
 
 const AppRoutes = () => {
   return (
@@ -135,6 +135,7 @@ const AppRoutes = () => {
               <Route path="pocketreport" element={<PocketReport />} />
               <Route path="pocketcashcheck" element={<PocketCashcheck />} />
               <Route path="pocketinbox" element={<PocketInbox />} />
+              <Route path="pocketremainder" element={<PocketRemainder />} />
               <Route path="contractor/client/clientlist" element={<ClientList />}/>
             </Routes>
           </BrowserRouter>
