@@ -182,13 +182,15 @@ const Userbasic = () => {
         debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            if (response.data.data[0] != null) {
+              debugger;
             const arrList = [...response.data.data];
             debugger;
             setUserID(arrList[0].userID);
-            setCompanyName(arrList[0].companyName);
-            setContactPerson(arrList[0].contactPersonName);
-            setMobile(arrList[0].contactPersonNumber);
-            setProfileAddress(arrList[0].addressLine);
+            setCompanyName(!NullOrEmpty(arrList[0].companyName) ? arrList[0].CompanyName :"");
+            setContactPerson(!NullOrEmpty(arrList[0].contactPersonName) ? arrList[0].contactPersonName :"" );
+            setMobile(!NullOrEmpty(arrList[0].contactPersonNumber) ? arrList[0].Mobile :"" );
+            setProfileAddress(!NullOrEmpty(arrList[0].addressLine) ? arrList[0].addressLine :"");
             // setState(arrList[0].stateName);
 
             if (!NullOrEmpty(arrList[0].stateID)) {
@@ -210,9 +212,9 @@ const Userbasic = () => {
             //   setCityID(arrList[0].cityID);
             // }
 
-            setPincode(arrList[0].pincode);
-            setGst(arrList[0].gstNumber);
-            setPan(arrList[0].pan);
+            setPincode(!NullOrEmpty(arrList[0].pincode) ? arrList[0].pincode :"");
+            setGst(!NullOrEmpty(arrList[0].gstNumber) ? arrList[0].gstNumber : "");
+            setPan(!NullOrEmpty(arrList[0].pan) ? arrList[0].pan : "");
 
             if (type !== "") {
               setSnackMsg("User " + type);
@@ -220,6 +222,7 @@ const Userbasic = () => {
               setSnackbarType("success");
             }
           }
+        }
         } else {
           setSnackMsg(communication.NoData);
           setOpen(true);

@@ -33,19 +33,6 @@ const ClientList = () => {
     const [loading, setLoading] = useState(true);
     const [display, setDisplay] = React.useState("Yes");
 
-    const [employeeList, setEmployeeList] = useState<Array<EmployeeModel>>([]);
-    const [employeeListTemp, setEmployeeListTemp] = React.useState<Array<any>>([]);
-
-    const [gridEmployeeList, setGridEmployeeList] = useState<Array<EmployeeModel>>([]);
-    const [gridEmployeeListTemp, setGridEmployeeListTemp] = useState<Array<EmployeeModel>>([]);
-
-
-    const [employeeSearchList, setEmployeeSearchList] = useState<Array<EmployeeModel>>([]);
-    const [employeeSearchListTemp, setEmployeeSearchListTemp] = React.useState<Array<any>>([]);
-
-    const [gridEmployeeSearchList, setGridEmployeeSearchList] = useState<Array<EmployeeModel>>([]);
-    const [gridEmployeeSearchListTemp, setGridEmployeeSearchListTemp] = useState<Array<EmployeeModel>>([]);
-
     const [clientList, setClientList] = useState<Array<ClientModel>>([]);
     const [clientListTemp, setClientListTemp] = React.useState<Array<any>>([]);
 
@@ -72,23 +59,25 @@ const ClientList = () => {
     const [isAddCompanyNameError, isSetAddCompanyNameError] = useState(false);
 
     const [contactPerson, setContactPerson] = useState("");
-    const [contactPersonError, setContactPersonError] = useState("");
+    const [contactPersonErroText, setContactPersonErrorText] = useState("");
     const [isContactPersonError, isSetContactPersonError] = useState(false);
 
     const [address, setAddress] = useState("");
-    const [addressError, setAddressError] = useState("");
+    const [addressErrorText, setAddressErrorText] = useState("");
     const [isAddressError, isSetAddressError] = useState(false);
 
     const [contactMobileNo, setContactMobileNo] = React.useState("");
     const [contactMobileNoErrorText, setContactMobileNoErrorText] = useState("");
     const [isConatctMobileNoError, isSetContactMobileNoError] = useState(false);
 
+    const [state , setState]=useState("");
     const [stateError, setStateError] = useState("");
     const [isStateError, setIsStateError] = useState(false);
     const [selectedStateName, setSelectedStateName] = useState("");
     const [selectedStateID, setSelectedStateID] = useState(0);
     const [statesFullData, setStatesFullData] = useState([]);
 
+    const [city , setCity]=useState("");
     const [cityError, setCityError] = useState("");
     const [isCityError, setIsCityError] = useState(false);
     const [selectedCityName, setSelectedCityName] = useState("");
@@ -143,12 +132,12 @@ const ClientList = () => {
         setContactPerson("");
         setContactMobileNo("");
         setAddress("");
-        // setState("");
-        // setCity("");
+        setState("");
+        setCity("");
         setPincode("");
         setGst("");
         setPan("");
-        // setDisplay("");
+        setDisplay("");
         setServiceProvider("");
 
         setOpen(false);
@@ -247,6 +236,7 @@ const ClientList = () => {
             })
             .catch((e) => { });
     };
+
     const FetchSearchData = () => {
         debugger;
         let params = {
@@ -291,9 +281,7 @@ const ClientList = () => {
             isValid = false;
             isSetMobileNoError(true);
             setMobileErrorText("Please Enter Mobile No");
-
             setActive("none");
-
         }
 
         if (isValid) {
@@ -307,33 +295,66 @@ const ClientList = () => {
     const handleValidateClick = () => {
         let isValid: boolean = true;
 
-        // if (addEmployeeName.trim() === "" && addMobileNo.trim() === "" && addAadharNo.trim() === "") {
-        //     isValid = false;
-        //     isSetAddEmployeeNameError(true);
-        //     setAddEmployeeNameErrorText("Please Enter Employee Name");
+        if (addCompanyName.trim() === "" && contactPerson.trim() === "" && contactMobileNo.trim() === ""
+         && address.trim() === "" && state.trim() === "" && city.trim() === "" && pincode.trim() === "" 
+         && gst.trim() === "" && pan.trim() === "") {
+            isValid = false;
+            isSetAddCompanyNameError(true);
+            setAddCompanyNameErrorText("Please Enter Company Name");
 
-        //     isValid = false;
-        //     isSetAddMobileNoError(true);
-        //     setAddMobileErrorText("Please Enter Mobile No");
+            isValid = false;
+            isSetContactPersonError(true);
+            setContactPersonErrorText("Please Enter Conatct Person Name");
 
-        //     isValid = false;
-        //     isSetAddAadharNoError(true);
-        //     setAddAadharNoErrorText("please Enter Aadhar No");
-        // }
-        // if (isValid) {
-        //     InsertUpdateData(addEmployeeName, addMobileNo, addAadharNo);
-        // }
+            isValid = false;
+            isSetContactMobileNoError(true);
+            setContactMobileNoErrorText("please Enter Mobile No");
+
+            isValid = false;
+            isSetAddressError(true);
+            setAddressErrorText("please Enter Address ");
+
+            isValid = false;
+            setIsStateError(true);
+            setStateError("please Enter State");
+
+            isValid = false;
+            setIsCityError(true);
+            setCityError("please Enter City");
+
+            isValid = false;
+            setIsPincodeError(true);
+            setPincodeError("please Enter Pincode");
+
+            isValid = false;
+            setIsGstError(true);
+            setGstError("please Enter Gst No");
+
+            isValid = false;
+            setIsPanError(true);
+            setPanError("please Enter Pan No");
+
+        }
+        if (isValid) {
+            // InsertUpdateData(addCompanyName, contactPerson, contactMobileNo,address, state, city, pincode, gst, pan);
+        }
     };
 
 
-    const InsertUpdateData = (employeeName: string, mobileNo: string, aadharNo: string) => {
+    const InsertUpdateData = (addCompanyName: string, contactPerson: string, contactMobileNo: string,
+        address:string,state:string,city:string,pincode:string,gst:string,pan:string) => {
         if (actionStatus === "new") {
-            Provider.create("master/insertuseremployees", {
+            Provider.create("contractorquotationestimation/insertclient", {
                 AddedByUserID: cookies.dfc.UserID,
-                EmployeeName: employeeName,
-                MobileNo: mobileNo,
-                AadharNo: aadharNo,
-
+                ComapnyName: addCompanyName,
+                ContactPerson:contactPerson,
+                ContactMobileNo:contactMobileNo,
+                Address:address,
+                State:state,
+                City:city,
+                Pincode:pincode,
+                Gst:gst,
+                Pan:pan
             })
                 .then((response) => {
                     debugger;
@@ -761,8 +782,7 @@ const ClientList = () => {
 
                     <Grid item xs={6}>
                         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-
-                            <Grid item sm={6}>
+                            <Grid item sm={5}>
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                     <b style={{ float: "right" }}>Contact Person</b>
                                 </Typography>
@@ -775,17 +795,17 @@ const ClientList = () => {
                                     onChange={(e) => {
                                         setContactPerson((e.target as HTMLInputElement).value);
                                         isSetContactPersonError(false);
-                                        setContactPersonError("");
+                                        setContactPersonErrorText("");
                                     }}
                                     error={isContactPersonError}
-                                    helperText={contactPersonError}
+                                    // helperText={setContactPersonErrorText}
                                     value={contactPerson}
                                 />
                             </Grid>
                         </Grid>
                         <br></br>
                         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                            <Grid item sm={6}>
+                            <Grid item sm={5}>
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                     <b style={{ float: "right" }}>Address</b>
                                 </Typography>
@@ -801,15 +821,14 @@ const ClientList = () => {
                                         setAddress("");
                                     }}
                                     error={isAddressError}
-                                    helperText={addressError}
+                                    // helperText={addressError}
                                     value={address}
                                 />
                             </Grid>
                         </Grid>
                         <br></br>
-                        <br></br>
                         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                            <Grid item sm={6}>
+                            <Grid item sm={5}>
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                     <b style={{ float: "right" }}>City</b>
                                 </Typography>
@@ -838,7 +857,7 @@ const ClientList = () => {
                         </Grid>
                         <br></br>
                         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                            <Grid item sm={6}>
+                            <Grid item sm={5}>
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                     <b style={{ float: "right" }}>GST No</b>
                                 </Typography>
@@ -861,12 +880,12 @@ const ClientList = () => {
                         </Grid>
                         <br></br>
                         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                            <Grid item sm={6}>
+                            <Grid item sm={5}>
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                     <b style={{ float: "right" }}>Service Provider</b>
                                 </Typography>
                             </Grid>
-                            <Grid item sm={6}>
+                            <Grid item sm={7}>
                                 <FormControl>
                                     <RadioGroup row name="row-radio-buttons-group" value={serviceProvider} onChange={handleServiceProviderChange}>
                                         <FormControlLabel value="vendor" control={<Radio />} label="Vendor" />

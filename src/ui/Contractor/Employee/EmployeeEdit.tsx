@@ -225,7 +225,7 @@ const EmployeeEdit = () => {
   const [accountHNameError, setAccountHNameError] = useState("");
   const [isAccountHNameError, setIsAccountHNameError] = useState(false);
 
-  const [accountNo, setAccountNo] = useState("");
+  const [accountNo, setAccountNo] = useState(0);
   const [accountNoError, setAccountNoError] = useState("");
   const [isAccountNoError, setIsAccountNoError] = useState(false);
 
@@ -481,8 +481,9 @@ const EmployeeEdit = () => {
   };
 
   const FetchEmployeeDetails = (id: number) => {
+    debugger;
     let params = {
-      ID: 1,
+      ID: id,
     };
     Provider.getAll(`master/getemployeedetailsbyid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
@@ -581,7 +582,7 @@ const EmployeeEdit = () => {
               });
             });
             setStatesFullData(stateData);
-
+            setSelectedStateID(st_ID);
             if (st_ID > 0) {
               let a = statesFullData.filter((el) => {
                 return el.id === st_ID;
@@ -612,6 +613,7 @@ const EmployeeEdit = () => {
               });
             });
             setCityFullData(cityData);
+            setSelectedCityID(ct_ID);
             if (ct_ID > 0) {
               let a = cityData.filter((el) => {
                 return el.id === ct_ID;
@@ -660,22 +662,46 @@ const EmployeeEdit = () => {
     debugger;
     if (status.toLowerCase() === "success") {
       const params = {
-        //UserID: CookieUserID,
+         ID: employeeID,
+      Mobile: mobile.trim(),
+      AadharNo: aadhar.trim(),
+      FatherName: fatherName,
+      Address: address,
+      StateID: selectedStateID,
+      CityID: selectedCityID,
+      Pincode: pincode,
+      ProfilePhoto: image,
+      BloodGroup: bloodGroupID,
+      DOB: DOB,
+      DOJ: DOJ,
+      EmergencyContactName: emergencyCName,
+      EmergencyContactNo: emergencyCNo,
+      IDCardValidity: idcard,
+      LoginActiveStatus: true,
+      BranchID: branchID ,
+      DepartmentID: departmentID ,
+      DesignationID: designationID ,
+      EmployeeType: employeeType,
+      LastWorkDate: LastWorkingDate,
+      WagesType: wagesType,
+      Salary: salary,
+      AccountHolderName: accountHName,
+      AccountNumber: accountNo,
+      BankName: bankName,
+      BranchName: bankBranchName,
+      IFSCCode: ifscCode,
 
-        CompanyLogo: fileName ? AWSImagePath + fileName : "",
       };
-      Provider.create("master/insertuserprofile", params)
+      Provider.create("master/updateemployeedetails", params)
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
-            if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
-              setImage(fileName ? AWSImagePath + fileName : "");
-              setUploadFileUpload(undefined);
-            }
+            
             setSnackbarType("success");
 
             setSnackMsg("Data updated successfully");
 
-            setOpen(true);
+            setOpen(false);
           } else {
             setSnackbarType("error");
             setSnackMsg(communication.Error);
@@ -1592,7 +1618,7 @@ const EmployeeEdit = () => {
             <Grid item xs={4} sm={8} md={12}>
               <Grid item xs={4} sm={8} md={12}>
                 <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
-                  Submit
+                  Update
                 </LoadingButton>
               </Grid>
             </Grid>
