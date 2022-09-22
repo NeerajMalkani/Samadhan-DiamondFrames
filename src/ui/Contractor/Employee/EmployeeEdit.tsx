@@ -28,6 +28,8 @@ import {
   OutlinedInput,
 } from "@mui/material";
 
+
+
 import TextField from "@mui/material/TextField";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
@@ -81,6 +83,7 @@ function a11yProps(index: number) {
 }
 
 let st_ID = 0, ct_ID = 0, bg_ID = 0, b_ID = 0, d_ID = 0, de_ID = 0;
+let rpt_ID=[];
 
 const EmployeeEdit = () => {
 
@@ -96,10 +99,6 @@ const EmployeeEdit = () => {
       navigate(`/login`);
     } else {
       SetCookieUseID(cookies.dfc.UserID);
-      setDOB(new Date());
-      setDOJ(new Date());
-      setCardValidity(new Date());
-      setLastWorkingDate(new Date());
       setBloodGroupList(BloodGroup);
     }
   }, []);
@@ -154,10 +153,10 @@ const EmployeeEdit = () => {
   const [isBloodGroupError, setIsBloodGroupError] = React.useState(false);
   const [bloodGroupList, setBloodGroupList] = React.useState<Array<BloodGroupModel>>([]);
 
-  const [DOB, setDOB] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
-  const [DOJ, setDOJ] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
-  const [CardValidity, setCardValidity] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
-  const [LastWorkingDate, setLastWorkingDate] = useState<Date | null>(new Date("2022-08-25 T 17:20:54"));
+  const [DOB, setDOB] = useState<Date | null>(new Date());
+  const [DOJ, setDOJ] = useState<Date | null>(new Date());
+  const [CardValidity, setCardValidity] = useState<Date | null>(new Date());
+  const [LastWorkingDate, setLastWorkingDate] = useState<Date | null>(new Date());
 
   const [emergencyCName, setEmergencyCName] = useState("");
   const [emergencyCNameError, setEmergencyCNameError] = useState("");
@@ -166,12 +165,6 @@ const EmployeeEdit = () => {
   const [emergencyCNo, setEmergencyCNo] = useState("");
   const [emergencyCNoError, setEmergencyCNoError] = useState("");
   const [isEmergencyCNoError, setIsEmergencyCNoError] = useState(false);
-
-  const [idcard, setIdCard] = useState("--Select--");
-  const [idCardID, setIdCardID] = useState<number>(0);
-  const [idCardError, setIdCardError] = useState("");
-  const [isIdCardError, setIsIdCardError] = useState(false);
-  const [idCardList, setIdCardList] = useState<Array<IdCardModel>>([]);
 
   const [login, setLogin] = useState("Yes");
 
@@ -182,7 +175,6 @@ const EmployeeEdit = () => {
   const [selectedBranchName, setSelectedBranchName] = useState("");
   const [selectedBranchID, setSelectedBranchID] = useState(0);
   const [branchFullData, setBranchFullData] = useState([]);
-
 
   const [department, setDepartment] = useState("--Select--");
   const [departmentID, setDepartmentID] = useState<number>(0);
@@ -276,6 +268,10 @@ const EmployeeEdit = () => {
     if (!NullOrEmpty(id)) {
       setEmployeeID(parseInt(id));
       FetchEmployeeDetails(parseInt(id));
+      setDOB(null);
+      setDOJ(null);
+      setCardValidity(null);
+      setLastWorkingDate(null);
     }
     else {
       setEmployeeID(0);
@@ -315,16 +311,30 @@ const EmployeeEdit = () => {
   };
 
   const FetchReport = () => {
-    debugger;
     let params = {
       AddedByUserID: cookies.dfc.UserID,
     };
     Provider.getAll(`master/getreportingemployeelist?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+
+            const report: any = [];
+            let arrAct: any = [];
+            response.data.data.map((data: any, i: number) => {
+              report.push({
+                id: data.id,
+                label: data.employee,
+              });
+            });
+            
+            let a = report.filter((el) => {
+              return el.id === 1;
+            });
+            arrAct.push(a[0].label);
+            
             setReportNameList(response.data.data);
+            setReportList(arrAct);
           }
         }
       })
@@ -348,7 +358,7 @@ const EmployeeEdit = () => {
     };
     Provider.getAll(`master/getuserdepartmentforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const deptData: any = [];
@@ -388,7 +398,7 @@ const EmployeeEdit = () => {
     };
     Provider.getAll(`master/getuserdesignationforbranchemployee?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const desgData: any = [];
@@ -423,6 +433,7 @@ const EmployeeEdit = () => {
   };
 
   const handleReportChange = (event: SelectChangeEvent<typeof reportList>) => {
+    debugger;
     const {
       target: { value },
     } = event;
@@ -461,6 +472,7 @@ const EmployeeEdit = () => {
   };
 
   const handleDOBChange = (newValueDate: Date | null) => {
+    debugger;
     setDOB(newValueDate);
   };
 
@@ -481,15 +493,14 @@ const EmployeeEdit = () => {
   };
 
   const FetchEmployeeDetails = (id: number) => {
-    debugger;
     let params = {
       ID: id,
+      AddedByUserID: cookies.dfc.UserID
     };
     Provider.getAll(`master/getemployeedetailsbyid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-
             var employee_data = response.data.data[0].employee[0];
             var bankDetails_data = response.data.data[0].bankDetails[0];
             var reporting_data = response.data.data[0].employeeReportingAuthority[0];
@@ -531,18 +542,24 @@ const EmployeeEdit = () => {
             }
 
             setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
-            setDOB(!NullOrEmpty(employee_data.dob) === null ? "" : employee_data.dob);
-            setDOJ(!NullOrEmpty(employee_data.doj) === null ? "" : employee_data.doj);
+
+            setDOB(NullOrEmpty(employee_data.dob) ? null : employee_data.dob);
+            setDOJ(NullOrEmpty(employee_data.doj) ? null : employee_data.doj);
+            setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
+            setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
+
             setEmergencyCName(!NullOrEmpty(employee_data.emergencyContactName) ? employee_data.emergencyContactName : "");
             setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
-            setIdCard(!NullOrEmpty(employee_data.idCardValidity) ? employee_data.idCardValidity : "");
+
             setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? employee_data.loginActiveStatus : "");
             setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
             setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
             setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
-            setReporting(!NullOrEmpty(employee_data.reporting) ? employee_data.reporting : "");
+            setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+            setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+            rpt_ID=reporting_data.reportingAuthorityID;
             setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "");
-            setLastWorkingDate(!NullOrEmpty(employee_data.LastWorkingDate) ? employee_data.LastWorkingDate : "");
+
             setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType : "");
             setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
 
@@ -554,8 +571,8 @@ const EmployeeEdit = () => {
             setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode : "" : "");
             setUploadedImage(employee_data.profilePhoto);
             setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
-            // setFilePath(response.data.data[0].profilePhoto ? response.data.data[0].profilePhoto : null);
           }
+
           setLoading(false);
           FetchStates();
           FetchBranch();
@@ -584,16 +601,18 @@ const EmployeeEdit = () => {
             setStatesFullData(stateData);
             setSelectedStateID(st_ID);
             if (st_ID > 0) {
-              let a = statesFullData.filter((el) => {
+              let a = stateData.filter((el) => {
                 return el.id === st_ID;
               });
               setSelectedStateName(a[0].label);
             }
           }
+
+          FetchCities(st_ID);
         }
       })
       .catch((e) => { });
-      
+
   };
 
   const FetchCities = (stateID: number) => {
@@ -647,7 +666,8 @@ const EmployeeEdit = () => {
     if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
       uploadImage();
     } else {
-      InsertData("Success", uploadedImage);
+      let img = (SplitImageName(uploadedImage));
+      InsertData("Success", img);
     }
   };
 
@@ -658,50 +678,64 @@ const EmployeeEdit = () => {
     UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertData);
   };
 
+  const SplitImageName = (fullName: string) => {
+    debugger;
+    let imgName = "";
+    if (!NullOrEmpty(fullName)) {
+      if (fullName.includes(AWSImagePath)) {
+        imgName = fullName.replace(AWSImagePath, '');
+      }
+      else {
+        imgName = fullName;
+      }
+    }
+    return imgName;
+  }
+
   const InsertData = (status: string, fileName: string) => {
     debugger;
     if (status.toLowerCase() === "success") {
       const params = {
-         ID: employeeID,
-      Mobile: mobile.trim(),
-      AadharNo: aadhar.trim(),
-      FatherName: fatherName,
-      Address: address,
-      StateID: selectedStateID,
-      CityID: selectedCityID,
-      Pincode: pincode,
-      ProfilePhoto: image,
-      BloodGroup: bloodGroupID,
-      DOB: DOB,
-      DOJ: DOJ,
-      EmergencyContactName: emergencyCName,
-      EmergencyContactNo: emergencyCNo,
-      IDCardValidity: idcard,
-      LoginActiveStatus: true,
-      BranchID: branchID ,
-      DepartmentID: departmentID ,
-      DesignationID: designationID ,
-      EmployeeType: employeeType,
-      LastWorkDate: LastWorkingDate,
-      WagesType: wagesType,
-      Salary: salary,
-      AccountHolderName: accountHName,
-      AccountNumber: accountNo,
-      BankName: bankName,
-      BranchName: bankBranchName,
-      IFSCCode: ifscCode,
-
+        ID: employeeID,
+        MobileNo: mobile.trim(),
+        AadharNo: aadhar.trim(),
+        FatherName: fatherName,
+        Address: address,
+        StateID: selectedStateID,
+        CityID: selectedCityID,
+        Pincode: pincode,
+        ProfilePhoto: fileName ? AWSImagePath + fileName : "",
+        BloodGroup: bloodGroupID,
+        DOB: DOB,
+        DOJ: DOJ,
+        EmergencyContactName: emergencyCName,
+        EmergencyContactNo: emergencyCNo,
+        IDCardValidity: CardValidity,
+        LoginActiveStatus: login,
+        BranchID: branchID,
+        DepartmentID: departmentID,
+        DesignationID: designationID,
+        EmployeeType: employeeType,
+        LastWorkDate: LastWorkingDate,
+        WagesType: wagesType,
+        Salary: salary,
+        AccountHolderName: accountHName,
+        AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
+        BankName: bankName,
+        BranchName: bankBranchName,
+        IFSCCode: ifscCode,
       };
+      debugger;
       Provider.create("master/updateemployeedetails", params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
-            
-            setSnackbarType("success");
 
+            setSnackbarType("success");
             setSnackMsg("Data updated successfully");
 
             setOpen(false);
+            UpdateReportingAuthority();
           } else {
             setSnackbarType("error");
             setSnackMsg(communication.Error);
@@ -722,6 +756,30 @@ const EmployeeEdit = () => {
       setOpen(true);
       setButtonLoading(false);
     }
+  };
+
+  const UpdateReportingAuthority = () => {
+    debugger;
+    const params = {
+      EmployeeID: employeeID,
+      AddedByUserID: cookies.dfc.UserID,
+      ReportingAuthorityID: reportListID,
+    };
+
+    Provider.create("master/updateemployeereportingauthority", params)
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        setSnackbarType("error");
+        setSnackMsg(communication.NetworkError);
+        setOpen(true);
+        setButtonLoading(false);
+      });
   };
 
   const handleBNChange = (event: SelectChangeEvent) => {
@@ -1062,6 +1120,7 @@ const EmployeeEdit = () => {
                       <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                           inputFormat="MM/dd/yyyy"
+                          clearable
                           value={DOB}
                           onChange={handleDOBChange}
                           renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
@@ -1080,6 +1139,7 @@ const EmployeeEdit = () => {
                       <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                           inputFormat="MM/dd/yyyy"
+                          clearable
                           value={DOJ}
                           onChange={handleDOJChange}
                           renderInput={(params) => <TextField size="small"{...params} />}></DesktopDatePicker>
@@ -1143,6 +1203,7 @@ const EmployeeEdit = () => {
                       <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                           inputFormat="MM/dd/yyyy"
+                          clearable
                           value={CardValidity}
                           onChange={handleCardValidityChange}
                           renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
@@ -1272,9 +1333,9 @@ const EmployeeEdit = () => {
                     <Grid item sm={9}>
                       <FormControl>
                         <RadioGroup row name="row-radio-buttons-group" value={employeeType} onChange={handleEmpTypeChange}>
-                          <FormControlLabel value="Permanent" control={<Radio />} label="Permanent" />
-                          <FormControlLabel value="Temporary" control={<Radio />} label="Temporary" />
-                          <FormControlLabel value="Releave" control={<Radio />} label="Releave" />
+                          <FormControlLabel value="1" control={<Radio />} label="Permanent" />
+                          <FormControlLabel value="2" control={<Radio />} label="Temporary" />
+                          <FormControlLabel value="3" control={<Radio />} label="Releave" />
                         </RadioGroup>
                       </FormControl>
                     </Grid>
@@ -1345,7 +1406,7 @@ const EmployeeEdit = () => {
                     <Grid item sm={6}>
                       <Select
                         size="small"
-                        multiple
+                        multiple={true}
                         fullWidth
                         value={reportList}
                         onChange={handleReportChange}
@@ -1375,6 +1436,7 @@ const EmployeeEdit = () => {
                       </Select>
                     </Grid>
                   </Grid>
+
                   <br></br>
                   <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                     <Grid item sm={3}>
@@ -1386,6 +1448,7 @@ const EmployeeEdit = () => {
                       <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                           inputFormat="MM/dd/yyyy"
+                          clearable
                           value={LastWorkingDate}
                           onChange={handleLastWorkingDateChange}
                           renderInput={(params) => <TextField size="small" {...params} />}
