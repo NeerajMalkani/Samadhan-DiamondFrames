@@ -67,6 +67,7 @@ import ClientList from "../ui/Common/Client/ClientList";
 import PocketRemainder from "../ui/Pocket/PocketRemainder";
 import RateCardSetup from "../ui/Contractor/RateCard/RateCardSetup";
 import AddRateCard from "../ui/Contractor/RateCard/AddRateCard";
+import ClientEdit from "../ui/Common/Client/ClientEdit";
 const AppRoutes = () => {
   return (
     <CookiesProvider>
@@ -141,6 +142,7 @@ const AppRoutes = () => {
 
               <Route path="master/ratecardsetup" element={<RateCardSetup />} />
               <Route path="master/addratecard" element={<AddRateCard />} />
+              <Route path="contractor/Client/ClientEdit" element={<ClientEdit/>}/>
             </Routes>
           </BrowserRouter>
         </Box>

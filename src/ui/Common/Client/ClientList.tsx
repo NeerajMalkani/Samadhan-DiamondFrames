@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import Provider from "../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
-import { activityColumns, clientListColumns, clientSearchResult } from "../../../utils/tablecolumns";
+import { clientListColumns, clientSearchResult } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
 import { ClientModel, StateModel, CityModel, EmployeeModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
@@ -102,7 +102,7 @@ const ClientList = () => {
     const [otpErrorText, setOtpErrorText] = useState("");
     const [isOtpError, isSetOtpError] = useState(false);
 
-    const [employeeID, setEmployeeID] = React.useState<number>();
+    const [clientID, setClientID] = React.useState<number>();
 
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
@@ -241,6 +241,7 @@ const ClientList = () => {
         debugger;
         let params = {
             AddedByUserID: cookies.dfc.UserID,
+            CompanyName:companyName,
             MobileNo: mobileNo
         };
         ResetFields();
@@ -254,7 +255,9 @@ const ClientList = () => {
                             let sr = { srno: index + 1 };
                             a = Object.assign(a, sr);
                         });
+                        debugger;
                         setGridClientSearchList(arrList);
+                        debugger;
                         setGridClientSearchListTemp(arrList);
                     }
                 } else {
@@ -262,11 +265,13 @@ const ClientList = () => {
                     setSnackMsg(communication.NoData);
                     setOpen(true);
                 }
+                debugger;
                 setLoading(false);
             })
             .catch((e) => {
                 setLoading(false);
                 setSnackbarType("error");
+                debugger
                 setSnackMsg(communication.NetworkError);
                 setOpen(true);
             });
@@ -277,10 +282,14 @@ const ClientList = () => {
         debugger;
         let isValid: boolean = true;
 
-        if (mobileNo.trim() === "") {
+        if (companyName.trim () === "" &&  mobileNo.trim() === "") {
             isValid = false;
             isSetMobileNoError(true);
             setMobileErrorText("Please Enter Mobile No");
+            setActive("none");
+
+            isSetComapnyNameError(true);
+            setCompanyNameErrorText("Please Enter Company Name");
             setActive("none");
         }
 
@@ -292,7 +301,8 @@ const ClientList = () => {
     };
 
 
-    const handleValidateClick = () => {
+    const handleSubmitClick = () => {
+        debugger;
         let isValid: boolean = true;
 
         if (addCompanyName.trim() === "" && contactPerson.trim() === "" && contactMobileNo.trim() === ""
@@ -336,52 +346,54 @@ const ClientList = () => {
 
         }
         if (isValid) {
-            // InsertUpdateData(addCompanyName, contactPerson, contactMobileNo,address, state, city, pincode, gst, pan);
+            InsertUpdateData();
         }
     };
 
 
-    const InsertUpdateData = (addCompanyName: string, contactPerson: string, contactMobileNo: string,
-        address:string,state:string,city:string,pincode:string,gst:string,pan:string) => {
+    const InsertUpdateData = () => {
         if (actionStatus === "new") {
-            Provider.create("contractorquotationestimation/insertclient", {
-                AddedByUserID: cookies.dfc.UserID,
-                ComapnyName: addCompanyName,
-                ContactPerson:contactPerson,
-                ContactMobileNo:contactMobileNo,
-                Address:address,
-                State:state,
-                City:city,
-                Pincode:pincode,
-                Gst:gst,
-                Pan:pan
+          Provider.create("contractorquotationestimation/insertotherclient", {
+            AddedByUserID: cookies.dfc.UserID,
+            CompanyName: addCompanyName,
+            ContactPerson:contactPerson,
+            ContactMobileNumber:contactMobileNo,
+            Address1:address,
+            StateID:state,
+            CityID:city,
+            Pincode:pincode,
+            GSTNumber:gst,
+            PAN:pan,
+            ServiceType:serviceProvider,
+            Display:display,
+    
+          })
+            .then((response) => {
+              debugger;
+              if (response.data && response.data.code === 200) {
+                FetchData("added");
+              }else if (response.data.code === 304) {
+                setSnackMsg(response.data.message);
+                setSnackbarType("error");
+                ResetFields();
+              } else {
+                ResetFields();
+                setSnackMsg(communication.Error);
+                setSnackbarType("error");
+              }
             })
-                .then((response) => {
-                    debugger;
-                    if (response.data && response.data.code === 200) {
-                        FetchData("added");
-                    } else if (response.data.code === 304) {
-                        setSnackMsg(response.data.message);
-                        setSnackbarType("error");
-                        ResetFields();
-                    } else {
-                        ResetFields();
-                        setSnackMsg(communication.Error);
-                        setSnackbarType("error");
-                    }
-                })
-                .catch((e) => {
-                    ResetFields();
-                    setSnackMsg(communication.NetworkError);
-                    setSnackbarType("error");
-                });
-        }
-    };
+            .catch((e) => {
+              ResetFields();
+              setSnackMsg(communication.NetworkError);
+              setSnackbarType("error");
+            });
+          }
+      };
 
     // const SubmitVerify = () => {
     //     if (actionStatus === "new") {
     //         Provider.create("master/updateemployeeverification", {
-    //             EmployeeID: employeeID,
+    //             ClientID:clientID,
     //             OTP: otp,
     //         })
     //             .then((response) => {
@@ -606,8 +618,7 @@ const ClientList = () => {
                                             onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                                                 debugger;
                                                 const arrActivity = [...gridClientSearchList];
-                                                let a: ClientModel
-                                                    | undefined = arrActivity.find((el) => el.id === param.row.id);
+                                                let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                                                 //handelEditAndDelete((e.target as any).textContent, a);
 
                                                 //InsertUpdateData();
@@ -671,7 +682,6 @@ const ClientList = () => {
                                     fullWidth
                                     variant="outlined"
                                     size="small"
-                                    disabled={true}
                                     onChange={(e) => {
                                         setContactMobileNo((e.target as HTMLInputElement).value);
                                         isSetContactMobileNoError(false);
@@ -818,10 +828,10 @@ const ClientList = () => {
                                     onChange={(e) => {
                                         setAddress((e.target as HTMLInputElement).value);
                                         isSetAddressError(false);
-                                        setAddress("");
+                                        setAddressErrorText("");
                                     }}
                                     error={isAddressError}
-                                    // helperText={addressError}
+                                    helperText={addressErrorText}
                                     value={address}
                                 />
                             </Grid>
@@ -899,7 +909,7 @@ const ClientList = () => {
 
                     <Grid item xs={4} sm={8} md={12}>
                         <Grid item xs={4} sm={8} md={12}>
-                            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} >
+                            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick} >
                                 Submit
                             </LoadingButton>
                         </Grid>
@@ -968,18 +978,19 @@ const ClientList = () => {
                                         disableSelectionOnClick
                                         onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
 
+
                                             if (param.field === 'action') {
-                                                // const arrActivity = [...employeeList];
-                                                // let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                                                const arrActivity = [...clientList];
+                                                let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                                                 // handelEditAndDelete((e.target as any).textContent, a);
                                             }
                                             else if (param.field === 'verifyStatus') {
 
-                                                // const arrActivity = [...employeeList];
-                                                // let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                                                const arrActivity = [...clientList];
+                                                let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                                                 // setOtp(NullOrEmpty(a.otp) ? "" : a.otp.toString());
-                                                // setEmployeeID(a.id);
-                                                // setOTPDialog();
+                                                setClientID(a.id);
+                                                setOTPDialog();
                                             }
                                         }}
                                         sx={{

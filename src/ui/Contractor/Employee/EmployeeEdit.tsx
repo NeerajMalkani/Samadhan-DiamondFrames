@@ -225,7 +225,7 @@ const EmployeeEdit = () => {
   const [accountHNameError, setAccountHNameError] = useState("");
   const [isAccountHNameError, setIsAccountHNameError] = useState(false);
 
-  const [accountNo, setAccountNo] = useState(0);
+  const [accountNo, setAccountNo] = useState("");
   const [accountNoError, setAccountNoError] = useState("");
   const [isAccountNoError, setIsAccountNoError] = useState(false);
 
