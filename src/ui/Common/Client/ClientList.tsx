@@ -444,6 +444,8 @@ const ClientList = () => {
         }
     };
 
+
+
     // const SubmitVerify = () => {
     //     if (actionStatus === "new") {
     //         Provider.create("master/updateemployeeverification", {
@@ -472,6 +474,33 @@ const ClientList = () => {
     //     }
     // };
 
+    const InsertExistingClient = (ID: number) => {
+        debugger;
+        Provider.create("contractorquotationestimation/insertotherclient", {
+          AddedByUserID: cookies.dfc.UserID,
+          ID: ID,
+    
+        })
+          .then((response) => {
+            debugger;
+            if (response.data && response.data.code === 200) {
+              FetchData("added");
+            } else if (response.data.code === 304) {
+              setSnackMsg(response.data.message);
+              setSnackbarType("error");
+              ResetFields();
+            } else {
+              ResetFields();
+              setSnackMsg(communication.Error);
+              setSnackbarType("error");
+            }
+          })
+          .catch((e) => {
+            ResetFields();
+            setSnackMsg(communication.NetworkError);
+            setSnackbarType("error");
+          });
+      };
     // const handleSubmitVerify = () => {
     //     debugger;
     //     SubmitVerify();
@@ -670,8 +699,7 @@ const ClientList = () => {
                                                 debugger;
                                                 const arrActivity = [...gridClientSearchList];
                                                 let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                                                //handelEditAndDelete((e.target as any).textContent, a);
-                                                InsertUpdateData();
+                                                InsertExistingClient(a.id)
 
                                             }}
                                             sx={{
