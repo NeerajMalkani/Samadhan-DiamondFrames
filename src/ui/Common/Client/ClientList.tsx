@@ -1,8 +1,9 @@
 import {
     Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon,
-    InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography, Autocomplete,Select,MenuItem,
-    FormHelperText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack
+    InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography, Autocomplete, Select, MenuItem,
+    FormHelperText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, FormLabel, FormGroup, Checkbox
 } from "@mui/material";
+
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ import { SelectChangeEvent } from "@mui/material";
 let st_ID = 0, ct_ID = 0;
 
 const ClientList = () => {
+
     const [cookies, setCookie] = useCookies(["dfc"]);
     const [CookieUserID, SetCookieUseID] = useState(0);
     let navigate = useNavigate();
@@ -33,8 +35,51 @@ const ClientList = () => {
     }, []);
 
     //  #region variable
+
     const [loading, setLoading] = useState(true);
+    
+
+    const [companyName, setCompanyName] = React.useState("");
+    const [companyNameErrorText, setCompanyNameErrorText] = useState("");
+    const [isCompanyNameError, isSetCompanyNameError] = useState(false);
+
+    const [contactPerson, setContactPerson] = useState("");
+    const [contactPersonErrorText, setContactPersonErrorText] = useState("");
+    const [isContactPersonError, isSetContactPersonError] = useState(false);
+
+    const [contactMobileNo, setContactMobileNo] = React.useState("");
+    const [contactMobileNoErrorText, setContactMobileNoErrorText] = useState("");
+    const [isContactMobileNoError, isSetContactMobileNoError] = useState(false);
+
+    const [address, setAddress] = useState("");
+    const [addressErrorText, setAddressErrorText] = useState("");
+    const [isAddressError, isSetAddressError] = useState(false);
+
+    const [pincode, setPincode] = useState("");
+    const [pincodeError, setPincodeError] = useState("");
+    const [isPincodeError, setIsPincodeError] = useState(false);
+
+    const [gst, setGst] = useState("");
+    const [gstError, setGstError] = useState("");
+    const [isGstError, setIsGstError] = useState(false);
+
+    const [pan, setPan] = useState("");
+    const [panError, setPanError] = useState("");
+    const [isPanError, setIsPanError] = useState(false);
+
+    const serviceType = useState([
+        { key: "Vendor", isSelected: false, id: 1 },
+        { key: "Supplier", isSelected: false, id: 2 },
+        { key: "Client", isSelected: false, id: 3 },
+    ]);
+
+    const isSPRError = useState(false);
+    const sprError = useState("");
+
     const [display, setDisplay] = React.useState("Yes");
+
+    // reseting variables up
+
 
     const [clientList, setClientList] = useState<Array<ClientModel>>([]);
     const [clientListTemp, setClientListTemp] = React.useState<Array<any>>([]);
@@ -53,25 +98,11 @@ const ClientList = () => {
     const [mobileNOErrorText, setMobileNOErrorText] = useState("");
     const [isMobileNoError, isSetMobileNoError] = useState(false);
 
-    const [companyName, setCompanyName] = React.useState("");
-    const [companyNameErrorText, setCompanyNameErrorText] = useState("");
-    const [isCompanyNameError, isSetCompanyNameError] = useState(false);
 
     const [addCompanyName, setAddCompanyName] = React.useState("");
     const [addCompanyNameErrorText, setAddCompanyNameErrorText] = useState("");
     const [isAddCompanyNameError, isSetAddCompanyNameError] = useState(false);
 
-    const [contactPerson, setContactPerson] = useState("");
-    const [contactPersonErrorText, setContactPersonErrorText] = useState("");
-    const [isContactPersonError, isSetContactPersonError] = useState(false);
-
-    const [address, setAddress] = useState("");
-    const [addressErrorText, setAddressErrorText] = useState("");
-    const [isAddressError, isSetAddressError] = useState(false);
-
-    const [contactMobileNo, setContactMobileNo] = React.useState("");
-    const [contactMobileNoErrorText, setContactMobileNoErrorText] = useState("");
-    const [isContactMobileNoError, isSetContactMobileNoError] = useState(false);
 
     const [state, setState] = useState("--Select--");
     const [stateID, setStateID] = useState<number>(0);
@@ -85,17 +116,11 @@ const ClientList = () => {
     const [isCityError, setIsCityError] = useState(false);
     const [cityNameList, setCityNameList] = useState<Array<CityModel>>([]);
 
-    const [pincode, setPincode] = useState("");
-    const [pincodeError, setPincodeError] = useState("");
-    const [isPincodeError, setIsPincodeError] = useState(false);
 
-    const [gst, setGst] = useState("");
-    const [gstError, setGstError] = useState("");
-    const [isGstError, setIsGstError] = useState(false);
 
-    const [pan, setPan] = useState("");
-    const [panError, setPanError] = useState("");
-    const [isPanError, setIsPanError] = useState(false);
+
+
+
 
     const [serviceProvider, setServiceProvider] = useState("Yes");
 
@@ -567,11 +592,9 @@ const ClientList = () => {
                         <Grid item xs={4}>
                             <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
                                 <Grid item sm={6}>
-
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                         <b style={{ float: 'right', }}>Name /Company Name</b>
                                     </Typography>
-
                                 </Grid>
                                 <Grid item sm={6}>
                                     <TextField
@@ -942,21 +965,49 @@ const ClientList = () => {
                                 </Grid>
                             </Grid>
                             <br></br>
+
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={5}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Service Provider</b>
+                                        <b style={{ float: "right" }}>Service Provider Role</b>
                                     </Typography>
+                                    {/* <FormLabel component="legend">Service Provider Role</FormLabel> */}
                                 </Grid>
-                                <Grid item sm={7}>
-                                    <FormControl>
-                                        <RadioGroup row name="row-radio-buttons-group" value={serviceProvider} onChange={handleServiceProviderChange}>
-                                            <FormControlLabel value="vendor" control={<Radio />} label="Vendor" />
-                                            <FormControlLabel value="supplier" control={<Radio />} label="Supplier" />
-                                            <FormControlLabel value="client" control={<Radio />} label="Client" />
-                                        </RadioGroup>
+                                <Grid item sm={6}>
+                                    <FormControl component="fieldset" error={isSPRError[0]}>
+
+                                        <FormGroup aria-label="position" row>
+                                            {serviceType[0].map((data, index) => {
+                                                return (
+                                                    <FormControlLabel
+                                                        value={data.id}
+                                                        control={
+                                                            <Checkbox
+                                                                checked={data.isSelected}
+                                                                tabIndex={-1}
+                                                                onClick={() => {
+                                                                    isSPRError[1](false);
+                                                                    sprError[1]("");
+                                                                    const newChecked = [...serviceType[0]];
+                                                                    newChecked.find((item, i) => {
+                                                                        if (item.id === data.id) {
+                                                                            item.isSelected = !item.isSelected;
+                                                                        }
+                                                                    });
+                                                                    serviceType[1](newChecked);
+                                                                }}
+                                                            />
+                                                        }
+                                                        label={data.key}
+                                                        labelPlacement="end"
+                                                    />
+                                                );
+                                            })}
+                                        </FormGroup>
+                                        <FormHelperText>{sprError[0]}</FormHelperText>
                                     </FormControl>
                                 </Grid>
+
                             </Grid>
                         </Grid>
 

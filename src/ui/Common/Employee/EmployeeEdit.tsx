@@ -815,9 +815,10 @@ const EmployeeEdit = () => {
       <Header />
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}></Grid>
-        <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-          <Typography variant="h4">Employee Basic Edit</Typography>
+        <Grid  item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+        <Typography className="float-left" variant="h4">Employee Basic Edit</Typography>
         </Grid>
+        
         {loading ? (
           <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
             <CircularProgress />
