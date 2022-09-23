@@ -1,7 +1,7 @@
 import {
     Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon,
     InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography, Autocomplete, Select, MenuItem,
-    FormHelperText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, FormLabel, 
+    FormHelperText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, FormLabel,
     FormGroup, Checkbox
 } from "@mui/material";
 
@@ -38,7 +38,7 @@ const ClientList = () => {
     //  #region variable
 
     const [loading, setLoading] = useState(true);
-    
+
     const [companyName, setCompanyName] = React.useState("");
     const [companyNameErrorText, setCompanyNameErrorText] = useState("");
     const [isCompanyNameError, isSetCompanyNameError] = useState(false);
@@ -115,10 +115,6 @@ const ClientList = () => {
 
     const [serviceProvider, setServiceProvider] = useState("Yes");
 
-    const [otp, setOtp] = React.useState<string>("");
-    const [otpErrorText, setOtpErrorText] = useState("");
-    const [isOtpError, isSetOtpError] = useState(false);
-
     const [clientID, setClientID] = React.useState<number>();
 
     const [pageSize, setPageSize] = React.useState<number>(5);
@@ -127,6 +123,7 @@ const ClientList = () => {
     const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
     const [actionStatus, setActionStatus] = React.useState<string>("new");
     const [selectedID, setSelectedID] = React.useState<number>(0);
+
     const [open, setOpen] = React.useState(false);
     const [snackMsg, setSnackMsg] = React.useState("");
     const [buttonLoading, setButtonLoading] = useState(false);
@@ -149,17 +146,28 @@ const ClientList = () => {
         setContactPerson("");
         setContactMobileNo("");
         setAddress("");
-        
         setPincode("");
         setGst("");
         setPan("");
         setDisplay("");
+        serviceType[1]([
+            { key: "Vendor", isSelected: false, id: 1 },
+            { key: "Supplier", isSelected: false, id: 2 },
+            { key: "Client", isSelected: false, id: 3 },
+        ]);
         setServiceProvider("");
-
         setOpen(false);
+
+        setSelectedStateName("");
+        setSelectedStateID(0);
+        setCityFullData([]);
+        setSelectedCityName("");
+        setSelectedCityID(0);
+        setStatesFullData([]);
     };
 
     const FetchData = (type: string) => {
+        debugger;
         let params = {
             AddedByUserID: cookies.dfc.UserID,
         };
@@ -167,12 +175,13 @@ const ClientList = () => {
         Provider.getAll(`contractorquotationestimation/getclients?${new URLSearchParams(GetStringifyJson(params))}`)
 
             .then((response: any) => {
+                debugger;
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         const arrList = [...response.data.data];
                         arrList.map(function (a: any, index: number) {
-                            // a.profileStatus = a.profileStatus ? "complete" : "Incomplete";
-                            // a.loginStatus = a.loginStatus ? "Yes" : "No";
+                            a.display = a.display ? "Yes" : "No";
+                            a.addedBy = a.addedBy ? "Create" : "Add";
                             let sr = { srno: index + 1 };
                             a = Object.assign(a, sr);
                         });
@@ -208,7 +217,7 @@ const ClientList = () => {
         setServiceProvider((event.target as HTMLInputElement).value);
     };
 
-   
+
     const FetchStates = () => {
         Provider.getAll("master/getstates")
             .then((response: any) => {
@@ -313,8 +322,7 @@ const ClientList = () => {
         debugger;
         let isValid: boolean = true;
 
-        if (companyName.trim() === "" && mobileNo.trim() === "") 
-        {
+        if (companyName.trim() === "" && mobileNo.trim() === "") {
             isValid = false;
             isSetCompanyNameError(true);
             setCompanyNameErrorText("Please Enter Company Name");
@@ -405,8 +413,8 @@ const ClientList = () => {
                 ContactPerson: contactPerson,
                 ContactMobileNumber: contactMobileNo,
                 Address1: address,
-                // StateID: state,
-                // CityID: city,
+                StateID: selectedStateID,
+                CityID: selectedCityID,
                 Pincode: pincode,
                 GSTNumber: gst,
                 PAN: pan,
@@ -743,7 +751,7 @@ const ClientList = () => {
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
-                                <FormControl fullWidth size="small" error={isStateError}>
+                                    <FormControl fullWidth size="small" error={isStateError}>
                                         <Autocomplete
                                             disablePortal
                                             fullWidth
@@ -765,7 +773,7 @@ const ClientList = () => {
                                             renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
                                         />
                                         <FormHelperText>{stateError}</FormHelperText>
-                                        </FormControl>
+                                    </FormControl>
                                 </Grid>
                             </Grid>
                             <br></br>
@@ -886,7 +894,7 @@ const ClientList = () => {
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
-                                <FormControl fullWidth size="small" error={isCityError}>
+                                    <FormControl fullWidth size="small" error={isCityError}>
                                         <Autocomplete
                                             disablePortal
                                             fullWidth
