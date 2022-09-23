@@ -84,12 +84,11 @@ const ClientList = () => {
     const [clientList, setClientList] = useState<Array<ClientModel>>([]);
     const [clientListTemp, setClientListTemp] = React.useState<Array<any>>([]);
 
-    const [gridClientList, setGridClientList] = useState<Array<ClientModel>>([]);
-    const [gridClientListTemp, setGridClientListTemp] = useState<Array<ClientModel>>([]);
+    // const [gridClientList, setGridClientList] = useState<Array<ClientModel>>([]);
+    // const [gridClientListTemp, setGridClientListTemp] = useState<Array<ClientModel>>([]);
 
-
-    const [clientSearchList, setClientSearchList] = useState<Array<ClientModel>>([]);
-    const [clientSearchListTemp, setClientSearchListTemp] = React.useState<Array<any>>([]);
+    // const [clientSearchList, setClientSearchList] = useState<Array<ClientModel>>([]);
+    // const [clientSearchListTemp, setClientSearchListTemp] = React.useState<Array<any>>([]);
 
     const [gridClientSearchList, setGridClientSearchList] = useState<Array<ClientModel>>([]);
     const [gridClientSearchListTemp, setGridClientSearchListTemp] = useState<Array<ClientModel>>([]);
@@ -98,11 +97,9 @@ const ClientList = () => {
     const [mobileNOErrorText, setMobileNOErrorText] = useState("");
     const [isMobileNoError, isSetMobileNoError] = useState(false);
 
-
     const [addCompanyName, setAddCompanyName] = React.useState("");
     const [addCompanyNameErrorText, setAddCompanyNameErrorText] = useState("");
     const [isAddCompanyNameError, isSetAddCompanyNameError] = useState(false);
-
 
     const [state, setState] = useState("--Select--");
     const [stateID, setStateID] = useState<number>(0);
@@ -973,7 +970,7 @@ const ClientList = () => {
                                     </Typography>
                                     {/* <FormLabel component="legend">Service Provider Role</FormLabel> */}
                                 </Grid>
-                                <Grid item sm={6}>
+                                <Grid item sm={7}>
                                     <FormControl component="fieldset" error={isSPRError[0]}>
 
                                         <FormGroup aria-label="position" row>
