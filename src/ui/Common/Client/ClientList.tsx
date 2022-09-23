@@ -1,7 +1,8 @@
 import {
     Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon,
     InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography, Autocomplete, Select, MenuItem,
-    FormHelperText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, FormLabel, FormGroup, Checkbox
+    FormHelperText, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, FormLabel, 
+    FormGroup, Checkbox
 } from "@mui/material";
 
 import Header from "../../../components/Header";
@@ -38,7 +39,6 @@ const ClientList = () => {
 
     const [loading, setLoading] = useState(true);
     
-
     const [companyName, setCompanyName] = React.useState("");
     const [companyNameErrorText, setCompanyNameErrorText] = useState("");
     const [isCompanyNameError, isSetCompanyNameError] = useState(false);
@@ -54,6 +54,18 @@ const ClientList = () => {
     const [address, setAddress] = useState("");
     const [addressErrorText, setAddressErrorText] = useState("");
     const [isAddressError, isSetAddressError] = useState(false);
+
+    const [stateError, setStateError] = useState("");
+    const [isStateError, setIsStateError] = useState(false);
+    const [selectedStateName, setSelectedStateName] = useState("");
+    const [selectedStateID, setSelectedStateID] = useState(0);
+    const [statesFullData, setStatesFullData] = useState([]);
+
+    const [cityError, setCityError] = useState("");
+    const [isCityError, setIsCityError] = useState(false);
+    const [selectedCityName, setSelectedCityName] = useState("");
+    const [selectedCityID, setSelectedCityID] = useState(0);
+    const [cityFullData, setCityFullData] = useState([]);
 
     const [pincode, setPincode] = useState("");
     const [pincodeError, setPincodeError] = useState("");
@@ -101,24 +113,6 @@ const ClientList = () => {
     const [addCompanyNameErrorText, setAddCompanyNameErrorText] = useState("");
     const [isAddCompanyNameError, isSetAddCompanyNameError] = useState(false);
 
-    const [state, setState] = useState("--Select--");
-    const [stateID, setStateID] = useState<number>(0);
-    const [stateError, setStateError] = useState("");
-    const [isStateError, setIsStateError] = useState(false);
-    const [stateNameList, setStateNameList] = useState<Array<StateModel>>([]);
-
-    const [city, setCity] = useState("--Select--");
-    const [cityID, setCityID] = useState<number>(0);
-    const [cityError, setCityError] = useState("");
-    const [isCityError, setIsCityError] = useState(false);
-    const [cityNameList, setCityNameList] = useState<Array<CityModel>>([]);
-
-
-
-
-
-
-
     const [serviceProvider, setServiceProvider] = useState("Yes");
 
     const [otp, setOtp] = React.useState<string>("");
@@ -155,8 +149,7 @@ const ClientList = () => {
         setContactPerson("");
         setContactMobileNo("");
         setAddress("");
-        setState("");
-        setCity("");
+        
         setPincode("");
         setGst("");
         setPan("");
@@ -215,6 +208,7 @@ const ClientList = () => {
         setServiceProvider((event.target as HTMLInputElement).value);
     };
 
+   
     const FetchStates = () => {
         Provider.getAll("master/getstates")
             .then((response: any) => {
@@ -227,30 +221,30 @@ const ClientList = () => {
                                 label: data.stateName,
                             });
                         });
-                        setStateNameList(response.data.data);
-
+                        setStatesFullData(stateData);
+                        setSelectedStateID(st_ID);
                         if (st_ID > 0) {
                             let a = stateData.filter((el) => {
                                 return el.id === st_ID;
                             });
-                            setState(a[0].label);
+                            setSelectedStateName(a[0].label);
                         }
-
-                        FetchCity(st_ID);
                     }
+
+                    FetchCities(st_ID);
                 }
             })
             .catch((e) => { });
+
     };
 
-    const FetchCity = (stateID) => {
-        debugger;
+    const FetchCities = (stateID: number) => {
         let params = {
             ID: stateID,
         };
         Provider.getAll(`master/getcitiesbyid?${new URLSearchParams(GetStringifyJson(params))}`)
             .then((response: any) => {
-                debugger;
+
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         const cityData: any = [];
@@ -260,55 +254,18 @@ const ClientList = () => {
                                 label: data.cityName,
                             });
                         });
-
-                        setCityNameList(response.data.data);
+                        setCityFullData(cityData);
+                        setSelectedCityID(ct_ID);
                         if (ct_ID > 0) {
                             let a = cityData.filter((el) => {
                                 return el.id === ct_ID;
                             });
-                            setCity(a[0].label);
+                            setSelectedCityName(a[0].label);
                         }
                     }
-                    else {
-                        setCityNameList([]);
-                        setCity("");
-                        ct_ID = 0;
-                        setCityID(0);
-                    }
-                }
-                else {
-                    setCityNameList([]);
-                    setCity("");
-                    ct_ID = 0;
-                    setCityID(0);
                 }
             })
             .catch((e) => { });
-    };
-
-    const handleSNChange = (event: SelectChangeEvent) => {
-        debugger;
-        let stateName: string = event.target.value;
-        let ac = stateNameList.find((el) => el.stateName === stateName);
-        if (ac !== undefined) {
-            setState(stateName);
-            setStateID(ac?.id);
-            setIsStateError(false);
-            setStateError("");
-            FetchCity(ac.id);
-        }
-    };
-
-    const handleCNChange = (event: SelectChangeEvent) => {
-        debugger;
-        let cityName: string = event.target.value;
-        let ac = cityNameList.find((el) => el.cityName === cityName);
-        if (ac !== undefined) {
-            setCity(cityName);
-            setCityID(ac?.id);
-            setIsCityError(false);
-            setCityError("");
-        }
     };
 
     const FetchSearchData = () => {
@@ -356,11 +313,12 @@ const ClientList = () => {
         debugger;
         let isValid: boolean = true;
 
-        if (companyName.trim() === "" && mobileNo.trim() === "") {
+        if (companyName.trim() === "" && mobileNo.trim() === "") 
+        {
             isValid = false;
             isSetCompanyNameError(true);
             setCompanyNameErrorText("Please Enter Company Name");
-            setActive("none");
+
             isSetMobileNoError(true);
             setMobileNOErrorText("Please Enter Mobile No");
             setActive("none");
@@ -447,8 +405,8 @@ const ClientList = () => {
                 ContactPerson: contactPerson,
                 ContactMobileNumber: contactMobileNo,
                 Address1: address,
-                StateID: state,
-                CityID: city,
+                // StateID: state,
+                // CityID: city,
                 Pincode: pincode,
                 GSTNumber: gst,
                 PAN: pan,
@@ -514,7 +472,6 @@ const ClientList = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
 
     const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === "clickaway") {
@@ -786,21 +743,29 @@ const ClientList = () => {
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
-                                    <FormControl fullWidth size="small" error={isStateError}>
-                                        <Select value={state} onChange={handleSNChange}>
-                                            <MenuItem disabled={true} value="--Select--">
-                                                --Select--
-                                            </MenuItem>
-                                            {stateNameList.map((item, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={item.stateName}>
-                                                        {item.stateName}
-                                                    </MenuItem>
-                                                );
-                                            })}
-                                        </Select>
+                                <FormControl fullWidth size="small" error={isStateError}>
+                                        <Autocomplete
+                                            disablePortal
+                                            fullWidth
+                                            options={statesFullData}
+                                            //sx={{ width: 300 }}
+                                            onChange={(event: React.SyntheticEvent, value: any) => {
+                                                setIsStateError(false);
+                                                setStateError("");
+                                                if (value !== null) {
+                                                    setSelectedStateName(value.label);
+                                                    setSelectedStateID(value.id);
+                                                    setCityFullData([]);
+                                                    setSelectedCityName("");
+                                                    setSelectedCityID(0);
+                                                    FetchCities(value.id);
+                                                }
+                                            }}
+                                            value={selectedStateName}
+                                            renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
+                                        />
                                         <FormHelperText>{stateError}</FormHelperText>
-                                    </FormControl>
+                                        </FormControl>
                                 </Grid>
                             </Grid>
                             <br></br>
@@ -921,19 +886,23 @@ const ClientList = () => {
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
-                                    <FormControl fullWidth size="small" error={isCityError}>
-                                        <Select value={city} onChange={handleCNChange}>
-                                            <MenuItem disabled={true} value="--Select--">
-                                                --Select--
-                                            </MenuItem>
-                                            {cityNameList.map((item, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={item.cityName}>
-                                                        {item.cityName}
-                                                    </MenuItem>
-                                                );
-                                            })}
-                                        </Select>
+                                <FormControl fullWidth size="small" error={isCityError}>
+                                        <Autocomplete
+                                            disablePortal
+                                            fullWidth
+                                            options={cityFullData}
+                                            // sx={{ width: 300 }}
+                                            onChange={(event: React.SyntheticEvent, value: any) => {
+                                                setIsCityError(false);
+                                                setCityError("");
+                                                if (value !== null) {
+                                                    setSelectedCityName(value.label);
+                                                    setSelectedCityID(value.id);
+                                                }
+                                            }}
+                                            value={selectedCityName}
+                                            renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCityError} helperText={cityError} />}
+                                        />
                                         <FormHelperText>{cityError}</FormHelperText>
                                     </FormControl>
                                 </Grid>
@@ -972,7 +941,6 @@ const ClientList = () => {
                                 </Grid>
                                 <Grid item sm={7}>
                                     <FormControl component="fieldset" error={isSPRError[0]}>
-
                                         <FormGroup aria-label="position" row>
                                             {serviceType[0].map((data, index) => {
                                                 return (

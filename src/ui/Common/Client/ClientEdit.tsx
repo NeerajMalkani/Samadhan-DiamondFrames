@@ -1,6 +1,8 @@
-import { Box, TextField, Button, Container, FormControl, FormControlLabel, Typography,Radio, 
-    RadioGroup,Select,Autocomplete, Grid, Menu, Snackbar, MenuItem, AlertColor,CircularProgress , InputAdornment,
-    FormHelperText } from "@mui/material";
+import {
+    Box, TextField, Button, Container, FormControl, FormControlLabel, Typography, Radio,
+    RadioGroup, Select, Autocomplete, Grid, Menu, Snackbar, MenuItem, AlertColor, CircularProgress,Checkbox,FormGroup, InputAdornment,
+    FormHelperText
+} from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -12,7 +14,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
 import { border } from "@mui/system";
 import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
-import { CityModel, CompanyModel, StateModel, UserModel, UserProfile,ClientModel } from "../../../models/Model";
+import { CityModel, CompanyModel, StateModel, UserModel, UserProfile, ClientModel } from "../../../models/Model";
 import Provider from "../../../api/Provider";
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -38,45 +40,30 @@ const ClientEdit = () => {
 
 
     //#region Variables
-    const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
-    const [myUserNameList, setMyUserNameList] = useState<Array<UserModel>>([]);
-    const [myUserNameListTemp, setMyUserNameListTemp] = useState<Array<UserModel>>([]);
-
-    const [snackMsg, setSnackMsg] = React.useState("");
-    const [open, setOpen] = React.useState(false);
-    const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
     const [loading, setLoading] = useState(true);
 
-    const [clientList, setClientList] = useState<Array<ClientModel>>([]);
-    const [clientListTemp, setClientListTemp] = React.useState<Array<any>>([]);
-
-    const [gridClientList, setGridClientList] = useState<Array<ClientModel>>([]);
-    const [gridClientListTemp, setGridClientListTemp] = useState<Array<ClientModel>>([]);
-
     const [addCompanyName, setAddCompanyName] = React.useState("");
-    const [addComapnyNameErrorText, setAddCompanyNameErrorText] = useState("");
+    const [addCompanyNameErrorText, setAddCompanyNameErrorText] = useState("");
     const [isAddCompanyNameError, isSetAddCompanyNameError] = useState(false);
 
     const [contactPerson, setContactPerson] = useState("");
-    const [contactPersonErroText, setContactPersonErrorText] = useState("");
+    const [contactPersonErrorText, setContactPersonErrorText] = useState("");
     const [isContactPersonError, isSetContactPersonError] = useState(false);
+
+    const [contactMobileNo, setContactMobileNo] = React.useState("");
+    const [contactMobileNoErrorText, setContactMobileNoErrorText] = useState("");
+    const [isContactMobileNoError, isSetContactMobileNoError] = useState(false);
 
     const [address, setAddress] = useState("");
     const [addressErrorText, setAddressErrorText] = useState("");
     const [isAddressError, isSetAddressError] = useState(false);
 
-    const [contactMobileNo, setContactMobileNo] = React.useState("");
-    const [contactMobileNoErrorText, setContactMobileNoErrorText] = useState("");
-    const [isConatctMobileNoError, isSetContactMobileNoError] = useState(false);
-
-    const [state, setState] = useState("");
-    const [stateError, setStateError] = useState("");
+     const [stateError, setStateError] = useState("");
     const [isStateError, setIsStateError] = useState(false);
     const [selectedStateName, setSelectedStateName] = useState("");
     const [selectedStateID, setSelectedStateID] = useState(0);
     const [statesFullData, setStatesFullData] = useState([]);
 
-    const [city, setCity] = useState("");
     const [cityError, setCityError] = useState("");
     const [isCityError, setIsCityError] = useState(false);
     const [selectedCityName, setSelectedCityName] = useState("");
@@ -89,13 +76,38 @@ const ClientEdit = () => {
 
     const [gst, setGst] = useState("");
     const [gstError, setGstError] = useState("");
-    const [isGstError, setIsGstError] = useState(false);
+    const [isGstError, isSetGstError] = useState(false);
 
     const [pan, setPan] = useState("");
     const [panError, setPanError] = useState("");
-    const [isPanError, setIsPanError] = useState(false);
+    const [isPanError, isSetPanError] = useState(false);
 
-    const [serviceProvider, setServiceProvider] = useState("Yes");
+    const serviceType = useState([
+        { key: "Vendor", isSelected: false, id: 1 },
+        { key: "Supplier", isSelected: false, id: 2 },
+        { key: "Client", isSelected: false, id: 3 },
+    ]);
+
+    const isSPRError = useState(false);
+    const sprError = useState("");
+
+    const [display, setDisplay] = React.useState("Yes");
+
+
+    //variables rearrange
+    const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
+    const [myUserNameList, setMyUserNameList] = useState<Array<UserModel>>([]);
+    const [myUserNameListTemp, setMyUserNameListTemp] = useState<Array<UserModel>>([]);
+
+    const [snackMsg, setSnackMsg] = React.useState("");
+    const [open, setOpen] = React.useState(false);
+    const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+   
+    const [clientList, setClientList] = useState<Array<ClientModel>>([]);
+    const [clientListTemp, setClientListTemp] = React.useState<Array<any>>([]);
+
+    const [gridClientList, setGridClientList] = useState<Array<ClientModel>>([]);
+    const [gridClientListTemp, setGridClientListTemp] = useState<Array<ClientModel>>([]);
 
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [actionStatus, setActionStatus] = React.useState<string>("new");
@@ -103,7 +115,6 @@ const ClientEdit = () => {
     const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
     const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
     const [buttonLoading, setButtonLoading] = useState(false);
-    const [display, setDisplay] = React.useState("Yes");
     const [searchQuery, setSearchQuery] = useState("");
     //#endregion
 
@@ -114,10 +125,8 @@ const ClientEdit = () => {
     }, []);
 
     const FetchStates = () => {
-
         Provider.getAll("master/getstates")
             .then((response: any) => {
-
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         const stateData: any = [];
@@ -125,14 +134,23 @@ const ClientEdit = () => {
                             stateData.push({
                                 id: data.id,
                                 label: data.stateName,
-                                // setStateNameList(response.data.data);
                             });
                         });
                         setStatesFullData(stateData);
+                        setSelectedStateID(st_ID);
+                        if (st_ID > 0) {
+                            let a = stateData.filter((el) => {
+                                return el.id === st_ID;
+                            });
+                            setSelectedStateName(a[0].label);
+                        }
                     }
+
+                    FetchCities(st_ID);
                 }
             })
             .catch((e) => { });
+
     };
 
     const FetchCities = (stateID: number) => {
@@ -152,11 +170,19 @@ const ClientEdit = () => {
                             });
                         });
                         setCityFullData(cityData);
+                        setSelectedCityID(ct_ID);
+                        if (ct_ID > 0) {
+                            let a = cityData.filter((el) => {
+                                return el.id === ct_ID;
+                            });
+                            setSelectedCityName(a[0].label);
+                        }
                     }
                 }
             })
             .catch((e) => { });
     };
+
 
     // const FetchUserData = (type: string) => {
     //     debugger;
@@ -356,7 +382,7 @@ const ClientEdit = () => {
                     </Grid>
                 </Grid>
                 <br></br>
-                <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)"}} >
+                <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }} >
                     <Typography variant="h6"> CLIENT(ADD NEW / EDIT)</Typography>
                 </Grid>
                 <br></br>
@@ -380,7 +406,7 @@ const ClientEdit = () => {
                                             setAddCompanyNameErrorText("");
                                         }}
                                         error={isAddCompanyNameError}
-                                        helperText={addComapnyNameErrorText}
+                                        helperText={addCompanyNameErrorText}
                                         value={addCompanyName}
                                     />
                                 </Grid>
@@ -402,7 +428,7 @@ const ClientEdit = () => {
                                             isSetContactMobileNoError(false);
                                             setContactMobileNoErrorText("");
                                         }}
-                                        error={isConatctMobileNoError}
+                                        error={isContactMobileNoError}
                                         helperText={contactMobileNoErrorText}
                                         value={contactMobileNo}
                                     />
@@ -438,7 +464,7 @@ const ClientEdit = () => {
                                             renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
                                         />
                                         <FormHelperText>{stateError}</FormHelperText>
-                                    </FormControl>
+                                        </FormControl>
                                 </Grid>
                             </Grid>
                             <br></br>
@@ -478,7 +504,7 @@ const ClientEdit = () => {
                                         size="small"
                                         onChange={(e) => {
                                             setPan((e.target as HTMLInputElement).value);
-                                            setIsPanError(false);
+                                            isSetPanError(false);
                                             setPanError("");
                                         }}
                                         error={isPanError}
@@ -523,7 +549,7 @@ const ClientEdit = () => {
                                             setContactPersonErrorText("");
                                         }}
                                         error={isContactPersonError}
-                                        // helperText={setContactPersonErrorText}
+                                        helperText={contactPersonErrorText}
                                         value={contactPerson}
                                     />
                                 </Grid>
@@ -594,7 +620,7 @@ const ClientEdit = () => {
                                         size="small"
                                         onChange={(e) => {
                                             setGst((e.target as HTMLInputElement).value);
-                                            setIsGstError(false);
+                                            isSetGstError(false);
                                             setGstError("");
                                         }}
                                         error={isGstError}
@@ -606,17 +632,41 @@ const ClientEdit = () => {
                             <br></br>
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={5}>
-                                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Service Provider</b>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                        <b style={{ float: "right" }}>Service Provider Role</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={7}>
-                                    <FormControl>
-                                        <RadioGroup row name="row-radio-buttons-group" value={serviceProvider} >
-                                            <FormControlLabel value="vendor" control={<Radio />} label="Vendor" />
-                                            <FormControlLabel value="supplier" control={<Radio />} label="Supplier" />
-                                            <FormControlLabel value="client" control={<Radio />} label="Client" />
-                                        </RadioGroup>
+                                <FormControl component="fieldset" error={isSPRError[0]}>
+                                        <FormGroup aria-label="position" row>
+                                            {serviceType[0].map((data, index) => {
+                                                return (
+                                                    <FormControlLabel
+                                                        value={data.id}
+                                                        control={
+                                                            <Checkbox
+                                                                checked={data.isSelected}
+                                                                tabIndex={-1}
+                                                                onClick={() => {
+                                                                    isSPRError[1](false);
+                                                                    sprError[1]("");
+                                                                    const newChecked = [...serviceType[0]];
+                                                                    newChecked.find((item, i) => {
+                                                                        if (item.id === data.id) {
+                                                                            item.isSelected = !item.isSelected;
+                                                                        }
+                                                                    });
+                                                                    serviceType[1](newChecked);
+                                                                }}
+                                                            />
+                                                        }
+                                                        label={data.key}
+                                                        labelPlacement="end"
+                                                    />
+                                                );
+                                            })}
+                                        </FormGroup>
+                                        <FormHelperText>{sprError[0]}</FormHelperText>
                                     </FormControl>
                                 </Grid>
                             </Grid>
