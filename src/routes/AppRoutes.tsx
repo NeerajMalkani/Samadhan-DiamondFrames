@@ -30,7 +30,7 @@ import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
 import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
 import Basic from "../ui/Dealer/CompanyProfile/Basic";
 import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
-import EmployeeList from "../ui/Contractor/Employee/EmployeeList";
+import EmployeeList from "../ui/Common/Employee/EmployeeList";
 import CBasic from "../ui/Contractor/CompanyProfile/CBasic";
 import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
 import AddDepartment from "../ui/Contractor/Organization/AddDepartment";
@@ -44,13 +44,11 @@ import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEsti
 import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
 import ContractorClientPage from "../ui/Contractor/Client/CClient";
 import AddBranch from "../ui/Contractor/Organization/AddBranch";
-import EmployeeEdit from "../ui/Contractor/Employee/EmployeeEdit";
+import EmployeeEdit from "../ui/Common/Employee/EmployeeEdit";
 import DesignWisePage from "../ui/Contractor/QuotationAndEstimation/DesignWise/DesignWise";
 import Approved from "../ui/Admin/Users/Approved";
 import Pending from "../ui/Admin/Users/Pending";
 import Declined from "../ui/Admin/Users/Declined";
-import EmployeeDList from "../ui/Dealer/Employee/EmployeeDList";
-import EmployeeDEdit from "../ui/Dealer/Employee/EmployeeDEdit";
 import Userbasic from "../ui/GeneralUsers/Userbasic";
 import UserBasic from "../ui/Common/UserProfile/Userbasic";
 import AppUserEnquiry from "../ui/Contractor/Enquiries/AppUserEnquiry";
@@ -114,17 +112,15 @@ const AppRoutes = () => {
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
-              <Route path="contractor/employee/employee/edit/:id" element={<EmployeeEdit />} />
+              <Route path="Common/employee/employee/edit/:id" element={<EmployeeEdit />} />
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
               <Route path="contractor/clientlist" element={<ContractorClientPage />} />
               <Route path="contractor/quotationandestimation/designwise" element={<DesignWisePage />} />
-              <Route path="contractor/employee/employeelist" element={<EmployeeList />} />
+              <Route path="Common/employee/employeelist" element={<EmployeeList />} />
               <Route path="users/approved" element={<Approved/>}/>
               <Route path="users/pending" element={<Pending/>}/>
               <Route path="users/declined" element={<Declined/>}/>
-              <Route path="dealer/employee/employeedlist" element={<EmployeeDList />} />z
-              <Route path="dealer/employee/employee/edit/:id" element={<EmployeeDEdit />} />
               <Route path="user/profile" element={<UserBasic />}/>
 
               <Route path="contractor/enquiries/appuserenquiry" element={<AppUserEnquiry />} />

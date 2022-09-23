@@ -83,7 +83,7 @@ function a11yProps(index: number) {
 }
 
 let st_ID = 0, ct_ID = 0, bg_ID = 0, b_ID = 0, d_ID = 0, de_ID = 0;
-let rpt_ID=[];
+let rpt_ID = [];
 
 const EmployeeEdit = () => {
 
@@ -234,7 +234,6 @@ const EmployeeEdit = () => {
   const [isIFSCCodeError, setIsIFSCCodeError] = useState(false);
 
   const [display, setDisplay] = useState("Yes");
-  const [wages, setWages] = useState("Yes");
 
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Photo");
@@ -327,12 +326,12 @@ const EmployeeEdit = () => {
                 label: data.employee,
               });
             });
-            
+
             let a = report.filter((el) => {
               return el.id === 1;
             });
             arrAct.push(a[0].label);
-            
+
             setReportNameList(response.data.data);
             setReportList(arrAct);
           }
@@ -550,17 +549,16 @@ const EmployeeEdit = () => {
 
             setEmergencyCName(!NullOrEmpty(employee_data.emergencyContactName) ? employee_data.emergencyContactName : "");
             setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
-
-            setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? employee_data.loginActiveStatus : "");
+            setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
             setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
             setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
             setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
             setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
             setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
-            rpt_ID=reporting_data.reportingAuthorityID;
+            rpt_ID = reporting_data.reportingAuthorityID;
             setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "");
-
-            setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType : "");
+            debugger;
+            setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType === 1 ? "Daily" : "Monthly" : "");
             setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
 
             setAccountHName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountHolderName) ? bankDetails_data.accountHolderName : "" : "");
@@ -575,6 +573,7 @@ const EmployeeEdit = () => {
 
           setLoading(false);
           FetchStates();
+          BloodGroupDropdown();
           FetchBranch();
           FetchDepartment();
           FetchDesignation();
@@ -584,6 +583,17 @@ const EmployeeEdit = () => {
       .catch((e) => {
         setLoading(false);
       });
+  };
+
+  const BloodGroupDropdown = () => {
+    let b = BloodGroup.filter((el) => {
+      return el.ID.toString() === bg_ID.toString();
+    });
+
+    const bg = BloodGroup.map((data) => data.Name);
+    if (!NullOrEmpty(b[0])) {
+      setBloodGroup(b[0].Name);
+    }
   };
 
   const FetchStates = () => {
@@ -658,7 +668,7 @@ const EmployeeEdit = () => {
   };
 
   const handleWagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setWages((event.target as HTMLInputElement).value);
+    setWagesType((event.target as HTMLInputElement).value);
   };
 
   const handleSubmitClick = () => {
@@ -679,7 +689,6 @@ const EmployeeEdit = () => {
   };
 
   const SplitImageName = (fullName: string) => {
-    debugger;
     let imgName = "";
     if (!NullOrEmpty(fullName)) {
       if (fullName.includes(AWSImagePath)) {
@@ -711,13 +720,13 @@ const EmployeeEdit = () => {
         EmergencyContactName: emergencyCName,
         EmergencyContactNo: emergencyCNo,
         IDCardValidity: CardValidity,
-        LoginActiveStatus: login,
+        LoginActiveStatus: (login === "Yes") ? true : false,
         BranchID: branchID,
         DepartmentID: departmentID,
         DesignationID: designationID,
         EmployeeType: employeeType,
         LastWorkDate: LastWorkingDate,
-        WagesType: wagesType,
+        WagesType: NullOrEmpty(wagesType) ? 0 : wagesType === "Daily" ? 1 : 2,
         Salary: salary,
         AccountHolderName: accountHName,
         AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
@@ -763,7 +772,7 @@ const EmployeeEdit = () => {
     const params = {
       EmployeeID: employeeID,
       AddedByUserID: cookies.dfc.UserID,
-      ReportingAuthorityID: reportListID,
+      ReportingAuthorityID: NullOrEmpty(reportListID) ? "" : reportListID.toString(),
     };
 
     Provider.create("master/updateemployeereportingauthority", params)
@@ -1523,7 +1532,7 @@ const EmployeeEdit = () => {
                     </Grid>
                     <Grid item sm={5}>
                       <FormControl>
-                        <RadioGroup row name="row-radio-buttons-group" value={wages} onChange={handleWagesChange}>
+                        <RadioGroup row name="row-radio-buttons-group" value={wagesType} onChange={handleWagesChange}>
                           <FormControlLabel value="Daily" control={<Radio />} label="Daily" />
                           <FormControlLabel value="Monthly" control={<Radio />} label="Monthly" />
                         </RadioGroup>

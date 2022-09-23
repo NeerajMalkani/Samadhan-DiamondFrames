@@ -423,11 +423,11 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Employee New / List",
-          isActive: GetSearchedText(window.location.href.toLowerCase(), "employeedlist"),
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "employeelist"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/dealer/employee/employeedlist`);
+              navigate(`/common/employee/employeelist`);
             }, 300);
           },
         },
@@ -555,7 +555,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/employee/employeelist`);
+              navigate(`/common/employee/employeelist`);
             }, 300);
           },
         },
