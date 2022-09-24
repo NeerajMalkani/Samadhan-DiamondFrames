@@ -465,6 +465,21 @@ export interface EmployeeModel {
   action: string;
 }
 
+export interface RateCardModel {
+  id: number;
+  srno: number;
+  serviceName: string;
+  categoryName: string;
+  serviceProductName: string;
+  unit: string;
+  rateUnit: string;
+  alternativeRate: string;
+  alternativeUnit: string;
+  material: string;
+  display: string;
+  action: string;
+}
+
 export interface ClientModel {
   id: number;
   srno: number;

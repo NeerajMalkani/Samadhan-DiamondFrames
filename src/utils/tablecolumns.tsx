@@ -2799,3 +2799,85 @@ export const completedProject: GridColDef[] = [
     flex:1,
   },
 ];
+
+export const rateCardListColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "serviceProduct",
+    headerName: "Service Product Name/Specification",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "unit",
+    headerName: "Unit",
+    flex: 1,
+    minWidth: 80,
+    sortable: false,
+  },
+  {
+    field: "rateUnit",
+    headerName: "Rate/Unit",
+    flex: 1,
+    minWidth: 80,
+    sortable: false,
+  },
+  {
+    field: "alternativeRateUnit",
+    headerName: "Alternative Rate/Unit",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "alternativeRateUnit",
+    headerName: "Alternative Rate/Unit",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "material",
+    headerName: "Material",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => {
+      return <Link href={`employee/edit/${e.row.id}`}>Edit</Link>;
+    }
+  },
+];
