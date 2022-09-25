@@ -492,6 +492,7 @@ const EmployeeEdit = () => {
   };
 
   const FetchEmployeeDetails = (id: number) => {
+    debugger;
     let params = {
       ID: id,
       AddedByUserID: cookies.dfc.UserID
@@ -553,11 +554,14 @@ const EmployeeEdit = () => {
             setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
             setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
             setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
-            setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
-            setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
-            rpt_ID = reporting_data.reportingAuthorityID;
+            if (!NullOrEmpty(reporting_data)) {
+              setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+              setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+              rpt_ID = reporting_data.reportingAuthorityID;
+
+            }
+
             setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "");
-            debugger;
             setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType === 1 ? "Daily" : "Monthly" : "");
             setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
 
@@ -597,8 +601,10 @@ const EmployeeEdit = () => {
   };
 
   const FetchStates = () => {
+    debugger;
     Provider.getAll("master/getstates")
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const stateData: any = [];
@@ -815,10 +821,10 @@ const EmployeeEdit = () => {
       <Header />
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}></Grid>
-        <Grid  item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-        <Typography className="float-left" variant="h4">Employee Basic Edit</Typography>
+        <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+          <Typography className="float-left" variant="h4">Employee Basic Edit</Typography>
         </Grid>
-        
+
         {loading ? (
           <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
             <CircularProgress />

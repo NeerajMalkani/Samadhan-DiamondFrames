@@ -112,7 +112,7 @@ const AppRoutes = () => {
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
-              <Route path="Common/employee/employee/edit/:id" element={<EmployeeEdit />} />
+              <Route path="common/employee/edit/:id" element={<EmployeeEdit />} />
               <Route path="generaluser/imagegallery/category" element={<ImageGalleryCategoryPage />} />
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
               <Route path="contractor/clientlist" element={<ContractorClientPage />} />
@@ -134,11 +134,11 @@ const AppRoutes = () => {
               <Route path="pocketcashcheck" element={<PocketCashcheck />} />
               <Route path="pocketinbox" element={<PocketInbox />} />
               <Route path="pocketremainder" element={<PocketRemainder />} />
-              <Route path="contractor/client/clientlist" element={<ClientList />}/>
+              <Route path="common/client/clientlist" element={<ClientList />}/>
 
               <Route path="master/ratecardsetup" element={<RateCardSetup />} />
               <Route path="master/addratecard" element={<AddRateCard />} />
-              <Route path="contractor/Client/ClientEdit" element={<ClientEdit/>}/>
+              <Route path="common/client/edit/:id" element={<ClientEdit/>}/>
             </Routes>
           </BrowserRouter>
         </Box>

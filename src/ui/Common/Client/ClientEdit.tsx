@@ -1,6 +1,6 @@
 import {
     Box, TextField, Button, Container, FormControl, FormControlLabel, Typography, Radio,
-    RadioGroup, Select, Autocomplete, Grid, Menu, Snackbar, MenuItem, AlertColor, CircularProgress,Checkbox,FormGroup, InputAdornment,
+    RadioGroup, Select, Autocomplete, Grid, Menu, Snackbar, MenuItem, AlertColor, CircularProgress, Checkbox, FormGroup, InputAdornment,
     FormHelperText
 } from "@mui/material";
 import Header from "../../../components/Header";
@@ -21,6 +21,7 @@ import { LoadingButton } from "@mui/lab";
 import { clientListColumns, clientSearchResult } from "../../../utils/tablecolumns";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
+import { retrunSumID } from "../../../utils/JSCommonFunction";
 
 let st_ID = 0, ct_ID = 0;
 
@@ -41,10 +42,13 @@ const ClientEdit = () => {
 
     //#region Variables
     const [loading, setLoading] = useState(true);
+    const [clientID, setClientID] = React.useState<number>(0);
 
     const [addCompanyName, setAddCompanyName] = React.useState("");
     const [addCompanyNameErrorText, setAddCompanyNameErrorText] = useState("");
     const [isAddCompanyNameError, isSetAddCompanyNameError] = useState(false);
+
+    let [inputEnable, setInputEnable] = useState(false);
 
     const [contactPerson, setContactPerson] = useState("");
     const [contactPersonErrorText, setContactPersonErrorText] = useState("");
@@ -58,7 +62,7 @@ const ClientEdit = () => {
     const [addressErrorText, setAddressErrorText] = useState("");
     const [isAddressError, isSetAddressError] = useState(false);
 
-     const [stateError, setStateError] = useState("");
+    const [stateError, setStateError] = useState("");
     const [isStateError, setIsStateError] = useState(false);
     const [selectedStateName, setSelectedStateName] = useState("");
     const [selectedStateID, setSelectedStateID] = useState(0);
@@ -102,7 +106,7 @@ const ClientEdit = () => {
     const [snackMsg, setSnackMsg] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-   
+
     const [clientList, setClientList] = useState<Array<ClientModel>>([]);
     const [clientListTemp, setClientListTemp] = React.useState<Array<any>>([]);
 
@@ -119,9 +123,16 @@ const ClientEdit = () => {
     //#endregion
 
     useEffect(() => {
-        // FetchUserData("");
-        // FetchStates();
-        //FetchCity();
+        let id = window.location.pathname.split('/').at(-1);
+        if (!NullOrEmpty(id)) {
+            setClientID(parseInt(id));
+            FetchUserData(parseInt(id));
+        }
+        else {
+            setClientID(0);
+            FetchUserData(0);
+        }
+
     }, []);
 
     const FetchStates = () => {
@@ -183,194 +194,176 @@ const ClientEdit = () => {
             .catch((e) => { });
     };
 
+    const FetchUserData = (id: number) => {
+        let params = {
+            ID: id,
+            AddedByUserID: cookies.dfc.UserID
+        };
+        Provider.getAll(`contractorquotationestimation/getclientbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        if (response.data.data[0] != null) {
+                            const arrList = [...response.data.data];
+                            setAddCompanyName(!NullOrEmpty(arrList[0].companyName) ? arrList[0].companyName : "");
+                            setContactPerson(!NullOrEmpty(arrList[0].contactPerson) ? arrList[0].contactPerson : "");
+                            setContactMobileNo(!NullOrEmpty(arrList[0].contactMobileNumber) ? arrList[0].contactMobileNumber : "");
+                            setAddress(!NullOrEmpty(arrList[0].address1) ? arrList[0].address1 : "");
 
-    // const FetchUserData = (type: string) => {
-    //     debugger;
-    //     let params = {
-    //         UserID: cookies.dfc.UserID,
-    //     };
-    //     Provider.getAll(`master/getusergeneralprofile?${new URLSearchParams(GetStringifyJson(params))}`)
-    //         .then((response: any) => {
-    //             debugger;
-    //             if (response.data && response.data.code === 200) {
-    //                 if (response.data.data) {
-    //                     if (response.data.data[0] != null) {
-    //                         debugger;
-    //                         const arrList = [...response.data.data];
-    //                         debugger;
-    //                         setUserID(arrList[0].userID);
-    //                         setCompanyName(!NullOrEmpty(arrList[0].companyName) ? arrList[0].CompanyName : "");
-    //                         setContactPerson(!NullOrEmpty(arrList[0].contactPersonName) ? arrList[0].contactPersonName : "");
-    //                         setMobile(!NullOrEmpty(arrList[0].contactPersonNumber) ? arrList[0].Mobile : "");
-    //                         setProfileAddress(!NullOrEmpty(arrList[0].addressLine) ? arrList[0].addressLine : "");
-    //                         // setState(arrList[0].stateName);
+                            if (!NullOrEmpty(arrList[0].stateID)) {
+                                setSelectedStateName(!NullOrEmpty(arrList[0].stateName) ? arrList[0].stateName : "");
+                                setSelectedStateID(!NullOrEmpty(arrList[0].stateID) ? arrList[0].stateID : 0);
+                                st_ID = arrList[0].stateID;
+                            }
 
-    //                         if (!NullOrEmpty(arrList[0].stateID)) {
-    //                             setStateID(arrList[0].stateID);
-    //                             st_ID = arrList[0].stateID;
-    //                         }
+                            if (!NullOrEmpty(arrList[0].cityID)) {
+                                setSelectedCityName(!NullOrEmpty(arrList[0].cityName) ? arrList[0].cityName : "");
+                                setSelectedCityID(!NullOrEmpty(arrList[0].cityID) ? arrList[0].cityID : 0);
+                                ct_ID = arrList[0].cityID;
+                            }
 
-    //                         if (!NullOrEmpty(arrList[0].cityID)) {
-    //                             setStateID(arrList[0].cityID);
-    //                             ct_ID = arrList[0].cityID;
-    //                         }
+                            setPincode(!NullOrEmpty(arrList[0].pincode) ? arrList[0].pincode : "");
+                            setGst(!NullOrEmpty(arrList[0].gstNumber) ? arrList[0].gstNumber : "");
+                            setPan(!NullOrEmpty(arrList[0].pan) ? arrList[0].pan : "");
+                            SetServiceType(!NullOrEmpty(arrList[0].serviceType) ? arrList[0].serviceType : null);
+                            
+                            setInputEnable(!NullOrEmpty(arrList[0].addedBy) ? !(arrList[0].addedBy) : false);
+                            setDisplay(!NullOrEmpty(arrList[0].display) ? (arrList[0].display) ? "Yes" : "No" : "No");
 
-    //                         setCityID(arrList[0].cityID);
+                        }
+                    }
+                    FetchStates();
 
-    //                         // if (arrList[0].stateID > 0) {
-    //                         //   debugger;
-    //                         //   FetchCity(arrList[0].stateID);
-    //                         //   setCity(arrList[0].cityName);
-    //                         //   setCityID(arrList[0].cityID);
-    //                         // }
+                } else {
+                    setSnackMsg(communication.NoData);
+                    setOpen(true);
+                    setSnackbarType("info");
+                }
 
-    //                         setPincode(!NullOrEmpty(arrList[0].pincode) ? arrList[0].pincode : "");
-    //                         setGst(!NullOrEmpty(arrList[0].gstNumber) ? arrList[0].gstNumber : "");
-    //                         setPan(!NullOrEmpty(arrList[0].pan) ? arrList[0].pan : "");
+                setLoading(false);
+            })
+            .catch((e) => {
+                setLoading(false);
+                setSnackMsg(communication.NetworkError);
+                setSnackbarType("error");
+                setOpen(true);
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
 
-    //                         if (type !== "") {
-    //                             setSnackMsg("User " + type);
-    //                             setOpen(true);
-    //                             setSnackbarType("success");
-    //                         }
-    //                     }
-    //                 }
-    //             } else {
-    //                 setSnackMsg(communication.NoData);
-    //                 setOpen(true);
-    //                 setSnackbarType("info");
-    //             }
+    const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setDisplay((event.target as HTMLInputElement).value);
+    };
 
-    //             FetchStates();
-    //             setLoading(false);
-    //         })
-    //         .catch((e) => {
-    //             setLoading(false);
-    //             setSnackMsg(communication.NetworkError);
-    //             setSnackbarType("error");
-    //             setOpen(true);
-    //         });
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // };
+    const handleSubmitClick = () => {
+        let isValid: Boolean = true;
 
-    // const handleSNChange = (event: SelectChangeEvent) => {
-    //     debugger;
-    //     let stateName: string = event.target.value;
-    //     let ac = stateNameList.find((el) => el.stateName === stateName);
-    //     if (ac !== undefined) {
-    //         setState(stateName);
-    //         setStateID(ac?.id);
-    //         setIsStateError(false);
-    //         setStateError("");
-    //         FetchCity(ac.id);
-    //     }
-    // };
+        if (addCompanyName.trim() === "") {
+            isValid = false;
+            isSetAddCompanyNameError(true);
+            setAddCompanyNameErrorText(communication.BlankCompanyName);
+        }
 
-    // const handleCNChange = (event: SelectChangeEvent) => {
-    //     debugger;
-    //     let cityName: string = event.target.value;
-    //     let ac = cityNameList.find((el) => el.cityName === cityName);
-    //     if (ac !== undefined) {
-    //         setCity(cityName);
-    //         setCityID(ac?.id);
-    //         setIsCityError(false);
-    //         setCityError("");
-    //     }
-    // };
+        if (contactMobileNo.trim() === "") {
+            isValid = false;
+            isSetContactMobileNoError(true);
+            setContactMobileNoErrorText(communication.BlankMobile);
+        }
 
-    // const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setDisplay((event.target as HTMLInputElement).value);
-    // };
+        if (address.trim() === "") {
+            isValid = false;
+            isSetAddressError(true);
+            setAddressErrorText(communication.BlankAddress);
+        }
 
-    // const handleSubmitClick = () => {
-    //     debugger;
-    //     let isValid: Boolean = true;
+        if (selectedStateName.trim() === "--Select--") {
+            isValid = false;
+            setIsStateError(true);
+            setStateError(communication.BlankState);
+        }
 
-    //     if (companyName.trim() === "") {
-    //         isValid = false;
-    //         setIsCompanyError(true);
-    //         setCompanyError(communication.BlankCompanyName);
-    //     }
+        if (selectedCityName.trim() === "--Select--") {
+            isValid = false;
+            setIsCityError(true);
+            setCityError(communication.BlankCity);
+        }
 
-    //     if (contactPerson.trim() === "") {
-    //         isValid = false;
-    //         setIsContactPersonError(true);
-    //         setContactPersonError(communication.BlankContactPerson);
-    //     }
+        let blankData = serviceType[0].filter((el) => el.isSelected);
 
-    //     if (mobile.trim() === "") {
-    //         isValid = false;
-    //         setIsMobileError(true);
-    //         setMobileError(communication.BlankMobile);
-    //     }
+        
+        if (isValid) {
+            InsertUpdateData((blankData.length === 0) ? 0 : retrunSumID(blankData));
+        }
+    };
 
-    //     if (profileAddress.trim() === "") {
-    //         isValid = false;
-    //         isSetAddressError(true);
-    //         setAddressError(communication.BlankAddress);
-    //     }
+    const InsertUpdateData = (serviceType: number) => {
+        
+        if (actionStatus === "new") {
+            Provider.create("contractorquotationestimation/updateclient", {
+                ID: clientID,
+                CompanyName: addCompanyName,
+                ContactPerson: contactPerson,
+                ContactMobileNumber: contactMobileNo,
+                Address1: address,
+                StateID: selectedStateID,
+                CityID: selectedCityID,
+                Pincode: pincode,
+                GSTNumber: gst,
+                PAN: pan,
+                ServiceType: serviceType,
+                Display: NullOrEmpty(display) ? false : display === "Yes" ? true : false,
+            })
+                .then((response) => {
+                    
+                    if (response.data && response.data.code === 200) {
+                        
+                    } else {
+                        setSnackMsg(communication.Error);
+                        setSnackbarType("error");
+                        setOpen(true);
+                    }
+                })
+                .catch((e) => {
+                    setSnackMsg(communication.NetworkError);
+                    setSnackbarType("error");
+                    setOpen(true);
+                });
+        }
+    };
 
-    //     if (state.trim() === "--Select--") {
-    //         isValid = false;
-    //         setIsStateError(true);
-    //         setStateError(communication.BlankState);
-    //     }
+    const SetServiceType = (st) => {
+        let arrService = [...serviceType[0]];
+        switch (st) {
+            case 1:
+                arrService[0].isSelected = true;
+                break;
+            case 2:
+                arrService[1].isSelected = true;
+                break;
+            case 3:
+                arrService[2].isSelected = true;
+                break;
+            case 12:
+                arrService[0].isSelected = true;
+                arrService[1].isSelected = true;
+                break;
+            case 13:
+                arrService[0].isSelected = true;
+                arrService[2].isSelected = true;
+                break;
+            case 23:
+                arrService[2].isSelected = true;
+                arrService[1].isSelected = true;
+                break;
+            case 123:
+                arrService[0].isSelected = true;
+                arrService[1].isSelected = true;
+                arrService[2].isSelected = true;
+                break;
+        }
 
-    //     if (city.trim() === "--Select--") {
-    //         isValid = false;
-    //         setIsCityError(true);
-    //         setCityError(communication.BlankCity);
-    //     }
-
-    //     if (pincode.toString().trim() === "") {
-    //         isValid = false;
-    //         setIsPincodeError(true);
-    //         setPincodeError(communication.BlankBrandPrefix);
-    //     }
-
-    //     if (gst.trim() === "") {
-    //         isValid = false;
-    //         setIsGstError(true);
-    //         setGstError(communication.BlankGst);
-    //     }
-
-    //     if (pan.trim() === "") {
-    //         isValid = false;
-    //         setIsPanError(true);
-    //         setPanError(communication.BlankPan);
-    //     }
-    //     debugger;
-    //     if (isValid) {
-    //         InsertUpdateData();
-    //     }
-    // };
-
-    // const InsertUpdateData = () => {
-    //     debugger;
-    //     if (actionStatus === "new") {
-    //         Provider.create("master/updategeneraluserprofile", {
-    //             UserID: CookieUserID,
-    //            
-    //         })
-    //             .then((response) => {
-    //                 debugger;
-    //                 if (response.data && response.data.code === 200) {
-    //                     FetchUserData("added");
-    //                 } else {
-    //                     setSnackMsg(communication.Error);
-    //                     setSnackbarType("error");
-    //                     setOpen(true);
-    //                 }
-    //             })
-    //             .catch((e) => {
-    //                 debugger;
-
-    //                 setSnackMsg(communication.NetworkError);
-    //                 setSnackbarType("error");
-    //                 setOpen(true);
-    //             });
-    //     }
-    // };
+        serviceType[1](arrService);
+    }
 
     return (
         <Box sx={{ mt: 11 }}>
@@ -392,12 +385,13 @@ const ClientEdit = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={6}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Name /Company Name</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Name /Company Name</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
                                     <TextField
                                         fullWidth
+                                        disabled={inputEnable}
                                         variant="outlined"
                                         size="small"
                                         onChange={(e) => {
@@ -415,12 +409,13 @@ const ClientEdit = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={6}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Contact Mobile No</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Contact Mobile No</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
                                     <TextField
                                         fullWidth
+                                        disabled={inputEnable}
                                         variant="outlined"
                                         size="small"
                                         onChange={(e) => {
@@ -438,7 +433,7 @@ const ClientEdit = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={6}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>State</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>State</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -446,6 +441,7 @@ const ClientEdit = () => {
                                         <Autocomplete
                                             disablePortal
                                             fullWidth
+                                            disabled={inputEnable}
                                             options={statesFullData}
                                             //sx={{ width: 300 }}
                                             onChange={(event: React.SyntheticEvent, value: any) => {
@@ -464,7 +460,7 @@ const ClientEdit = () => {
                                             renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
                                         />
                                         <FormHelperText>{stateError}</FormHelperText>
-                                        </FormControl>
+                                    </FormControl>
                                 </Grid>
                             </Grid>
                             <br></br>
@@ -478,6 +474,7 @@ const ClientEdit = () => {
                                     <TextField
                                         fullWidth
                                         variant="outlined"
+                                        disabled={inputEnable}
                                         size="small"
                                         onChange={(e) => {
                                             setPincode((e.target as HTMLInputElement).value);
@@ -500,6 +497,7 @@ const ClientEdit = () => {
                                 <Grid item sm={6}>
                                     <TextField
                                         fullWidth
+                                        disabled={inputEnable}
                                         variant="outlined"
                                         size="small"
                                         onChange={(e) => {
@@ -522,7 +520,7 @@ const ClientEdit = () => {
                                 </Grid>
                                 <Grid item sm={6}>
                                     <FormControl>
-                                        <RadioGroup row name="row-radio-buttons-group" value={display} >
+                                        <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange} >
                                             <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                             <FormControlLabel value="No" control={<Radio />} label="No" />
                                         </RadioGroup>
@@ -541,6 +539,7 @@ const ClientEdit = () => {
                                 <Grid item sm={6}>
                                     <TextField
                                         fullWidth
+                                        disabled={inputEnable}
                                         variant="outlined"
                                         size="small"
                                         onChange={(e) => {
@@ -558,12 +557,13 @@ const ClientEdit = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={5}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Address</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Address</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
                                     <TextField
                                         fullWidth
+                                        disabled={inputEnable}
                                         variant="outlined"
                                         size="small"
                                         onChange={(e) => {
@@ -581,7 +581,7 @@ const ClientEdit = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={5}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>City</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>City</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -589,6 +589,7 @@ const ClientEdit = () => {
                                         <Autocomplete
                                             disablePortal
                                             fullWidth
+                                            disabled={inputEnable}
                                             options={cityFullData}
                                             // sx={{ width: 300 }}
                                             onChange={(event: React.SyntheticEvent, value: any) => {
@@ -616,6 +617,7 @@ const ClientEdit = () => {
                                 <Grid item sm={6}>
                                     <TextField
                                         fullWidth
+                                        disabled={inputEnable}
                                         variant="outlined"
                                         size="small"
                                         onChange={(e) => {
@@ -632,12 +634,12 @@ const ClientEdit = () => {
                             <br></br>
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={5}>
-                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                         <b style={{ float: "right" }}>Service Provider Role</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={7}>
-                                <FormControl component="fieldset" error={isSPRError[0]}>
+                                    <FormControl component="fieldset" error={isSPRError[0]}>
                                         <FormGroup aria-label="position" row>
                                             {serviceType[0].map((data, index) => {
                                                 return (
@@ -674,95 +676,14 @@ const ClientEdit = () => {
 
                         <Grid item xs={4} sm={8} md={12}>
                             <Grid item xs={4} sm={8} md={12}>
-                                <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }}  >
-                                    Submit
+                                <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}  >
+                                    Update
                                 </LoadingButton>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
 
-                <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-                    <Typography variant="h6">
-                        MY CLIENT LIST
-                    </Typography>
-                </Grid>
-                <br></br>
-                <Grid item xs={4} sm={8} md={12}>
-                    {loading ? (
-                        <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                            <CircularProgress />
-                        </Box>
-                    ) : (
-                        <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                            {clientList.length === 0 ? (
-                                // <Grid>
-                                //   <Icon fontSize="inherit"><ListIcon/></Icon>
-                                //   <Typography>No records found.</Typography>
-                                // </Grid>
-                                <></>
-                            ) : (
-                                <>
-                                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                                        <TextField
-                                            placeholder="Search"
-                                            variant="outlined"
-                                            size="small"
-                                            onChange={(e) => {
-                                                // onChangeSearch((e.target as HTMLInputElement).value);
-                                            }}
-                                            value={searchQuery}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <SearchIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                    </Grid>
-                                    <DataGrid
-                                        style={{
-                                            opacity: dataGridOpacity,
-                                            pointerEvents: dataGridPointer,
-                                        }}
-                                        autoHeight={true}
-                                        rows={clientListTemp}
-                                        columns={clientListColumns}
-                                        pageSize={pageSize}
-                                        rowsPerPageOptions={[5, 10, 20]}
-                                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                                        disableSelectionOnClick
-                                        onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-
-
-                                            if (param.field === 'action') {
-                                                const arrActivity = [...clientList];
-                                                let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                                                // handelEditAndDelete((e.target as any).textContent, a);
-                                            }
-                                            else if (param.field === 'verifyStatus') {
-
-                                                const arrActivity = [...clientList];
-                                                let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                                                // setOtp(NullOrEmpty(a.otp) ? "" : a.otp.toString());
-                                                // setClientID(a.id);
-                                                // setOTPDialog();
-                                            }
-                                        }}
-                                        sx={{
-                                            "& .MuiDataGrid-columnHeaders": {
-                                                backgroundColor: theme.palette.primary.main,
-                                                color: theme.palette.primary.contrastText,
-                                            },
-                                            mb: 1,
-                                        }}
-                                    />
-                                </>
-                            )}
-                        </div>
-                    )}
-                </Grid>
             </Container>
         </Box>
     );

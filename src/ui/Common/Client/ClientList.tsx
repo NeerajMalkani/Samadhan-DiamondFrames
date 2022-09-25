@@ -21,6 +21,7 @@ import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { NullOrEmpty } from "../../../utils/CommonFunctions";
+import { retrunSumID } from "../../../utils/JSCommonFunction";
 import { SelectChangeEvent } from "@mui/material";
 
 let st_ID = 0, ct_ID = 0;
@@ -133,6 +134,7 @@ const ClientList = () => {
 
     useEffect(() => {
         FetchData("");
+        FetchStates();
     }, []);
 
     const ResetFields = () => {
@@ -167,7 +169,6 @@ const ClientList = () => {
     };
 
     const FetchData = (type: string) => {
-        debugger;
         let params = {
             AddedByUserID: cookies.dfc.UserID,
         };
@@ -175,7 +176,6 @@ const ClientList = () => {
         Provider.getAll(`contractorquotationestimation/getclients?${new URLSearchParams(GetStringifyJson(params))}`)
 
             .then((response: any) => {
-                debugger;
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         const arrList = [...response.data.data];
@@ -187,11 +187,6 @@ const ClientList = () => {
                         });
                         setClientList(arrList);
                         setClientListTemp(arrList);
-                        // if (type !== "") {
-                        //   setSnackMsg("Activity role " + type);
-                        //   setOpen(true);
-                        //   setSnackbarType("success");
-                        // }
                     }
                 } else {
                     setSnackbarType("info");
@@ -217,12 +212,12 @@ const ClientList = () => {
         setServiceProvider((event.target as HTMLInputElement).value);
     };
 
-
     const FetchStates = () => {
         Provider.getAll("master/getstates")
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
+
                         const stateData: any = [];
                         response.data.data.map((data: any, i: number) => {
                             stateData.push({
@@ -230,7 +225,9 @@ const ClientList = () => {
                                 label: data.stateName,
                             });
                         });
+
                         setStatesFullData(stateData);
+
                         setSelectedStateID(st_ID);
                         if (st_ID > 0) {
                             let a = stateData.filter((el) => {
@@ -278,7 +275,6 @@ const ClientList = () => {
     };
 
     const FetchSearchData = () => {
-        debugger;
         let params = {
             AddedByUserID: cookies.dfc.UserID,
             CompanyName: companyName,
@@ -287,7 +283,6 @@ const ClientList = () => {
         ResetFields();
         Provider.getAll(`contractorquotationestimation/getotherclients?${new URLSearchParams(GetStringifyJson(params))}`)
             .then((response: any) => {
-                debugger;
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         const arrList = [...response.data.data];
@@ -295,9 +290,9 @@ const ClientList = () => {
                             let sr = { srno: index + 1 };
                             a = Object.assign(a, sr);
                         });
-                        debugger;
+                        
                         setGridClientSearchList(arrList);
-                        debugger;
+                        
                         setGridClientSearchListTemp(arrList);
                     }
                 } else {
@@ -305,7 +300,7 @@ const ClientList = () => {
                     setSnackMsg(communication.NoData);
                     setOpen(true);
                 }
-                debugger;
+                
                 setLoading(false);
             })
             .catch((e) => {
@@ -319,7 +314,6 @@ const ClientList = () => {
     };
 
     const handleSearchClick = () => {
-        debugger;
         let isValid: boolean = true;
 
         if (companyName.trim() === "" && mobileNo.trim() === "") {
@@ -342,7 +336,7 @@ const ClientList = () => {
 
 
     const handleSubmitClick = () => {
-        debugger;
+        
         let isValid: boolean = true;
 
         if (addCompanyName.trim() === "") {
@@ -351,11 +345,6 @@ const ClientList = () => {
             setAddCompanyNameErrorText("Please Enter Company Name");
         }
 
-        if (contactPerson.trim() === "") {
-            isValid = false;
-            isSetContactPersonError(true);
-            setContactPersonErrorText("Please Enter Conatct Person Name");
-        }
 
         if (contactMobileNo.trim() === "") {
             isValid = false;
@@ -369,45 +358,30 @@ const ClientList = () => {
             setAddressErrorText("please Enter Address ");
         }
 
-        // if (state.trim() === "") {
-        //     isValid = false;
-        //     setIsStateError(true);
-        //     setStateError("please Enter State");
-        // }
-
-        // if (city.trim() === "") {
-        //     isValid = false;
-        //     setIsCityError(true);
-        //     setCityError("please Enter City");
-        // }
-
-        if (pincode.trim() === "") {
+        if (NullOrEmpty(selectedStateID) === true || selectedStateID == 0) {
             isValid = false;
-            setIsPincodeError(true);
-            setPincodeError("please Enter Pincode");
+            setIsStateError(true);
+            setStateError("please Enter State");
         }
 
-        if (gst.trim() === "") {
+        if (NullOrEmpty(selectedCityID) === true || selectedCityID == 0) {
             isValid = false;
-            setIsGstError(true);
-            setGstError("please Enter Gst No");
+            setIsCityError(true);
+            setCityError("please Enter City");
         }
 
-        if (pan.trim() === "") {
-            isValid = false;
-            setIsPanError(true);
-            setPanError("please Enter Pan No");
-        }
+        let blankData = serviceType[0].filter((el) => el.isSelected);
 
         if (isValid) {
-            InsertUpdateData();
+            InsertUpdateData((blankData.length === 0) ? 0 : retrunSumID(blankData));
         }
     };
 
 
-    const InsertUpdateData = () => {
+    const InsertUpdateData = (serviceType: number) => {
+        
         if (actionStatus === "new") {
-            Provider.create("contractorquotationestimation/insertotherclient", {
+            Provider.create("contractorquotationestimation/insertclient", {
                 AddedByUserID: cookies.dfc.UserID,
                 CompanyName: addCompanyName,
                 ContactPerson: contactPerson,
@@ -418,12 +392,12 @@ const ClientList = () => {
                 Pincode: pincode,
                 GSTNumber: gst,
                 PAN: pan,
-                ServiceType: serviceProvider,
-                Display: display,
+                ServiceType: serviceType,
+                Display: NullOrEmpty(display) ? false : display === "Yes" ? true : false,
 
             })
                 .then((response) => {
-                    debugger;
+                    
                     if (response.data && response.data.code === 200) {
                         FetchData("added");
                     } else if (response.data.code === 304) {
@@ -453,7 +427,7 @@ const ClientList = () => {
     //             OTP: otp,
     //         })
     //             .then((response) => {
-    //                 debugger;
+    //                 
     //                 if (response.data && response.data.code === 200) {
     //                     FetchData("updated");
     //                 } else if (response.data.code === 304) {
@@ -475,34 +449,34 @@ const ClientList = () => {
     // };
 
     const InsertExistingClient = (ID: number) => {
-        debugger;
         Provider.create("contractorquotationestimation/insertotherclient", {
-          AddedByUserID: cookies.dfc.UserID,
-          ID: ID,
-    
+            AddedByUserID: cookies.dfc.UserID,
+            ID: ID,
+
         })
-          .then((response) => {
-            debugger;
-            if (response.data && response.data.code === 200) {
-              FetchData("added");
-            } else if (response.data.code === 304) {
-              setSnackMsg(response.data.message);
-              setSnackbarType("error");
-              ResetFields();
-            } else {
-              ResetFields();
-              setSnackMsg(communication.Error);
-              setSnackbarType("error");
-            }
-          })
-          .catch((e) => {
-            ResetFields();
-            setSnackMsg(communication.NetworkError);
-            setSnackbarType("error");
-          });
-      };
+            .then((response) => {
+                
+                if (response.data && response.data.code === 200) {
+                    FetchData("added");
+                } else if (response.data.code === 304) {
+                    setSnackMsg(response.data.message);
+                    setSnackbarType("error");
+                    ResetFields();
+                    FetchData("added");
+                } else {
+                    ResetFields();
+                    setSnackMsg(communication.Error);
+                    setSnackbarType("error");
+                }
+            })
+            .catch((e) => {
+                ResetFields();
+                setSnackMsg(communication.NetworkError);
+                setSnackbarType("error");
+            });
+    };
     // const handleSubmitVerify = () => {
-    //     debugger;
+    //     
     //     SubmitVerify();
     // };
 
@@ -696,7 +670,7 @@ const ClientList = () => {
                                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                                             disableSelectionOnClick
                                             onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                                                debugger;
+                                                
                                                 const arrActivity = [...gridClientSearchList];
                                                 let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                                                 InsertExistingClient(a.id)
@@ -729,7 +703,7 @@ const ClientList = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={6}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Name /Company Name</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Name /Company Name</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -752,7 +726,7 @@ const ClientList = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={6}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Contact Mobile No</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Contact Mobile No</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -775,7 +749,7 @@ const ClientList = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={6}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>State</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>State</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -895,7 +869,7 @@ const ClientList = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={5}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>Address</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Address</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -918,7 +892,7 @@ const ClientList = () => {
                             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                                 <Grid item sm={5}>
                                     <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        <b style={{ float: "right" }}>City</b>
+                                        <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>City</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -1075,6 +1049,7 @@ const ClientList = () => {
                                             pointerEvents: dataGridPointer,
                                         }}
                                         autoHeight={true}
+                                        rowHeight={80}
                                         rows={clientListTemp}
                                         columns={clientListColumns}
                                         pageSize={pageSize}
@@ -1082,7 +1057,6 @@ const ClientList = () => {
                                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                                         disableSelectionOnClick
                                         onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-
 
                                             if (param.field === 'action') {
                                                 const arrActivity = [...clientList];

@@ -142,34 +142,34 @@ export const activityColumns: GridColDef[] = [
     ),
   },
 ];
-export const pocketInbox: GridColDef[] =[
+export const pocketInbox: GridColDef[] = [
   {
-    field:"date",
-    headerName:"Date",
+    field: "date",
+    headerName: "Date",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field:"contactname",
-    headerName:"Contact Name",
+    field: "contactname",
+    headerName: "Contact Name",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field:"contact",
-    headerName:"Contact#",
+    field: "contact",
+    headerName: "Contact#",
     flex: 1.8,
     minWidth: 140,
     sortable: false,
   },
   {
-    field:"amount",
-    headerName:"Amount"
+    field: "amount",
+    headerName: "Amount"
   },
   {
-    field:"status",
-    headerName:"Status",
+    field: "status",
+    headerName: "Status",
     sortable: false,
     flex: 1,
     minWidth: 100,
@@ -180,44 +180,44 @@ export const pocketInbox: GridColDef[] =[
     )
 
   }
-  
+
 ]
 
-export const pocketRemainder: GridColDef[] =[
+export const pocketRemainder: GridColDef[] = [
   {
-    field:"event",
-    headerName:"Event",
+    field: "event",
+    headerName: "Event",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field:"date",
-    headerName:"Date",
+    field: "date",
+    headerName: "Date",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field:"eventname",
-    headerName:"Event Name",
+    field: "eventname",
+    headerName: "Event Name",
     flex: 1.8,
     minWidth: 140
   },
   {
-    field:"amount",
-    headerName:"Amount",
+    field: "amount",
+    headerName: "Amount",
     flex: 1.8,
     minWidth: 140
   },
   {
-    field:"dayselapsed",
-    headerName:"Days Elapsed",
+    field: "dayselapsed",
+    headerName: "Days Elapsed",
     flex: 1.8,
     minWidth: 140
   },
   {
-    field:"action",
-    headerName:"Action",
+    field: "action",
+    headerName: "Action",
     sortable: false,
     flex: 1,
     minWidth: 100,
@@ -228,7 +228,7 @@ export const pocketRemainder: GridColDef[] =[
     )
 
   }
-  
+
 ]
 export const serviceColumns: GridColDef[] = [
   {
@@ -1313,13 +1313,13 @@ export const employeeColumns: GridColDef[] = [
       if (params.row.verifyStatus === false) {
         return <Button variant="contained" size="small" sx={{ mr: 1 }}
         >
-                  Send OTP
-                </Button>;
+          Send OTP
+        </Button>;
       }
       else {
         return <Grid>
-         <Typography>Verified</Typography>
-      </Grid>;
+          <Typography>Verified</Typography>
+        </Grid>;
       }
     }
   },
@@ -1330,7 +1330,7 @@ export const employeeColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`employee/edit/${e.row.id}`}>Edit</Link>;
+      return <Link href={`edit/${e.row.id}`}>Edit</Link>;
     }
   },
 ];
@@ -1344,10 +1344,22 @@ export const clientListColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "serviceproviderrole",
+    field: "serviceType",
     headerName: "Service provider Role",
     flex: 1.8,
     minWidth: 140,
+    renderCell: (params) => {
+      if (params.value !== null && params.value !== undefined) {
+        const sl = ["Vendor", "Supplier", "Client"];
+        return (
+          <Grid>
+            {params.value.toString().split('').map((k: number) => {
+              return <Typography color="textSecondary">{sl[(k - 1)]}</Typography>;
+            })}
+          </Grid>
+        );
+      }
+    }
   },
   {
     field: "companyName",
@@ -1412,7 +1424,7 @@ export const clientListColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`employee/edit/${e.row.id}`}>Edit</Link>;
+      return <Link href={`edit/${e.row.id}`}>Edit</Link>;
     }
   },
 ];
@@ -2126,7 +2138,7 @@ export const clientSearchResult: GridColDef[] = [
   },
 ];
 
-export const approvedColumns:GridColDef[]=[
+export const approvedColumns: GridColDef[] = [
   {
     field: "srno",
     headerName: "Sr. No.",
@@ -2147,7 +2159,7 @@ export const approvedColumns:GridColDef[]=[
       </div>
     )
   },
-   {
+  {
     field: "activityRoleName",
     headerName: "Activity Role",
     flex: 1.8,
@@ -2219,42 +2231,42 @@ export const declinedColumns: GridColDef[] = [
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "activityRoleName",
     headerName: "Role",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "company",
     headerName: "ComapnyName",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "contactName",
     headerName: "Contact Name",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "mobileNo",
     headerName: "Mobile No",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "status",
     headerName: "Status",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "action",
     headerName: "Action",
     flex: 0.8,
@@ -2271,42 +2283,42 @@ export const pendingColumns: GridColDef[] = [
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "activityRoleName",
     headerName: "Role",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "company",
     headerName: "ComapnyName",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "contactName",
     headerName: "Contact Name",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "mobileNo",
     headerName: "Mobile No",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "status",
     headerName: "Status",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
-   {
+  {
     field: "action",
     headerName: "Action",
     flex: 0.8,
@@ -2341,15 +2353,15 @@ export const userNewEnquiry: GridColDef[] = [
         </>
       );
     }
-    
+
   },
   {
     field: 'estimation_product_details',
-    headerName:'Estimation and Product Details',
+    headerName: 'Estimation and Product Details',
     type: 'number',
     // flex: 1,
-    width:250,
-    align:"center",
+    width: 250,
+    align: "center",
     renderCell: (params) => {
       return (
         <>
@@ -2363,7 +2375,7 @@ export const userNewEnquiry: GridColDef[] = [
               <span style={{ fontWeight: "bold" }}>{params.value.service}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Category :
+              Category :
               <span style={{ fontWeight: "bold" }}>{params.value.category}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
@@ -2371,23 +2383,23 @@ export const userNewEnquiry: GridColDef[] = [
               <span style={{ fontWeight: "bold" }}>{params.value.product}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Design Type :
+              Design Type :
               <span style={{ fontWeight: "bold" }}>{params.value.design_type}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Design No :
+              Design No :
               <span style={{ fontWeight: "bold" }}>{params.value.design_no}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Total Sq.Ft :
+              Total Sq.Ft :
               <span style={{ fontWeight: "bold" }}>{params.value.sq_ft}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Actual Materials Cost :
+              Actual Materials Cost :
               <span style={{ fontWeight: "bold" }}>{params.value.material_cost}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Actual Labour Cost :
+              Actual Labour Cost :
               <span style={{ fontWeight: "bold" }}>{params.value.labour_cost}</span>
             </li>
           </ul>
@@ -2422,7 +2434,7 @@ export const userNewEnquiry: GridColDef[] = [
 ];
 
 export const userAcceptedEnquiry: GridColDef[] = [
-  { field: 'id', headerName: 'Sr.No.', width:50 },
+  { field: 'id', headerName: 'Sr.No.', width: 50 },
   {
     field: 'clientDetails',
     headerName: 'Client Details',
@@ -2447,13 +2459,13 @@ export const userAcceptedEnquiry: GridColDef[] = [
         </>
       );
     }
-    
+
   },
   {
     field: 'estimation_product_details',
-    headerName:'Estimation & Product Details',
+    headerName: 'Estimation & Product Details',
     type: 'number',
-    width:250,
+    width: 250,
     // align:"left",
     renderCell: (params) => {
       return (
@@ -2468,7 +2480,7 @@ export const userAcceptedEnquiry: GridColDef[] = [
               <span style={{ fontWeight: "bold" }}>{params.value.service}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Category :
+              Category :
               <span style={{ fontWeight: "bold" }}>{params.value.category}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
@@ -2476,23 +2488,23 @@ export const userAcceptedEnquiry: GridColDef[] = [
               <span style={{ fontWeight: "bold" }}>{params.value.product}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Design Type :
+              Design Type :
               <span style={{ fontWeight: "bold" }}>{params.value.design_type}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Design No :
+              Design No :
               <span style={{ fontWeight: "bold" }}>{params.value.design_no}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Total Sq.Ft :
+              Total Sq.Ft :
               <span style={{ fontWeight: "bold" }}>{params.value.sq_ft}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Actual Materials Cost :
+              Actual Materials Cost :
               <span style={{ fontWeight: "bold" }}>{params.value.material_cost}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Actual Labour Cost :
+              Actual Labour Cost :
               <span style={{ fontWeight: "bold" }}>{params.value.labour_cost}</span>
             </li>
           </ul>
@@ -2505,7 +2517,7 @@ export const userAcceptedEnquiry: GridColDef[] = [
     headerName: 'Your Labour Cost',
     sortable: true,
     editable: true,
-    align:"center",
+    align: "center",
     flex: 1,
   },
   {
@@ -2534,11 +2546,11 @@ export const userAcceptedEnquiry: GridColDef[] = [
 ];
 
 export const userRejectedEnquiry: GridColDef[] = [
-  { field: 'id', headerName: 'Sr.No.', width: 80},
+  { field: 'id', headerName: 'Sr.No.', width: 80 },
   {
     field: 'clientDetails',
     headerName: 'Client Details',
-    
+
     flex: 1
   },
   {
@@ -2560,14 +2572,14 @@ export const userRejectedEnquiry: GridColDef[] = [
         </>
       );
     }
-    
+
   },
   {
     field: 'estimation_product_details',
-    headerName:'Estimation & Product Details',
+    headerName: 'Estimation & Product Details',
     type: 'number',
     flex: 1,
-    align:"center",
+    align: "center",
     renderCell: (params) => {
       return (
         <>
@@ -2581,7 +2593,7 @@ export const userRejectedEnquiry: GridColDef[] = [
               <span style={{ fontWeight: "bold" }}>{params.value.service}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Category :
+              Category :
               <span style={{ fontWeight: "bold" }}>{params.value.category}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
@@ -2589,23 +2601,23 @@ export const userRejectedEnquiry: GridColDef[] = [
               <span style={{ fontWeight: "bold" }}>{params.value.product}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Design Type :
+              Design Type :
               <span style={{ fontWeight: "bold" }}>{params.value.design_type}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Design No :
+              Design No :
               <span style={{ fontWeight: "bold" }}>{params.value.design_no}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Total Sq.Ft :
+              Total Sq.Ft :
               <span style={{ fontWeight: "bold" }}>{params.value.sq_ft}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Actual Materials Cost :
+              Actual Materials Cost :
               <span style={{ fontWeight: "bold" }}>{params.value.material_cost}</span>
             </li>
             <li style={{ listStyleType: "none" }}>
-            Actual Labour Cost :
+              Actual Labour Cost :
               <span style={{ fontWeight: "bold" }}>{params.value.labour_cost}</span>
             </li>
           </ul>
@@ -2631,7 +2643,7 @@ export const archNewCol: GridColDef[] = [
     field: "details",
     headerName: "Architecht & Consultant Details",
     // flex: 2.5,
-    flex:1,
+    flex: 1,
   },
   {
     field: "boq",
@@ -2668,7 +2680,7 @@ export const archAccepted: GridColDef[] = [
     field: "details",
     headerName: "Architecht & Consultant Details",
     // flex: 2.5,
-    flex:1,
+    flex: 1,
   },
   {
     field: "boq",
@@ -2677,9 +2689,9 @@ export const archAccepted: GridColDef[] = [
     flex: 1,
   },
   {
-    field:"boq_status",
-    headerName:"BOQ Work Allot Status",
-    flex:1,
+    field: "boq_status",
+    headerName: "BOQ Work Allot Status",
+    flex: 1,
   },
   {
     field: "action",
@@ -2707,7 +2719,7 @@ export const yetStartProject: GridColDef[] = [
     field: "by_project",
     headerName: "By Project",
     // flex: 2.5,
-    flex:1,
+    flex: 1,
   },
   {
     field: "project_name",
@@ -2716,9 +2728,9 @@ export const yetStartProject: GridColDef[] = [
     flex: 1,
   },
   {
-    field:"contact",
-    headerName:"Contact Person & Number",
-    flex:1,
+    field: "contact",
+    headerName: "Contact Person & Number",
+    flex: 1,
   },
   {
     field: "action",
@@ -2746,7 +2758,7 @@ export const ongoingProject: GridColDef[] = [
     field: "by_project",
     headerName: "By Project",
     // flex: 2.5,
-    flex:1,
+    flex: 1,
   },
   {
     field: "project_name",
@@ -2755,9 +2767,9 @@ export const ongoingProject: GridColDef[] = [
     flex: 1,
   },
   {
-    field:"contact",
-    headerName:"Contact Person & Number",
-    flex:1,
+    field: "contact",
+    headerName: "Contact Person & Number",
+    flex: 1,
   },
   {
     field: "action",
@@ -2785,7 +2797,7 @@ export const completedProject: GridColDef[] = [
     field: "by_project",
     headerName: "By Project",
     // flex: 2.5,
-    flex:1,
+    flex: 1,
   },
   {
     field: "project_name",
@@ -2794,9 +2806,9 @@ export const completedProject: GridColDef[] = [
     flex: 1,
   },
   {
-    field:"contact",
-    headerName:"Contact Person & Number",
-    flex:1,
+    field: "contact",
+    headerName: "Contact Person & Number",
+    flex: 1,
   },
 ];
 
