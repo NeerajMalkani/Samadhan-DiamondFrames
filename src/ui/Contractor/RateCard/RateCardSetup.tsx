@@ -37,12 +37,13 @@ const RateCard = () => {
     const [rateCardList, setRateCardList] =useState<Array<RateCardModel>>([]);
 
     const [rateCardListTemp, setRateCardListTemp] = React.useState<Array<any>>([]);
+    const [buttonLoading, setButtonLoading] = useState(false);
 
     useEffect(() => {
         FetchData("");
     }, []);
     
-    const ResetFields = () => {
+    function ResetFields() {
         // setSelectedID(0);
         // setActionStatus("new");
         // setDataGridOpacity(1);
@@ -65,8 +66,8 @@ const RateCard = () => {
         // setServiceProvider("");
         setOpen(false);
 
-       
-    };
+
+    }
 
 
     const FetchData = (type: string) => {
@@ -110,6 +111,71 @@ const RateCard = () => {
                 setOpen(true);
             });
         }
+
+        const UpdateData = (status: string, fileName: string) => {
+            debugger;
+            if (status.toLowerCase() === "success") {
+              const params = {
+                // ID: employeeID,
+                // MobileNo: mobile.trim(),
+                // AadharNo: aadhar.trim(),
+                // FatherName: fatherName,
+                // Address: address,
+                // StateID: selectedStateID,
+                // CityID: selectedCityID,
+                // Pincode: pincode,
+                // ProfilePhoto: fileName ? AWSImagePath + fileName : "",
+                // BloodGroup: bloodGroupID,
+                // DOB: DOB,
+                // DOJ: DOJ,
+                // EmergencyContactName: emergencyCName,
+                // EmergencyContactNo: emergencyCNo,
+                // IDCardValidity: CardValidity,
+                // LoginActiveStatus: (login === "Yes") ? true : false,
+                // BranchID: branchID,
+                // DepartmentID: departmentID,
+                // DesignationID: designationID,
+                // EmployeeType: employeeType,
+                // LastWorkDate: LastWorkingDate,
+                // WagesType: NullOrEmpty(wagesType) ? 0 : wagesType === "Daily" ? 1 : 2,
+                // Salary: salary,
+                // AccountHolderName: accountHName,
+                // AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
+                // BankName: bankName,
+                // BranchName: bankBranchName,
+                // IFSCCode: ifscCode,
+              };
+              debugger;
+              Provider.create("master/updateemployeedetails", params)
+                .then((response) => {
+                  debugger;
+                  if (response.data && response.data.code === 200) {
+        
+                    setSnackbarType("success");
+                    setSnackMsg("Data updated successfully");
+        
+                    setOpen(false);
+                  } else {
+                    setSnackbarType("error");
+                    setSnackMsg(communication.Error);
+                    setOpen(true);
+                  }
+                  setButtonLoading(false);
+                })
+                .catch((e) => {
+                  console.log(e);
+                  setSnackbarType("error");
+                  setSnackMsg(communication.NetworkError);
+                  setOpen(true);
+                  setButtonLoading(false);
+                });
+            } else {
+              setSnackbarType("error");
+              setSnackMsg(communication.Error);
+              setOpen(true);
+              setButtonLoading(false);
+            }
+          };
 
 
     return (
