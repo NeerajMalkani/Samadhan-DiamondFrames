@@ -201,7 +201,7 @@ const EmployeeEdit = () => {
   const [reportingError, setReportingError] = useState("");
   const [isReportingError, setIsReportingError] = useState(false);
 
-  const [employeeType, setEmployeeType] = useState("");
+  const [employeeType, setEmployeeType] = useState("0");
   const [employeeTypeError, setEmployeeTypeError] = useState("");
   const [isEmployeeTypeError, setIsEmployeeTypeError] = useState(false);
 
@@ -561,7 +561,7 @@ const EmployeeEdit = () => {
 
             }
 
-            setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "");
+            setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "0");
             setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType === 1 ? "Daily" : "Monthly" : "");
             setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
 
@@ -708,7 +708,27 @@ const EmployeeEdit = () => {
   }
 
   const InsertData = (status: string, fileName: string) => {
-    debugger;
+debugger;
+    if (!NullOrEmpty(pincode)) {
+
+      if (pincode.match(/[^$,.\d]/)) {
+        setPincode("0");
+      }
+    }
+    else {
+      setPincode("0");
+    }
+
+    if (!NullOrEmpty(salary)) {
+
+      if (salary.match(/[^$,.\d]/)) {
+        setSalary("0");
+      }
+    }
+    else {
+      setSalary("0");
+    }
+
     if (status.toLowerCase() === "success") {
       const params = {
         ID: employeeID,
@@ -718,7 +738,7 @@ const EmployeeEdit = () => {
         Address: address,
         StateID: selectedStateID,
         CityID: selectedCityID,
-        Pincode: pincode,
+        Pincode: NullOrEmpty(pincode) ? 0 : parseInt(pincode),
         ProfilePhoto: fileName ? AWSImagePath + fileName : "",
         BloodGroup: bloodGroupID,
         DOB: DOB,
@@ -730,10 +750,10 @@ const EmployeeEdit = () => {
         BranchID: branchID,
         DepartmentID: departmentID,
         DesignationID: designationID,
-        EmployeeType: employeeType,
+        EmployeeType: NullOrEmpty(employeeType) ? "0" : parseInt(employeeType),
         LastWorkDate: LastWorkingDate,
         WagesType: NullOrEmpty(wagesType) ? 0 : wagesType === "Daily" ? 1 : 2,
-        Salary: salary,
+        Salary: NullOrEmpty(salary) ? 0 : parseInt(salary),
         AccountHolderName: accountHName,
         AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
         BankName: bankName,

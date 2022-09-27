@@ -454,7 +454,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/dealer/organization/addepartment`);
+              navigate(`/common/organization/addepartment`);
             }, 300);
           },
         },
@@ -474,7 +474,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/dealer/organization/addesignation`);
+              navigate(`/common/organization/addesignation`);
             }, 300);
           },
         },
@@ -582,7 +582,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/department`);
+              navigate(`/common/organization/department`);
             }, 300);
           },
         },
@@ -602,7 +602,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/designation`);
+              navigate(`/common/organization/designation`);
             }, 300);
           },
         },

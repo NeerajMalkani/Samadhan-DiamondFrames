@@ -230,7 +230,6 @@ const AddDesignation = () => {
       Provider.create("master/insertuserdesignation", {
         ID: 0,
         AddedByUserID: cookies.dfc.UserID,
-        UserType: 3,
         DesignationID: designationID,
         ReportingAuthority: reportingAuthority,
         Display: checked,

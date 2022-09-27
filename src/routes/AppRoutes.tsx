@@ -33,17 +33,15 @@ import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
 import EmployeeList from "../ui/Common/Employee/EmployeeList";
 import CBasic from "../ui/Contractor/CompanyProfile/CBasic";
 import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
-import AddDepartment from "../ui/Contractor/Organization/AddDepartment";
-import AddDesignation from "../ui/Contractor/Organization/AddDesignation";
-import AddDDepartment from "../ui/Dealer/Organization/AddDepartment";
-import AddDDesignation from "../ui/Dealer/Organization/AddDesignation";
+import AddDepartment from "../ui/Common/Organization/AddDepartment";
+import AddDesignation from "../ui/Common/Organization/AddDesignation";
 import ImageGalleryCategoryPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryCategory";
 import ImageGalleryProductPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryProduct";
 import ImageGalleryProductDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductDetails";
 import ProductEstimationDetailsPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ProductEstimationDetails";
 import UserEstimationListPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/UserEstimationList";
 import ContractorClientPage from "../ui/Contractor/Client/CClient";
-import AddBranch from "../ui/Contractor/Organization/AddBranch";
+import AddBranch from "../ui/Common/Organization/AddBranch";
 import EmployeeEdit from "../ui/Common/Employee/EmployeeEdit";
 import DesignWisePage from "../ui/Contractor/QuotationAndEstimation/DesignWise/DesignWise";
 import Approved from "../ui/Admin/Users/Approved";
@@ -104,11 +102,9 @@ const AppRoutes = () => {
               <Route path="dealer/basicdetails" element={<Basic />} />
               <Route path="contractor/companyprofile/cbasic" element={<CBasic />} />
               <Route path="contractor/companyprofile/cmyservice" element={<CMyService />} />
-              <Route path="contractor/organization/department" element={<AddDepartment />} />
-              <Route path="contractor/organization/designation" element={<AddDesignation />} />
+              <Route path="common/organization/department" element={<AddDepartment />} />
+              <Route path="common/organization/designation" element={<AddDesignation />} />
               <Route path="contractor/organization/branch" element={<AddBranch />} />
-              <Route path="dealer/organization/addepartment" element={<AddDDepartment />} />
-              <Route path="dealer/organization/addesignation" element={<AddDDesignation />} />
               <Route path="generaluser/imagegallery/productdetails" element={<ImageGalleryProductDetailsPage />} />
               <Route path="generaluser/imagegallery/productestimationdetails" element={<ProductEstimationDetailsPage />} />
               <Route path="generaluser/userestimation" element={<UserEstimationListPage />} />
