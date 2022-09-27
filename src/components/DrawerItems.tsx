@@ -528,7 +528,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/companyprofile/cbasic`);
+              navigate(`/common/companyprofile/cbasic`);
             }, 300);
           },
         },
@@ -804,7 +804,7 @@ const DrawerItems = ({ open }: OpenObj) => {
         //   navigation: () => {
         //     open[1](false);
         //     setTimeout(() => {
-        //       navigate(`/contractor/companyprofile/cbasic`);
+        //       navigate(`/common/companyprofile/cbasic`);
         //     }, 300);
         //   },
         // },
@@ -852,16 +852,16 @@ const DrawerItems = ({ open }: OpenObj) => {
       icon: <BusinessIcon />,
       expanded: true,
       items: [
-        // {
-        //   title: "App User Enquiry Wise",
-        //   isActive: window.location.href.toLowerCase().includes("enquiries/appuserenquiry"),
-        //   navigation: () => {
-        //     open[1](false);
-        //     setTimeout(() => {
-        //       navigate(`/contractor/enquiries/appuserenquiry`);
-        //     }, 300);
-        //   },
-        // },
+        {
+          title: "Basic Details",
+          isActive: window.location.href.toLowerCase().includes("cbasic"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/companyprofile/cbasic`);
+            }, 300);
+          },
+        },
         // {
         //   title: "Architech & Consultant-Boq",
         //   isActive: window.location.href.toLowerCase().includes("enquiries/architectandconsultant"),
