@@ -135,6 +135,7 @@ const AddRateCard = () => {
     const [open, setOpen] = useState(false);
     const [snackMsg, setSnackMsg] = useState("");
     const [buttonLoading, setButtonLoading] = useState(false);
+    const [actionStatus, setActionStatus] = React.useState<string>("new");
     const [arnID, setArnID] = useState<number>(0);
     //#endregion
 
@@ -290,23 +291,22 @@ const AddRateCard = () => {
 
     const FetchUnitOfSalesName = () => {
         let params = {
-            AddedByUserID: cookies.dfc.UserID,
+            // ProductID: unitOfSalesID,
         };
-
-        Provider.getAll(`master/getuserbranchforemployee?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.getAll(`master/?${new URLSearchParams(GetStringifyJson(params))}`)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
-                        const branchData: any = [];
+                        const unitSales: any = [];
                         response.data.data.map((data: any, i: number) => {
-                            branchData.push({
+                            unitSales.push({
                                 id: data.id,
                                 label: data.locationName,
                             });
                         });
-                        setUnitOfSalesFullData(branchData);
+                        setUnitOfSalesFullData(unitSales);
                         if (us_ID > 0) {
-                            let a = branchData.filter((el) => {
+                            let a = unitSales.filter((el) => {
                                 return el.id === us_ID;
                             });
                             setSelectedUnitOfSales(a[0].label);
@@ -446,75 +446,69 @@ const AddRateCard = () => {
         // let blankData = serviceType[0].filter((el) => el.isSelected);
 
         if (isValid) {
-            // InsertData();
+            //InsertData();
         }
     };
 
-
-    const InsertData = (status: string, fileName: string) => {
-        debugger;
-        if (status.toLowerCase() === "success") {
-            const params = {
-                // ID: employeeID,
-                // MobileNo: mobile.trim(),
-                // AadharNo: aadhar.trim(),
-                // FatherName: fatherName,
-                // Address: address,
-                // StateID: selectedStateID,
-                // CityID: selectedCityID,
-                // Pincode: pincode,
-                // ProfilePhoto: fileName ? AWSImagePath + fileName : "",
-                // BloodGroup: bloodGroupID,
-                // DOB: DOB,
-                // DOJ: DOJ,
-                // EmergencyContactName: emergencyCName,
-                // EmergencyContactNo: emergencyCNo,
-                // IDCardValidity: CardValidity,
-                // LoginActiveStatus: (login === "Yes") ? true : false,
-                // BranchID: branchID,
-                // DepartmentID: departmentID,
-                // DesignationID: designationID,
-                // EmployeeType: employeeType,
-                // LastWorkDate: LastWorkingDate,
-                // WagesType: NullOrEmpty(wagesType) ? 0 : wagesType === "Daily" ? 1 : 2,
-                // Salary: salary,
-                // AccountHolderName: accountHName,
-                // AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
-                // BankName: bankName,
-                // BranchName: bankBranchName,
-                // IFSCCode: ifscCode,
-            };
-            debugger;
-            Provider.create("master/updateemployeedetails", params)
-                .then((response) => {
-                    debugger;
-                    if (response.data && response.data.code === 200) {
-
-                        setSnackbarType("success");
-                        setSnackMsg("Data Inserted successfully");
-
-                        setOpen(false);
-                    } else {
-                        setSnackbarType("error");
-                        setSnackMsg(communication.Error);
-                        setOpen(true);
-                    }
-                    setButtonLoading(false);
-                })
-                .catch((e) => {
-                    console.log(e);
-                    setSnackbarType("error");
-                    setSnackMsg(communication.NetworkError);
-                    setOpen(true);
-                    setButtonLoading(false);
-                });
-        } else {
-            setSnackbarType("error");
-            setSnackMsg(communication.Error);
-            setOpen(true);
-            setButtonLoading(false);
+    const InsertUpdateData = (paramWorkfloorName: string, checked: boolean) => {
+        if (actionStatus === "new") {
+          Provider.create("servicecatalogue/insertworkfloor", {
+            WorkFloorName: paramWorkfloorName,
+            Display: checked,
+          })
+            .then((response) => {
+              if (response.data && response.data.code === 200) {
+                FetchData("added");
+              }else if (response.data.code === 304) {
+                setSnackMsg(communication.ExistsError);
+                setOpen(true);
+                setSnackbarType("error");
+                ResetFields();
+              }  else {
+                ResetFields();
+                setSnackMsg(communication.Error);
+                setSnackbarType("error");
+                setOpen(true);
+              }
+            })
+            .catch((e) => {
+              ResetFields();
+              setSnackMsg(communication.NetworkError);
+              setSnackbarType("error");
+              setOpen(true);
+            });
+        } else if (actionStatus === "edit") {
+          Provider.create("servicecatalogue/updateworkfloor", {
+            // ID: selectedID,
+            WorkFloorName: paramWorkfloorName,
+            Display: checked,
+          })
+            .then((response) => {
+              if (response.data && response.data.code === 200) {
+                FetchData("updated");
+              }else if (response.data.code === 304) {
+                setSnackMsg(communication.ExistsError);
+                setOpen(true);
+                setSnackbarType("error");
+                ResetFields();
+              }  else {
+                ResetFields();
+                setSnackMsg(communication.Error);
+                setSnackbarType("error");
+                setOpen(true);
+              }
+            })
+            .catch((e) => {
+              ResetFields();
+              setSnackMsg(communication.NetworkError);
+              setSnackbarType("error");
+              setOpen(true);
+            });
         }
-    };
+      };
+    
+      
+    
 
 
 // const isSPRError = useState(false);
@@ -889,7 +883,7 @@ return (
 
         </Container>
     </Box >
-)
+);
 };
 
 export default AddRateCard;

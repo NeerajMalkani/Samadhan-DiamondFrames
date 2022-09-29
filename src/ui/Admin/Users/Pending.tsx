@@ -192,10 +192,12 @@ import {
                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                             disableSelectionOnClick
                             onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                              if (param.field === 'action') {
                               const arrActivity = [...pendingNamesList];
                               let a: PendingModel | undefined =
                                 arrActivity.find((el) => el.id === param.row.id);
                               handelEditAndDelete((e.target as any).textContent, a);
+                              }
                             }}
                             sx={{
                               "& .MuiDataGrid-columnHeaders": {

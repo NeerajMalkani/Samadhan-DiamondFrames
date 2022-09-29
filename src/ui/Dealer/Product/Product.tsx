@@ -301,12 +301,6 @@ const ProductListPage = () => {
       setProductError(communication.SelectProductName);
     }
 
-    if (uploadedImage.trim() === "") {
-      isValid = false;
-      setDIError(true);
-      setDIErrorText(communication.SelectImage);
-    }
-
     if (price.toString().trim() === "" || !ValidateGSTRate(price)) {
       isValid = false;
       setIsPriceError(true);
@@ -568,7 +562,6 @@ const ProductListPage = () => {
           <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b> Product Image</b>
-              <label style={{ color: "#ff0000" }}>*</label>
             </Typography>
             <FormControl fullWidth size="small" error={errorDI}>
               <Grid style={{ display: "flex" }}>

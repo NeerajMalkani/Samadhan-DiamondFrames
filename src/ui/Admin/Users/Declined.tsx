@@ -224,11 +224,13 @@ import {
                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                             disableSelectionOnClick={true}
                             onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                              if (param.field === 'action') {
                               const arrActivity = [...declinedNamesList];
                               let a: DeclinedModel | undefined =
                                 arrActivity.find((el) => el.userID === param.row.userID);
                               handelEditAndDelete((e.target as any).textContent, a);
                               setOpen(true);
+                              }
                             }}
                             sx={{
                               "& .MuiDataGrid-columnHeaders": {
