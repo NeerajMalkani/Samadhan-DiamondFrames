@@ -944,25 +944,25 @@ const DrawerItems = ({ open }: OpenObj) => {
       expanded: true,
       items: [
         {
-          title: "Rate Card Setup",
-          isActive: window.location.href.toLowerCase().includes("ratecardsetup"),
+          title: "Architect Rate Card Setup",
+          isActive: window.location.href.toLowerCase().includes("architectratecardsetup"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/ratecardsetup`);
+              navigate(`/architect/architectratecardsetup`);
             }, 300);
           },
         },
-        {
-          title: "Send Rate Card",
-          isActive: window.location.href.toLowerCase().includes("sendratecard"),
-          navigation: () => {
-            open[1](false);
-            setTimeout(() => {
-              navigate(`/master/sendratecard`);
-            }, 300);
-          },
-        },
+        // {
+        //   title: "Send Rate Card",
+        //   isActive: window.location.href.toLowerCase().includes("sendratecard"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/master/sendratecard`);
+        //     }, 300);
+        //   },
+        // },
       ],
     },
     {

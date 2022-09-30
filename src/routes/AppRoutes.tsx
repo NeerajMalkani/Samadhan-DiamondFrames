@@ -64,6 +64,10 @@ import PocketRemainder from "../ui/Pocket/PocketRemainder";
 import RateCardSetup from "../ui/Contractor/RateCard/RateCardSetup";
 import AddRateCard from "../ui/Contractor/RateCard/AddRateCard";
 import ClientEdit from "../ui/Common/Client/ClientEdit";
+import ArchitectRateCardSetup from "../ui/Architect/ArchitectRateCardSetup";
+
+
+
 const AppRoutes = () => {
   return (
     <CookiesProvider>
@@ -135,6 +139,7 @@ const AppRoutes = () => {
               <Route path="master/ratecardsetup" element={<RateCardSetup />} />
               <Route path="master/addratecard" element={<AddRateCard />} />
               <Route path="common/client/edit/:id" element={<ClientEdit/>}/>
+              <Route path="architect/architectratecardsetup" element ={<ArchitectRateCardSetup/>} />
             </Routes>
           </BrowserRouter>
         </Box>

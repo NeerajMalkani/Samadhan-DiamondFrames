@@ -491,6 +491,90 @@ export const serviceProductColumns: GridColDef[] = [
   },
 ];
 
+export const architechRateCArdSetupColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    sortable: false,
+    //minWidth: 60,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    //  minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    // minWidth: 140,
+  },
+  {
+    field: "productName",
+    headerName: "Product Name / Specification",
+    flex: 2.5,
+    // minWidth: 140,
+    renderCell: (params) => {
+      if (params.value !== null && params.value !== undefined) {
+        return (
+          <div>
+            <Typography noWrap={false}>{params.value}</Typography>
+            <Grid>
+              <Grid>
+                <Link underline="hover">{"View Short Specification"}</Link>
+              </Grid>
+              <Grid>
+                <Link underline="hover">{"View Specification"}</Link>
+              </Grid>
+            </Grid>
+          </div>
+        );
+      }
+    },
+  },
+  {
+    field: "rateWithMaterials",
+    headerName: "Rate (with material)",
+    flex: 1.8,
+    //  minWidth: 140,
+    renderCell: (params) => {
+      if (params.row.selectedUnitID === params.row.unit1ID) {
+        return params.value + " / " + params.row.unit1Name;
+      } else {
+        return params.value + " / " + params.row.unit2Name;
+      }
+    },
+  },
+  {
+    field: "rateWithoutMaterials",
+    headerName: "Rate (without material)",
+    flex: 1.8,
+    renderCell: (params) => {
+      if (params.row.selectedUnitID === params.row.unit1ID) {
+        return params.value + " / " + params.row.unit1Name;
+      } else {
+        return params.value + " / " + params.row.unit2Name;
+      }
+    },
+    //  minWidth: 140,
+  },
+  {
+    field: "alternateUnitOfSales",
+    headerName: "Alternate Unit of Sale",
+    flex: 1.8,
+    renderCell: (params) => {
+      if (params.row.selectedUnitID === params.row.unit1ID) {
+        return params.row.unit2Name;
+      } else {
+        return params.row.unit1Name;
+      }
+    },
+    //  minWidth: 140,
+  },
+];
+
 export const departmentColumns: GridColDef[] = [
   {
     field: "srno",
