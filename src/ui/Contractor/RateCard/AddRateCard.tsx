@@ -89,6 +89,7 @@ const AddRateCard = () => {
     const [gstRateErrorText, setGstRateErrorText] = useState("");
     const [isGstRateError, isSetGstRateError] = useState(false);
 
+
     const [serviceProductName, setServiceProductName] = useState("--Select--");
     const [serviceProductNameID, setServiceProductNameID] = useState<number>(0);
     const [serviceProductNameError, setServiceProductNameError] = useState("");
@@ -129,7 +130,10 @@ const AddRateCard = () => {
     const [specificationSPErrorText, setSpecificationSPErrorText] = useState("");
     const [isSpecificationSPError, isSetSpecificationSPError] = useState(false);
 
+    const [rateCardID, setRateCardID] = useState<number>(0);
     const [display, setDisplay] = React.useState("Yes");
+
+    const [conversion, setConversion] = React.useState("");
 
     const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
     const [open, setOpen] = useState(false);
@@ -142,20 +146,23 @@ const AddRateCard = () => {
     useEffect(() => {
         FetchData("");
         FetchServiceName();
-        FetchCategory();
-        FetchServiceProductName();
-        FetchUnitOfSalesName();
+        // FetchCategory();
+        // FetchServiceProductName();
+        // FetchUnitOfSalesName();
 
     }, []);
 
-    const handleServiceProductNameChange = (event: SelectChangeEvent) => {
+ 
+
+    const handleServiceNameChange = (event: SelectChangeEvent) => {
         let locationName: string = event.target.value;
-        let ac = serviceProductNameFullData.find((el) => el.locationName === locationName);
+        let ac = serviceNameFullData.find((el) => el.locationName === locationName);
         if (ac !== undefined) {
-            setServiceProductName(locationName);
-            setServiceProductNameID(ac?.id);
-            isSetServiceProductNameError(false);
-            setServiceProductNameError("");
+            setServiceName(locationName);
+            setServiceNameID(ac?.id);
+            isSetServiceNameError(false);
+            setServiceNameError("");
+            FetchCategory();
         }
     };
 
@@ -167,20 +174,23 @@ const AddRateCard = () => {
             setCategoryID(ac?.id);
             isSetCategoryError(false);
             setCategoryError("");
+            FetchServiceProductName();
         }
     };
 
-    const handleServiceNameChange = (event: SelectChangeEvent) => {
+    const handleServiceProductNameChange = (event: SelectChangeEvent) => {
         let locationName: string = event.target.value;
-        let ac = serviceNameFullData.find((el) => el.locationName === locationName);
+        let ac = serviceProductNameFullData.find((el) => el.locationName === locationName);
         if (ac !== undefined) {
-            setServiceName(locationName);
-            setServiceNameID(ac?.id);
-            isSetServiceNameError(false);
-            setServiceNameError("");
+            setServiceProductName(locationName);
+            setServiceProductNameID(ac?.id);
+            isSetServiceProductNameError(false);
+            setServiceProductNameError("");
+            FetchUnitOfSalesName();
+            
         }
     };
-
+    
     const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDisplay((event.target as HTMLInputElement).value);
     };
@@ -291,9 +301,9 @@ const AddRateCard = () => {
 
     const FetchUnitOfSalesName = () => {
         let params = {
-            // ProductID: unitOfSalesID,
+            ProductID:serviceProductNameID,
         };
-        Provider.getAll(`master/?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
@@ -446,15 +456,27 @@ const AddRateCard = () => {
         // let blankData = serviceType[0].filter((el) => el.isSelected);
 
         if (isValid) {
-            //InsertData();
+            InsertUpdateData();
         }
     };
 
-    const InsertUpdateData = (paramWorkfloorName: string, checked: boolean) => {
+    const InsertUpdateData = () => {
         if (actionStatus === "new") {
-          Provider.create("servicecatalogue/insertworkfloor", {
-            WorkFloorName: paramWorkfloorName,
-            Display: checked,
+          Provider.create("master/insertupdatecontractorratecard", {
+            RateCardID:rateCardID,
+            ProductID:serviceProductNameID,
+            ActivityID:arnID,
+            ServiceID:serviceNameID,
+            CategoryID:categoryID,
+            SelectedUnitID:selectedUnitOfSales,
+            UnitOfSalesID:unitOfSalesID,
+            RateWithMaterials:materialRate,
+            RateWithoutMaterials:withoutMaterialRate,
+            AlternateUnitOfSales:alternativeUnit,
+            ShortSpecification:shortSpecification,
+            Specification:specificationSP,
+            Display:display,
+            ContractorID:cookies.dfc.UserID
           })
             .then((response) => {
               if (response.data && response.data.code === 200) {
@@ -477,34 +499,35 @@ const AddRateCard = () => {
               setSnackbarType("error");
               setOpen(true);
             });
-        } else if (actionStatus === "edit") {
-          Provider.create("servicecatalogue/updateworkfloor", {
-            // ID: selectedID,
-            WorkFloorName: paramWorkfloorName,
-            Display: checked,
-          })
-            .then((response) => {
-              if (response.data && response.data.code === 200) {
-                FetchData("updated");
-              }else if (response.data.code === 304) {
-                setSnackMsg(communication.ExistsError);
-                setOpen(true);
-                setSnackbarType("error");
-                ResetFields();
-              }  else {
-                ResetFields();
-                setSnackMsg(communication.Error);
-                setSnackbarType("error");
-                setOpen(true);
-              }
-            })
-            .catch((e) => {
-              ResetFields();
-              setSnackMsg(communication.NetworkError);
-              setSnackbarType("error");
-              setOpen(true);
-            });
-        }
+        } 
+        // else if (actionStatus === "edit") {
+        //   Provider.create("servicecatalogue/updateworkfloor", {
+        //     // ID: selectedID,
+        //     WorkFloorName: paramWorkfloorName,
+        //     Display: checked,
+        //   })
+        //     .then((response) => {
+        //       if (response.data && response.data.code === 200) {
+        //         FetchData("updated");
+        //       }else if (response.data.code === 304) {
+        //         setSnackMsg(communication.ExistsError);
+        //         setOpen(true);
+        //         setSnackbarType("error");
+        //         ResetFields();
+        //       }  else {
+        //         ResetFields();
+        //         setSnackMsg(communication.Error);
+        //         setSnackbarType("error");
+        //         setOpen(true);
+        //       }
+        //     })
+        //     .catch((e) => {
+        //       ResetFields();
+        //       setSnackMsg(communication.NetworkError);
+        //       setSnackbarType("error");
+        //       setOpen(true);
+        //     });
+        // }
       };
     
       
@@ -651,7 +674,7 @@ return (
                                         isSetServiceProductNameError(false);
                                         setServiceProductNameError("");
                                         if (value !== null) {
-                                            setServiceProductName(value.label);
+                                            setServiceProductName(value.label)
                                             setServiceProductNameID(value.id);
                                         }
                                     }}
@@ -877,7 +900,7 @@ return (
                     </Grid>
                 </Grid>
                 <Grid container sx={{ mt: 2, mb: 10 }} alignItems="center" direction="row" justifyContent="center">
-                    <Button variant="contained">Submit</Button>
+                    <Button variant="contained" onClick={handleSubmitClick}>Submit</Button>
                 </Grid>
             </Grid>
 
