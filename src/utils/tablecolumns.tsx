@@ -951,6 +951,14 @@ export const designTypeColumns: GridColDef[] = [
     flex: 1.8,
   },
   {
+    field: "designImage",
+    headerName: "Design Image",
+    flex: 1.8,
+    renderCell: (params) => {
+      return <img src={params.value} alt="" style={{ width: "98px", height: "96px" }} />;
+    },
+  },
+  {
     field: "display",
     headerName: "Display",
     flex: 1.8,

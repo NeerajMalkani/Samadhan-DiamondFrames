@@ -196,6 +196,7 @@ export interface DesignTypeModel {
   activityID: number;
   productID: number;
   serviceDisplay: string;
+  designImage: string;
 }
 
 export interface PostNewDesignModel {

@@ -154,6 +154,7 @@ const DashboardPage = () => {
   };
 
   const GetUserCount = () => {
+    debugger;
     Provider.getAll("registration/getusers")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -218,6 +219,7 @@ const DashboardPage = () => {
   };
 
   const SwitchUserClick = () => {
+    debugger;
     if (role === "" || roleID === 0) {
       setRoleError(true);
       setRoleErrorText("Error");
@@ -229,6 +231,7 @@ const DashboardPage = () => {
   };
 
   const UpdateUserRole = () => {
+    debugger;
     handleClose();
     setButtonLoading(true);
     const params = {
@@ -237,6 +240,7 @@ const DashboardPage = () => {
     };
     Provider.create("registration/updateuserrole", params)
       .then((response) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           removeCookie("dfc");
           const user = {

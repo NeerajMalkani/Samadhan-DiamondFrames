@@ -10,7 +10,7 @@ import { communication } from "../../../utils/communication";
 import { ValidateGSTRate } from "../../../utils/validations";
 import Provider from "../../../api/Provider";
 import ErrorIcon from "@mui/icons-material/Error";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
 import { useCookies } from "react-cookie";
@@ -127,7 +127,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchActvityRoles = (UserID: number) => {
@@ -143,7 +143,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchBuyerCategories = (UserID: number) => {
@@ -165,7 +165,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchServicesFromActivity = (UserID: number) => {
@@ -183,7 +183,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServices = (selectedServiceID: number, callbackFunction: any = null) => {
@@ -207,7 +207,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchUnitsFromCategory = (selectedItem: number) => {
@@ -238,7 +238,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchBrands = (UserID: number) => {
@@ -260,7 +260,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
@@ -335,7 +335,7 @@ const BrandPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
@@ -366,6 +366,7 @@ const BrandPage = () => {
   };
 
   const handleBNChange = (event: SelectChangeEvent) => {
+    debugger;
     let bName: string = event.target.value;
     let ac = brandListDropdown.find((el) => el.brandName === bName);
     if (ac !== undefined) {
@@ -427,6 +428,7 @@ const BrandPage = () => {
   };
 
   const handleSubmitClick = () => {
+    debugger;
     let isValid: Boolean = true;
 
     if (sn.trim() === "--Select--") {
@@ -491,6 +493,7 @@ const BrandPage = () => {
   };
 
   const InsertUpdateData = () => {
+    debugger;
     let uosid = 0;
     let uosid2 = 0;
     const objUnits1 = unitOfSalesList.find((el) => {
@@ -522,6 +525,7 @@ const BrandPage = () => {
         DealerID: CookieUserID,
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             InsertUpdateBrandMapping("new");
           } else if (response.data.code === 304) {
@@ -543,6 +547,7 @@ const BrandPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
+      debugger;
       Provider.create("dealerbrand/updatebrandsetup", {
         ID: selectedID,
         BrandID: bnID,
@@ -559,6 +564,7 @@ const BrandPage = () => {
         DealerID: CookieUserID,
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             InsertUpdateBrandMapping("edit");
           } else {
@@ -578,12 +584,13 @@ const BrandPage = () => {
   };
 
   const InsertUpdateBrandMapping = (mode: string) => {
-    let data = buyerCategoryFullData.filter((el) => {
-      return parseFloat(el.BuyerCategoryDiscount) > 0;
-    });
+    debugger;
+    // let data = buyerCategoryFullData.filter((el) => {
+    //   return parseFloat(el.BuyerCategoryDiscount);
+    // });
     let DealerJson = [];
-    data.map(function (a: any, index: number) {
-      DealerJson.push({ BuyerCategoryDiscount: a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
+    buyerCategoryFullData.map(function (a: any, index: number) {
+      DealerJson.push({ BuyerCategoryDiscount: NullOrEmpty(a.BuyerCategoryDiscount) ? 0 : a.BuyerCategoryDiscount, BuyerCategoryID: a.id, DealerBrandID: bnID, DealerID: CookieUserID });
     });
 
     Provider.create(mode === "new" ? "dealerbrand/insertbrandbuyermapping" : "dealerbrand/updatebrandbuyermapping", DealerJson)
@@ -650,6 +657,7 @@ const BrandPage = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: BrandModel | undefined) => {
+    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -679,8 +687,17 @@ const BrandPage = () => {
       setBn(a.brandName);
       setBnID(a.brandID);
       SetResetBrandName(false);
+      debugger;
       setUnitsOfSales(a.unitOfSalesID ? a.unitOfSalesID.toString() : "");
+      
 
+      if(!NullOrEmpty(a.unitOfSalesID) &&  a.unitOfSalesID.toString() != '0') {
+        const unit1NameValue = unitOfSalesList.find((el) => {
+          return el.unit1ID === parseInt(a.unitOfSalesID.toString());
+        });
+
+        setSelectedUnit(unit1NameValue.unit1Name);
+      }
       SetResetUnit(false);
       setGD(a.generalDiscount);
       setIsGDError(false);

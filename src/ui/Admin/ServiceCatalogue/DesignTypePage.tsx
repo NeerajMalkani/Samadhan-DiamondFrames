@@ -33,6 +33,9 @@ import { CategoryModel, DesignTypeModel, ProductModel, ServiceNameModel } from "
 import { communication } from "../../../utils/communication";
 import { designTypeColumns } from "../../../utils/tablecolumns";
 import ListIcon from "@mui/icons-material/List";
+import { AWSImagePath } from "../../../utils/paths";
+import uuid from "react-uuid";
+import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 
 const DesignTypePage = () => {
   let navigate = useNavigate();
@@ -85,6 +88,13 @@ const DesignTypePage = () => {
   const [isDesignTypeError, setIsDesignTypeError] = useState(false);
   const [designTypeError, setDesignTypeError] = useState<string>("");
   const [designTypeName, setDesignTypeName] = useState<string>("");
+
+  const [image, setImage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState("");
+  const [uploadFileUpload, setUploadFileUpload] = useState<any>();
+  const [designButtonText, setDesignButtonText] = useState("Upload Design");
+  const [errorDI, setDIError] = useState(false);
+  const [errorDIText, setDIErrorText] = useState("");
 
   useEffect(() => {
     FetchData("");
@@ -140,7 +150,7 @@ const DesignTypePage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -159,7 +169,7 @@ const DesignTypePage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number) => {
@@ -178,7 +188,7 @@ const DesignTypePage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number) => {
@@ -198,7 +208,7 @@ const DesignTypePage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
@@ -273,73 +283,102 @@ const DesignTypePage = () => {
       setDesignTypeError(communication.BlankDesignType);
     }
 
+    if (uploadedImage.trim() === "") {
+      isValid = false;
+      setDIError(true);
+      setDIErrorText(communication.SelectImage);
+    }
+
     if (isValid) {
-      UpdateData();
+      if (uploadFileUpload !== null) {
+        uploadImage();
+      } else {
+        UpdateData("Success", uploadedImage);
+      }
+
     }
   };
 
-  const UpdateData = () => {
-    setButtonLoading(true);
-    if (actionStatus === "new") {
-      Provider.create("servicecatalogue/insertdesigntype", {
-        DesignTypeName: designTypeName,
-        ServiceID: snID,
-        CategoryID: cnID,
-        ProductID: pnID,
-        Display: display === "Yes",
-      })
-        .then((response: any) => {
-          if (response.data && response.data.code === 200) {
-            FetchData("added");
-            handleCancelClick();
-          }else if (response.data.code === 304) {
-            setSnackbarMessage(communication.ExistsError);
-            setIsSnackbarOpen(true);
-            setSnackbarType("error");
-          }  else {
-            setSnackbarMessage(communication.Error);
-            setSnackbarType("error");
-            setIsSnackbarOpen(true);
-          }
-          setButtonLoading(false);
+  const uploadImage = () => {
+    let imageName: string = uuid();
+    let fileExtension = uploadedImage.split(".").pop();
+    setUploadedImage(imageName + "." + fileExtension);
+    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, UpdateData);
+  };
+
+  const UpdateData = (Status: string, fileName: string) => {
+    if (Status.toLowerCase() === "success") {
+      setButtonLoading(true);
+      if (actionStatus === "new") {
+        Provider.create("servicecatalogue/insertdesigntype", {
+          DesignTypeName: designTypeName,
+          ServiceID: snID,
+          CategoryID: cnID,
+          ProductID: pnID,
+          Display: display === "Yes",
+          DesignImage: AWSImagePath + fileName
         })
-        .catch((e) => {
-          setSnackbarMessage(communication.NetworkError);
-          setSnackbarType("error");
-          setIsSnackbarOpen(true);
-          setButtonLoading(false);
-        });
-    } else if (actionStatus === "edit") {
-      Provider.create("servicecatalogue/updatedesigntype", {
-        ID: dtID,
-        DesignTypeName: designTypeName,
-        ServiceID: snID,
-        CategoryID: cnID,
-        ProductID: pnID,
-        Display: display === "Yes",
-      })
-        .then((response: any) => {
-          if (response.data && response.data.code === 200) {
-            FetchData("updated");
-            handleCancelClick();
-          }else if (response.data.code === 304) {
-            setSnackbarMessage(communication.ExistsError);
-            setIsSnackbarOpen(true);
-            setSnackbarType("error");
-          }  else {
-            setSnackbarMessage(communication.Error);
+          .then((response: any) => {
+            if (response.data && response.data.code === 200) {
+              FetchData("added");
+              handleCancelClick();
+            } else if (response.data.code === 304) {
+              setSnackbarMessage(communication.ExistsError);
+              setIsSnackbarOpen(true);
+              setSnackbarType("error");
+            } else {
+              setSnackbarMessage(communication.Error);
+              setSnackbarType("error");
+              setIsSnackbarOpen(true);
+            }
+            setButtonLoading(false);
+          })
+          .catch((e) => {
+            setSnackbarMessage(communication.NetworkError);
             setSnackbarType("error");
             setIsSnackbarOpen(true);
-          }
-          setButtonLoading(false);
+            setButtonLoading(false);
+          });
+      } else if (actionStatus === "edit") {
+        Provider.create("servicecatalogue/updatedesigntype", {
+          ID: dtID,
+          DesignTypeName: designTypeName,
+          ServiceID: snID,
+          CategoryID: cnID,
+          ProductID: pnID,
+          Display: display === "Yes",
+          DesignImage: AWSImagePath + fileName
         })
-        .catch((e) => {
-          setSnackbarMessage(communication.NetworkError);
-          setSnackbarType("error");
-          setIsSnackbarOpen(true);
-          setButtonLoading(false);
-        });
+          .then((response: any) => {
+            if (response.data && response.data.code === 200) {
+              FetchData("updated");
+              handleCancelClick();
+            } else if (response.data.code === 304) {
+              setSnackbarMessage(communication.ExistsError);
+              setIsSnackbarOpen(true);
+              setSnackbarType("error");
+            } else {
+              setSnackbarMessage(communication.Error);
+              setSnackbarType("error");
+              setIsSnackbarOpen(true);
+            }
+            setButtonLoading(false);
+          })
+          .catch((e) => {
+            setSnackbarMessage(communication.NetworkError);
+            setSnackbarType("error");
+            setIsSnackbarOpen(true);
+            setButtonLoading(false);
+          });
+      }
     }
+    else {
+      setSnackbarMessage(communication.Error);
+      setSnackbarType("error");
+      setIsSnackbarOpen(true);
+      setButtonLoading(false);
+    }
+
   };
 
   const handleCancelClick = () => {
@@ -362,6 +401,13 @@ const DesignTypePage = () => {
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setActionStatus("new");
+
+    setDesignButtonText("Upload Design");
+    setUploadedImage("");
+    setUploadFileUpload(null);
+
+
+
   };
 
   const handelEditAndDelete = (type: string | null, a: DesignTypeModel | undefined) => {
@@ -389,6 +435,9 @@ const DesignTypePage = () => {
       setDisplay(a?.display);
       setButtonDisplay("unset");
       setActionStatus("edit");
+      setUploadedImage(a.designImage.split("/").pop());
+      setDIError(false);
+      setDIErrorText(a.designImage.split("/").pop());
     }
   };
 
@@ -540,6 +589,41 @@ const DesignTypePage = () => {
               }}
             />
           </Grid>
+          <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b> Upload Design</b>
+              <label style={{ color: "#ff0000" }}>*</label>
+            </Typography>
+            <FormControl fullWidth size="small" error={errorDI}>
+              <Grid style={{ display: "flex" }}>
+                <Button size="small" variant="contained" component="label" sx={{ mr: 2 }}>
+                  {designButtonText}
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    //ref={fileInput}
+                    onChange={(e) => {
+                      if (e.currentTarget !== null && e.currentTarget.files !== null) {
+                        setUploadFileUpload(e.currentTarget.files[0]);
+
+                        let FileName = e.currentTarget.files[0].name;
+                        if (FileName !== undefined) {
+                          setDIErrorText(FileName.trim());
+                          setImage(FileName);
+                          setUploadedImage(FileName);
+                        }
+                        setDesignButtonText("Change");
+                        setDIError(false);
+                      }
+                    }}
+                  />
+                </Button>
+                {/* <img alt="" src={image} style={{ width: "48px", height: "36px", border: "1px solid rgba(0,0,0,0.12)", borderRadius: "4px" }} /> */}
+              </Grid>
+              <FormHelperText>{errorDIText}</FormHelperText>
+            </FormControl>
+          </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b>Display</b>
@@ -572,7 +656,7 @@ const DesignTypePage = () => {
             ) : (
               <div style={{ height: 500, width: "100%" }}>
                 {designTypeList.length === 0 ? (
-                 <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
