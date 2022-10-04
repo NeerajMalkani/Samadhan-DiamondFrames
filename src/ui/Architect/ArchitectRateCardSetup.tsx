@@ -89,12 +89,14 @@ const ArchitectRateCardSetup = () => {
   const [dialogText, setDialogText] = useState<string>("");
 
   const [categoryListFilter, setCategoryListFilter] = useState<Array<CategoryModel>>([]); // useContext(DataContext).categoryList;
+  const [productListFilter, setProductListFilter] = useState<Array<ProductModel>>([]); // useContext(DataContext).categoryList;
   const [snFilter, setSnFilter] = useState("--Select--");
 
   const [cnFilter, setCnFilter] = useState("--Select--");
+  const [pnFilter, setPnFilter] = useState("--Select--");
   const [searchQuery, setSearchQuery] = useState("");
 
- 
+
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   const FetchData = (type: string) => {
@@ -111,7 +113,7 @@ const ArchitectRateCardSetup = () => {
               a = Object.assign(a, id);
               return a;
             });
-            
+
             setServiceProductList(arrList);
             setProductListTemp(arrList);
             if (type !== "") {
@@ -150,7 +152,7 @@ const ArchitectRateCardSetup = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -169,7 +171,7 @@ const ArchitectRateCardSetup = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
@@ -186,13 +188,14 @@ const ArchitectRateCardSetup = () => {
               return el.display;
             });
             setCategoryList(response.data.data);
+
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
             }
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServicesFilter = (selectedActivityID: number, selectedServiceID: number) => {
@@ -215,10 +218,11 @@ const ArchitectRateCardSetup = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
+    debugger;
     let params = {
       ActivityID: selectedActivityID,
       ServiceID: selectedServiceID,
@@ -226,19 +230,20 @@ const ArchitectRateCardSetup = () => {
     };
     Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = response.data.data.filter((el: any) => {
               return el.display;
             });
-            setProductList(response.data.data);
+            setProductListFilter(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
             }
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchUnitsFromProduct = (selectedID: number) => {
@@ -259,7 +264,7 @@ const ArchitectRateCardSetup = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   useEffect(() => {
@@ -284,15 +289,35 @@ const ArchitectRateCardSetup = () => {
   };
 
   const handleCNChangeFilter = (event: SelectChangeEvent) => {
+    debugger;
     let categoryName: string = event.target.value;
     let ac = categoryListFilter.find((el) => el.categoryName === categoryName);
+    let sn = serviceNameList.find((el) => el.serviceName === snFilter);
+    let snid = 0;
+    if (sn !== undefined) {
+      snid = sn.id;
+    }
     if (ac !== undefined) {
       setCnFilter(categoryName);
       // setCnIDFilter(ac.id);
       SetFilters(snFilter, categoryName, searchQuery);
+      FetchProductsFromCategory(arnID, snid, ac.id, null);
     } else {
       setCnFilter("--Select--");
       SetFilters(snFilter, categoryName, searchQuery);
+    }
+  };
+
+  const handlePNChangeFilter = (event: SelectChangeEvent) => {
+    debugger;
+    let productName: string = event.target.value;
+    let pc = productListFilter.find((el) => el.productName === productName);
+    if (pc !== undefined) {
+      setPnFilter(productName);
+      SetFilters(snFilter,cnFilter , productName);
+    } else {
+      setPnFilter("--Select--");
+      SetFilters(snFilter, cnFilter, productName);
     }
   };
 
@@ -329,11 +354,11 @@ const ArchitectRateCardSetup = () => {
     // }
   };
 
-  const SetFilters = (snText: string, cnText: string, searcText: string) => {
+  const SetFilters = (snText: string, cnText: string, pnText: string) => {
     setProductListTemp(serviceProductList);
     let ArrOfData: any = [];
 
-    if (snText === "--Select--" && cnText === "--Select--" && searcText === "") {
+    if (snText === "--Select--" && cnText === "--Select--" && pnText === "--Select--") {
       ArrOfData = serviceProductList;
     }
 
@@ -349,17 +374,23 @@ const ArchitectRateCardSetup = () => {
       });
     }
 
-    if (searchQuery !== "") {
-      if (snText === "--Select--" || cnText === "--Select--") {
-        ArrOfData = serviceProductList.filter((el: ProductModel) => {
-          return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
-        });
-      } else {
-        ArrOfData = ArrOfData.filter((el: ProductModel) => {
-          return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
-        });
-      }
+    if (pnText !== "--Select--") {
+      ArrOfData = ArrOfData.filter((el: ProductModel) => {
+        return el.productName.toString().toLowerCase().includes(pnText.toLowerCase());
+      });
     }
+
+    // if (searchQuery !== "") {
+    //   if (snText === "--Select--" || cnText === "--Select--") {
+    //     ArrOfData = serviceProductList.filter((el: ProductModel) => {
+    //       return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
+    //     });
+    //   } else {
+    //     ArrOfData = ArrOfData.filter((el: ProductModel) => {
+    //       return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
+    //     });
+    //   }
+    // }
 
     setProductListTemp(ArrOfData);
   };
@@ -380,46 +411,46 @@ const ArchitectRateCardSetup = () => {
             <Typography variant="h6">Service Product (Search & Filter)</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1, borderWidth: 1, borderColor: theme.palette.divider }}>
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Service Name</b>
-                        </Typography>
-                        <Select fullWidth value={snFilter} onChange={handleSNChangeFilter}>
-                          <MenuItem key={0} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {serviceNameList.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.serviceName}>
-                                {item.serviceName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </Grid>
+            <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Service Name</b>
+              </Typography>
+              <Select fullWidth value={snFilter} onChange={handleSNChangeFilter}>
+                <MenuItem key={0} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {serviceNameList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.serviceName}>
+                      {item.serviceName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Grid>
 
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Category Name</b>
-                        </Typography>
-                        <Select fullWidth value={cnFilter} onChange={handleCNChangeFilter}>
-                          <MenuItem key={0} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {categoryListFilter.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.categoryName}>
-                                {item.categoryName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </Grid>
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Product Name</b>
-                        </Typography>
-                        <TextField
+            <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Category Name</b>
+              </Typography>
+              <Select fullWidth value={cnFilter} onChange={handleCNChangeFilter}>
+                <MenuItem key={0} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {categoryListFilter.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.categoryName}>
+                      {item.categoryName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Grid>
+            <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b>Product Name</b>
+              </Typography>
+              {/* <TextField
                           fullWidth
                           placeholder="Search"
                           variant="outlined"
@@ -435,22 +466,36 @@ const ArchitectRateCardSetup = () => {
                               </InputAdornment>
                             ),
                           }}
-                        />
-                      </Grid>
-                      <Button
-                        // sx={{ mt: 0.5 }}
-                        variant="text"
-                        onClick={() => {
-                          setSnFilter("--Select--");
-                          setCategoryListFilter([]);
-                          setCnFilter("--Select--");
-                          setSearchQuery("");
-                          SetFilters("--Select--", "--Select--", "");
-                        }}
-                      >
-                        Clear
-                      </Button>
-                    </Grid>
+                        /> */}
+              <Select fullWidth value={pnFilter} onChange={handlePNChangeFilter}>
+                <MenuItem key={0} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {productListFilter.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.productName}>
+                      {item.productName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Grid>
+            <Button
+              // sx={{ mt: 0.5 }}
+              variant="text"
+              onClick={() => {
+                setSnFilter("--Select--");
+                setCategoryListFilter([]);
+                setProductListFilter([]);
+                setCnFilter("--Select--");
+                setPnFilter("--Select--");
+                setSearchQuery("");
+                SetFilters("--Select--", "--Select--", "--Select--");
+              }}
+            >
+              Clear
+            </Button>
+          </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6" sx={{ mt: 2 }}>
               Service Product List
@@ -486,7 +531,7 @@ const ArchitectRateCardSetup = () => {
                         if (a) {
                           const clickType = (e.target as any).textContent;
 
-                        //   if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
+                          //   if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
 
                           if (clickType.toLowerCase() === "view specification" && a.specification !== "") {
                             setDialogText(a.specification);

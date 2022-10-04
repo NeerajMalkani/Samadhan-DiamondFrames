@@ -38,7 +38,7 @@ import { GetStringifyJson } from "../../../utils/CommonFunctions";
 // }))
 
 
-let s_ID = 0, c_ID = 0, sp_ID = 0 ,us_ID =0;
+let s_ID = 0, c_ID = 0, sp_ID = 0, us_ID = 0;
 
 const AddRateCard = () => {
 
@@ -144,15 +144,160 @@ const AddRateCard = () => {
     //#endregion
 
     useEffect(() => {
-        FetchData("");
-        FetchServiceName();
+        FetchActvityRoles();
+        //FetchServiceName();
         // FetchCategory();
         // FetchServiceProductName();
         // FetchUnitOfSalesName();
 
     }, []);
 
- 
+    const FetchActvityRoles = () => {
+        Provider.getAll("master/getmainactivities")
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        response.data.data = response.data.data.filter((el: any) => {
+                            return el.display && el.activityRoleName === "Contractor";
+                        });
+                        setArnID(response.data.data[0].id);
+                    }
+
+                    FetchServiceName();
+                }
+            })
+            .catch((e) => { });
+    };
+
+    const FetchServiceName = () => {
+        let params = {
+            ContractorID: cookies.dfc.UserID,
+        };
+
+        Provider.getAll(`master/getcontractoractiveservices?${new URLSearchParams(GetStringifyJson(params))}`)
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        const serviceName: any = [];
+                        response.data.data.map((data: any, i: number) => {
+                            serviceName.push({
+                                id: data.id,
+                                label: data.locationName,
+                            });
+                        });
+                        setServiceNameFullData(serviceName);
+                        if (s_ID > 0) {
+                            let a = serviceName.filter((el) => {
+                                return el.id === s_ID;
+                            });
+                            setSelectedServiceName(a[0].label);
+                            setServiceNameID(s_ID);
+                        }
+                    }
+                }
+            })
+            .catch((e) => { });
+    };
+
+
+    const FetchCategory = () => {
+        debugger;
+        let params = {
+            ActivityID: arnID,
+            ServiceID: serviceNameID,
+        };
+        Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+            .then((response: any) => {
+                debugger;
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        const category: any = [];
+                        response.data.data.map((data: any, i: number) => {
+                            category.push({
+                                id: data.id,
+                                label: data.categoryName,
+                            });
+                        });
+                        setCategoryFullData(category);
+                        if (c_ID > 0) {
+                            let a = category.filter((el) => {
+                                return el.id === c_ID;
+                            });
+                            setSelectedCategory(a[0].label);
+                        }
+                    }
+                }
+            })
+            .catch((e) => { });
+    };
+
+    const FetchServiceProductName = () => {
+        let params = {
+            ActivityID: arnID,
+            ServiceID: serviceNameID,
+            CategoryID: categoryID,
+        };
+
+        Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        const serviceProduct: any = [];
+                        response.data.data.map((data: any, i: number) => {
+                            serviceProduct.push({
+                                id: data.id,
+                                label: data.productName,
+                            });
+                        });
+                        setServiceProductNameFullData(serviceProduct);
+                        if (sp_ID > 0) {
+                            let a = serviceProduct.filter((el) => {
+                                return el.id === sp_ID;
+                            });
+                            setSelectedServiceProductName(a[0].label);
+                        }
+                    }
+                }
+            })
+            .catch((e) => { });
+    };
+
+
+    const FetchUnitOfSalesName = () => {
+        let params = {
+            ProductID: serviceProductNameID,
+        };
+        Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        const unitSales: any = [];
+                        response.data.data.map((data: any, i: number) => {
+                            unitSales.push({
+                                id: data.id,
+                                label: data.productName,
+                            });
+                        });
+                        setUnitOfSalesFullData(unitSales);
+                        if (us_ID > 0) {
+                            let a = unitSales.filter((el) => {
+                                return el.id === us_ID;
+                            });
+                            setSelectedUnitOfSales(a[0].label);
+                            
+                        }
+                        else if (serviceProductNameID !== 0) {
+                            let a = unitSales.filter((el) => {
+                                return el.id === serviceProductNameID;
+                            });
+                            setSelectedUnitOfSales(a[0].label);
+                        }
+                    }
+                }
+            })
+            .catch((e) => { });
+    };
+
 
     const handleServiceNameChange = (event: SelectChangeEvent) => {
         let locationName: string = event.target.value;
@@ -187,147 +332,22 @@ const AddRateCard = () => {
             isSetServiceProductNameError(false);
             setServiceProductNameError("");
             FetchUnitOfSalesName();
-            
+
         }
     };
-    
+
     const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDisplay((event.target as HTMLInputElement).value);
     };
 
-    const FetchServiceName = () => {
-        let params = {
-            ContractorID: cookies.dfc.UserID,
-        };
 
-        Provider.getAll(`master/getcontractoractiveservices?${new URLSearchParams(GetStringifyJson(params))}`)
-            .then((response: any) => {
-                if (response.data && response.data.code === 200) {
-                    if (response.data.data) {
-                        const serviceName: any = [];
-                        response.data.data.map((data: any, i: number) => {
-                            serviceName.push({
-                                id: data.id,
-                                label: data.locationName,
-                            });
-                        });
-                        setServiceNameFullData(serviceName);
-                        if (s_ID > 0) {
-                            let a = serviceName.filter((el) => {
-                                return el.id === s_ID;
-                            });
-                            setSelectedServiceName(a[0].label);
-                        }
-                    }
-                }
-            })
-            .catch((e) => { });
-    };
 
-    const FetchActvityRoles = () => {
-        Provider.getAll("master/getmainactivities")
-            .then((response: any) => {
-                if (response.data && response.data.code === 200) {
-                    if (response.data.data) {
-                        response.data.data = response.data.data.filter((el: any) => {
-                            return el.display && el.activityRoleName === "Contractor";
-                        });
-                        setArnID(response.data.data[0].id);
-                    }
-                }
-            })
-            .catch((e) => { });
-    };
 
-    const FetchCategory = () => {
-        let params = {
-            ActivityID: arnID,
-            ServiceID: serviceNameID,
-        };
-        Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
-            .then((response: any) => {
-                if (response.data && response.data.code === 200) {
-                    if (response.data.data) {
-                        const category: any = [];
-                        response.data.data.map((data: any, i: number) => {
-                            category.push({
-                                id: data.id,
-                                label: data.locationName,
-                            });
-                        });
-                        setCategoryFullData(category);
-                        if (c_ID > 0) {
-                            let a = category.filter((el) => {
-                                return el.id === c_ID;
-                            });
-                            setSelectedCategory(a[0].label);
-                        }
-                    }
-                }
-            })
-            .catch((e) => { });
-    };
 
-    const FetchServiceProductName = () => {
-        let params = {
-            ActivityID: arnID,
-            ServiceID: serviceNameID,
-            CategoryID: categoryID,
-        };
 
-        Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
-            .then((response: any) => {
-                if (response.data && response.data.code === 200) {
-                    if (response.data.data) {
-                        const serviceProduct: any = [];
-                        response.data.data.map((data: any, i: number) => {
-                            serviceProduct.push({
-                                id: data.id,
-                                label: data.locationName,
-                            });
-                        });
-                        setServiceProductNameFullData(serviceProduct);
-                        if (sp_ID > 0) {
-                            let a = serviceProduct.filter((el) => {
-                                return el.id === sp_ID;
-                            });
-                            setSelectedServiceProductName(a[0].label);
-                        }
-                    }
-                }
-            })
-            .catch((e) => { });
-    };
 
-    const FetchUnitOfSalesName = () => {
-        let params = {
-            ProductID:serviceProductNameID,
-        };
-        Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
-            .then((response: any) => {
-                if (response.data && response.data.code === 200) {
-                    if (response.data.data) {
-                        const unitSales: any = [];
-                        response.data.data.map((data: any, i: number) => {
-                            unitSales.push({
-                                id: data.id,
-                                label: data.locationName,
-                            });
-                        });
-                        setUnitOfSalesFullData(unitSales);
-                        if (us_ID > 0) {
-                            let a = unitSales.filter((el) => {
-                                return el.id === us_ID;
-                            });
-                            setSelectedUnitOfSales(a[0].label);
-                        }
-                    }
-                }
-            })
-            .catch((e) => { });
-    };
 
-  
+
 
 
     function ResetFields() {
@@ -355,49 +375,6 @@ const AddRateCard = () => {
 
 
     }
-
-    const FetchData = (type: string) => {
-        debugger;
-        let params = {
-            // AddedByUserID: cookies.dfc.UserID,
-        };
-        ResetFields();
-        Provider.getAll(`contractorquotationestimation/getclients?${new URLSearchParams(GetStringifyJson(params))}`)
-
-            .then((response: any) => {
-                debugger;
-                if (response.data && response.data.code === 200) {
-                    if (response.data.data) {
-                        const arrList = [...response.data.data];
-                        arrList.map(function (a: any, index: number) {
-                            a.display = a.display ? "Yes" : "No";
-                            a.material = a.material ? "Create" : "Add";
-                            let sr = { srno: index + 1 };
-                            a = Object.assign(a, sr);
-                        });
-                        // setRateCardList(arrList);
-                        // setRateCardListTemp(arrList);
-                        // if (type !== "") {
-                        //   setSnackMsg("Activity role " + type);
-                        //   setOpen(true);
-                        //   setSnackbarType("success");
-                        // }
-                    }
-                } else {
-                    setSnackbarType("info");
-                    setSnackMsg(communication.NoData);
-                    setOpen(true);
-                }
-                setLoading(false);
-            })
-            .catch((e) => {
-                setLoading(false);
-                setSnackbarType("error");
-                setSnackMsg(communication.NetworkError);
-                setOpen(true);
-            });
-    }
-
 
     const handleSubmitClick = () => {
 
@@ -462,44 +439,43 @@ const AddRateCard = () => {
 
     const InsertUpdateData = () => {
         if (actionStatus === "new") {
-          Provider.create("master/insertupdatecontractorratecard", {
-            RateCardID:rateCardID,
-            ProductID:serviceProductNameID,
-            ActivityID:arnID,
-            ServiceID:serviceNameID,
-            CategoryID:categoryID,
-            SelectedUnitID:selectedUnitOfSales,
-            UnitOfSalesID:unitOfSalesID,
-            RateWithMaterials:materialRate,
-            RateWithoutMaterials:withoutMaterialRate,
-            AlternateUnitOfSales:alternativeUnit,
-            ShortSpecification:shortSpecification,
-            Specification:specificationSP,
-            Display:display,
-            ContractorID:cookies.dfc.UserID
-          })
-            .then((response) => {
-              if (response.data && response.data.code === 200) {
-                FetchData("added");
-              }else if (response.data.code === 304) {
-                setSnackMsg(communication.ExistsError);
-                setOpen(true);
-                setSnackbarType("error");
-                ResetFields();
-              }  else {
-                ResetFields();
-                setSnackMsg(communication.Error);
-                setSnackbarType("error");
-                setOpen(true);
-              }
+            Provider.create("master/insertupdatecontractorratecard", {
+                RateCardID: rateCardID,
+                ProductID: serviceProductNameID,
+                ActivityID: arnID,
+                ServiceID: serviceNameID,
+                CategoryID: categoryID,
+                SelectedUnitID: selectedUnitOfSales,
+                UnitOfSalesID: unitOfSalesID,
+                RateWithMaterials: materialRate,
+                RateWithoutMaterials: withoutMaterialRate,
+                AlternateUnitOfSales: alternativeUnit,
+                ShortSpecification: shortSpecification,
+                Specification: specificationSP,
+                Display: display,
+                ContractorID: cookies.dfc.UserID
             })
-            .catch((e) => {
-              ResetFields();
-              setSnackMsg(communication.NetworkError);
-              setSnackbarType("error");
-              setOpen(true);
-            });
-        } 
+                .then((response) => {
+                    if (response.data && response.data.code === 200) {
+                    } else if (response.data.code === 304) {
+                        setSnackMsg(communication.ExistsError);
+                        setOpen(true);
+                        setSnackbarType("error");
+                        ResetFields();
+                    } else {
+                        ResetFields();
+                        setSnackMsg(communication.Error);
+                        setSnackbarType("error");
+                        setOpen(true);
+                    }
+                })
+                .catch((e) => {
+                    ResetFields();
+                    setSnackMsg(communication.NetworkError);
+                    setSnackbarType("error");
+                    setOpen(true);
+                });
+        }
         // else if (actionStatus === "edit") {
         //   Provider.create("servicecatalogue/updateworkfloor", {
         //     // ID: selectedID,
@@ -528,329 +504,331 @@ const AddRateCard = () => {
         //       setOpen(true);
         //     });
         // }
-      };
-    
-      
-    
+    };
 
 
-// const isSPRError = useState(false);
-// const sprError = useState("");
 
-// const serviceType = useState([
-//     { key: "Vendor", isSelected: false, id: 1 },
-//     { key: "Supplier", isSelected: false, id: 2 },
-//     { key: "Client", isSelected: false, id: 3 },
-// ]);
 
-// const design = (
-//     <>
 
-return (
-    <Box sx={{ mt: 11 }}>
-        <Header />
-        <Container maxWidth="lg" >
-            <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} >
-                <Grid item xs={4} sm={8} md={12}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h4">RATE CARD </Typography>
-                        <Button variant="contained" startIcon={<VisibilityIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/master/ratecardsetup")}>View</Button>
-                    </Stack>
+    // const isSPRError = useState(false);
+    // const sprError = useState("");
 
-                </Grid>
-                <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)" }}>
-                    <Typography variant="h6">RATE CARD (ADD)</Typography>
-                </Grid>
-                <Grid item md={9} >
-                    <Grid container sx={{ mt: 2 }} alignItems="center" >
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>Service Name</b>
-                            </Typography>
+    // const serviceType = useState([
+    //     { key: "Vendor", isSelected: false, id: 1 },
+    //     { key: "Supplier", isSelected: false, id: 2 },
+    //     { key: "Client", isSelected: false, id: 3 },
+    // ]);
+
+    // const design = (
+    //     <>
+
+    return (
+        <Box sx={{ mt: 11 }}>
+            <Header />
+            <Container maxWidth="lg" >
+                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} >
+                    <Grid item xs={4} sm={8} md={12}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Typography variant="h4">RATE CARD </Typography>
+                            <Button variant="contained" startIcon={<VisibilityIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/master/ratecardsetup")}>View</Button>
+                        </Stack>
+
+                    </Grid>
+                    <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)" }}>
+                        <Typography variant="h6">RATE CARD (ADD)</Typography>
+                    </Grid>
+                    <Grid item md={9} >
+                        <Grid container sx={{ mt: 2 }} alignItems="center" >
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>Service Name</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={8}>
+                                <FormControl fullWidth size="small" error={isServiceNameError}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={serviceNameFullData}
+                                        //sx={{ width: 300 }}
+                                        onChange={(event: React.SyntheticEvent, value: any) => {
+                                            isSetServiceNameError(false);
+                                            setServiceNameError("");
+                                            if (value !== null) {
+                                                setSelectedServiceName(value.label);
+                                                setServiceNameID(value.id);
+                                            }
+                                            FetchCategory();
+                                        }}
+                                        value={selectedServiceName}
+                                        renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isServiceNameError} helperText={serviceNameError} />}
+                                    />
+                                    <FormHelperText>{serviceNameError}</FormHelperText>
+                                </FormControl>
+                            </Grid>
                         </Grid>
-                        <Grid item md={8}>
-                            <FormControl fullWidth size="small" error={isServiceNameError}>
-                                <Autocomplete
+                        <Grid container sx={{ mt: 2 }} alignItems="center" >
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>Category Name</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={8}>
+                                <FormControl fullWidth size="small" error={isCategoryError}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={categoryFullData}
+                                        //sx={{ width: 300 }}
+                                        onChange={(event: React.SyntheticEvent, value: any) => {
+                                            debugger;
+                                            isSetCategoryError(false);
+                                            setCategoryError("");
+                                            if (value !== null) {
+                                                setSelectedCategory(value.label);
+                                                setCategoryID(value.id);
+                                            }
+
+                                            setHSN(value.hsnsaCCode);
+                                            setGstRate(value.gstRate);
+                                            FetchServiceProductName();
+                                        }}
+                                        value={selectedCategory}
+                                        renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCategoryError} helperText={categoryError} />}
+                                    />
+                                    <FormHelperText>{categoryError}</FormHelperText>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                        <Grid container sx={{ mt: 2 }} alignItems="center">
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>HSN / SAC Code</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={3}>
+                                <TextField
                                     fullWidth
-                                    options={serviceNameFullData}
-                                    //sx={{ width: 300 }}
-                                    onChange={(event: React.SyntheticEvent, value: any) => {
-                                        isSetServiceNameError(false);
-                                        setServiceNameError("");
-                                        if (value !== null) {
-                                            setSelectedServiceName(value.label);
-                                            setServiceNameID(value.id);
-                                        }
-                                    }}
-                                    value={selectedServiceName}
-                                    renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isServiceNameError} helperText={serviceNameError} />}
-                                />
-                                <FormHelperText>{serviceNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center" >
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>Category Name</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={8}>
-                            <FormControl fullWidth size="small" error={isCategoryError}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={categoryFullData}
-                                    //sx={{ width: 300 }}
-                                    onChange={(event: React.SyntheticEvent, value: any) => {
-                                        isSetCategoryError(false);
-                                        setCategoryError("");
-                                        if (value !== null) {
-                                            setSelectedCategory(value.label);
-                                            setCategoryID(value.id);
-                                        }
-                                    }}
-                                    value={selectedCategory}
-                                    renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCategoryError} helperText={categoryError} />}
-                                />
-                                <FormHelperText>{categoryError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center">
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>HSN / SAC Code</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={3}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                onChange={(e) => {
-                                    setHSN((e.target as HTMLInputElement).value);
-                                    isSetHSNError(false);
-                                    setHSNErrorText("");
-                                }}
-                                error={isHsnError}
-                                helperText={hsnErrorText}
-                                value={hsn}
-                            />
-                        </Grid>
-                        <Grid item md={3} >
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>GST Rate (%)</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={2}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                onChange={(e) => {
-                                    setGstRate((e.target as HTMLInputElement).value);
-                                    isSetGstRateError(false);
-                                    setGstRateErrorText("");
-                                }}
-                                error={isGstRateError}
-                                helperText={gstRateErrorText}
-                                value={gstRate}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center" >
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>Service Product Name</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={8}>
-                            <FormControl fullWidth size="small" error={isServiceProductNameError}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={serviceProductNameFullData}
-                                    //sx={{ width: 300 }}
-                                    onChange={(event: React.SyntheticEvent, value: any) => {
-                                        isSetServiceProductNameError(false);
-                                        setServiceProductNameError("");
-                                        if (value !== null) {
-                                            setServiceProductName(value.label)
-                                            setServiceProductNameID(value.id);
-                                        }
-                                    }}
-                                    value={serviceProductName}
-                                    renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isServiceProductNameError} helperText={serviceProductNameError} />}
-                                />
-                                <FormHelperText>{serviceProductNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center" >
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>Unit of Sales</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={8}>
-                            <FormControl fullWidth size="small" error={isUnitOfSalesError}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={unitOfSalesFullData}
-                                    //sx={{ width: 300 }}
-                                    onChange={(event: React.SyntheticEvent, value: any) => {
-                                        isSetUnitOfSalesError(false);
-                                        setSelectedUnitOfSales("");
-                                        if (value !== null) {
-                                            setUnitOfSales(value.label);
-                                            setUnitOfSalesID(value.id);
-                                        }
-                                    }}
-                                    value={unitOfSales}
-                                    renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isUnitOfSalesError} helperText={unitOfSalesError} />}
-                                />
-                                <FormHelperText>{unitOfSalesError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center">
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>WITH MATERIALS Rate / Unit</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={2}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                onChange={(e) => {
-                                    setMaterialRate((e.target as HTMLInputElement).value);
-                                    isSetMaterialRateError(false);
-                                    setMaterialRateErrorText("");
-                                }}
-                                error={isMaterialRateError}
-                                helperText={materialRateErrorText}
-                                value={materialRate}
-                            />
-                        </Grid>
-                        <Grid item md={4} >
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={2}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                onChange={(e) => {
-                                    setAlternativeRate((e.target as HTMLInputElement).value);
-                                    isSetAlternativeRateError(false);
-                                    setAlternativeRateErrorText("");
-                                }}
-                                error={isAlternativeRateError}
-                                helperText={alternativeRateErrorText}
-                                value={alternativeRate}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center">
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>WITHOUT MATERIALS Rate / Unit</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={2}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                onChange={(e) => {
-                                    setWithoutMaterialRate((e.target as HTMLInputElement).value);
-                                    isSetWithoutMaterialRateError(false);
-                                    setWithoutMaterialRateErrorText("");
-                                }}
-                                error={isWithoutMaterialRateError}
-                                helperText={withoutMaterialRateErrorText}
-                                value={withoutMaterialRate}
-                            />
-                        </Grid>
-                        <Grid item md={4} >
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={2}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                onChange={(e) => {
-                                    setAlternativeUnit((e.target as HTMLInputElement).value);
-                                    isSetAlternativeUnitError(false);
-                                    setAlternativeUnitErrorText("");
-                                }}
-                                error={isAlternativeUnitError}
-                                helperText={alternativeUnitErrorText}
-                                value={alternativeUnit}
-                            />
-                        </Grid>
-                    </Grid>
+                                    variant="outlined"
+                                    size="small"
 
-                    <Grid container sx={{ mt: 2 }} alignItems="center" >
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>Short Specification</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item md={8}>
-                            <TextField
-                                fullWidth
-                                id="filled-textarea"
-                                placeholder=""
-                                multiline
-                                maxRows={3}
-                                variant="outlined"
-                                onChange={(e) => {
-                                    setShortSpecification((e.target as HTMLInputElement).value);
-                                    isSetShortSpecificationError(false);
-                                    setShortSpecificationErrorText("");
-                                }}
-                                error={isShortSpecificationError}
-                                helperText={shortSpecificationErrorText}
-                                value={shortSpecification}
+                                    error={isHsnError}
+                                    helperText={hsnErrorText}
+                                    value={hsn}
+                                />
+                            </Grid>
+                            <Grid item md={3} >
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>GST Rate (%)</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={2}>
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
 
-                            />
+                                    error={isGstRateError}
+                                    helperText={gstRateErrorText}
+                                    value={gstRate}
+                                />
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center" >
-                        <Grid item md={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b><label style={{ color: "#ff0000" }}>*</label>Specification of Service Provider</b>
-                            </Typography>
+                        <Grid container sx={{ mt: 2 }} alignItems="center" >
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>Service Product Name</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={8}>
+                                <FormControl fullWidth size="small" error={isServiceProductNameError}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={serviceProductNameFullData}
+                                        //sx={{ width: 300 }}
+                                        onChange={(event: React.SyntheticEvent, value: any) => {
+                                            isSetServiceProductNameError(false);
+                                            setServiceProductNameError("");
+                                            if (value !== null) {
+                                                setServiceProductName(value.label)
+                                                setServiceProductNameID(value.id);
+                                            }
+                                            FetchUnitOfSalesName();
+                                        }}
+                                        value={serviceProductName}
+                                        renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isServiceProductNameError} helperText={serviceProductNameError} />}
+                                    />
+                                    <FormHelperText>{serviceProductNameError}</FormHelperText>
+                                </FormControl>
+                            </Grid>
                         </Grid>
-                        <Grid item md={8}>
-                            <TextField
-                                fullWidth
-                                id="filled-textarea"
-                                placeholder=""
-                                multiline
-                                maxRows={3}
-                                variant="outlined"
-                                onChange={(e) => {
-                                    setSpecificationSP((e.target as HTMLInputElement).value);
-                                    isSetSpecificationSPError(false);
-                                    setSpecificationSPErrorText("");
-                                }}
-                                error={isSpecificationSPError}
-                                helperText={specificationSPErrorText}
-                                value={specificationSP}
+                        <Grid container sx={{ mt: 2 }} alignItems="center" >
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>Unit of Sales</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={8}>
+                                <FormControl fullWidth size="small" error={isUnitOfSalesError}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={unitOfSalesFullData}
+                                        //sx={{ width: 300 }}
+                                        onChange={(event: React.SyntheticEvent, value: any) => {
+                                            isSetUnitOfSalesError(false);
+                                            setSelectedUnitOfSales("");
+                                            if (value !== null) {
+                                                setUnitOfSales(value.label);
+                                                setUnitOfSalesID(value.id);
 
-                            />
+                                                
+
+                                            }
+                                        }}
+                                        value={unitOfSales}
+                                        renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isUnitOfSalesError} helperText={unitOfSalesError} />}
+                                    />
+                                    <FormHelperText>{unitOfSalesError}</FormHelperText>
+                                </FormControl>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid container sx={{ mt: 2 }} alignItems="center">
-                        {/* <FormControl component="fieldset" error={isSPRError[0]}>
+                        <Grid container sx={{ mt: 2 }} alignItems="center">
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>WITH MATERIALS Rate / Unit</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={2}>
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={(e) => {
+                                        setMaterialRate((e.target as HTMLInputElement).value);
+                                        isSetMaterialRateError(false);
+                                        setMaterialRateErrorText("");
+                                    }}
+                                    error={isMaterialRateError}
+                                    helperText={materialRateErrorText}
+                                    value={materialRate}
+                                />
+                            </Grid>
+                            <Grid item md={4} >
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={2}>
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={(e) => {
+                                        setAlternativeRate((e.target as HTMLInputElement).value);
+                                        isSetAlternativeRateError(false);
+                                        setAlternativeRateErrorText("");
+                                    }}
+                                    error={isAlternativeRateError}
+                                    helperText={alternativeRateErrorText}
+                                    value={alternativeRate}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid container sx={{ mt: 2 }} alignItems="center">
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>WITHOUT MATERIALS Rate / Unit</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={2}>
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={(e) => {
+                                        setWithoutMaterialRate((e.target as HTMLInputElement).value);
+                                        isSetWithoutMaterialRateError(false);
+                                        setWithoutMaterialRateErrorText("");
+                                    }}
+                                    error={isWithoutMaterialRateError}
+                                    helperText={withoutMaterialRateErrorText}
+                                    value={withoutMaterialRate}
+                                />
+                            </Grid>
+                            <Grid item md={4} >
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={2}>
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={(e) => {
+                                        setAlternativeUnit((e.target as HTMLInputElement).value);
+                                        isSetAlternativeUnitError(false);
+                                        setAlternativeUnitErrorText("");
+                                    }}
+                                    error={isAlternativeUnitError}
+                                    helperText={alternativeUnitErrorText}
+                                    value={alternativeUnit}
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <Grid container sx={{ mt: 2 }} alignItems="center" >
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>Short Specification</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={8}>
+                                <TextField
+                                    fullWidth
+                                    id="filled-textarea"
+                                    placeholder=""
+                                    multiline
+                                    maxRows={3}
+                                    variant="outlined"
+                                    onChange={(e) => {
+                                        setShortSpecification((e.target as HTMLInputElement).value);
+                                        isSetShortSpecificationError(false);
+                                        setShortSpecificationErrorText("");
+                                    }}
+                                    error={isShortSpecificationError}
+                                    helperText={shortSpecificationErrorText}
+                                    value={shortSpecification}
+
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid container sx={{ mt: 2 }} alignItems="center" >
+                            <Grid item md={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b><label style={{ color: "#ff0000" }}>*</label>Specification of Service Provider</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item md={8}>
+                                <TextField
+                                    fullWidth
+                                    id="filled-textarea"
+                                    placeholder=""
+                                    multiline
+                                    maxRows={3}
+                                    variant="outlined"
+                                    onChange={(e) => {
+                                        setSpecificationSP((e.target as HTMLInputElement).value);
+                                        isSetSpecificationSPError(false);
+                                        setSpecificationSPErrorText("");
+                                    }}
+                                    error={isSpecificationSPError}
+                                    helperText={specificationSPErrorText}
+                                    value={specificationSP}
+
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid container sx={{ mt: 2 }} alignItems="center">
+                            {/* <FormControl component="fieldset" error={isSPRError[0]}>
                             <FormLabel component="legend">Service Provider Role</FormLabel>
                             <FormGroup aria-label="position" row>
                                 {serviceType[0].map((data, index) => {
@@ -882,31 +860,31 @@ return (
                              </FormGroup>
                             <FormHelperText>{sprError[0]}</FormHelperText>
                         </FormControl> */}
+                        </Grid>
+                        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                            <Grid item sm={3}>
+                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                    <b >  Dispaly</b>
+                                </Typography>
+                            </Grid>
+                            <Grid item sm={8}>
+                                <FormControl>
+                                    <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+                                        <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                        <FormControlLabel value="No" control={<Radio />} label="No" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
-                        <Grid item sm={3}>
-                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                <b >  Dispaly</b>
-                            </Typography>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl>
-                                <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
-                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="No" control={<Radio />} label="No" />
-                                </RadioGroup>
-                            </FormControl>
-                        </Grid>
+                    <Grid container sx={{ mt: 2, mb: 10 }} alignItems="center" direction="row" justifyContent="center">
+                        <Button variant="contained" onClick={handleSubmitClick}>Submit</Button>
                     </Grid>
                 </Grid>
-                <Grid container sx={{ mt: 2, mb: 10 }} alignItems="center" direction="row" justifyContent="center">
-                    <Button variant="contained" onClick={handleSubmitClick}>Submit</Button>
-                </Grid>
-            </Grid>
 
-        </Container>
-    </Box >
-);
+            </Container>
+        </Box >
+    );
 };
 
 export default AddRateCard;
