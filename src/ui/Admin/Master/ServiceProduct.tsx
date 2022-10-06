@@ -33,7 +33,7 @@ import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
 import NoData from "../../../components/NoData";
-import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitOfSalesModel } from "../../../models/Model";
+import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitModel, UnitOfSalesModel, UnitWithConversionModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import { serviceProductColumns } from "../../../utils/tablecolumns";
 import { ValidateGSTRate } from "../../../utils/validations";
@@ -104,8 +104,8 @@ const ServiceProductPage = () => {
 
   const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); // useContext(DataContext).activityNamesList;
   const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]); // useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]); //useContext(DataContext).unitOfSalesList;
-  const [unitList, setUnitList] = useState<string[]>([]);
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitWithConversionModel>>([]); //useContext(DataContext).unitOfSalesList;
+  const [unitList, setUnitList] = useState<Array<UnitModel>>([]);
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]); //useContext(DataContext).categoryList;
   const [productList, setProductList] = useState<Array<ProductModel>>([]); // useContext(DataContext).productList;
   const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
@@ -133,7 +133,7 @@ const ServiceProductPage = () => {
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   const FetchData = (type: string) => {
-    Provider.getAll("master/getserviceproducts")
+    Provider.getAll("master/getserviceproductsv1")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -146,7 +146,7 @@ const ServiceProductPage = () => {
               a = Object.assign(a, id);
               return a;
             });
-            
+
             setServiceProductList(arrList);
             setProductListTemp(arrList);
             if (type !== "") {
@@ -185,7 +185,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -204,7 +204,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
@@ -227,7 +227,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchCategoriesFromServicesFilter = (selectedActivityID: number, selectedServiceID: number) => {
@@ -250,7 +250,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
@@ -273,28 +273,37 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
-  const FetchUnitsFromProduct = (selectedID: number) => {
+  const FetchUnitsFromProduct = (selectedID: number, callbackFunction: any = null) => {
+    debugger;
     let params = {
       ProductID: selectedID,
     };
 
-    Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/getproductunitbyid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+
             setUnitOfSalesList(response.data.data);
-            const units = response.data.data.map((data: any) => data.displayUnit);
-            setUnitList(units[0].split(" / "));
+            const units = [];
+            response.data.data.filter((el: any) => {
+              units.push({
+                id: el.unitID,
+                unitName: el.unitName,
+              });
+            });
+            setUnitList(units);
+            if (callbackFunction !== null) {
+              callbackFunction(response.data.data);
+            }
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   useEffect(() => {
@@ -373,13 +382,21 @@ const ServiceProductPage = () => {
   };
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
+    debugger;
     setUnitsOfSales(event.target.value);
-    if (unitOfSalesList[0].unit1Name === event.target.value) {
-      setSelectedUnit(unitOfSalesList[0].unit2Name);
-      setSelectedUnitID(unitOfSalesList[0].unit1ID);
+
+    if (unitOfSalesList[0].unitName === event.target.value) {
+      setSelectedUnit(unitOfSalesList[1].unitName);
+      setSelectedUnitID(unitOfSalesList[0].unitID);
+      if (unitOfSalesList[0].conversionRate != null) {
+        setAlternateUnit(unitOfSalesList[0].conversionRate.toString());
+      }
     } else {
-      setSelectedUnit(unitOfSalesList[0].unit1Name);
-      setSelectedUnitID(unitOfSalesList[0].unit2ID);
+      setSelectedUnit(unitOfSalesList[0].unitName);
+      setSelectedUnitID(unitOfSalesList[1].unitID);
+      if (unitOfSalesList[1].conversionRate != null) {
+        setAlternateUnit(unitOfSalesList[1].conversionRate.toString());
+      }
     }
 
     setShowauos(true);
@@ -454,6 +471,7 @@ const ServiceProductPage = () => {
   };
 
   const UpdateData = () => {
+    debugger;
     setButtonLoading(true);
     Provider.create("master/updateproduct", {
       ProductID: pnID,
@@ -469,11 +487,11 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           FetchData("updated");
           handleCancelClick();
-        }else if (response.data.code === 304) {
+        } else if (response.data.code === 304) {
           setSnackbarMessage(communication.ExistsError);
           setIsSnackbarOpen(true);
           setSnackbarType("error");
-        }  else {
+        } else {
           setSnackbarMessage(communication.Error);
           setSnackbarType("error");
           setIsSnackbarOpen(true);
@@ -516,27 +534,25 @@ const ServiceProductPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
+  const handleEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
+    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
 
+      setPn(a?.productName);
+      SetResetProductName(false);
       setPnID(a.productID);
-
-      //   setArn(a?.activityRoleName);
-      //   setArnID(a?.activityID);
-      //   SetResetActivityName(false);
 
       setSn(a?.serviceName);
       setSnID(a?.serviceID);
       SetResetServiceName(false);
-      // FetchServicesFromActivity(a?.activityID);
 
       setCn(a?.categoryName);
       setCnID(a?.categoryID);
-
       SetResetCategoryName(false);
+
       FetchCategoriesFromServices(arnID, a?.serviceID, (acategoryList: any) => {
         let ca: CategoryModel | undefined = acategoryList.find((el: any) => el.id === a?.categoryID);
         if (ca !== undefined) {
@@ -545,28 +561,57 @@ const ServiceProductPage = () => {
         }
       });
 
-      setPn(a?.productName);
-      SetResetProductName(false);
-      FetchUnitsFromProduct(a.productID);
+      FetchProductsFromCategory(arnID, a?.serviceID, a?.categoryID);
+
+
+
+      FetchUnitsFromProduct(a.productID, (unitList: any) => {
+        debugger;
+
+        //let ca: UnitWithConversionModel | undefined = unitList.find((el: any) => el.unitID === a?.selectedUnitID);
+
+        if (unitList !== undefined) {
+          if (a?.selectedUnitID == unitList[0].unitID) {
+            setUnitsOfSales(unitList[0].unitName);
+            setSelectedUnit(unitList[1].unitName);
+            setSelectedUnitID(unitList[0].unitID);
+            if (unitList[0].conversionRate != null) {
+              setAlternateUnit(unitList[0].conversionRate.toString());
+            }
+          }
+          else {
+            setUnitsOfSales(unitList[1].unitName);
+            setSelectedUnit(unitList[0].unitName);
+            setSelectedUnitID(unitList[1].unitID);
+            if (unitList[1].conversionRate != null) {
+              setAlternateUnit(unitList[1].conversionRate.toString());
+            }
+          }
+        }
+
+      });
+
+
       // setUnitsOfSales(a?.unitName);
       // if (a !== undefined) {
       //   setUnitList(a.unitName.split(" / "));
       //  // setUnitList([a.unit1Name.toString(), a.unit2Name.toString()]);
       // }
-      if (a?.selectedUnitID === a?.unit1ID) {
-        setUnitsOfSales(a?.unit1Name);
-        setSelectedUnitID(a?.unit1ID);
-        setSelectedUnit(a?.unit2Name);
-      } else {
-        setUnitsOfSales(a?.unit2Name);
-        setSelectedUnitID(a?.unit2ID);
-        setSelectedUnit(a?.unit1Name);
-      }
+      // if (a?.selectedUnitID === a?.unit1ID) {
+      //   setUnitsOfSales(a?.unit1Name);
+      //   setSelectedUnitID(a?.unit1ID);
+      //   setSelectedUnit(a?.unit2Name);
+      // } else {
+      //   setUnitsOfSales(a?.unit2Name);
+      //   setSelectedUnitID(a?.unit2ID);
+      //   setSelectedUnit(a?.unit1Name);
+      // }
+
       setShowauos(true);
       // setUnitsOfSalesID(a?.unitOfSalesID);
       SetResetUnitName(false);
       //FetchUnitsFromCategory(a?.categoryID);
-      setAlternateUnit(a?.conversionRate.toString());
+      //setAlternateUnit(a?.conversionRate.toString());
       setRateWithMaterial(a?.rateWithMaterials.toString());
       setRateWithoutMaterial(a?.rateWithoutMaterials.toString());
       setShortSpecification(a?.shortSpecification);
@@ -851,8 +896,8 @@ const ServiceProductPage = () => {
                 </MenuItem>
                 {unitList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item}>
-                      {item}
+                    <MenuItem key={index} value={item.unitName}>
+                      {item.unitName}
                     </MenuItem>
                   );
                 })}
@@ -1107,7 +1152,7 @@ const ServiceProductPage = () => {
                         if (a) {
                           const clickType = (e.target as any).textContent;
 
-                          if (clickType.toLowerCase() === "edit") handelEditAndDelete(clickType, a);
+                          if (clickType.toLowerCase() === "edit") handleEditAndDelete(clickType, a);
 
                           if (clickType.toLowerCase() === "view specification" && a.specification !== "") {
                             setDialogText(a.specification);

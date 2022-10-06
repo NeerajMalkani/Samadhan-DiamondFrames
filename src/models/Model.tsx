@@ -1,3 +1,5 @@
+import { NumericLiteral } from "typescript";
+
 export interface ActivityRoleNameModel {
   id: number;
   srno: number;
@@ -21,6 +23,18 @@ export interface CategoryModel {
   action: string;
   serviceID: number;
   roleID: number;
+}
+
+export interface UnitModel {
+  id: number;
+  unitName: string;
+}
+
+export interface UnitWithConversionModel {
+  id: number;
+  unitID: number;
+  unitName: string;
+  conversionRate: number;
 }
 
 export interface ProductModel {

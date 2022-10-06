@@ -8,7 +8,8 @@ import {
   DepartmentNameModel,
   DesignationNameModel,
   EWayBillModel,
-  LocationTypeModel
+  LocationTypeModel,
+  UnitWithConversionModel,
 } from "../models/Model";
 
 const activityNames: ActivityRoleNameModel[] = [];

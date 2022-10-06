@@ -113,7 +113,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     GetServiceCatalogue();
-   // FetchActvityRoles();
+    // FetchActvityRoles();
     FetchImageGalleryData();
   }, []);
 
@@ -154,7 +154,7 @@ const DashboardPage = () => {
   };
 
   const GetUserCount = () => {
-    debugger;
+
     Provider.getAll("registration/getusers")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -219,7 +219,7 @@ const DashboardPage = () => {
   };
 
   const SwitchUserClick = () => {
-    debugger;
+
     if (role === "" || roleID === 0) {
       setRoleError(true);
       setRoleErrorText("Error");
@@ -231,7 +231,7 @@ const DashboardPage = () => {
   };
 
   const UpdateUserRole = () => {
-    debugger;
+
     handleClose();
     setButtonLoading(true);
     const params = {
@@ -240,7 +240,7 @@ const DashboardPage = () => {
     };
     Provider.create("registration/updateuserrole", params)
       .then((response) => {
-        debugger;
+
         if (response.data && response.data.code === 200) {
           removeCookie("dfc");
           const user = {
@@ -312,7 +312,7 @@ const DashboardPage = () => {
                 </Box>
               </Grid>
               <Grid item xs={4} sm={5} md={4} style={{ float: "right" }}>
-                <Button variant="contained" startIcon={<CalculateIcon />} onClick={()=>navigate("/dashboardpocket")}>
+                <Button variant="contained" startIcon={<CalculateIcon />} onClick={() => navigate("/dashboardpocket")}>
                   Pocket Diary
                 </Button>
                 <Button sx={{ ml: 1 }} variant="contained" startIcon={<AnnouncementIcon />}>
@@ -360,7 +360,7 @@ const DashboardPage = () => {
                     console.log(index);
                   }}
                 /> */}
-                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID === 2 || CookieRoleID === 3 )? handleCardClick : () => {}} type="category" />
+                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID === 2 || CookieRoleID === 3) ? handleCardClick : () => { }} type="category" />
               </Grid>
             </Grid>
             <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>
