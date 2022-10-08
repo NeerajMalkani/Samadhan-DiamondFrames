@@ -132,6 +132,7 @@ const ClientList = () => {
     const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
     //#endregion
 
+     //#region Functions
     useEffect(() => {
         FetchData("");
         FetchStates();
@@ -334,7 +335,6 @@ const ClientList = () => {
 
     };
 
-
     const handleSubmitClick = () => {
         
         let isValid: boolean = true;
@@ -377,7 +377,6 @@ const ClientList = () => {
         }
     };
 
-
     const InsertUpdateData = (serviceType: number) => {
         
         if (actionStatus === "new") {
@@ -417,8 +416,6 @@ const ClientList = () => {
                 });
         }
     };
-
-
 
     // const SubmitVerify = () => {
     //     if (actionStatus === "new") {
@@ -504,8 +501,6 @@ const ClientList = () => {
         // }
     };
 
-
-
     const setOTPDialog = () => {
         setOpen(true);
     };
@@ -533,6 +528,7 @@ const ClientList = () => {
     //     }
     //   }
     /*end search toggle coding*/
+//#endregion 
 
     return (
         <Box sx={{ mt: 11 }}>

@@ -42,6 +42,7 @@ const ProductPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -93,7 +94,9 @@ const ProductPage = () => {
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   const theme = useTheme();
+ //#endregion 
 
+ //#region Functions
   const FetchActvityRoles = () => {
     Provider.getAll("master/getmainactivities")
       .then((response: any) => {
@@ -265,6 +268,7 @@ const ProductPage = () => {
       SetResetUnitName(false);
     }
   };
+
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
@@ -380,6 +384,7 @@ const ProductPage = () => {
         setIsSnackbarOpen(true);
       });
   };
+
   const handleCancelClick = () => {
     setDisplay("Yes");
 
@@ -512,6 +517,8 @@ const ProductPage = () => {
       );
     }
   };
+//#endregion 
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />

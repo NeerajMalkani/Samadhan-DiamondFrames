@@ -45,7 +45,8 @@ import id from "date-fns/esm/locale/id";
             if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
               navigate(`/login`);
           }, []);
-    
+
+  //#region Variables
     const [loading, setLoading]=useState(true);
     const [display, setDisplay ]= React.useState("Yes");
     
@@ -141,8 +142,10 @@ import id from "date-fns/esm/locale/id";
   const [gridBranchList,setGridBranchList]= useState<Array<BranchModel>>([]);
   const [gridBranchListTemp, setGridBranchListTemp] = useState<Array<BranchModel>>([]);
   
+ //#endregion 
 
-  
+ //#region Functions
+
   useEffect(() => {
     //FetchBranchData();
     FetchStates();
@@ -151,8 +154,7 @@ import id from "date-fns/esm/locale/id";
     //FetchBranchType();
     //FetchCompanyName();
   }, []);
-  
-    
+   
       const FetchStates = () => {
         Provider.getAll("master/getstates")
           .then((response: any) => {
@@ -226,7 +228,6 @@ import id from "date-fns/esm/locale/id";
           }
         })
       }
-
 
       const FetchData = () => {
         debugger;
@@ -535,6 +536,7 @@ import id from "date-fns/esm/locale/id";
       //     //     });
       //     // }
       // };
+     //#endregion 
      
 return(
     <Box sx={{mt:11}}>

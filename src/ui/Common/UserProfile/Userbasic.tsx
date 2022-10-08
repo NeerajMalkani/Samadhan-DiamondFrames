@@ -95,6 +95,7 @@ const Userbasic = () => {
   const [display, setDisplay] = React.useState("Yes");
   //#endregion
 
+   //#region Functions
   useEffect(() => {
     FetchUserData("");
     // FetchStates();
@@ -367,6 +368,7 @@ const Userbasic = () => {
         });
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

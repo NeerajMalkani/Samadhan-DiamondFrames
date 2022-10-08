@@ -37,7 +37,7 @@ const Approved = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
       navigate(`/login`);
   }, []);
-
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [approvedName, setApprovedName] = React.useState("");
@@ -59,7 +59,9 @@ const Approved = () => {
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+//#endregion 
 
+ //#region Functions
   const onChangeSearch = (query: string) => {
     debugger;
     setSearchQuery(query);
@@ -153,6 +155,7 @@ const Approved = () => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

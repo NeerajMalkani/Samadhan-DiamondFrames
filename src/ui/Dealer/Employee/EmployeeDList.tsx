@@ -25,7 +25,8 @@ import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormContro
     useEffect(() => {
       if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
     }, []);
-  
+
+   //#region Variables
     const [loading, setLoading] = useState(true);
     const [display, setDisplay] = React.useState("Yes");
     
@@ -84,7 +85,9 @@ import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormContro
     const [searchQuery, setSearchQuery] = useState("");
     const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
     
-  
+ //#endregion 
+
+ //#region Functions
     useEffect(() => {
       FetchData("");
     }, []);
@@ -343,7 +346,8 @@ import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormContro
       }
     }
   /*end search toggle coding*/
-    
+    //#endregion 
+
     return (
       <Box sx={{ mt: 11 }}>
         <Header />

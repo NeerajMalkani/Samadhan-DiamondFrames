@@ -16,10 +16,12 @@ import NoData from "../../../components/NoData";
 const ServicePage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
+
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [serviceName, setServiceName] = React.useState("");
@@ -39,7 +41,9 @@ const ServicePage = () => {
   const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<ServiceNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
@@ -225,6 +229,7 @@ const ServicePage = () => {
     }
     setOpen(false);
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

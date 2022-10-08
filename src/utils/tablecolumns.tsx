@@ -481,13 +481,9 @@ export const serviceProductColumns: GridColDef[] = [
     flex: 1,
     sortable: false,
     maxWidth: 100,
-    renderCell: (e) => (
-      <Grid>
-        <Button variant="text" sx={{ mr: 1 }}>
-          Edit
-        </Button>
-      </Grid>
-    ),
+    renderCell: (e) => {
+      return <Link href={`serviceproduct/edit/${e.row.id}`}>Edit</Link>;
+    }
   },
 ];
 

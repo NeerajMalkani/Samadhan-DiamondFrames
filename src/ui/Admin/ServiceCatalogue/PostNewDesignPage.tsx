@@ -47,6 +47,7 @@ const PostNewDesignPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [arnID, setArnID] = useState<number>(0);
@@ -110,7 +111,9 @@ const PostNewDesignPage = () => {
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Design");
   const [selectedID, setSelectedID] = useState<number>(0);
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
@@ -605,6 +608,7 @@ const PostNewDesignPage = () => {
       FetchWorkLocation();
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

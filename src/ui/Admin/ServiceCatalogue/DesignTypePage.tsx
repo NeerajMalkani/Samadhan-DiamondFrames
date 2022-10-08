@@ -46,6 +46,7 @@ const DesignTypePage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [arnID, setArnID] = useState<number>(0);
@@ -95,7 +96,9 @@ const DesignTypePage = () => {
   const [designButtonText, setDesignButtonText] = useState("Upload Design");
   const [errorDI, setDIError] = useState(false);
   const [errorDIText, setDIErrorText] = useState("");
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
@@ -492,6 +495,7 @@ const DesignTypePage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

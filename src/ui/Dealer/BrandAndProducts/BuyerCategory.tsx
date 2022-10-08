@@ -27,6 +27,7 @@ const BuyerCategory = () => {
     }
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
@@ -50,7 +51,9 @@ const BuyerCategory = () => {
   const [buyerCategoryList, setBuyerCategoryList] = useState<Array<BuyerCategoryModel>>([]);
   const [buyerCategoryListTemp, setBuyerCategoryListTemp] = useState<Array<BuyerCategoryModel>>([]);
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchShowBrand(cookies.dfc.UserID);
   }, []);
@@ -237,6 +240,7 @@ const BuyerCategory = () => {
         });
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

@@ -121,7 +121,8 @@ const ClientEdit = () => {
     const [buttonLoading, setButtonLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     //#endregion
-
+ 
+    //#region Functions
     useEffect(() => {
         let id = window.location.pathname.split('/').at(-1);
         if (!NullOrEmpty(id)) {
@@ -364,6 +365,7 @@ const ClientEdit = () => {
 
         serviceType[1](arrService);
     }
+//#endregion 
 
     return (
         <Box sx={{ mt: 11 }}>

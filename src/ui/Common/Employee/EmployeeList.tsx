@@ -28,6 +28,7 @@ const EmployeeListPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
 
@@ -85,7 +86,9 @@ const EmployeeListPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+ //#region Functions
 
   useEffect(() => {
     FetchData("");
@@ -203,7 +206,6 @@ const EmployeeListPage = () => {
     }
 
   };
-
 
   const handleValidateClick = () => {
     let isValid: boolean = true;
@@ -345,8 +347,6 @@ const EmployeeListPage = () => {
     // }
   };
 
-
-
   const setOTPDialog = () => {
     setOpen(true);
   };
@@ -374,6 +374,7 @@ const EmployeeListPage = () => {
   //     }
   //   }
   /*end search toggle coding*/
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

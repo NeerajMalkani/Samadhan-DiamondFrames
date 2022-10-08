@@ -54,6 +54,7 @@ const ArchitectRateCardSetup = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+ //#region Variables
   //const [pID, setPID] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -65,8 +66,6 @@ const ArchitectRateCardSetup = () => {
   const [pnID, setPnID] = useState(0);
   const [productError, setProductError] = useState("");
   const [isProductError, setIsProductError] = useState(false);
-
-
 
   const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); // useContext(DataContext).activityNamesList;
   const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]); // useContext(DataContext).serviceNameList;
@@ -96,9 +95,10 @@ const ArchitectRateCardSetup = () => {
   const [pnFilter, setPnFilter] = useState("--Select--");
   const [searchQuery, setSearchQuery] = useState("");
 
-
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+ //#region Functions
   const FetchData = (type: string) => {
     Provider.getAll("master/getserviceproducts")
       .then((response: any) => {
@@ -377,6 +377,7 @@ const ArchitectRateCardSetup = () => {
   const handleClose = () => {
     setOpenDialog(false);
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

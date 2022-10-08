@@ -36,6 +36,7 @@ import { communication } from "../../../utils/communication";
 const UserEstimationListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
 
+   //#region Variables
   const [activityNamesList, setActivityNamesList] = useState<Array<YourEstimationModel>>([]);
   const [activityNamesListTemp, setActivityNamesListTemp] = useState<Array<YourEstimationModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,6 +56,9 @@ const UserEstimationListPage = () => {
   const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
 
+ //#endregion 
+
+ //#region Functions
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
@@ -162,7 +166,7 @@ const UserEstimationListPage = () => {
         setOpen(true);
       });
   };
-
+ //#endregion 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />

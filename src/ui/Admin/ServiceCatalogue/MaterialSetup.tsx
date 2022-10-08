@@ -127,6 +127,7 @@ const MaterialSetup = () => {
     }
   }, []);
 
+  //#region Variables
   const [sn, setSn] = useState("--Select--");
   const [snID, setSnID] = useState<number>(0);
   const [servicenameError, setServicenameError] = useState("");
@@ -214,7 +215,9 @@ const MaterialSetup = () => {
   const [brandError, setBrandError] = useState("");
 
   const [selectedID, setSelectedID] = useState<number>(0);
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
@@ -949,6 +952,7 @@ const MaterialSetup = () => {
       })
       .catch((e) => {});
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

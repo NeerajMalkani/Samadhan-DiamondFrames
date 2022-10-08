@@ -53,6 +53,7 @@ const AddDepartment = () => {
     }
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
@@ -76,7 +77,9 @@ const AddDepartment = () => {
 
   const [gridDepartmentList, setGridDepartmentList] = useState<Array<DepartmentNameModel>>([]);
   const [gridDepartmentListTemp, setGridDepartmentListTemp] = useState<Array<DepartmentNameModel>>([]);
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
     FetchDepartments();
@@ -275,6 +278,7 @@ const AddDepartment = () => {
         });
     }
   };
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

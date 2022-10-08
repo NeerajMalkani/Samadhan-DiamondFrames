@@ -65,6 +65,8 @@ import RateCardSetup from "../ui/Contractor/RateCard/RateCardSetup";
 import AddRateCard from "../ui/Contractor/RateCard/AddRateCard";
 import ClientEdit from "../ui/Common/Client/ClientEdit";
 import ArchitectRateCardSetup from "../ui/Architect/ArchitectRateCardSetup";
+import AddServiceProduct from "../ui/Admin/Master/AddServiceProduct";
+
 
 
 
@@ -140,6 +142,9 @@ const AppRoutes = () => {
               <Route path="master/addratecard" element={<AddRateCard />} />
               <Route path="common/client/edit/:id" element={<ClientEdit/>}/>
               <Route path="architect/architectratecardsetup" element ={<ArchitectRateCardSetup/>} />
+             <Route path="master/addserviceproduct" element={<AddServiceProduct/>} />
+             <Route path="master/serviceproduct/edit/:id" element={<ServiceProductPage/>}/>
+
             </Routes>
           </BrowserRouter>
         </Box>

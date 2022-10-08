@@ -58,6 +58,7 @@ const LocationTypePage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [pageSize, setPageSize] = useState<number>(5);
@@ -93,7 +94,9 @@ const LocationTypePage = () => {
   const [activitySelectAll, setActivitySelectAll] = useState<string>("Select All");
   const [serviceSelectAll, setServiceSelectAll] = useState<string>("Select All");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchLocationType("");
     FetchActivity();
@@ -189,6 +192,7 @@ const LocationTypePage = () => {
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
+
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
@@ -439,6 +443,7 @@ const LocationTypePage = () => {
     setServiceError(false);
     setServiceErrorText("");
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

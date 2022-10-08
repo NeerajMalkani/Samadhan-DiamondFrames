@@ -18,6 +18,8 @@ import { communication } from "../utils/communication";
 import { restrictNumericMobile, ValidateFields } from "../utils/validations";
 
 const ForgotPasswordPage = () => {
+
+   //#region Variables
   const [isMobileError, setIsMobileError] = useState<boolean>(false);
   const [mobileError, setMobileError] = useState<string>("");
   const [mobile, setMobile] = useState<string>("");
@@ -39,9 +41,13 @@ const ForgotPasswordPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+   //#endregion 
+
+
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
+ //#region Functions
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
       navigate(`/dashboard`);
@@ -186,7 +192,8 @@ const ForgotPasswordPage = () => {
         setIsLoading(false);
       });
   };
-
+ //#endregion 
+ 
   return (
     <Box height="100vh" className="flex-center">
       <Paper

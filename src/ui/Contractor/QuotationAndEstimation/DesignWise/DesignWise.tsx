@@ -83,6 +83,7 @@ const buttonSetting: ButtonSettings = {
 };
 
 const DesignWisePage = () => {
+   //#region Variables
   const [value, setValue] = useState(0);
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
@@ -133,6 +134,9 @@ const DesignWisePage = () => {
   const [errorDI, setDIError] = useState(false);
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Proof");
+ //#endregion 
+
+ //#region Functions
 
   let navigate = useNavigate();
   const location = useLocation();
@@ -489,6 +493,9 @@ const DesignWisePage = () => {
 
     selectedItem[1](null);
   };
+//#endregion 
+
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />

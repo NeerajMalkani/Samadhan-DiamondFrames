@@ -38,6 +38,7 @@ const EWayBillPage = () => {
       navigate(`/login`);
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
 
@@ -72,11 +73,12 @@ const EWayBillPage = () => {
   const [statesFullData, setStatesFullData] = useState([]);
   const [selectedID, setSelectedID] = useState<number>(0);
 
-  
   const [ewayBillListTemp, setEwayBillListTemp] = useState<Array<EWayBillModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+//#endregion 
 
+ //#region Functions
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
@@ -318,6 +320,7 @@ const EWayBillPage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

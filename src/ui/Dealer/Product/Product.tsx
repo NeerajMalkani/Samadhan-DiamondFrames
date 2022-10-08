@@ -33,7 +33,7 @@ const ProductListPage = () => {
   }, []);
 
   const theme = useTheme();
-
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [pageSize, setPageSize] = useState<number>(5);
@@ -87,7 +87,9 @@ const ProductListPage = () => {
   const [otherSaleUnit, setOtherSaleUnit] = useState<string>("");
   const [arnID, setArnID] = useState<number>(0);
   //const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     //FetchShowBrand(cookies.dfc.UserID);
     FetchData("", cookies.dfc.UserID);
@@ -506,6 +508,8 @@ const ProductListPage = () => {
     setDescriptionErrorText("");
     setIsDescriptionError(false);
   };
+//#endregion 
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />

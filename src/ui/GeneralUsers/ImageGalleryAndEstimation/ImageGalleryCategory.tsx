@@ -20,6 +20,7 @@ const ImageGalleryCategoryPage = () => {
     }
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
 
   const [imageGalleryData, setImageGalleryData] = useState<Array<ImageGalleryEstimation>>([]);
@@ -28,7 +29,9 @@ const ImageGalleryCategoryPage = () => {
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
+ //#endregion 
 
+ //#region Functions
   const buttonSetting: ButtonSettings = {
     isActionButton: false,
     actionButtons: [],
@@ -71,7 +74,8 @@ const ImageGalleryCategoryPage = () => {
         setOpen(true);
       });
   };
-
+//#endregion
+ 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />

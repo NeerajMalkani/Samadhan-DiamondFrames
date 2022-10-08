@@ -16,6 +16,9 @@ import { ClientModel } from "../../../models/Model";
 import { clientColumns } from "../../../utils/tablecolumns";
 
 const ContractorClientPage = () => {
+
+  
+ //#region Variables
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -34,7 +37,9 @@ const ContractorClientPage = () => {
   let navigate = useNavigate();
 
   let selectedData = useState<ClientModel>();
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
@@ -104,6 +109,8 @@ const ContractorClientPage = () => {
     }
     setOpen(false);
   };
+//#endregion 
+
   return (
     <Box sx={{ mt: 11 }}>
       <Header />

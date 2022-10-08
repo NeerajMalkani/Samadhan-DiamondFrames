@@ -82,6 +82,7 @@ const Basic = () => {
     }
   }, []);
 
+ //#region Variables
   const [companyName, setCompanyName] = useState("");
   const [companyNameError, setCompanyNameError] = useState("");
   const [isCompanyNameError, setIsCompanyNameError] = useState(false);
@@ -171,7 +172,9 @@ const Basic = () => {
   const [snackMsg, setSnackMsg] = useState("");
 
   const [buttonLoading, setButtonLoading] = useState(false);
+ //#endregion 
 
+ //#region Functions
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -363,6 +366,7 @@ const Basic = () => {
     }
     setOpen(false);
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

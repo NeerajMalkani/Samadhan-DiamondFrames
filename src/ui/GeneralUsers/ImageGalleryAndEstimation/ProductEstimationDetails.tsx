@@ -61,6 +61,7 @@ const ProductEstimationDetailsPage = () => {
     }
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -80,6 +81,9 @@ const ProductEstimationDetailsPage = () => {
   const [brandProductList, setBrandProductList] = useState<Array<BrandProductItemModel>>([]);
   const [brandList, setBrandList] = useState<Array<BrandItemModel>>([]);
   const [selectedBrand, setSelectedBrand] = useState<number>(0);
+ //#endregion 
+
+ //#region Functions
 
   useEffect(() => {
     setSelectedID(parseInt(retrunValueFromLocation(location, "userDesignEstimationID")));
@@ -295,6 +299,7 @@ const ProductEstimationDetailsPage = () => {
       })
       .catch((e) => {});
   };
+ //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

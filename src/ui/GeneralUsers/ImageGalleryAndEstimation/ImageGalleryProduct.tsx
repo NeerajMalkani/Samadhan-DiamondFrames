@@ -32,7 +32,7 @@ const ImageGalleryProductPage = (route) => {
       FetchImageGalleryData(parseInt(retrunValueFromLocation(location, "id")));
     }
   }, []);
-
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [imageGalleryData, setImageGalleryData] = useState<Array<ImageGalleryEstimation>>([]);
   const [selectedData, setSelectedData] = useState<ImageGalleryEstimation>();
@@ -44,7 +44,9 @@ const ImageGalleryProductPage = (route) => {
 
   const [selectedImage, setSelectedImage] = useState("");
   const [imageOpen, setImageOpen] = useState(false);
+//#endregion 
 
+ //#region Functions
   const buttonSetting: ButtonSettings = {
     isActionButton: false,
     actionButtons: [
@@ -110,6 +112,7 @@ const ImageGalleryProductPage = (route) => {
         setOpen(true);
       });
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

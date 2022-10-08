@@ -152,6 +152,7 @@ const AddRateCard = () => {
     const [arnID, setArnID] = useState<number>(0);
     //#endregion
 
+     //#region Functions
     useEffect(() => {
         FetchActvityRoles();
     }, []);
@@ -510,6 +511,7 @@ const AddRateCard = () => {
 
     // const design = (
     //     <>
+//#endregion 
 
     return (
         <Box sx={{ mt: 11 }}>

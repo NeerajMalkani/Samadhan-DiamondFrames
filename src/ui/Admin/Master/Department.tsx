@@ -21,6 +21,7 @@ const DepartmentPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [departmentName, setDepartmentName] = useState("");
@@ -39,6 +40,9 @@ const DepartmentPage = () => {
   const [departmentNameListTemp, setDepartmentNameListTemp] = useState<Array<DepartmentNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
+
+ //#region Functions
 
   useEffect(() => {
     FetchData("");
@@ -208,6 +212,7 @@ const DepartmentPage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

@@ -19,6 +19,8 @@ import { useCookies } from "react-cookie";
 
 
 const RateCard = () => {
+
+     //#region Variables
     // const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(["dfc"]);
     const [CookieUserID, SetCookieUseID] = useState(0);
@@ -38,6 +40,9 @@ const RateCard = () => {
 
     const [rateCardListTemp, setRateCardListTemp] = React.useState<Array<any>>([]);
     const [buttonLoading, setButtonLoading] = useState(false);
+ //#endregion 
+
+ //#region Functions
 
     useEffect(() => {
         FetchData("");
@@ -176,7 +181,7 @@ const RateCard = () => {
               setButtonLoading(false);
             }
           };
-
+//#endregion 
 
     return (
         <Box sx={{ mt: 11 }}>

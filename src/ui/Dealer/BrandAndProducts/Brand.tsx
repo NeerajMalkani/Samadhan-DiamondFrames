@@ -30,6 +30,7 @@ const BrandPage = () => {
     }
   }, []);
 
+   //#region Variables
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
@@ -101,7 +102,9 @@ const BrandPage = () => {
 
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
   const [buyerCategoryFullData, setBuyerCategoryFullData] = useState([]);
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchShowBrand(cookies.dfc.UserID);
   }, []);
@@ -739,6 +742,7 @@ const BrandPage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

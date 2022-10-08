@@ -52,6 +52,8 @@ function useWindowSize(callback: Function) {
 const DashboardPage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(["dfc"]);
+
+   //#region Variables
   const [role, setRole] = useState("--Select--");
   const [roleID, setRoleID] = useState<number>(0);
   const [roleError, setRoleError] = useState<boolean>(false);
@@ -81,11 +83,13 @@ const DashboardPage = () => {
   const [galleryHeight, setGalleryHeight] = useState(504);
   const [arnID, setArnID] = useState<number>(2);
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+   //#endregion 
+
   // const arrQuickLinks = [
   //   { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
   //   { title: "Feedbacks", icon: "AnnouncementIcon", backgroundColor: "" },
   // ];
-
+ //#region Functions
   const buttonSetting: ButtonSettings = {
     isActionButton: false,
     actionButtons: [],
@@ -291,6 +295,8 @@ const DashboardPage = () => {
   //   fontSize: "16px",
   //   fontWeight: "bold",
   // };
+ //#endregion 
+
   return (
     <Box sx={{ mt: 7 }}>
       <Header />

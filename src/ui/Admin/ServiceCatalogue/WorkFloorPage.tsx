@@ -22,6 +22,7 @@ const WorkFloorPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [workfloorName, setWorkfloorName] = React.useState("");
@@ -42,6 +43,9 @@ const WorkFloorPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+//#endregion 
+
+ //#region Functions
 
   useEffect(() => {
     FetchData("");
@@ -211,6 +215,7 @@ const WorkFloorPage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

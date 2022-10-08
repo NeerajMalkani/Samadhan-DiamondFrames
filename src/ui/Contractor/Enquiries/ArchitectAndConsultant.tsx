@@ -58,7 +58,7 @@ interface TabPanelProps {
 
 
 const ArchitectAndConsultant = () => {
-
+ //#region Variables
     const theme = useTheme()
     const [pageSize, setPageSize] = useState<number>(5);
 
@@ -70,7 +70,7 @@ const ArchitectAndConsultant = () => {
       //for grid
     const [gridServicesList, setGridServicesList] = useState<Array<ServiceNameModel>>([]);
     const [gridServicesListTemp, setGridServicesListTemp] = useState<Array<ServiceNameModel>>([]);
-
+ //#endregion 
 
     const [value,setValue] = useState(0)
     const [entries,setEntries] = useState(10)
@@ -81,7 +81,7 @@ const ArchitectAndConsultant = () => {
         console.log(e.target.value)
         setEntries(e.target.value)
       };
-
+ //#region Functions
       const onChangeSearch = (query: string) => {
         setSearchQuery(query);
         if (query === "") {
@@ -94,6 +94,7 @@ const ArchitectAndConsultant = () => {
           );
         }
       };
+//#endregion 
 
     return (
         <Box sx={{mt:11}}>

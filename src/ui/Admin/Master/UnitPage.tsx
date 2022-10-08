@@ -16,10 +16,12 @@ import NoData from "../../../components/NoData";
 const UnitPage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["dfc"]);
+  
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [unit1Name, setUnit1Name] = React.useState("");
@@ -46,7 +48,9 @@ const UnitPage = () => {
   const [unitNamesListTemp, setUnitNamesListTemp] = useState<Array<UnitOfSalesModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
@@ -234,6 +238,7 @@ const UnitPage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

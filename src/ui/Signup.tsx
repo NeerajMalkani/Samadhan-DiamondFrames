@@ -19,6 +19,8 @@ import { useCookies } from "react-cookie";
 import Provider from "../api/Provider";
 
 const SignupPage = () => {
+
+   //#region Variables
   const [isFullNameError, setIsFullNameError] = useState<boolean>(false);
   const [fullNameError, setFullNameError] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
@@ -44,9 +46,12 @@ const SignupPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [cookies, setCookie] = useCookies(["dfc"]);
+   //#endregion 
+  
+   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
+   //#region Functions
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
       navigate(`/dashboard`);
@@ -219,6 +224,7 @@ const SignupPage = () => {
         setIsLoading(false);
       });
   };
+ //#endregion 
 
   return (
     <Box height="100vh" className="flex-center">

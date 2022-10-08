@@ -21,6 +21,7 @@ const DesignationPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [designationName, setDesignationName] = useState("");
@@ -41,7 +42,9 @@ const DesignationPage = () => {
   const [designationNameListTemp, setDesignationNameListTemp] = useState<Array<DesignationNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
@@ -210,6 +213,7 @@ const DesignationPage = () => {
     }
     setOpen(false);
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

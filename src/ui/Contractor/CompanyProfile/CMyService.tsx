@@ -45,6 +45,7 @@ const CMyServices = () => {
     }
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
@@ -71,7 +72,9 @@ const CMyServices = () => {
   //for grid
   const [gridServicesList, setGridServicesList] = useState<Array<ServiceNameModel>>([]);
   const [gridServicesListTemp, setGridServicesListTemp] = useState<Array<ServiceNameModel>>([]);
+//#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchServices();
     FetchData("");
@@ -274,6 +277,7 @@ const CMyServices = () => {
         });
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

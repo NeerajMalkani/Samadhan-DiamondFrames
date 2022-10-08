@@ -54,6 +54,7 @@ const AddDesignation = () => {
     }
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
@@ -78,7 +79,9 @@ const AddDesignation = () => {
 
   const [gridDesignationList, setGridDesignationList] = useState<Array<DesignationNameModel>>([]);
   const [gridDesignationtListTemp, setGridDesignationListTemp] = useState<Array<DesignationNameModel>>([]);
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
     FetchDesignation();
@@ -284,6 +287,7 @@ const AddDesignation = () => {
         });
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

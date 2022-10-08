@@ -45,6 +45,7 @@ const MyServices = () => {
     }
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
@@ -69,6 +70,9 @@ const MyServices = () => {
 
   const [myServiceNameList, setMyServiceNameList] = useState<Array<ServiceNameModel>>([]);
   const [myServiceNameListTemp, setMyServiceNameListTemp] = useState<Array<ServiceNameModel>>([]);
+ //#endregion 
+
+ //#region Functions
 
   useEffect(() => {
     FetchData("");
@@ -287,6 +291,7 @@ const MyServices = () => {
         });
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

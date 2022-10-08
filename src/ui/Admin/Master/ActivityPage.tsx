@@ -22,6 +22,7 @@ const ActivityPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+   //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [activityName, setActivityName] = React.useState("");
@@ -42,7 +43,9 @@ const ActivityPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+  //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
@@ -229,6 +232,7 @@ const ActivityPage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

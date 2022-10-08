@@ -39,6 +39,7 @@ const WorkLocationPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+ //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [worklocationName, setWorklocationName] = React.useState("");
@@ -59,7 +60,9 @@ const WorkLocationPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+ //#endregion 
 
+ //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
@@ -228,6 +231,7 @@ const WorkLocationPage = () => {
       );
     }
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

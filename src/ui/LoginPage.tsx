@@ -45,6 +45,7 @@ const LoginPage = () => {
   /* #endregion */
 
   /* #region  Handle event and click listeners */
+   //#region Functions
   const loginClick = () => {
     setIsLoading(true);
     if (username && password) {

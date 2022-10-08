@@ -62,7 +62,7 @@ const ImageGalleryProductDetailsPage = () => {
       }
     }
   }, []);
-
+ //#region Variables
   const [loading, setLoading] = useState(true);
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -96,7 +96,9 @@ const ImageGalleryProductDetailsPage = () => {
 
   const [userClientError, setUserClientError] = useState("");
   const [isUserClientError, setIsUserClientError] = useState(false);
+ //#endregion 
 
+ //#region Functions
   const CreateLengthFeet = (count: number) => {
     let menuItems = [];
     for (let i = 0; i < count; i++) {
@@ -342,6 +344,7 @@ const ImageGalleryProductDetailsPage = () => {
         setOpen(true);
       });
   };
+//#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>

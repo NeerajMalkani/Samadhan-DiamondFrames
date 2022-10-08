@@ -121,6 +121,7 @@ const dummyRow_Accepted = [
 
 const AppUserEnquiry = () => {
 
+   //#region Variables
     const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
     const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
     const theme = useTheme()
@@ -130,7 +131,7 @@ const AppUserEnquiry = () => {
     //for grid
   const [gridServicesList, setGridServicesList] = useState<Array<ServiceNameModel>>([]);
   const [gridServicesListTemp, setGridServicesListTemp] = useState<Array<ServiceNameModel>>([]);
-
+ //#endregion 
   // Default values for creating Box tab elements -----Start---------
 
     const [value,setValue] = useState(0)
@@ -144,6 +145,7 @@ const AppUserEnquiry = () => {
       };
 
 //   Default values for creating Box tab elements -----ENd---------
+ //#region Functions
 
 const onChangeSearch = (query: string) => {
   setSearchQuery(query);
@@ -157,6 +159,7 @@ const onChangeSearch = (query: string) => {
     );
   }
 };
+//#endregion 
 
     return (
         <Box sx={{ mt: 11 }}>

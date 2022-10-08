@@ -4,18 +4,11 @@ import {
   AlertColor,
   Box,
   Button,
-  CircularProgress,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
-  InputAdornment,
   MenuItem,
   Radio,
   RadioGroup,
@@ -24,20 +17,18 @@ import {
   Snackbar,
   TextField,
   Typography,
+  Stack
 } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
-import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import NoData from "../../../components/NoData";
 import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitModel, UnitOfSalesModel, UnitWithConversionModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
-import { serviceProductColumns } from "../../../utils/tablecolumns";
 import { ValidateGSTRate } from "../../../utils/validations";
-import ListIcon from "@mui/icons-material/List";
+import AddIcon from '@mui/icons-material/Add';
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
@@ -54,6 +45,7 @@ const ServiceProductPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
+  //#region Variables
   //const [pID, setPID] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -113,25 +105,20 @@ const ServiceProductPage = () => {
   const [pageSize, setPageSize] = useState<number>(5);
   const [showauos, setShowauos] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
-  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
+
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
   const [actionStatus, setActionStatus] = useState<string>("new");
-  const [openDialog, setOpenDialog] = useState(false);
-  const [dialogHeader, setDialogHeader] = useState<string>("");
-  const [dialogText, setDialogText] = useState<string>("");
-
-  const [categoryListFilter, setCategoryListFilter] = useState<Array<CategoryModel>>([]); // useContext(DataContext).categoryList;
-  const [snFilter, setSnFilter] = useState("--Select--");
-
-  const [cnFilter, setCnFilter] = useState("--Select--");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedUnit, setSelectedUnit] = useState<string>("");
   const [selectedUnitID, setSelectedUnitID] = useState<number>(0);
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  //#endregion 
 
+  //#region Functions
   const FetchData = (type: string) => {
     Provider.getAll("master/getserviceproductsv1")
       .then((response: any) => {
@@ -230,28 +217,7 @@ const ServiceProductPage = () => {
       .catch((e) => { });
   };
 
-  const FetchCategoriesFromServicesFilter = (selectedActivityID: number, selectedServiceID: number) => {
-    //, callbackFunction: any = null
-    let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
-    };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            setCategoryListFilter(response.data.data);
-            // if (callbackFunction !== null) {
-            //   callbackFunction(response.data.data);
-            // }
-          }
-        }
-      })
-      .catch((e) => { });
-  };
+
 
   const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
     let params = {
@@ -325,22 +291,6 @@ const ServiceProductPage = () => {
     }
   };
 
-  const handleSNChangeFilter = (event: SelectChangeEvent) => {
-    let serviceName: string = event.target.value;
-    let ac = serviceNameList.find((el) => el.serviceName === serviceName);
-    if (ac !== undefined) {
-      setSnFilter(serviceName);
-      //setSnIDFilter(ac.id);
-      SetFilters(serviceName, cnFilter, searchQuery);
-      FetchCategoriesFromServicesFilter(arnID, ac.id);
-    } else {
-      setSnFilter("--Select--");
-      setCategoryListFilter([]);
-      setCnFilter("--Select--");
-      SetFilters(serviceName, "--Select--", searchQuery);
-    }
-  };
-
   const handleCNChange = (event: SelectChangeEvent) => {
     let categoryName: string = event.target.value;
     let ac = categoryList.find((el) => el.categoryName === categoryName);
@@ -356,18 +306,6 @@ const ServiceProductPage = () => {
     }
   };
 
-  const handleCNChangeFilter = (event: SelectChangeEvent) => {
-    let categoryName: string = event.target.value;
-    let ac = categoryListFilter.find((el) => el.categoryName === categoryName);
-    if (ac !== undefined) {
-      setCnFilter(categoryName);
-      // setCnIDFilter(ac.id);
-      SetFilters(snFilter, categoryName, searchQuery);
-    } else {
-      setCnFilter("--Select--");
-      SetFilters(snFilter, categoryName, searchQuery);
-    }
-  };
 
   const handlePNChnage = (event: SelectChangeEvent) => {
     let productName: string = event.target.value;
@@ -534,95 +472,6 @@ const ServiceProductPage = () => {
     setActionStatus("new");
   };
 
-  const handleEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
-    debugger;
-    if (type?.toLowerCase() === "edit" && a !== undefined) {
-      setDataGridOpacity(0.3);
-      setDataGridPointer("none");
-      setDisplay(a.display);
-
-      setPn(a?.productName);
-      SetResetProductName(false);
-      setPnID(a.productID);
-
-      setSn(a?.serviceName);
-      setSnID(a?.serviceID);
-      SetResetServiceName(false);
-
-      setCn(a?.categoryName);
-      setCnID(a?.categoryID);
-      SetResetCategoryName(false);
-
-      FetchCategoriesFromServices(arnID, a?.serviceID, (acategoryList: any) => {
-        let ca: CategoryModel | undefined = acategoryList.find((el: any) => el.id === a?.categoryID);
-        if (ca !== undefined) {
-          setHsn(ca.hsnsacCode);
-          setGst(parseFloat(ca.gstRate).toFixed(2) + "%");
-        }
-      });
-
-      FetchProductsFromCategory(arnID, a?.serviceID, a?.categoryID);
-
-
-
-      FetchUnitsFromProduct(a.productID, (unitList: any) => {
-        debugger;
-
-        //let ca: UnitWithConversionModel | undefined = unitList.find((el: any) => el.unitID === a?.selectedUnitID);
-
-        if (unitList !== undefined) {
-          if (a?.selectedUnitID == unitList[0].unitID) {
-            setUnitsOfSales(unitList[0].unitName);
-            setSelectedUnit(unitList[1].unitName);
-            setSelectedUnitID(unitList[0].unitID);
-            if (unitList[0].conversionRate != null) {
-              setAlternateUnit(unitList[0].conversionRate.toString());
-            }
-          }
-          else {
-            setUnitsOfSales(unitList[1].unitName);
-            setSelectedUnit(unitList[0].unitName);
-            setSelectedUnitID(unitList[1].unitID);
-            if (unitList[1].conversionRate != null) {
-              setAlternateUnit(unitList[1].conversionRate.toString());
-            }
-          }
-        }
-
-      });
-
-
-      // setUnitsOfSales(a?.unitName);
-      // if (a !== undefined) {
-      //   setUnitList(a.unitName.split(" / "));
-      //  // setUnitList([a.unit1Name.toString(), a.unit2Name.toString()]);
-      // }
-      // if (a?.selectedUnitID === a?.unit1ID) {
-      //   setUnitsOfSales(a?.unit1Name);
-      //   setSelectedUnitID(a?.unit1ID);
-      //   setSelectedUnit(a?.unit2Name);
-      // } else {
-      //   setUnitsOfSales(a?.unit2Name);
-      //   setSelectedUnitID(a?.unit2ID);
-      //   setSelectedUnit(a?.unit1Name);
-      // }
-
-      setShowauos(true);
-      // setUnitsOfSalesID(a?.unitOfSalesID);
-      SetResetUnitName(false);
-      //FetchUnitsFromCategory(a?.categoryID);
-      //setAlternateUnit(a?.conversionRate.toString());
-      setRateWithMaterial(a?.rateWithMaterials.toString());
-      setRateWithoutMaterial(a?.rateWithoutMaterials.toString());
-      setShortSpecification(a?.shortSpecification);
-      setSpecification(a?.specification);
-
-      setDisplay(a?.display);
-      setButtonDisplay("unset");
-      setActionStatus("edit");
-    }
-  };
-
   //   const SetResetActivityName = (isBlank: boolean) => {
   //     if (isBlank) {
   //       setArn("--Select--");
@@ -708,58 +557,7 @@ const ServiceProductPage = () => {
     return string_;
   };
 
-  const onChangeSearch = (query: string) => {
-    setSearchQuery(query);
-    SetFilters(snFilter, cnFilter, query);
-    // if (query === "") {
-    //   setProductListTemp(productList);
-    // } else {
-    //   setProductListTemp(
-    //     productList.filter((el: ProductModel) => {
-    //       return el.productName.toString().toLowerCase().includes(query.toLowerCase());
-    //     })
-    //   );
-    // }
-  };
-
-  const SetFilters = (snText: string, cnText: string, searcText: string) => {
-    setProductListTemp(serviceProductList);
-    let ArrOfData: any = [];
-
-    if (snText === "--Select--" && cnText === "--Select--" && searcText === "") {
-      ArrOfData = serviceProductList;
-    }
-
-    if (snText !== "--Select--") {
-      ArrOfData = serviceProductList.filter((el: ProductModel) => {
-        return el.serviceName.toString().toLowerCase().includes(snText.toLowerCase());
-      });
-    }
-
-    if (cnText !== "--Select--") {
-      ArrOfData = ArrOfData.filter((el: ProductModel) => {
-        return el.categoryName.toString().toLowerCase().includes(cnText.toLowerCase());
-      });
-    }
-
-    if (searchQuery !== "") {
-      if (snText === "--Select--" || cnText === "--Select--") {
-        ArrOfData = serviceProductList.filter((el: ProductModel) => {
-          return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
-        });
-      } else {
-        ArrOfData = ArrOfData.filter((el: ProductModel) => {
-          return el.productName.toString().toLowerCase().includes(searcText.toLowerCase());
-        });
-      }
-    }
-
-    setProductListTemp(ArrOfData);
-  };
-
-  const handleClose = () => {
-    setOpenDialog(false);
-  };
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -769,9 +567,16 @@ const ServiceProductPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Service Product</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">Add/Edit Service Product</Typography>
+          <Grid item xs={4} sm={8} md={12}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="h4">Add/Edit Service Product</Typography>
+              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/master/addserviceproduct")}>View List</Button>
+            </Stack>
           </Grid>
+
+          {/* <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">Add/Edit Service Product</Typography>
+          </Grid> */}
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small">
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -1045,140 +850,7 @@ const ServiceProductPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6" sx={{ mt: 2 }}>
-              Service Product List
-            </Typography>
-          </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {serviceProductList.length === 0 ? (
-                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
-                ) : (
-                  <>
-                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1, borderWidth: 1, borderColor: theme.palette.divider }}>
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Service Name</b>
-                        </Typography>
-                        <Select fullWidth value={snFilter} onChange={handleSNChangeFilter}>
-                          <MenuItem key={0} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {serviceNameList.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.serviceName}>
-                                {item.serviceName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </Grid>
 
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Category Name</b>
-                        </Typography>
-                        <Select fullWidth value={cnFilter} onChange={handleCNChangeFilter}>
-                          <MenuItem key={0} value="--Select--">
-                            --Select--
-                          </MenuItem>
-                          {categoryListFilter.map((item, index) => {
-                            return (
-                              <MenuItem key={index} value={item.categoryName}>
-                                {item.categoryName}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </Grid>
-                      <Grid item xs={4} sm={4} md={4} sx={{ mt: 1, mr: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Product Name</b>
-                        </Typography>
-                        <TextField
-                          fullWidth
-                          placeholder="Search"
-                          variant="outlined"
-                          size="medium"
-                          value={searchQuery}
-                          onChange={(e) => {
-                            onChangeSearch((e.target as HTMLInputElement).value);
-                          }}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <GridSearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Grid>
-                      <Button
-                        // sx={{ mt: 0.5 }}
-                        variant="text"
-                        onClick={() => {
-                          setSnFilter("--Select--");
-                          setCategoryListFilter([]);
-                          setCnFilter("--Select--");
-                          setSearchQuery("");
-                          SetFilters("--Select--", "--Select--", "");
-                        }}
-                      >
-                        Clear
-                      </Button>
-                    </Grid>
-                    <DataGrid
-                      style={{
-                        opacity: dataGridOpacity,
-                        pointerEvents: dataGridPointer,
-                      }}
-                      autoHeight={true}
-                      getRowHeight={() => "auto"}
-                      rows={productListTemp}
-                      columns={serviceProductColumns}
-                      pageSize={pageSize}
-                      rowsPerPageOptions={[5, 10, 20]}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                      disableSelectionOnClick
-                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...serviceProductList];
-                        let a: ProductModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        if (a) {
-                          const clickType = (e.target as any).textContent;
-
-                          if (clickType.toLowerCase() === "edit") handleEditAndDelete(clickType, a);
-
-                          if (clickType.toLowerCase() === "view specification" && a.specification !== "") {
-                            setDialogText(a.specification);
-                            setDialogHeader("Specification");
-                            setOpenDialog(true);
-                          }
-
-                          if (clickType.toLowerCase() === "view short specification" && a.specification !== "") {
-                            setDialogText(a.shortSpecification);
-                            setDialogHeader("Short Specification");
-                            setOpenDialog(true);
-                          }
-                        }
-                      }}
-                      sx={{
-                        "& .MuiDataGrid-columnHeaders": {
-                          backgroundColor: theme.palette.primary.main,
-                          color: theme.palette.primary.contrastText,
-                        },
-                      }}
-                    />
-                  </>
-                )}
-              </div>
-            )}
-          </Grid>
         </Grid>
       </Container>
       <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
@@ -1187,15 +859,7 @@ const ServiceProductPage = () => {
         </Alert>
       </Snackbar>
 
-      <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle>{dialogHeader}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{dialogText}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+
     </Box>
   );
 };

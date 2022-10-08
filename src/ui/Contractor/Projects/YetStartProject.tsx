@@ -53,7 +53,7 @@ interface TabPanelProps {
 
 
 const YetStartProject = () => {
-
+ //#region Variables
     const theme = useTheme()
     const [pageSize, setPageSize] = useState<number>(5);
 
@@ -65,8 +65,9 @@ const YetStartProject = () => {
       //for grid
     const [gridServicesList, setGridServicesList] = useState<Array<ServiceNameModel>>([]);
     const [gridServicesListTemp, setGridServicesListTemp] = useState<Array<ServiceNameModel>>([]);
+ //#endregion 
 
-
+ //#region Functions
     const [value,setValue] = useState(0)
     const [entries,setEntries] = useState(10)
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -89,6 +90,7 @@ const YetStartProject = () => {
           );
         }
       };
+//#endregion 
 
     return (
         <Box sx={{mt:11}}>
