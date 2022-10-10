@@ -13,32 +13,9 @@ import { useCookies } from "react-cookie";
 import { SelectChangeEvent } from "@mui/material";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
+import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
 
-
-
-// type Source = {
-//     id: number,
-//     label: string
-// }
-// const sources = ['Company', 'Self'];
-// const sourceOptions = sources.map((skill, index) => ({
-//     id: index + 1,
-//     label: skill
-// }))
-
-// type Category = {
-//     id: number,
-//     label: string
-// }
-// const categorys = ['apple', 'ball'];
-// const categoryOptions = categorys.map((cat, index) => ({
-//     id: index + 1,
-//     label: cat
-// }))
-
-
-let s_ID = 0, c_ID = 0, sp_ID = 0, us_ID = 0;
+let s_ID = 0, c_ID = 0, p_ID = 0, u_ID = 0;
 
 const AddRateCard = () => {
 
@@ -57,15 +34,8 @@ const AddRateCard = () => {
         }
     }, []);
 
-    // const navigate = useNavigate();
-    // const [source, setSource] = useState<Source | null>(null);
-    // console.log(source)
-    // const [category, setCategory] = useState<Source | null>(null);
-    // console.log(category)
 
     // #region Variable
-
-    const [serviceName, setServiceName] = useState("--Select--");
     const [serviceNameID, setServiceNameID] = useState<number>(0);
     const [serviceNameError, setServiceNameError] = useState("");
     const [selectedServiceName, setSelectedServiceName] = useState("");
@@ -73,7 +43,6 @@ const AddRateCard = () => {
     const [serviceNameErrorText, setServiceNameErrorText] = useState("");
     const [serviceNameFullData, setServiceNameFullData] = useState([]);
 
-    const [category, setCategory] = useState("--Select--");
     const [categoryID, setCategoryID] = useState<number>(0);
     const [categoryError, setCategoryError] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -102,6 +71,7 @@ const AddRateCard = () => {
 
     const [unitOfSales, setUnitOfSales] = useState("--Select--");
     const [unitOfSalesID, setUnitOfSalesID] = useState<number>(0);
+    const [selectedUnitID, setSelectedUnitID] = useState(0);
 
     const [unitOfSalesError, setUnitOfSalesError] = useState("");
     const [selectedUnitOfSales, setSelectedUnitOfSales] = useState("");
@@ -127,10 +97,6 @@ const AddRateCard = () => {
     const [withoutMaterialRateErrorText, setWithoutMaterialRateErrorText] = useState("");
     const [isWithoutMaterialRateError, isSetWithoutMaterialRateError] = useState(false);
 
-    const [alternativeUnit, setAlternativeUnit] = React.useState("");
-    const [alternativeUnitErrorText, setAlternativeUnitErrorText] = useState("");
-    const [isAlternativeUnitError, isSetAlternativeUnitError] = useState(false);
-
     const [shortSpecification, setShortSpecification] = React.useState("");
     const [shortSpecificationErrorText, setShortSpecificationErrorText] = useState("");
     const [isShortSpecificationError, isSetShortSpecificationError] = useState(false);
@@ -154,8 +120,72 @@ const AddRateCard = () => {
 
      //#region Functions
     useEffect(() => {
-        FetchActvityRoles();
+        
+        let id = window.location.pathname.split('/').at(-1);
+        if (!NullOrEmpty(id) && !isNaN(parseInt(id))) {
+            setRateCardID(parseInt(id));
+            FetchRateCardDetails(parseInt(id));
+        }
+        else {
+            setRateCardID(0);
+            //FetchRateCardDetails(parseInt(id));
+            FetchActvityRoles();
+        }
     }, []);
+
+    const FetchRateCardDetails = (id: number) => {
+        let params = {
+            RateCardID: id
+        };
+        Provider.getAll(`master/getcontractorratecardbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+
+                        setRateCardID(response.data.data[0].rateCardID);
+                        if (!NullOrEmpty(response.data.data[0].serviceID)) {
+                            s_ID = response.data.data[0].serviceID;
+                        }
+
+                        if (!NullOrEmpty(response.data.data[0].categoryID)) {
+                            c_ID = response.data.data[0].categoryID;
+                        }
+
+                        if (!NullOrEmpty(response.data.data[0].productID)) {
+                            p_ID = response.data.data[0].productID;
+                        }
+
+                        if (!NullOrEmpty(response.data.data[0].selectedUnitID)) {
+                            u_ID = response.data.data[0].selectedUnitID;
+                        }
+                        setHSN(response.data.data[0].hsn);
+                        setGstRate(response.data.data[0].gstRate);
+                        setMaterialRate(response.data.data[0].rateWithMaterials);
+                        setWithoutMaterialRate(response.data.data[0].rateWithoutMaterials);
+
+                        setAlternativeWithMaterialRate(response.data.data[0].altRateWithMaterials);
+                        setAlternativeWithoutMaterialRate(response.data.data[0].altRateWithoutMaterials);
+
+                        setDisplay(response.data.data[0].display == true ? "Yes" : "No");
+                        setArnID(response.data.data[0].activityID);
+
+                        setShortSpecification(response.data.data[0].shortSpecification);
+                        setSpecificationSP(response.data.data[0].specification);
+
+                    }
+
+                    setLoading(false);
+                    FetchActvityRoles();
+                    FetchCategory(response.data.data[0].activityID, response.data.data[0].serviceID);
+                    FetchServiceProductName(response.data.data[0].activityID, response.data.data[0].serviceID, response.data.data[0].categoryID);
+                    FetchUnitOfSalesName(response.data.data[0].productID, response.data.data[0].selectedUnitID, 0, 0);
+
+                }
+            })
+            .catch((e) => {
+                setLoading(false);
+            });
+    };
 
     const FetchActvityRoles = () => {
         Provider.getAll("master/getmainactivities")
@@ -203,8 +233,7 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
-
-    const FetchCategory = (serviceNameID) => {
+    const FetchCategory = (arnID, serviceNameID) => {
         let params = {
             ActivityID: arnID,
             ServiceID: serviceNameID,
@@ -222,11 +251,22 @@ const AddRateCard = () => {
                         });
                         setCategoryDDData(category);
                         setCategoryFullData(response.data.data);
+
                         if (c_ID > 0) {
                             let a = category.filter((el) => {
                                 return el.id === c_ID;
                             });
+
+                            let b = response.data.data.filter((el) => {
+                                return el.id === c_ID;
+                            });
+
+                            setHSN(b[0].hsnsacCode);
+                            setGstRate(b[0].gstRate);
+
+
                             setSelectedCategory(a[0].label);
+                            setCategoryID(a[0].id);
                         }
                     }
                 }
@@ -234,7 +274,7 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
-    const FetchServiceProductName = (categoryID) => {
+    const FetchServiceProductName = (arnID, serviceNameID, categoryID) => {
         let params = {
             ActivityID: arnID,
             ServiceID: serviceNameID,
@@ -244,6 +284,7 @@ const AddRateCard = () => {
         Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
+                    
                     if (response.data.data) {
                         const serviceProduct: any = [];
                         response.data.data.map((data: any, i: number) => {
@@ -252,13 +293,18 @@ const AddRateCard = () => {
                                 label: data.productName,
                             });
                         });
+
                         setServiceProductNameDDData(serviceProduct);
                         setServiceProductNameFullData(response.data.data);
-                        if (sp_ID > 0) {
+
+                        if (p_ID > 0) {
                             let a = serviceProduct.filter((el) => {
-                                return el.id === sp_ID;
+                                return el.id === p_ID;
                             });
-                            setSelectedServiceProductName(a[0].label);
+
+                            setServiceProductName(a[0].label)
+                            setServiceProductNameID(a[0].id);
+                            //setSelectedServiceProductName(a[0].label);
                         }
                     }
                 }
@@ -266,74 +312,71 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
-    const Conversion = (conversion, WithMaterialRate, WithoutMaterialRate, SelectedUnit, UnitData) => {
-
-        if (SelectedUnit == UnitData.unit1ID) {
-            
-                                                    
-        }
-        else if (SelectedUnit == UnitData.unit2ID) {
-            //  /
-        }
-
-        // setAlternativeWithMaterialRate(alternateWithRate.toString());
-        //     setAlternativeWithoutMaterialRate(alternateWithoutRate.toString());
-
-
-    }
-
-
-    const FetchUnitOfSalesName = (serviceProductNameID, selectedUnitID) => {
-        debugger;
+    const FetchUnitOfSalesName = (serviceProductNameID, selectedUnitID, MaterialRate, WithoutMaterialRate) => {
+        
         let params = {
             ProductID: serviceProductNameID,
         };
-        Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.getAll(`master/getproductunitbyid?${new URLSearchParams(GetStringifyJson(params))}`)
             .then((response: any) => {
-                debugger;
+                
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         const unitSales: any = [];
                         response.data.data.map((data: any, i: number) => {
                             unitSales.push({
-                                id: data.id,
-                                label: data.productName,
+                                id: data.unitID,
+                                label: data.unitName,
                             });
                         });
+                        let selectedUID = 0;
                         setUnitOfSalesFullData(response.data.data);
-                        const units = response.data.data.map((data: any) => data.displayUnit);
+                        let product = serviceProductNameFullData.filter((el: any) => {
+                            return el.display && el.productID === serviceProductNameID;
+                        });
 
-                        setUnitOfSalesDDData(units[0].split(" / "));
-
+                        setUnitOfSalesDDData(unitSales);
                         if (selectedUnitID !== null) {
-                            if (selectedUnitID == response.data.data[0].unit1ID) {
-                                setUnitOfSales(response.data.data[0].unit1Name);
+
+                            if (selectedUnitID == response.data.data[0].unitID) {
+                                setUnitOfSales(response.data.data[0].unitName);
+                                setSelectedUnitID(response.data.data[0].unitID);
+                                selectedUID = response.data.data[0].unitID;
+                                setConversionRate(response.data.data[0].conversionRate);
+
+                                setMaterialRate(product[0].rateWithMaterials);
+                                setWithoutMaterialRate(product[0].rateWithoutMaterials);
+
+                                setAlternativeWithMaterialRate((parseFloat(product[0].rateWithMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
+                                setAlternativeWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
                             }
-                            else if (selectedUnitID == response.data.data[0].unit2ID) {
-                                setUnitOfSales(response.data.data[0].unit2Name);
+                            else if (selectedUnitID == response.data.data[1].unitID) {
+
+                                setUnitOfSales(response.data.data[1].unitName);
+                                setSelectedUnitID(response.data.data[1].unitID);
+                                selectedUID = response.data.data[1].unitID;
+                                setConversionRate(response.data.data[1].conversionRate);
+
+                                setMaterialRate((parseFloat(product[0].rateWithMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
+                                setWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
+
+                                setAlternativeWithMaterialRate(((parseFloat(product[0].rateWithMaterials) * response.data.data[1].conversionRate) * response.data.data[0].conversionRate).toFixed(2).toString());
+                                setAlternativeWithoutMaterialRate(((parseFloat(product[0].rateWithoutMaterials) * response.data.data[1].conversionRate) * response.data.data[0].conversionRate).toFixed(2).toString());
                             }
                         }
 
-                        if (us_ID > 0) {
+                        if (u_ID > 0) {
                             let a = unitSales.filter((el) => {
-                                return el.id === us_ID;
+                                return el.id === u_ID;
                             });
-                            setSelectedUnitOfSales(a[0].label);
-
-                        }
-                        else if (serviceProductNameID !== 0) {
-                            let a = unitSales.filter((el) => {
-                                return el.id === serviceProductNameID;
-                            });
-                            setSelectedUnitOfSales(a[0].label);
+                            setUnitOfSales(a[0].label);
+                            setSelectedUnitID(a[0].id);
                         }
                     }
                 }
             })
             .catch((e) => { });
     };
-
-
 
     const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDisplay((event.target as HTMLInputElement).value);
@@ -367,26 +410,37 @@ const AddRateCard = () => {
     }
 
     const handleSubmitClick = () => {
-
+        
         let isValid: boolean = true;
 
-        if (serviceName.trim() === "") {
+        if (selectedServiceName.trim() === "") {
             isValid = false;
             isSetServiceNameError(true);
             setServiceNameErrorText("Please Select Service Name");
         }
 
-
-        if (category.trim() === "") {
+        if (selectedCategory.trim() === "") {
             isValid = false;
             isSetCategoryError(true);
             setCategoryErrorText("please Select Category ");
         }
 
+        if (hsn.trim() === "") {
+            isValid = false;
+            isSetHSNError(true);
+            setHSNErrorText("HSN / SAC Code can not be empty");
+        }
+
+        if (gstRate.toString().trim() === "") {
+            isValid = false;
+            isSetGstRateError(true);
+            setGstRateErrorText("GST can not be empty");
+        }
+
         if (serviceProductName.trim() === "") {
             isValid = false;
             isSetServiceProductNameError(true);
-            setServiceProductNameErrorText("please Enter Address ");
+            setServiceProductNameErrorText("Please select Service Product");
         }
 
         if (unitOfSales.trim() === "") {
@@ -395,32 +449,28 @@ const AddRateCard = () => {
             setUnitOfSalesErrorText("please Enter Unit of Sales ");
         }
 
-        // if (materialRate.trim() === "") {
-        //     isValid = false;
-        //     isSetMaterialRateError(true);
-        //     setAlternativeRateErrorText("please Enter Material Rate ");
-        // }
+        if (materialRate.toString().trim() === "") {
+            isValid = false;
+            isSetMaterialRateError(true);
+            setMaterialRateErrorText("please Enter Material Rate");
+        }
 
-        // if (alternativeRate.trim() === "") {
-        //     isValid = false;
-        //     isSetAlternativeRateError(true);
-        //     setServiceProductNameErrorText("please Enter Alternative rate ");
-        // }
+        if (alternativeWithMaterialRate.toString().trim() === "") {
+            isValid = false;
+            isSetAlternativeWithMaterialRateError(true);
+            setAlternativeWithMaterialRateErrorText("please Enter Alternative rate");
+        }
 
-        if (withoutMaterialRate.trim() === "") {
+        if (withoutMaterialRate.toString().trim() === "") {
             isValid = false;
             isSetWithoutMaterialRateError(true);
-            setWithoutMaterialRateErrorText("please Enter Address ");
+            setWithoutMaterialRateErrorText("please Enter Without Material Rate");
         }
-        if (alternativeUnit.trim() === "") {
+        if (alternativeWithoutMaterialRate.toString().trim() === "") {
             isValid = false;
-            isSetAlternativeUnitError(true);
-            setAlternativeUnitErrorText("please Enter Address ");
+            isSetAlternativeWithoutMaterialRateError(true);
+            setAlternativeWithoutMaterialRateErrorText("please Enter Alternative rate");
         }
-
-
-
-        // let blankData = serviceType[0].filter((el) => el.isSelected);
 
         if (isValid) {
             InsertUpdateData();
@@ -428,25 +478,32 @@ const AddRateCard = () => {
     };
 
     const InsertUpdateData = () => {
+        
+        let params = {
+            RateCardID: rateCardID,
+            ProductID: serviceProductNameID,
+            ActivityID: arnID,
+            ServiceID: serviceNameID,
+            CategoryID: categoryID,
+            SelectedUnitID: selectedUnitID,
+            UnitOfSalesID: unitOfSalesID,
+            RateWithMaterials: materialRate,
+            RateWithoutMaterials: withoutMaterialRate,
+            AltRateWithMaterials: alternativeWithMaterialRate,
+            AltRateWithoutMaterials: alternativeWithoutMaterialRate,
+            AlternateUnitOfSales: 0,
+            ShortSpecification: shortSpecification,
+            Specification: specificationSP,
+            Display: display === "Yes" ? true : false,
+            ContractorID: cookies.dfc.UserID
+        };
+        
         if (actionStatus === "new") {
-            Provider.create("master/insertupdatecontractorratecard", {
-                RateCardID: rateCardID,
-                ProductID: serviceProductNameID,
-                ActivityID: arnID,
-                ServiceID: serviceNameID,
-                CategoryID: categoryID,
-                SelectedUnitID: selectedUnitOfSales,
-                UnitOfSalesID: unitOfSalesID,
-                RateWithMaterials: materialRate,
-                RateWithoutMaterials: withoutMaterialRate,
-                AlternateUnitOfSales: alternativeUnit,
-                ShortSpecification: shortSpecification,
-                Specification: specificationSP,
-                Display: display,
-                ContractorID: cookies.dfc.UserID
-            })
+            Provider.create("master/insertupdatecontractorratecard", params)
                 .then((response) => {
+                    
                     if (response.data && response.data.code === 200) {
+                        navigate(`/contractor/ratecardsetup`);
                     } else if (response.data.code === 304) {
                         setSnackMsg(communication.ExistsError);
                         setOpen(true);
@@ -466,39 +523,7 @@ const AddRateCard = () => {
                     setOpen(true);
                 });
         }
-        // else if (actionStatus === "edit") {
-        //   Provider.create("servicecatalogue/updateworkfloor", {
-        //     // ID: selectedID,
-        //     WorkFloorName: paramWorkfloorName,
-        //     Display: checked,
-        //   })
-        //     .then((response) => {
-        //       if (response.data && response.data.code === 200) {
-        //         FetchData("updated");
-        //       }else if (response.data.code === 304) {
-        //         setSnackMsg(communication.ExistsError);
-        //         setOpen(true);
-        //         setSnackbarType("error");
-        //         ResetFields();
-        //       }  else {
-        //         ResetFields();
-        //         setSnackMsg(communication.Error);
-        //         setSnackbarType("error");
-        //         setOpen(true);
-        //       }
-        //     })
-        //     .catch((e) => {
-        //       ResetFields();
-        //       setSnackMsg(communication.NetworkError);
-        //       setSnackbarType("error");
-        //       setOpen(true);
-        //     });
-        // }
     };
-
-
-
-
 
     // const isSPRError = useState(false);
     // const sprError = useState("");
@@ -521,7 +546,7 @@ const AddRateCard = () => {
                     <Grid item xs={4} sm={8} md={12}>
                         <Stack direction="row" justifyContent="space-between" alignItems="center">
                             <Typography variant="h4">RATE CARD </Typography>
-                            <Button variant="contained" startIcon={<VisibilityIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/master/ratecardsetup")}>View</Button>
+                            <Button variant="contained" startIcon={<VisibilityIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/contractor/ratecardsetup")}>View List</Button>
                         </Stack>
 
                     </Grid>
@@ -548,7 +573,7 @@ const AddRateCard = () => {
                                                 setSelectedServiceName(value.label);
                                                 setServiceNameID(value.id);
                                             }
-                                            FetchCategory(value.id);
+                                            FetchCategory(arnID, value.id);
                                         }}
                                         value={selectedServiceName}
                                         renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isServiceNameError} helperText={serviceNameError} />}
@@ -582,7 +607,7 @@ const AddRateCard = () => {
 
                                                 setHSN(c[0].hsnsacCode);
                                                 setGstRate(c[0].gstRate);
-                                                FetchServiceProductName(value.id);
+                                                FetchServiceProductName(arnID, serviceNameID, value.id);
                                             }
 
                                         }}
@@ -601,10 +626,11 @@ const AddRateCard = () => {
                             </Grid>
                             <Grid item md={3}>
                                 <TextField
+                                    sx={{ background: "#e5e5e5" }}
                                     fullWidth
+                                    disabled={true}
                                     variant="outlined"
                                     size="small"
-
                                     error={isHsnError}
                                     helperText={hsnErrorText}
                                     value={hsn}
@@ -618,8 +644,10 @@ const AddRateCard = () => {
                             <Grid item md={2}>
                                 <TextField
                                     fullWidth
+                                    disabled={true}
                                     variant="outlined"
                                     size="small"
+                                    sx={{ background: "#e5e5e5" }}
 
                                     error={isGstRateError}
                                     helperText={gstRateErrorText}
@@ -646,28 +674,20 @@ const AddRateCard = () => {
                                                 setServiceProductName(value.label)
                                                 setServiceProductNameID(value.id);
 
-                                                let p = serviceProductNameFullData.filter((el: any) => {
+                                                let product = serviceProductNameFullData.filter((el: any) => {
                                                     return el.display && el.productID === value.id;
                                                 });
 
-                                                if (p != null) {
+                                                if (product != null) {
 
-                                                    setConversionRate(p[0].conversionRate);
-                                                    setSpecificationSP(p[0].specification);
-                                                    setShortSpecification(p[0].shortSpecification);
-                                                    setMaterialRate(p[0].rateWithMaterials);
-                                                    setWithoutMaterialRate(p[0].rateWithoutMaterials);
-
-
-
-                                                    let alternateWithRate = parseFloat(p[0].conversionRate) * parseFloat(p[0].rateWithMaterials);
-                                                    let alternateWithoutRate = parseFloat(p[0].conversionRate) * parseFloat(p[0].rateWithoutMaterials);
-
-                                                    setAlternativeWithMaterialRate(alternateWithRate.toString());
-                                                    setAlternativeWithoutMaterialRate(alternateWithoutRate.toString());
+                                                    setSelectedUnitID(product[0].selectedUnitID);
+                                                    setSpecificationSP(product[0].specification);
+                                                    setShortSpecification(product[0].shortSpecification);
+                                                    setMaterialRate(product[0].rateWithMaterials);
+                                                    setWithoutMaterialRate(product[0].rateWithoutMaterials);
                                                 }
 
-                                                FetchUnitOfSalesName(value.id, p[0].selectedUnitID);
+                                                FetchUnitOfSalesName(value.id, product[0].selectedUnitID, product[0].rateWithMaterials, product[0].rateWithoutMaterials);
                                             }
                                         }}
                                         value={serviceProductName}
@@ -690,15 +710,32 @@ const AddRateCard = () => {
                                         options={unitOfSalesDDData}
                                         //sx={{ width: 300 }}
                                         onChange={(event: React.SyntheticEvent, value: any) => {
-                                            debugger;
+                                            
                                             isSetUnitOfSalesError(false);
-                                            setSelectedUnitOfSales("");
                                             if (value !== null) {
                                                 setUnitOfSales(value.label);
-                                                setUnitOfSalesID(value.id);
+                                                setSelectedUnitID(value.id);
 
+                                                let product = serviceProductNameFullData.filter((el: any) => {
+                                                    return el.display && el.productID === serviceProductNameID;
+                                                });
 
+                                                if (value.id == unitOfSalesFullData[0].unitID) {
 
+                                                    setMaterialRate(product[0].rateWithMaterials);
+                                                    setWithoutMaterialRate(product[0].rateWithoutMaterials);
+
+                                                    setAlternativeWithMaterialRate((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
+                                                    setAlternativeWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
+                                                }
+                                                else if (value.id == unitOfSalesFullData[1].unitID) {
+
+                                                    setMaterialRate((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
+                                                    setWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
+
+                                                    setAlternativeWithMaterialRate(((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate) * unitOfSalesFullData[0].conversionRate).toFixed(2).toString());
+                                                    setAlternativeWithoutMaterialRate(((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate) * unitOfSalesFullData[0].conversionRate).toFixed(2).toString());
+                                                }
                                             }
                                         }}
                                         value={unitOfSales}
@@ -720,6 +757,7 @@ const AddRateCard = () => {
                                     variant="outlined"
                                     size="small"
                                     onChange={(e) => {
+                                        
                                         setMaterialRate((e.target as HTMLInputElement).value);
                                         isSetMaterialRateError(false);
                                         setMaterialRateErrorText("");
@@ -731,7 +769,7 @@ const AddRateCard = () => {
                             </Grid>
                             <Grid item md={4} >
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                    <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit</b>
+                                    <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit </b>
                                 </Typography>
                             </Grid>
                             <Grid item md={2}>
@@ -774,7 +812,7 @@ const AddRateCard = () => {
                             </Grid>
                             <Grid item md={4} >
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                    <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit</b>
+                                    <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit </b>
                                 </Typography>
                             </Grid>
                             <Grid item md={2}>
@@ -798,7 +836,7 @@ const AddRateCard = () => {
                         <Grid container sx={{ mt: 2 }} alignItems="center" >
                             <Grid item md={3}>
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                    <b><label style={{ color: "#ff0000" }}>*</label>Short Specification</b>
+                                    <b>Short Specification</b>
                                 </Typography>
                             </Grid>
                             <Grid item md={8}>
@@ -824,7 +862,7 @@ const AddRateCard = () => {
                         <Grid container sx={{ mt: 2 }} alignItems="center" >
                             <Grid item md={3}>
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                    <b><label style={{ color: "#ff0000" }}>*</label>Specification of Service Provider</b>
+                                    <b>Specification of Service Provider</b>
                                 </Typography>
                             </Grid>
                             <Grid item md={8}>
@@ -846,40 +884,6 @@ const AddRateCard = () => {
 
                                 />
                             </Grid>
-                        </Grid>
-                        <Grid container sx={{ mt: 2 }} alignItems="center">
-                            {/* <FormControl component="fieldset" error={isSPRError[0]}>
-                            <FormLabel component="legend">Service Provider Role</FormLabel>
-                            <FormGroup aria-label="position" row>
-                                {serviceType[0].map((data, index) => {
-                                return (
-                                    <FormControlLabel
-                                    value={data.id}
-                                    control={
-                                        <Checkbox
-                                        checked={data.isSelected}
-                                        tabIndex={-1}
-                                        onClick={() => {
-                                            isSPRError[1](false);
-                                            sprError[1]("");
-                                            const newChecked = [...serviceType[0]];
-                                            newChecked.find((item, i) => {
-                                            if (item.id === data.id) {
-                                                item.isSelected = !item.isSelected;
-                                            }
-                                            });
-                                            serviceType[1](newChecked);
-                                        }}
-                                        />
-                                    }
-                                    label={data.key}
-                                    labelPlacement="end"
-                                    />
-                                );
-                                })}
-                             </FormGroup>
-                            <FormHelperText>{sprError[0]}</FormHelperText>
-                        </FormControl> */}
                         </Grid>
                         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
                             <Grid item sm={3}>

@@ -476,21 +476,39 @@ export interface EmployeeModel {
   profileStatus: boolean;
   loginStatus: boolean;
   verifyStatus: boolean;
-  otp:number;
+  otp: number;
   action: string;
+  rateUnit:string;
+  altRateUnit:string;
+  material:string;
 }
 
 export interface RateCardModel {
   id: number;
-  srno: number;
+  productID: number;
+  activityID: number;
+  serviceID: number;
+  categoryID: number;
+  selectedUnitID: number;
+  unitOfSalesID: number;
+  rateWithMaterials: number;
+  rateWithoutMaterials: number;
+  altRateWithMaterials: number;
+  altRateWithoutMaterials: number;
+  alternateUnitOfSales: number;
+  shortSpecification: string;
+  specification: string;
   serviceName: string;
   categoryName: string;
+  productName: string;
+  selectedUnitName: string;
+  unit1Name: string;
+  unit2Name: string;
+  unit1ID: number;
+  unit2ID: number;
+  conversionRate: number;
+  srno: number;
   serviceProductName: string;
-  unit: string;
-  rateUnit: string;
-  alternativeRate: string;
-  alternativeUnit: string;
-  material: string;
   display: string;
   action: string;
 }
@@ -551,36 +569,36 @@ export interface ApprovredModel {
   id: number;
   userID: number;
   srno: number;
-  company:string;
-  activityrole:string;
-  department:string;
-  designation:string;
-  username:string;
-  password:string;
-  status:boolean;
+  company: string;
+  activityrole: string;
+  department: string;
+  designation: string;
+  username: string;
+  password: string;
+  status: boolean;
   action: boolean;
 }
 
 export interface PendingModel {
   id: number;
   srno: number;
-  role:string;
-  companyName:string;
-  contactName:string;
-  mobileNo:number;
-  status:boolean;
+  role: string;
+  companyName: string;
+  contactName: string;
+  mobileNo: number;
+  status: boolean;
   action: boolean;
 }
 export interface DeclinedModel {
   id: number;
   userID: number;
   srno: number;
-  company:string;
-  activityrole:string;
-  department:string;
-  designation:string;
-  username:string;
-  password:string;
-  status:boolean;
+  company: string;
+  activityrole: string;
+  department: string;
+  designation: string;
+  username: string;
+  password: string;
+  status: boolean;
   action: boolean;
 }

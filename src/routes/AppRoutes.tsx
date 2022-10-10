@@ -138,8 +138,9 @@ const AppRoutes = () => {
               <Route path="pocketremainder" element={<PocketRemainder />} />
               <Route path="common/client/clientlist" element={<ClientList />}/>
 
-              <Route path="master/ratecardsetup" element={<RateCardSetup />} />
-              <Route path="master/addratecard" element={<AddRateCard />} />
+              <Route path="contractor/ratecardsetup" element={<RateCardSetup />} />
+              <Route path="contractor/ratecard/edit/:id" element={<AddRateCard />} />
+              <Route path="contractor/addratecard" element={<AddRateCard />} />
               <Route path="common/client/edit/:id" element={<ClientEdit/>}/>
               <Route path="architect/architectratecardsetup" element ={<ArchitectRateCardSetup/>} />
              <Route path="master/addserviceproduct" element={<AddServiceProduct/>} />

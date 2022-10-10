@@ -1,8 +1,10 @@
 import { Button, Grid, Link, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
-import { CalculateSqfeet } from "./CommonFunctions";
-import { NullOrEmpty } from "./CommonFunctions";
+import { CalculateSqfeet, NullOrEmpty } from "./CommonFunctions";
+import { GetStringifyJson } from "../utils/CommonFunctions";
 import Box from "@mui/material/Box";
+import { Style } from "@mui/icons-material";
+import Provider from "../api/Provider";
 
 
 export const categoryColumns: GridColDef[] = [
@@ -2922,39 +2924,78 @@ export const rateCardListColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "serviceProduct",
+    field: "productName",
     headerName: "Service Product Name/Specification",
     flex: 1,
     minWidth: 100,
     sortable: false,
   },
   {
-    field: "unit",
+    field: "selectedUnitName",
     headerName: "Unit",
     flex: 1,
     minWidth: 80,
     sortable: false,
   },
   {
-    field: "rateUnit",
+    field: "rateWithMaterials",
     headerName: "Rate/Unit",
     flex: 1,
     minWidth: 80,
     sortable: false,
   },
   {
-    field: "alternativeRateUnit",
+    field: "rateWithoutMaterials",
     headerName: "Alternative Rate/Unit",
     flex: 1,
     minWidth: 100,
     sortable: false,
   },
   {
-    field: "alternativeRateUnit",
-    headerName: "Alternative Rate/Unit",
+    field: "rateUnit",
+    headerName: "Rate Unit",
     flex: 1,
     minWidth: 100,
     sortable: false,
+    renderCell: (params) => {
+      if (params.row !== null && params.row !== undefined) {
+        return (
+          <div>
+            <Grid>
+              <Grid style={{ height: "40px", width: "100%" }}>
+                <Typography>{params.row.rateWithMaterials}</Typography>
+              </Grid>
+              <Grid style={{ height: "40px", width: "100%" }}>
+                <Typography>{params.row.rateWithoutMaterials}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+        );
+      }
+    },
+  },
+  {
+    field: "altRateUnit",
+    headerName: "Alternate Rate Unit",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      if (params.row !== null && params.row !== undefined) {
+        return (
+          <div>
+            <Grid>
+              <Grid style={{ height: "40px", width: "100%" }}>
+                <Typography>{params.row.altRateWithMaterials}</Typography>
+              </Grid>
+              <Grid style={{ height: "40px", width: "100%" }}>
+                <Typography>{params.row.altRateWithoutMaterials}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+        );
+      }
+    },
   },
   {
     field: "material",
@@ -2962,6 +3003,26 @@ export const rateCardListColumns: GridColDef[] = [
     flex: 1,
     minWidth: 100,
     sortable: false,
+    renderCell: (params) => {
+      return (
+        <div>
+          <Typography noWrap={false}>{params.value}</Typography>
+          <Grid>
+            <Grid style={{ height: "40px", width: "100%" }}>
+              <Button variant="text" sx={{ mr: 1 }}>
+                Yes
+              </Button>
+            </Grid>
+            <Grid style={{ height: "40px", width: "100%" }}>
+              <Button variant="text" sx={{ mr: 1 }}>
+                No
+              </Button>
+            </Grid>
+          </Grid>
+        </div>
+      );
+    },
+
   },
   {
     field: "display",
@@ -2977,7 +3038,7 @@ export const rateCardListColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`employee/edit/${e.row.id}`}>Edit</Link>;
+      return <Link href={`ratecard/edit/${e.row.id}`}>Edit</Link>;
     }
   },
 ];

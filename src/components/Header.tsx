@@ -65,7 +65,7 @@ const Header = () => {
       icon: <Dashboard />,
       click: () => navigate(`/dashboard`),
     },
-    { title: "Profile", icon: <Person />, click: () => {} },
+    { title: cookies.dfc.RoleName, icon: <Person />, click: () => { } },
     {
       title: "Logout",
       icon: <Logout />,
