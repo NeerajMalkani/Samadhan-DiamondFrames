@@ -464,7 +464,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/addbranch`);
+              navigate(`/common/organization/branch`);
             }, 300);
           },
         },
@@ -592,7 +592,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/organization/branch`);
+              navigate(`/common/organization/branch`);
             }, 300);
           },
         },
@@ -916,16 +916,16 @@ const DrawerItems = ({ open }: OpenObj) => {
             }, 300);
           },
         },
-        // {
-        //   title: "Add Branch",
-        //   isActive: window.location.href.toLowerCase().includes("addbranch"),
-        //   navigation: () => {
-        //     open[1](false);
-        //     setTimeout(() => {
-        //       navigate(`/contractor/organization/branch`);
-        //     }, 300);
-        //   },
-        // },
+        {
+          title: "Add Branch",
+          isActive: window.location.href.toLowerCase().includes("addbranch"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/organization/branch`);
+            }, 300);
+          },
+        },
         {
           title: "Add Designation",
           isActive: window.location.href.toLowerCase().includes("addesignation"),
