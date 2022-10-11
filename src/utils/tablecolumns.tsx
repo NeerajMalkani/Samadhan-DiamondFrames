@@ -619,7 +619,7 @@ export const branchColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "locationType",
+    field: "branchType",
     headerName: "Location Type",
     flex: 2.5,
     minWidth: 140,

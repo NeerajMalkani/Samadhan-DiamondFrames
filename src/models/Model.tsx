@@ -123,17 +123,25 @@ export interface RoleDetails {
 }
 
 export interface BranchModel {
-  CompanyName: string;
-  BranchName: string;
-  AccountNo: number;
-  Address: string;
-  BankName: string;
-  BankBranchName: string;
-  ContactPersonNo: number;
-  GST: string;
-  Pan: string;
-  Pincode: number;
-  IfscCode: number;
+  regionalOfficeID:number;
+  branchType: string;
+  branchTypeID: number;
+  branchAdminID:number;
+  contactPersonNo:string;
+  locationName:string;
+  stateID:number;
+  cityID:number;
+  branchAdmin:string;
+  pincode:number;
+  accountNo:string;
+  bankName:string;
+  bankBranchName:string;
+  ifscCode:string;
+  address:string;
+  gstNo: string;
+  panNo: string;
+  display: string;
+
 }
 
 export interface BranchTypeModel {
@@ -143,6 +151,12 @@ export interface BranchTypeModel {
   isUT: string;
   isActive: string;
 }
+
+export interface RegionalOfficeModel {
+  id: number;
+  locationName: string;
+}
+
 export interface DepartmentNameModel {
   id: number;
   srno: number;
@@ -478,9 +492,9 @@ export interface EmployeeModel {
   verifyStatus: boolean;
   otp: number;
   action: string;
-  rateUnit:string;
-  altRateUnit:string;
-  material:string;
+  rateUnit: string;
+  altRateUnit: string;
+  material: string;
 }
 
 export interface RateCardModel {

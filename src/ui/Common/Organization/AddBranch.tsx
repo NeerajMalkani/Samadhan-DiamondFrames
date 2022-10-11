@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   TextField,
   Button,
@@ -16,6 +17,7 @@ import {
   AlertColor,
   RadioGroup,
   FormControlLabel,
+  Snackbar,
   Radio
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +30,7 @@ import Header from "../../../components/Header";
 import DataContexts from "../../../contexts/DataContexts"
 import Provider from "../../../api/Provider";
 import { branchColumns } from "../../../utils/tablecolumns";
-import { BranchModel } from "../../../models/Model";
+import { BranchModel, RegionalOfficeModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import { CityModel, BranchTypeModel, StateModel, EmployeeModel } from "../../../models/Model";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
@@ -82,6 +84,13 @@ const AddBranch = () => {
   const [isbranchTypeError, setIsBranchTypeError] = useState(false);
   const [branchTypeList, setBranchTypeList] = useState<Array<BranchTypeModel>>([]);
 
+  const [regionalOffice, setRegionalOffice] = useState("--Select--");
+  const [regionalOfficeID, setRegionalOfficeID] = useState<number>(0);
+  const [regionalOfficeError, setRegionalOfficeError] = useState("");
+  const [isRegionalOfficeError, setIsRegionalOfficeError] = useState(false);
+  const [regionalOfficeList, setRegionalOfficeList] = useState<Array<RegionalOfficeModel>>([]);
+  const [regionalOfficeFullData, setRegionalOfficeFullData] = useState([]);
+
   const [assignBranchAdmin, setAssignBranchAdmin] = useState("--Select--");
   const [assignBranchAdminID, setAssignBranchAdminID] = useState<number>(0);
   const [assignBranchAdminError, setAssignBranchAdminError] = useState("");
@@ -134,6 +143,8 @@ const AddBranch = () => {
   const [ifscError, setIfscError] = useState("");
   const [isIfscError, setIsIfscError] = useState(false);
 
+  const [showRO, setShowRO] = useState(false);
+
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   const [gridBranchList, setGridBranchList] = useState<Array<BranchModel>>([]);
@@ -148,7 +159,7 @@ const AddBranch = () => {
   useEffect(() => {
 
     FetchCompanyName();
-    FetchData();
+    FetchData("");
     FetchActvityRoles();
     FetchStates();
     FetchAssignBranchAdmin();
@@ -166,7 +177,14 @@ const AddBranch = () => {
       .catch((e) => { });
   };
 
-  const FetchCity = (stateID) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const FetchCity = (stateID, cid) => {
     let params = {
       ID: stateID,
     };
@@ -176,6 +194,17 @@ const AddBranch = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             setCityNameList(response.data.data);
+            if (cid != "") {
+              let c = response.data.data.filter((el: any) => {
+                return el.id === cid;
+              });
+
+              if (c != null) {
+                debugger;
+                setCity(c[0].cityName);
+                setCityID(c[0].id);
+              }
+            }
           }
         }
       })
@@ -213,6 +242,33 @@ const AddBranch = () => {
       .catch((e) => { });
   };
 
+  const FetchRegionalOffice = (roID) => {
+    let params = {
+      AddedByUserID: cookies.dfc.UserID,
+    };
+    Provider.getAll(`master/getbranchregionalofficelists?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+
+            setRegionalOfficeList(response.data.data);
+            if (roID != "") {
+              let ro = response.data.data.filter((el: any) => {
+                return el.id === roID;
+              });
+
+              if (ro != null) {
+                setRegionalOffice(ro[0].locationName);
+                setRegionalOfficeID(ro[0].id);
+              }
+            }
+          }
+        }
+      })
+      .catch((e) => { });
+  };
+
   const FetchCompanyName = () => {
     let params = {
       AddedByUserID: cookies.dfc.UserID,
@@ -238,7 +294,6 @@ const AddBranch = () => {
     };
     Provider.getAll(`master/getbranchadmins?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
         const admindata: any = [];
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -256,14 +311,12 @@ const AddBranch = () => {
       .catch((e) => { });
   };
 
-  const FetchData = () => {
-
+  const FetchData = (type: string) => {
     let params = {
       AddedByUserID: cookies.dfc.UserID
     };
     Provider.getAll(`master/getuserbranches?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
@@ -273,11 +326,16 @@ const AddBranch = () => {
             });
             setGridBranchList(arrList);
             setGridBranchListTemp(arrList);
-            // if (type !== "") {
-            //   setSnackMsg("Service " + type);
-            //   setOpen(true);
-            //   setSnackbarType("success");
-            // }
+            if (type !== "") {
+              if (type == "insert") {
+                setSnackMsg("Item Inserted Successfully");
+              }
+              else {
+                setSnackMsg("Item updated Successfully");
+              }
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -301,22 +359,30 @@ const AddBranch = () => {
   const handleSubmitClick = () => {
 
     let isValid: Boolean = true;
-debugger;
+    debugger;
     if (companyName.trim() === "") {
       isValid = false;
       setIsCompanyError(true);
       setCompanyError(communication.BlankCompanyName);
     }
-    if (branchName.trim() === "") {
-      isValid = false;
-      setIsCompanyError(true);
-      setCompanyError(communication.BlankBranchName);
-    }
-
     if (branchType.trim() === "") {
       isValid = false;
       setIsCompanyError(true);
-      setCompanyError(communication.BlankBranchType);
+      setIsBranchTypeError(true);
+      setBranchTypeError(communication.BlankBranchType);
+    }
+
+    if (showRO && regionalOffice.trim() === "") {
+      isValid = false;
+      setIsRegionalOfficeError(true);
+      setRegionalOfficeError("Please select regional office");
+    }
+
+    if (branchName.trim() === "") {
+      isValid = false;
+      setIsCompanyError(true);
+      setIsBranchError(true);
+      setBranchError(communication.BlankBranchName);
     }
 
     if (state.trim() === "--Select--") {
@@ -337,7 +403,6 @@ debugger;
     }
   };
 
-
   const InsertUpdateData = () => {
     setButtonLoading(true);
     debugger;
@@ -349,23 +414,24 @@ debugger;
         ContactPersonNo: contactPerson,
         GSTNo: gst,
         PANNo: pan,
-        Display: display,
-        LocationName:branchName,
+        Display: display == "Yes",
+        LocationName: branchName,
         Address: address,
         StateID: stateID,
         CityID: cityID,
-        Pincode: pincode,
+        Pincode: pincode == "" ? 0 : pincode,
         AccountNo: accountNo,
         BankName: bankName,
         BankBranchName: bankBranchName,
         IFSCCode: ifsc,
         AddedByUserID: cookies.dfc.UserID,
-        RegionalOfficeID:1
+        RegionalOfficeID: 1
       })
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
-            FetchData();
+            ResetFields();
+            FetchData("insert");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -386,18 +452,19 @@ debugger;
     } else if (actionStatus === "edit") {
       debugger;
       Provider.create("master/updateuserbranch", {
+        ID: selectedID,
         CompanyID: companyNameID,
         BranchTypeID: branchTypeID,
         BranchAdminID: assignBranchAdminID,
         ContactPersonNo: contactPerson,
         GSTNo: gst,
         PANNo: pan,
-        Display: display,
-        LocationName:branchName,
+        Display: display == "Yes",
+        LocationName: branchName,
         Address: address,
         StateID: stateID,
         CityID: cityID,
-        Pincode: pincode,
+        Pincode: pincode == "" ? "0" : pincode,
         AccountNo: accountNo,
         BankName: bankName,
         BankBranchName: bankBranchName,
@@ -409,7 +476,7 @@ debugger;
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
-            FetchData();
+            FetchData("update");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -439,7 +506,7 @@ debugger;
       setStateID(ac?.id);
       setIsStateError(false);
       setStateError("");
-      FetchCity(ac.id);
+      FetchCity(ac.id, "");
     }
   };
 
@@ -464,6 +531,17 @@ debugger;
       setBranchTypeID(ac?.id);
       setIsBranchTypeError(false);
       setBranchTypeError("");
+      setIsRegionalOfficeError(false);
+      setRegionalOfficeError("");
+      if (ac?.id == 3) {
+        setShowRO(true);
+        FetchRegionalOffice("");
+      }
+      else {
+        setShowRO(false);
+        setRegionalOfficeID(0);
+        setRegionalOffice("");
+      }
     }
   };
 
@@ -477,6 +555,18 @@ debugger;
       setIsAssignBranchAdminError(false);
       setAssignBranchAdminError("");
       setContactPerson(ac?.mobileNo);
+    }
+  };
+
+  const handleROChange = (event: SelectChangeEvent) => {
+    debugger;
+    let regionaloffice: string = event.target.value;
+    let ac = regionalOfficeList.find((el) => el.locationName === regionaloffice);
+    if (ac !== undefined) {
+      setRegionalOfficeID(ac.id);
+      setRegionalOffice(ac.locationName);
+      setIsRegionalOfficeError(false);
+      setRegionalOfficeError("");
     }
   };
 
@@ -503,6 +593,31 @@ debugger;
     setDataGridPointer("auto");
     setButtonDisplay("none");
     setButtonLoading(false);
+    setBranchType("");
+    setBranchTypeID(0);
+
+    setRegionalOffice("");
+    setRegionalOfficeID(0);
+
+    setAssignBranchAdmin("");
+    setAssignBranchAdminID(0);
+
+    setDisplay("Yes");
+    setContactPerson("");
+    setGst("");
+    setPan("");
+    setBranchName("");
+    setAddress("");
+    setPincode("");
+    setAccountNo("");
+    setBankName("");
+    setBankBranchName("");
+    setIfsc("");
+
+    setState("");
+    setStateID(0);
+    setCity("");
+    setCityID(0);
   };
 
 
@@ -519,39 +634,50 @@ debugger;
     }
   };
 
-  //   const handelEditAndDelete = (
-  //     type: string | null,
-  //     a: BranchModel | undefined
-  //   ) => {
-  //     if (type?.toLowerCase() === "edit" && a !== undefined) {
-  //       setDataGridOpacity(0.3);
-  //       setDataGridPointer("none");
-  //       setDisplay(a.display);
-  //       setBranchList(a?.BranchModel);
-  //       setSelectedID(a.id);
-  //       setBranchError("");
-  //       SetIsBranchError(false);
-  //       setButtonDisplay("unset");
-  //       setActionStatus("edit");
-  //     }
-  //     // else if (type?.toLowerCase() === "delete" && a !== undefined) {
-  //     //   setSelectedID(a.id);
-  //     //   Provider.deleteAllParams("master/deleteactivityroles", { ID: a.id })
-  //     //     .then((response) => {
-  //     //       if (response.data && response.data.code === 200) {
-  //     //         FetchData();
-  //     //       } else {
-  //     //         setSnackMsg("your request cannot be processed");
-  //     //         setOpen(true);
-  //     //       }
-  //     //     })
-  //     //     .catch((e) => {
-  //     //       console.log(e);
-  //     //       setSnackMsg("your request cannot be processed");
-  //     //       setOpen(true);
-  //     //     });
-  //     // }
-  // };
+  const handelEditAndDelete = (type: string | null, a: BranchModel | undefined) => {
+    debugger;
+    if (type?.toLowerCase() === "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+
+      setSelectedID(a.id);
+      setButtonDisplay("unset");
+      setActionStatus("edit");
+      debugger;
+      setBranchType(a.branchType);
+      setBranchTypeID(a?.branchTypeID);
+      if (a.branchTypeID == 3) {
+        setShowRO(true);
+        FetchRegionalOffice(a?.regionalOfficeID);
+      }
+
+      let e = assignBranchAdminFullData.find((el) => el.id === a.branchAdminID);
+
+      setAssignBranchAdmin(e.employeeName);
+      setAssignBranchAdminID(a?.branchAdminID);
+      setContactPerson(e?.mobileNo);
+
+      setGst(a.gstNo);
+      setPan(a.panNo);
+      setGst(a.gstNo);
+      setBranchName(a.locationName);
+      setAddress(a.address);
+      let s = stateNameList.find((el) => el.id === a.stateID);
+      if (s != null) {
+        setState(s.stateName);
+        setStateID(s.id);
+        FetchCity(s.id, a.cityID);
+      }
+      setPincode(a.pincode.toString() == "0" ? "" : a.pincode.toString());
+      setAccountNo(a.accountNo);
+      setBankName(a.bankName);
+      setBankBranchName(a.bankBranchName);
+      setIfsc(a.ifscCode);
+
+      setDisplay(a.display ? "Yes" : "No");
+    }
+  };
+
   //#endregion 
 
   return (
@@ -615,6 +741,35 @@ debugger;
               </Grid>
             </Grid>
             <br></br>
+            <Grid>
+              {
+                showRO &&
+                <><Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                  <Grid item sm={6}>
+                    <label style={{ float: 'right', }}><label style={{ color: "#ff0000" }}>*</label> Select Regional Office</label>
+                  </Grid>
+                  <Grid item sm={6}>
+                    <FormControl fullWidth size="small" error={isbranchTypeError}>
+                      <Select value={regionalOffice} onChange={handleROChange}>
+                        <MenuItem disabled={true} value="--Select--">
+                          --Select--
+                        </MenuItem>
+                        {regionalOfficeList.map((item, index) => {
+                          return (
+                            <MenuItem key={index} value={item.locationName}>
+                              {item.locationName}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                      <FormHelperText>{regionalOfficeError}</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                </Grid><br></br></>
+
+              }
+            </Grid>
+
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
               <Grid item sm={6}>
                 <label style={{ float: 'right', }}> Assign Branch Admin</label>
@@ -655,7 +810,7 @@ debugger;
               </Grid>
               <Grid item sm={6}>
                 <TextField value={gst} error={isGstError} helperText={gstError}
-                  variant="outlined" size="small"  onChange={(e) => {
+                  variant="outlined" size="small" onChange={(e) => {
                     setGst((e.target as HTMLInputElement).value);
                   }}></TextField>
               </Grid>
@@ -668,7 +823,8 @@ debugger;
               <Grid item sm={6}>
                 <TextField value={pan} error={isPanError} helperText={panError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setPan((e.target as HTMLInputElement).value)}}></TextField>
+                    setPan((e.target as HTMLInputElement).value)
+                  }}></TextField>
               </Grid>
             </Grid>
             <br></br>
@@ -692,12 +848,13 @@ debugger;
           <Grid item xs={4}>
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
               <Grid item sm={6}>
-                <label style={{ float: 'right', }}><label style={{ color: "#ff0000" }}>*</label> Branch/Location Name</label>
+                <label style={{ float: 'right', textAlign: 'right' }}><label style={{ color: "#ff0000" }}>*</label> Branch/Location Name</label>
               </Grid>
               <Grid item sm={6}>
                 <TextField value={branchName} error={isBranchError} helperText={branchError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setBranchName((e.target as HTMLInputElement).value)}} ></TextField>
+                    setBranchName((e.target as HTMLInputElement).value)
+                  }} ></TextField>
               </Grid>
             </Grid>
             <br></br>
@@ -708,7 +865,8 @@ debugger;
               <Grid item sm={6}>
                 <TextField value={address} error={isAddressError} helperText={addressError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setAddress((e.target as HTMLInputElement).value)}}></TextField>
+                    setAddress((e.target as HTMLInputElement).value)
+                  }}></TextField>
               </Grid>
             </Grid>
             <br></br>
@@ -765,7 +923,8 @@ debugger;
               <Grid item sm={6}>
                 <TextField value={pincode} error={isPincodeError} helperText={pincodeError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setPincode((e.target as HTMLInputElement).value)}}></TextField>
+                    setPincode((e.target as HTMLInputElement).value)
+                  }}></TextField>
               </Grid>
             </Grid>
 
@@ -779,7 +938,8 @@ debugger;
               <Grid item sm={6}>
                 <TextField value={accountNo} error={isAccountNoError} helperText={accountNoError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setAccountNo((e.target as HTMLInputElement).value)}}></TextField>
+                    setAccountNo((e.target as HTMLInputElement).value)
+                  }}></TextField>
               </Grid>
             </Grid>
             <br></br>
@@ -790,7 +950,8 @@ debugger;
               <Grid item sm={6}>
                 <TextField value={bankName} error={isBankNameError} helperText={bankNameError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setBankName((e.target as HTMLInputElement).value)}}></TextField>
+                    setBankName((e.target as HTMLInputElement).value)
+                  }}></TextField>
               </Grid>
             </Grid>
             <br></br>
@@ -801,7 +962,8 @@ debugger;
               <Grid item sm={6}>
                 <TextField value={bankBranchName} error={isBankBranchNameError} helperText={bankBranchNameError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setBankBranchName((e.target as HTMLInputElement).value)}}></TextField>
+                    setBankBranchName((e.target as HTMLInputElement).value)
+                  }}></TextField>
               </Grid>
             </Grid>
 
@@ -813,7 +975,8 @@ debugger;
               <Grid item sm={6}>
                 <TextField value={ifsc} error={isIfscError} helperText={ifscError}
                   variant="outlined" size="small" onChange={(e) => {
-                    setIfsc((e.target as HTMLInputElement).value)}}></TextField>
+                    setIfsc((e.target as HTMLInputElement).value)
+                  }}></TextField>
               </Grid>
 
             </Grid>
@@ -825,7 +988,7 @@ debugger;
         <br></br>
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
           <Grid >
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleSubmitClick} >Submit</Button>
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.success.main }} onClick={handleSubmitClick} >Submit</Button>
           </Grid>
         </Grid>
         <br></br>
@@ -887,12 +1050,12 @@ debugger;
                     rowsPerPageOptions={[5, 10, 20]}
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     disableSelectionOnClick
-                    // onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                    //   const arrActivity = [...branchList];
-                    //   let a: BranchModel | undefined =
-                    //     arrActivity.find((el) => el.id === param.row.id);
-                    //handelEditAndDelete((e.target as any).textContent, a);
-                    // }}
+                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                      const arrActivity = [...gridBranchList];
+                      let a: BranchModel | undefined =
+                        arrActivity.find((el) => el.id === param.row.id);
+                      handelEditAndDelete((e.target as any).textContent, a);
+                    }}
                     sx={{
                       "& .MuiDataGrid-columnHeaders": {
                         backgroundColor: theme.palette.primary.main,
@@ -907,7 +1070,11 @@ debugger;
           )}
         </Grid>
       </Container>
-
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
+          {snackMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 };
