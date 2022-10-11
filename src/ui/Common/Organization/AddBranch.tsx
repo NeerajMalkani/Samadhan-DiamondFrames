@@ -425,7 +425,7 @@ const AddBranch = () => {
         BankBranchName: bankBranchName,
         IFSCCode: ifsc,
         AddedByUserID: cookies.dfc.UserID,
-        RegionalOfficeID: 1
+        RegionalOfficeID: regionalOfficeID,
       })
         .then((response) => {
           debugger;
@@ -470,7 +470,7 @@ const AddBranch = () => {
         BankBranchName: bankBranchName,
         IFSCCode: ifsc,
         AddedByUserID: cookies.dfc.UserID,
-        RegionalOfficeID: 1
+        RegionalOfficeID: regionalOfficeID,
 
       })
         .then((response) => {
@@ -651,6 +651,7 @@ const AddBranch = () => {
         FetchRegionalOffice(a?.regionalOfficeID);
       }
 
+     
       let e = assignBranchAdminFullData.find((el) => el.id === a.branchAdminID);
 
       setAssignBranchAdmin(e.employeeName);
