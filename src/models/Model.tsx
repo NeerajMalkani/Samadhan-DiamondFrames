@@ -527,6 +527,26 @@ export interface RateCardModel {
   action: string;
 }
 
+export interface SendRateCardModel{
+  id:number;
+  clientName:string;
+  unit:string;
+  material:string;
+  status:boolean;
+  action:string;
+}
+
+export interface ProductDetailsModel{
+  id:number;
+  serviceName:string;
+  categoryName:string;
+  productName:string;
+  unit:string;
+  rate:string;
+  action:string;
+}
+
+
 export interface ClientModel {
   id: number;
   srno: number;

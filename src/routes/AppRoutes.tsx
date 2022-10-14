@@ -66,7 +66,8 @@ import AddRateCard from "../ui/Contractor/RateCard/AddRateCard";
 import ClientEdit from "../ui/Common/Client/ClientEdit";
 import ArchitectRateCardSetup from "../ui/Architect/ArchitectRateCardSetup";
 import AddServiceProduct from "../ui/Admin/Master/AddServiceProduct";
-// import SendRateCard from "../ui/Contractor/RateCard/SendRateCard";
+ import SendRateCard from "../ui/Contractor/RateCard/SendRateCard";
+ import SendRateCardList from "../ui/Contractor/RateCard/SendRateCardList";
 
 
 
@@ -146,8 +147,8 @@ const AppRoutes = () => {
               <Route path="architect/architectratecardsetup" element ={<ArchitectRateCardSetup/>} />
              <Route path="master/addserviceproduct" element={<AddServiceProduct/>} />
              <Route path="master/serviceproduct/edit/:id" element={<ServiceProductPage/>}/>
-             {/* <Route path="contractor/ratecard/sendratecard" element={<SendRateCard/>}/> */}
-
+             <Route path="contractor/ratecard/sendratecard" element={<SendRateCard/>}/>
+             <Route path="contractor/ratecard/sendratecardlist" element={<SendRateCardList/>}/>
             </Routes>
           </BrowserRouter>
         </Box>

@@ -1,4 +1,4 @@
-import { Button, Grid, Link, Typography } from "@mui/material";
+import { Button, Grid, Link, TextField, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { CalculateSqfeet, NullOrEmpty } from "./CommonFunctions";
 import { GetStringifyJson } from "../utils/CommonFunctions";
@@ -371,6 +371,11 @@ export const productColumns: GridColDef[] = [
     flex: 1.8,
     maxWidth: 80,
     sortable: false,
+    renderCell:(e) => (
+      <Grid>
+        <TextField ></TextField>
+      </Grid>
+    )
   },
   {
     field: "action",
@@ -380,10 +385,8 @@ export const productColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-        <Button variant="text" sx={{ mr: 1 }}>
-          Edit
-        </Button>
-      </Grid>
+      <Button variant="contained">Remove</Button>
+    </Grid>
     ),
   },
 ];
@@ -3041,4 +3044,122 @@ export const rateCardListColumns: GridColDef[] = [
       return <Link href={`ratecard/edit/${e.row.id}`}>Edit</Link>;
     }
   },
+];
+
+export const productDetailsColumns: GridColDef[] = [
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "productName",
+    headerName: " Product Name",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+  {
+    field: "unit",
+    headerName: "Unit",
+    flex: 1,
+    minWidth: 80,
+    sortable: false,
+  },
+  {
+    field: "rate",
+    headerName: "Rate",
+    flex: 1,
+    minWidth: 80,
+    sortable: false,
+  },
+ 
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => {
+      return <Link href={`ratecard/edit/${e.row.id}`}>Edit</Link>;
+    }
+  },
+];
+
+export const sendRateCardListColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "clientName",
+    headerName: "Client Name & Number",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "unit",
+    headerName: "Unit",
+    flex: 1.8,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: "material",
+    headerName: "Material",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      return (
+        <div>
+          <Typography noWrap={false}>{params.value}</Typography>
+          <Grid>
+            <Grid style={{ height: "40px", width: "100%" }}>
+              <Button variant="text" sx={{ mr: 1 }}>
+                Yes
+              </Button>
+            </Grid>
+            </Grid>
+        </div>
+      );
+    },
+
+
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1,
+    minWidth: 80,
+    sortable: false,
+    renderCell: (params) => {
+      return "Pending";
+    },
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => {
+      return <Link href={`ratecard/edit/${e.row.id}`}>Edit</Link>;
+      return <Link>Preview Rate Card</Link>
+      return <Link>Send Rate Card</Link>
+    }
+  },
+  
+  
 ];
