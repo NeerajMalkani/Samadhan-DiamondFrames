@@ -144,6 +144,7 @@ export const activityColumns: GridColDef[] = [
     ),
   },
 ];
+
 export const pocketInbox: GridColDef[] = [
   {
     field: "date",
@@ -3163,3 +3164,283 @@ export const sendRateCardListColumns: GridColDef[] = [
   
   
 ];
+
+export const quotationSendPendingColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "quotationNo",
+    headerName: "Quotation No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "projectName",
+    headerName: "Project Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "clientContactPersonNumber",
+    headerName: "Client Contact Person & Number",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "quotationUnit",
+    headerName: "Quotation Unit",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "materials",
+    headerName: "Materials",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+]; 
+
+export const quotationApprovePendingColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "quotationNo",
+    headerName: "Quotation No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "projectName",
+    headerName: "Project Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "clientContactPersonNumber",
+    headerName: "Client Contact Person & Number",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "quotationUnit",
+    headerName: "Quotation Unit",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "materials",
+    headerName: "Materials",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+    renderCell: (params) => {
+      return (
+        <div>
+          <Typography noWrap={false}>{params.value}</Typography>
+          <Grid>
+            <Grid style={{ height: "40px", width: "100%" }}>
+              <Button variant="text" sx={{ mr: 1 }}>
+                Yes
+              </Button>
+            </Grid>
+          </Grid>
+        </div>
+      );
+    },
+  },
+  {
+    field: "clientStatus",
+    headerName: "Client Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+    renderCell: (params) => {
+      return "Pending";
+    },
+  },
+  {
+    field: "quotationStatus",
+    headerName: "Quotation Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+    renderCell: (params) => {
+      return "Pending";
+    },
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+        <Button variant="text" sx={{ mr: 1 }}>
+          preview Quotation
+        </Button>
+        <label>Waiting For Client Approval</label>
+      </Grid>
+    ),
+  },
+]; 
+
+export const quotationApprovedColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "quotationNo",
+    headerName: "Quotation No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "projectName",
+    headerName: "Project Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "clientContactPersonNumber",
+    headerName: "Client Contact Person & Number",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "quotationUnit",
+    headerName: "Quotation Unit",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "materials",
+    headerName: "Materials",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+  },
+]; 
+
+export const quotationRejectedColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "quotationNo",
+    headerName: "Quotation No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "projectName",
+    headerName: "Project Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "clientContactPersonNumber",
+    headerName: "Client Contact Person & Number",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "quotationUnit",
+    headerName: "Quotation Unit",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "materials",
+    headerName: "Materials",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+    renderCell: (params) => {
+      return (
+        <div>
+          <Typography noWrap={false}>{params.value}</Typography>
+          <Grid>
+            <Grid style={{ height: "40px", width: "100%" }}>
+              <Button variant="text" sx={{ mr: 1 }}>
+                Yes
+              </Button>
+            </Grid>
+          </Grid>
+        </div>
+      );
+    },
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+    renderCell: (params) => {
+      return "Rejected";
+    },
+  },
+]; 

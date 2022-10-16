@@ -546,6 +546,15 @@ export interface ProductDetailsModel{
   action:string;
 }
 
+export interface QuotationProductDetailsModel{
+  productName:string;
+  unit:string;
+  quantity:string;
+  rate:string;
+  amount:string;
+  remarks:string;
+  action:string;
+}
 
 export interface ClientModel {
   id: number;
@@ -636,3 +645,51 @@ export interface DeclinedModel {
   status: boolean;
   action: boolean;
 }
+
+export interface QuotationSendPendingModel {
+  id: number;
+  srno: number;
+  quotationNo: string;
+  projectName:string;
+  clientContactPersonNumber:string;
+  quotationUnit:string;
+  materials:string;
+  status: boolean;
+  action: boolean;
+}
+
+export interface QuotationApprovePendingModel {
+  id: number;
+  srno: number;
+  quotationNo: string;
+  projectName:string;
+  clientContactPersonNumber:string;
+  quotationUnit:string;
+  materials:string;
+  clientStatus:number;
+  quotationStatus:number;
+  action: boolean;
+}
+
+export interface QuotationApprovedModel {
+  id: number;
+  srno: number;
+  quotationNo: string;
+  projectName:string;
+  clientContactPersonNumber:string;
+  quotationUnit:string;
+  materials:string;
+  status: boolean;
+  action: boolean;
+}
+
+export interface QuotationRejectedModel {
+  id: number;
+  srno: number;
+  quotationNo: string;
+  projectName:string;
+  clientContactPersonNumber:string;
+  quotationUnit:string;
+  materials:string;
+  status: boolean;
+ }

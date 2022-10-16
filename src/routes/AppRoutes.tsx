@@ -66,8 +66,9 @@ import AddRateCard from "../ui/Contractor/RateCard/AddRateCard";
 import ClientEdit from "../ui/Common/Client/ClientEdit";
 import ArchitectRateCardSetup from "../ui/Architect/ArchitectRateCardSetup";
 import AddServiceProduct from "../ui/Admin/Master/AddServiceProduct";
- import SendRateCard from "../ui/Contractor/RateCard/SendRateCard";
- import SendRateCardList from "../ui/Contractor/RateCard/SendRateCardList";
+import SendRateCard from "../ui/Contractor/RateCard/SendRateCard";
+import SendRateCardList from "../ui/Contractor/RateCard/SendRateCardList";
+import QuotationWise from "../ui/Contractor/QuotationAndEstimation/QuotationWise";
 
 
 
@@ -122,10 +123,10 @@ const AppRoutes = () => {
               <Route path="contractor/clientlist" element={<ContractorClientPage />} />
               <Route path="contractor/quotationandestimation/designwise" element={<DesignWisePage />} />
               <Route path="Common/employee/employeelist" element={<EmployeeList />} />
-              <Route path="users/approved" element={<Approved/>}/>
-              <Route path="users/pending" element={<Pending/>}/>
-              <Route path="users/declined" element={<Declined/>}/>
-              <Route path="user/profile" element={<UserBasic />}/>
+              <Route path="users/approved" element={<Approved />} />
+              <Route path="users/pending" element={<Pending />} />
+              <Route path="users/declined" element={<Declined />} />
+              <Route path="user/profile" element={<UserBasic />} />
 
               <Route path="contractor/enquiries/appuserenquiry" element={<AppUserEnquiry />} />
               <Route path="contractor/enquiries/architectandconsultant" element={<ArchitectAndConsultant />} />
@@ -138,17 +139,18 @@ const AppRoutes = () => {
               <Route path="pocketcashcheck" element={<PocketCashcheck />} />
               <Route path="pocketinbox" element={<PocketInbox />} />
               <Route path="pocketremainder" element={<PocketRemainder />} />
-              <Route path="common/client/clientlist" element={<ClientList />}/>
+              <Route path="common/client/clientlist" element={<ClientList />} />
 
               <Route path="contractor/ratecardsetup" element={<RateCardSetup />} />
               <Route path="contractor/ratecard/edit/:id" element={<AddRateCard />} />
               <Route path="contractor/addratecard" element={<AddRateCard />} />
-              <Route path="common/client/edit/:id" element={<ClientEdit/>}/>
-              <Route path="architect/architectratecardsetup" element ={<ArchitectRateCardSetup/>} />
-             <Route path="master/addserviceproduct" element={<AddServiceProduct/>} />
-             <Route path="master/serviceproduct/edit/:id" element={<ServiceProductPage/>}/>
-             <Route path="contractor/ratecard/sendratecard" element={<SendRateCard/>}/>
-             <Route path="contractor/ratecard/sendratecardlist" element={<SendRateCardList/>}/>
+              <Route path="common/client/edit/:id" element={<ClientEdit />} />
+              <Route path="architect/architectratecardsetup" element={<ArchitectRateCardSetup />} />
+              <Route path="master/addserviceproduct" element={<AddServiceProduct />} />
+              <Route path="master/serviceproduct/edit/:id" element={<ServiceProductPage />} />
+              <Route path="contractor/ratecard/sendratecard" element={<SendRateCard />} />
+              <Route path="contractor/ratecard/sendratecardlist" element={<SendRateCardList />} />
+              <Route path="contractor/quotationandestimation/quotationwise" element={<QuotationWise />} />
             </Routes>
           </BrowserRouter>
         </Box>

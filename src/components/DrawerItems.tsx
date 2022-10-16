@@ -673,7 +673,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/contractorquotationwise`);
+              navigate(`/contractor/quotationandestimation/quotationwise`);
             }, 300);
           },
         },
