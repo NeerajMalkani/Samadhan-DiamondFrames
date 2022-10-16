@@ -629,7 +629,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/master/sendratecard`);
+              navigate(`/contractor/ratecard/sendratecard`);
             }, 300);
           },
         },

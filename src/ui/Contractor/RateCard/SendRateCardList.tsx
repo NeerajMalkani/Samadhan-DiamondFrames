@@ -33,14 +33,53 @@ const SendRateCardList = () => {
     const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
     //#endregion
 
+    useEffect(() => {
+        FetchData();
+    }, []);
+
+    const FetchData = () => {
+        debugger;
+        let params = {
+            AddedByUserID: cookies.dfc.UserID
+        };
+        Provider.getAll(`master/getcontractorratecardsentlist?${new URLSearchParams(GetStringifyJson(params))}`)
+            .then((response: any) => {
+                debugger;
+                if (response.data && response.data.code === 200) {
+
+                    if (response.data.data) {
+
+                        const arrList = [...response.data.data];
+                        arrList.map(function (a: any, index: number) {
+                            a.sendStatus = a.sendStatus ? "Yes" : "No";
+                            a.inclusiveMaterials = a.inclusiveMaterials ? "Yes" : "No";
+                            let sr = { srno: index + 1 };
+                            a = Object.assign(a, sr);
+                        });
+
+                        setSendRateCardList(arrList);
+                        setSendRateCardListTemp(arrList);
+
+                    }
+                    setLoading(false);
+                }
+            })
+            .catch((e) => {
+                setLoading(false);
+            });
+    };
+
     return (
         <Box sx={{ mt: 11 }}>
             <Header />
             <Container maxWidth="lg">
                 <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-                    <Typography variant="h6">
-                        Rate Card List (Contarctor)
-                    </Typography>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Typography variant="h6">
+                            Rate Card List (Contarctor)
+                        </Typography>
+                        <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/contractor/ratecard/sendratecard")}>Create</Button>
+                    </Stack>
                 </Grid>
                 <Grid item xs={4} sm={8} md={12}>
                     {loading ? (

@@ -261,6 +261,7 @@ const MaterialSetup = () => {
   const FetchActvityRoles = () => {
     Provider.getAll("master/getmainactivities")
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             let contractorData = response.data.data.find((el) => {
@@ -322,6 +323,7 @@ const MaterialSetup = () => {
   };
 
   const FetchProductsFromCategory = (selectedActivitryID: number, selectedServiceID: number, selectedCategoryID: number, type: string) => {
+    debugger;
     let params = {
       ActivityID: selectedActivitryID,
       ServiceID: selectedServiceID,
@@ -329,6 +331,7 @@ const MaterialSetup = () => {
     };
     Provider.getAll(`master/${type === "contractor" ? "getproductsbycategoryid" : "getproductsbycategoryidforbrands"}?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = response.data.data.filter((el: any) => {
@@ -436,6 +439,7 @@ const MaterialSetup = () => {
   };
 
   const handleCNDealerChange = (event: SelectChangeEvent) => {
+    debugger;
     let categoryName: number = parseInt(event.target.value);
     let ac = categoryDealerList.find((el) => el.id === categoryName);
     if (ac !== undefined) {

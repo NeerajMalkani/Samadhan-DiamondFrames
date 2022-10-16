@@ -200,7 +200,7 @@ const AddBranch = () => {
               });
 
               if (c != null) {
-                debugger;
+                
                 setCity(c[0].cityName);
                 setCityID(c[0].id);
               }
@@ -248,7 +248,7 @@ const AddBranch = () => {
     };
     Provider.getAll(`master/getbranchregionalofficelists?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
-        debugger;
+        
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
 
@@ -359,7 +359,7 @@ const AddBranch = () => {
   const handleSubmitClick = () => {
 
     let isValid: Boolean = true;
-    debugger;
+    
     if (companyName.trim() === "") {
       isValid = false;
       setIsCompanyError(true);
@@ -398,14 +398,14 @@ const AddBranch = () => {
     }
 
     if (isValid) {
-      debugger;
+      
       InsertUpdateData();
     }
   };
 
   const InsertUpdateData = () => {
     setButtonLoading(true);
-    debugger;
+    
     if (actionStatus === "new") {
       Provider.create("master/insertuserbranch", {
         CompanyID: companyNameID,
@@ -428,7 +428,7 @@ const AddBranch = () => {
         RegionalOfficeID: regionalOfficeID,
       })
         .then((response) => {
-          debugger;
+          
           if (response.data && response.data.code === 200) {
             ResetFields();
             FetchData("insert");
@@ -450,7 +450,7 @@ const AddBranch = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      debugger;
+      
       Provider.create("master/updateuserbranch", {
         ID: selectedID,
         CompanyID: companyNameID,
@@ -474,7 +474,7 @@ const AddBranch = () => {
 
       })
         .then((response) => {
-          debugger;
+          
           if (response.data && response.data.code === 200) {
             FetchData("update");
           } else if (response.data.code === 304) {
@@ -559,7 +559,7 @@ const AddBranch = () => {
   };
 
   const handleROChange = (event: SelectChangeEvent) => {
-    debugger;
+    
     let regionaloffice: string = event.target.value;
     let ac = regionalOfficeList.find((el) => el.locationName === regionaloffice);
     if (ac !== undefined) {
@@ -635,7 +635,7 @@ const AddBranch = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: BranchModel | undefined) => {
-    debugger;
+    
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -643,7 +643,7 @@ const AddBranch = () => {
       setSelectedID(a.id);
       setButtonDisplay("unset");
       setActionStatus("edit");
-      debugger;
+      
       setBranchType(a.branchType);
       setBranchTypeID(a?.branchTypeID);
       if (a.branchTypeID == 3) {

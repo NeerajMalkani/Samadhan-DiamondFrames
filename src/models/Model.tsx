@@ -69,6 +69,42 @@ export interface ProductModel {
   selectedUnitID: number;
   isChecked: boolean;
 }
+
+export interface RateCardProductModel {
+  id: number;
+  srno: number;
+  activityRoleName: string;
+  serviceName: string;
+  categoryName: string;
+  productCode: string;
+  productName: string;
+  hsnSacCode: string;
+  gstRate: number;
+  unitName: string;
+  display: string;
+  action: string;
+  serviceID: number;
+  unitOfSalesID: number;
+  categoryID: number;
+  activityID: number;
+  productID: number;
+  alternateUnitOfSales: number;
+  conversionRate: number;
+  rateWithMaterials: number;
+  rateWithoutMaterials: number;
+  serviceDisplay: string;
+  shortSpecification: string;
+  specification: string;
+  unit1ID: number;
+  unit1Name: string;
+  unit2ID: number;
+  unit2Name: string;
+  selectedUnitID: number;
+  isChecked: boolean;
+  footRate:string;
+  meterRate:string;
+}
+
 //  {
 //   id: number;
 //   srno: number;
@@ -530,9 +566,10 @@ export interface RateCardModel {
 export interface SendRateCardModel{
   id:number;
   clientName:string;
+  contactNo:string;
   unit:string;
-  material:string;
-  status:boolean;
+  inclusiveMaterials:string;
+  sendStatus:string;
   action:string;
 }
 

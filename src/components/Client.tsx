@@ -75,7 +75,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
   const serviceType = useState([
     { key: "Vendor", isSelected: false, id: 1 },
     { key: "Supplier", isSelected: false, id: 2 },
-    { key: "Client", isSelected: false, id: 3 },
+    { key: "Client", isSelected: type === "client" ? true : false, id: 3 },
   ]);
 
   useEffect(() => {
@@ -325,7 +325,8 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
   };
 
   const InsertUpdateData = (serviceType: number) => {
-    if (type === "add") {
+    debugger
+    if (type === "add" || type === "client") {
       Provider.create("contractorquotationestimation/insertclient", {
         AddedByUserID: CookieUserID,
         CompanyName: name[0],

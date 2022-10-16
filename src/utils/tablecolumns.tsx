@@ -372,7 +372,7 @@ export const productColumns: GridColDef[] = [
     flex: 1.8,
     maxWidth: 80,
     sortable: false,
-    renderCell:(e) => (
+    renderCell: (e) => (
       <Grid>
         <TextField ></TextField>
       </Grid>
@@ -386,8 +386,8 @@ export const productColumns: GridColDef[] = [
     maxWidth: 100,
     renderCell: (e) => (
       <Grid>
-      <Button variant="contained">Remove</Button>
-    </Grid>
+        <Button variant="contained">Remove</Button>
+      </Grid>
     ),
   },
 ];
@@ -3082,7 +3082,7 @@ export const productDetailsColumns: GridColDef[] = [
     minWidth: 80,
     sortable: false,
   },
- 
+
   {
     field: "action",
     headerName: "Action",
@@ -3108,6 +3108,13 @@ export const sendRateCardListColumns: GridColDef[] = [
     headerName: "Client Name & Number",
     flex: 1.8,
     minWidth: 140,
+    renderCell: (params) => {
+      return (
+        <div>
+          <Typography noWrap={false}>{params.row.clientName} & {params.row.contactNo}</Typography>
+        </div>
+      );
+    },
   },
   {
     field: "unit",
@@ -3117,37 +3124,18 @@ export const sendRateCardListColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "material",
+    field: "inclusiveMaterials",
     headerName: "Material",
     flex: 1,
     minWidth: 100,
     sortable: false,
-    renderCell: (params) => {
-      return (
-        <div>
-          <Typography noWrap={false}>{params.value}</Typography>
-          <Grid>
-            <Grid style={{ height: "40px", width: "100%" }}>
-              <Button variant="text" sx={{ mr: 1 }}>
-                Yes
-              </Button>
-            </Grid>
-            </Grid>
-        </div>
-      );
-    },
-
-
   },
   {
-    field: "status",
+    field: "sendStatus",
     headerName: "Status",
     flex: 1,
-    minWidth: 80,
+    minWidth: 100,
     sortable: false,
-    renderCell: (params) => {
-      return "Pending";
-    },
   },
   {
     field: "action",
@@ -3156,13 +3144,10 @@ export const sendRateCardListColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`ratecard/edit/${e.row.id}`}>Edit</Link>;
-      return <Link>Preview Rate Card</Link>
-      return <Link>Send Rate Card</Link>
+      return <Link href={`sendratecard/edit/${e.row.id}`}>Edit</Link>;
     }
   },
-  
-  
+
 ];
 
 export const quotationSendPendingColumns: GridColDef[] = [
