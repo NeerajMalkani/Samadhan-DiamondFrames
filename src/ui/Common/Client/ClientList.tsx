@@ -9,7 +9,7 @@ import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Provider from "../../../api/Provider";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid,GridSearchIcon } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
 import { clientListColumns, clientSearchResult } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
@@ -489,7 +489,26 @@ const ClientList = () => {
     };
 
     const onChangeSearch = (query: string) => {
-        // setSearchQuery(query);
+        // console.log(clientList.filter(user=>user.address1.includes("o")));
+        // console.log(clientList.filter(user=>user.pan.toString().includes("1")));
+        //  clientList.filter(user=>user.address1.includes(query))
+        setSearchQuery(query);
+        if (query === "") {
+            setClientListTemp(clientList);
+          } else {
+            setClientListTemp(
+              clientList.filter((el: ClientModel) => {
+                return el.pan.toString().toLowerCase().includes(query.toLowerCase()) ||
+                 el.address1.toString().toLowerCase().includes(query.toLowerCase()) ||
+                  el.gstNumber.toString().toLowerCase().includes(query.toLowerCase()) ||
+                   el.companyName.toString().toLowerCase().includes(query.toLowerCase()) ||
+                    el.contactPerson.toString().toLowerCase().includes(query.toLowerCase()) ||
+                     el.contactMobileNumber.toString().toLowerCase().includes(query.toLowerCase()) ||
+                    //    el.serviceType.toString().toLowerCase().includes(query.toLowerCase());
+                        el.addedBy.toString().toLowerCase().includes(query.toLowerCase());
+              })
+            );
+          }
         // if (query === "") {
         //   setActivityNamesListTemp(activityNamesList);
         // } else {
@@ -500,6 +519,7 @@ const ClientList = () => {
         //   );
         // }
     };
+
 
     const setOTPDialog = () => {
         setOpen(true);
@@ -1022,21 +1042,20 @@ const ClientList = () => {
                             ) : (
                                 <>
                                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                                        <TextField
-                                            placeholder="Search"
-                                            variant="outlined"
-                                            size="small"
-                                            onChange={(e) => {
-                                                onChangeSearch((e.target as HTMLInputElement).value);
-                                            }}
-                                            value={searchQuery}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <SearchIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
+                                    <TextField
+                                        placeholder="Search"
+                                        variant="outlined"
+                                        size="small"
+                                        onChange={(e) => {
+                                            onChangeSearch((e.target as HTMLInputElement).value);
+                                        }}
+                                        InputProps={{
+                                            startAdornment: (
+                                            <InputAdornment position="start">
+                                                <GridSearchIcon />
+                                            </InputAdornment>
+                                            ),
+                                        }}
                                         />
                                     </Grid>
                                     <DataGrid

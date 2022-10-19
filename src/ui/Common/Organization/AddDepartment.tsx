@@ -170,6 +170,7 @@ const AddDepartment = () => {
   };
 
   const onChangeSearch = (query: string) => {
+    console.log(query)
     setSearchQuery(query);
     if (query === "") {
       setGridDepartmentListTemp(gridDepartmentList);
