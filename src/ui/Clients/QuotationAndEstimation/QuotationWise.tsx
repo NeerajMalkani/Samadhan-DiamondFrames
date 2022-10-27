@@ -35,7 +35,7 @@ import {
   QuotationSendPendingModel, QuotationApprovePendingModel, QuotationApprovedModel, QuotationCancellationModel,
   QuotationRejectedModel, ClientModel, ServiceNameModel, CategoryModel
 } from "../../../models/Model";
-import { quotationSendPendingColumns, quotationApprovePendingColumns, quotationApprovedColumns, quotationRejectedColumns, quotationCancellationColumns } from "../../../utils/tablecolumns";
+import { quotationSendPendingColumns, clientQuotationPendingColumns, quotationApprovedColumns, quotationRejectedColumns, quotationCancellationColumns } from "../../../utils/tablecolumns";
 import CreateClient from "../../../components/Client";
 
 interface ProductItemModel {
@@ -108,7 +108,7 @@ const buttonSetting: ButtonSettings = {
   actionButtons: [],
 };
 
-const QuotationWise = () => {
+const ClientQuotation = () => {
   //#region Variables
 
   let dummyClient: ClientModel = null;
@@ -116,15 +116,15 @@ const QuotationWise = () => {
   const [dialogueOpen, setDialogueOpen] = useState(false);
   const [openProductDialog, setOpenProductDialog] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirmQuotationCancel, setConfirmQuotationCancel] = useState(false);
-  const [confirmQuotationToClient, setConfirmQuotationToClient] = useState(false);
+  const [approveDialogCancel, setApproveDialogCancel] = useState(false);
+  const [rejectDialogCancel, setRejectDialogCancel] = useState(false);
 
   const [value, setValue] = useState(0);
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [cancelID, SetCancelID] = useState(0);
-  const [quotationToClientID, SetQuotationToClientID] = useState(0);
+  const [approveID, SetApproveID] = useState(0);
+  const [rejectID, SetRejectID] = useState(0);
   const [clientName, setClientName] = useState("--Select--");
   const [clientNameID, setClientNameID] = useState<number>(0);
   const [clientNameError, SetClientNameError] = useState("");
@@ -171,19 +171,13 @@ const QuotationWise = () => {
   const [checkInclusiveMaterial, setCheckInclusiveMaterial] = useState(false);
   const [sendToClient, setSendToClient] = useState(false);
 
-  const [quotationSendPendingList, setQuotationSendPendingList] = useState<Array<QuotationSendPendingModel>>([]);
-  const [quotationSendPendingListTemp, setQuotationSendPendingListTemp] = React.useState<Array<any>>([]);
+  const [quotationPendingList, setQuotationPendingList] = useState<Array<QuotationSendPendingModel>>([]);
+  const [quotationPendingListTemp, setQuotationPendingListTemp] = React.useState<Array<any>>([]);
 
-  const [quotationCancellationList, setQuotationCancellationList] = useState<Array<QuotationCancellationModel>>([]);
-  const [quotationCancellationListTemp, setQuotationCancellationListTemp] = React.useState<Array<any>>([]);
-
-  const [quotationApprovePendingList, setQuotationApprovePendingList] = useState<Array<QuotationApprovePendingModel>>([]);
-  const [quotationApprovePendingListTemp, setQuotationApprovePendingListTemp] = React.useState<Array<any>>([]);
-
-  const [quotationApprovedList, setQuotationApprovedList] = useState<Array<QuotationApprovedModel>>([]);
+  const [quotationApprovedList, setQuotationApprovedList] = useState<Array<QuotationSendPendingModel>>([]);
   const [quotationApprovedListTemp, setQuotationApprovedListTemp] = React.useState<Array<any>>([]);
 
-  const [quotationRejectedList, setQuotationRejectedList] = useState<Array<QuotationRejectedModel>>([]);
+  const [quotationRejectedList, setQuotationRejectedList] = useState<Array<QuotationSendPendingModel>>([]);
   const [quotationRejectedListTemp, setQuotationRejectedListTemp] = React.useState<Array<any>>([]);
 
   const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
@@ -231,31 +225,19 @@ const QuotationWise = () => {
   //#region Functions
 
   useEffect(() => {
-    let id = window.location.pathname.split('/').at(-1);
-    if (!isNaN(parseInt(id))) {
-      setSelectedID(parseInt(id));
-      //FetchRateCardByID(parseInt(id));
-      FetchActvityRoles();
-    }
-    else {
-      FetchCompanyName(0);
-      FetchActvityRoles();
-    }
-
-    FetchStates();
-
+    FetchData_pending();
   }, []);
 
   const handleConfirmDialogueClose = () => {
     setConfirmOpen(false);
   };
 
-  const handleConfirmQuotationDialogueClose = () => {
-    setConfirmQuotationCancel(false);
+  const handleApproveDialogueClose = () => {
+    setApproveDialogCancel(false);
   };
 
-  const handleConfirmQuotationToClientDialogueClose = () => {
-    setConfirmQuotationToClient(false);
+  const handleRejectDialogueClose = () => {
+    setRejectDialogCancel(false);
   };
 
   const FetchActvityRoles = () => {
@@ -302,17 +284,17 @@ const QuotationWise = () => {
     setConfirmOpen(false);
   };
 
-  const CancelQuotation = () => {
+  const ApproveQuotation = () => {
 
-    UpdateQuotationEstimation(cancelID, 2);
+    UpdateQuotationEstimation(approveID, 3);
 
-    setConfirmQuotationCancel(false);
+    setApproveDialogCancel(false);
   };
 
-  const QuotationToCient = () => {
+  const RejectQuotation = () => {
 
-    UpdateQuotationEstimation(quotationToClientID, 1);
-    setConfirmQuotationToClient(false);
+    UpdateQuotationEstimation(rejectID, 4);
+    setRejectDialogCancel(false);
 
   };
 
@@ -613,24 +595,14 @@ const QuotationWise = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     switch (newValue) {
       case 0:
-        //FetchData_sendpending();
+        FetchData_pending();
         break;
       case 1:
-        FetchData_sendpending();
+        FetchData_approved();
         break;
       case 2:
-        FetchData_approvepending();
+        FetchData_rejected();
         break;
-      case 3:
-        FetchData_sendpending();
-        break;
-      case 4:
-        FetchData_Cancellation();
-        break;
-      case 5:
-        FetchData_Cancellation();
-        break;
-
     }
     setValue(newValue);
   };
@@ -861,13 +833,13 @@ const QuotationWise = () => {
       });
   };
 
-  const onChangeSearch_SendPending = (query: string) => {
+  const onChangeSearch_Pending = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setQuotationSendPendingListTemp(quotationSendPendingList);
+      setQuotationPendingListTemp(quotationPendingList);
     } else {
-      setQuotationSendPendingListTemp(
-        quotationSendPendingList.filter((el: QuotationSendPendingModel) => {
+      setQuotationPendingListTemp(
+        quotationPendingList.filter((el: QuotationSendPendingModel) => {
           return el.quotationNo.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
@@ -877,10 +849,11 @@ const QuotationWise = () => {
   const onChangeSearch_ApprovePending = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setQuotationApprovePendingListTemp(quotationApprovePendingList);
+      
+      setQuotationApprovedListTemp(quotationApprovedList);
     } else {
-      setQuotationApprovePendingListTemp(
-        quotationApprovePendingList.filter((el: QuotationApprovePendingModel) => {
+      setQuotationApprovedListTemp(
+        quotationApprovedList.filter((el: QuotationApprovePendingModel) => {
           return el.quotationNo.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
@@ -893,20 +866,20 @@ const QuotationWise = () => {
       setQuotationApprovedListTemp(quotationApprovedList);
     } else {
       setQuotationApprovedListTemp(
-        quotationApprovedList.filter((el: QuotationApprovedModel) => {
+        quotationApprovedList.filter((el: QuotationSendPendingModel) => {
           return el.quotationNo.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
   };
 
-  const onChangeSearch_Rejected = (query: string) => {
+  const onChangeSearch_RejectedList = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
       setQuotationRejectedListTemp(quotationRejectedList);
     } else {
       setQuotationRejectedListTemp(
-        quotationRejectedList.filter((el: QuotationRejectedModel) => {
+        quotationRejectedList.filter((el: QuotationSendPendingModel) => {
           return el.quotationNo.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
@@ -953,13 +926,15 @@ const QuotationWise = () => {
     setTermsConditions("");
   };
 
-  const FetchData_sendpending = () => {
+  const FetchData_pending = () => {
+    debugger;
     let params = {
       AddedByUserID: cookies.dfc.UserID,
-      Status: 0,
+      Status: 1,
     };
-    Provider.getAll(`master/getquotationwiseestimationstatus?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/getclientquotationwiseestimationstatus?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
@@ -972,8 +947,8 @@ const QuotationWise = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setQuotationSendPendingList(arrList);
-            setQuotationSendPendingListTemp(arrList);
+            setQuotationPendingList(arrList);
+            setQuotationPendingListTemp(arrList);
 
           }
         } else {
@@ -992,12 +967,12 @@ const QuotationWise = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  const FetchData_Cancellation = () => {
+  const FetchData_approved = () => {
     let params = {
       AddedByUserID: cookies.dfc.UserID,
-      Status: 2,
+      Status: 3,
     };
-    Provider.getAll(`master/getquotationwiseestimationstatus?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/getclientquotationwiseestimationstatus?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -1011,8 +986,8 @@ const QuotationWise = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setQuotationCancellationList(arrList);
-            setQuotationCancellationListTemp(arrList);
+            setQuotationApprovedList(arrList);
+            setQuotationApprovedListTemp(arrList);
 
           }
         } else {
@@ -1031,12 +1006,12 @@ const QuotationWise = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  const FetchData_approvepending = () => {
+  const FetchData_rejected = () => {
     let params = {
       AddedByUserID: cookies.dfc.UserID,
-      Status: 1,
+      Status: 4,
     };
-    Provider.getAll(`master/getquotationwiseestimationstatus?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.getAll(`master/getclientquotationwiseestimationstatus?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -1047,13 +1022,11 @@ const QuotationWise = () => {
               a.status = a.status == 0 ? "Pending" : "";
               a.clientContactPersonNumber = a.contactPerson + ' & ' + a.contactNumber;
 
-
-
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setQuotationApprovePendingList(arrList);
-            setQuotationApprovePendingListTemp(arrList);
+            setQuotationRejectedList(arrList);
+            setQuotationRejectedListTemp(arrList);
 
           }
         } else {
@@ -1194,10 +1167,10 @@ const QuotationWise = () => {
         debugger;
         if (response.data && response.data.code === 200) {
 
-          if (status == 1) {
+          if (status == 3) {
 
           }
-          else if (status == 2) {
+          else if (status == 4) {
 
           }
 
@@ -1221,41 +1194,6 @@ const QuotationWise = () => {
       });
   };
 
-  const FetchData_approved = (type: string) => {
-    ResetFields();
-    Provider.getAll("master/getactivityroles")
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            const arrList = [...response.data.data];
-            arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
-              let sr = { srno: index + 1 };
-              a = Object.assign(a, sr);
-            });
-            setQuotationApprovedList(arrList);
-            setQuotationApprovedListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Activity role " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
-          }
-        } else {
-          setSnackbarType("info");
-          setSnackMsg(communication.NoData);
-          setOpen(true);
-        }
-        setLoading(false);
-      })
-      .catch((e) => {
-        setLoading(false);
-        setSnackbarType("error");
-        setSnackMsg(communication.NetworkError);
-        setOpen(true);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  };
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: number = parseInt(event.target.value);
@@ -1289,41 +1227,6 @@ const QuotationWise = () => {
       .catch((e) => { });
   };
 
-  const FetchData_rejected = (type: string) => {
-    ResetFields();
-    Provider.getAll("master/getactivityroles")
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            const arrList = [...response.data.data];
-            arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
-              let sr = { srno: index + 1 };
-              a = Object.assign(a, sr);
-            });
-            setQuotationRejectedList(arrList);
-            setQuotationRejectedListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Activity role " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
-          }
-        } else {
-          setSnackbarType("info");
-          setSnackMsg(communication.NoData);
-          setOpen(true);
-        }
-        setLoading(false);
-      })
-      .catch((e) => {
-        setLoading(false);
-        setSnackbarType("error");
-        setSnackMsg(communication.NetworkError);
-        setOpen(true);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  };
 
   //#endregion 
 
@@ -1333,505 +1236,18 @@ const QuotationWise = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Quotation Add / Edit</Typography>
+            <Typography variant="h4">CONTRACTOR QUOTATION</Typography>
           </Grid>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs value={value} onChange={handleChange}>
-              <Tab label="Quotation Add/ Edit" {...a11yProps(0)} />
-              <Tab label="Quotation Send pending List" {...a11yProps(1)} />
-              <Tab label="Quotation Approve Pending List" {...a11yProps(2)} />
-              <Tab label="Quotation Approved List" {...a11yProps(3)} />
-              <Tab label="Rejected" {...a11yProps(3)} />
-              <Tab label="Quotation Cencelled" {...a11yProps(3)} />
+              <Tab label="Pending" {...a11yProps(0)} />
+              <Tab label="Approved" {...a11yProps(1)} />
+              <Tab label="Rejected" {...a11yProps(2)} />
             </Tabs>
           </Box>
           <Grid item xs={4} sm={8} md={12}>
+
             <TabPanel value={value} index={0}>
-              {/* <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={{ xs: 1, md: 2 }}>
-                <Grid item xs={4} sm={8} md={12}>
-                  {loading ? (
-                    <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                      <CircularProgress />
-                    </Box>
-                  ) : (
-                    <CreateGallery screenType={currentScreen} />
-                  )}
-                </Grid>
-              </Grid> */}
-              <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)" }}>
-                <Typography variant="h6">Client Deatils</Typography>
-              </Grid>
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ marginTop: "20px", }}>
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
-                  <Grid item xs={6}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={3}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'right', }}>  <label style={{ color: "#ff0000" }}>*</label>Client Name</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={6}>
-                        <FormControl fullWidth size="small" error={isClientNameError}>
-                          <Select value={clientName} onChange={handleClientNameChange} >
-                            <MenuItem disabled={true} value="--Select--">
-                              --Select--
-                            </MenuItem>
-                            {clientNameList.map((item, index) => {
-                              return (
-                                <MenuItem key={index} value={item.companyName}>
-                                  {item.companyName}
-                                </MenuItem>
-                              );
-                            })}
-                          </Select>
-                          <FormHelperText>{clientNameError}</FormHelperText>
-                        </FormControl>
-                      </Grid>
-                      <Grid item sm={1}>
-                        <Button variant="contained" onClick={() => {
-                          setDialogueOpen(true);
-                        }} style={{ marginTop: "-4px" }} sx={{ mr: 1, backgroundColor: theme.palette.success.main }}>
-                          <AddIcon />
-                        </Button>
-                      </Grid>
-                    </Grid>
-
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={2}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'right', }}>Client Name</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={4}>
-                        <TextField
-                          fullWidth
-                          disabled={true}
-                          sx={{ background: "#e5e5e5" }}
-
-                          variant="outlined"
-                          size="small"
-                          value={cName}
-                        />
-                      </Grid>
-                      <Grid item sm={2}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'right', }}>Client No</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={4}>
-                        <TextField
-                          fullWidth
-                          disabled={true}
-                          sx={{ background: "#e5e5e5" }}
-                          inputProps={{
-                            maxLength: 10,
-                          }}
-                          variant="outlined"
-                          size="small"
-                          type="number"
-                          value={clientNo}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)", marginTop: "15px" }}>
-                <Typography variant="h6">Project Deatils</Typography>
-              </Grid>
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ marginTop: "20px", }}>
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
-                  <Grid item xs={4}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={4}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'left', }}>  <label style={{ color: "#ff0000" }}>*</label>Project Name</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={8}>
-                        <TextField
-                          fullWidth
-
-                          variant="outlined"
-                          size="small"
-                          onChange={(e) => {
-                            setProjectName((e.target as HTMLInputElement).value);
-                            setIsProjectNameError(false);
-                            setProjectNameError("");
-                          }}
-                          error={isProjectNameError}
-                          helperText={projectNameError}
-                          value={projectName}
-                        />
-                      </Grid>
-
-                    </Grid>
-
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={4}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'left', }}>Contact Person</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={8}>
-                        <TextField
-                          fullWidth
-
-                          variant="outlined"
-                          size="small"
-                          onChange={(e) => {
-                            setContactPerson((e.target as HTMLInputElement).value);
-                          }}
-                          value={contactPerson}
-                        />
-                      </Grid>
-
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={5}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'left', }}>Contact Number</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={7}>
-                        <TextField
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                          inputProps={{
-                            maxLength: 10,
-                          }}
-                          onChange={(e) => {
-                            setContactNo((e.target as HTMLInputElement).value);
-                          }}
-                          value={contactNo}
-                        />
-                      </Grid>
-
-                    </Grid>
-
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ marginTop: "20px", }}>
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
-                  <Grid item xs={6}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={4}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'left', }}> Project Description</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={8}>
-                        <TextField
-                          fullWidth
-                          id="filled-textarea"
-                          placeholder=""
-                          multiline
-                          maxRows={3}
-                          variant="outlined"
-                          onChange={(e) => {
-                            setProjectDescription((e.target as HTMLInputElement).value);
-                          }}
-                          value={projectDescription}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={4}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'left', }}><label style={{ color: "#ff0000" }}>*</label>Project Site Address</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={8}>
-                        <TextField
-                          fullWidth
-                          id="filled-textarea"
-                          placeholder=""
-                          multiline
-                          maxRows={3}
-                          variant="outlined"
-                          onChange={(e) => {
-                            setProjectSiteAddress((e.target as HTMLInputElement).value);
-                            setIsProjectSiteAddressError(false);
-                            setProjectSiteAddressErrorText("");
-                          }}
-                          error={isProjectSiteAddressError}
-                          helperText={projectSiteAddressErrorText}
-                          value={projectSiteAddress}
-
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-
-                </Grid>
-              </Grid>
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ marginTop: "20px", }}>
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
-                  <Grid item xs={6}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={4}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'left', }}> State</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={8}>
-                        <Autocomplete
-                          disablePortal
-                          fullWidth
-                          options={statesFullData}
-                          //sx={{ width: 300 }}
-                          onChange={(event: React.SyntheticEvent, value: any) => {
-                            setIsStateError(false);
-                            setStateError("");
-                            if (value !== null) {
-                              setSelectedStateName(value.label);
-                              setSelectedStateID(value.id);
-                              setCityFullData([]);
-                              setSelectedCityName("");
-                              setSelectedCityID(0);
-                              FetchCities(value.id, 0);
-                            }
-                          }}
-                          value={selectedStateName}
-                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
-                        />
-                      </Grid>
-
-                    </Grid>
-
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={4}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'left', }}>City</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={8}>
-                        <Autocomplete
-                          disablePortal
-                          fullWidth
-                          options={cityFullData}
-                          // sx={{ width: 300 }}
-                          onChange={(event: React.SyntheticEvent, value: any) => {
-                            setIsCityError(false);
-                            setCityError("");
-                            if (value !== null) {
-                              setSelectedCityName(value.label);
-                              setSelectedCityID(value.id);
-                            }
-                          }}
-                          value={selectedCityName}
-                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCityError} helperText={cityError} />}
-                        />
-                      </Grid>
-
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)", marginTop: "15px" }}>
-                <Typography variant="h6">Quatation Preparation Type</Typography>
-              </Grid>
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ marginTop: "20px", }}>
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
-                  <Grid item xs={5}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={4}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b style={{ float: 'right', }}>  <label style={{ color: "#ff0000" }}>*</label>Unit of Sales</b>
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={7}>
-                        <FormControl fullWidth size="small" error={isUnitOfSalesError}>
-                          <Select value={unitOfSales} onChange={handleUnitOfSalesChange} >
-                            <MenuItem disabled={true} value="--Select--">
-                              --Select--
-                            </MenuItem>
-                            <MenuItem value="foot">Foot</MenuItem>
-                            <MenuItem value="meter">Meter</MenuItem>
-                          </Select>
-                          <FormHelperText>{unitOfSalesError}</FormHelperText>
-                        </FormControl>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={8}>
-                        <FormGroup>
-                          <FormControlLabel control={<Checkbox checked={checkInclusiveMaterial} onChange={checkboxhandleChange} />}
-                            labelPlacement="start" label="Inclusive Materials" />
-                        </FormGroup>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={9}>
-                        <Button variant="contained" style={{ marginTop: "-4px" }}
-                          onClick={() => {
-                            if (unitOfSales !== "--Select--") {
-                              setOpenProductDialog(true);
-                            }
-                            else {
-                              setSnackMsg(communication.BlankUnitOfSales);
-                              setSnackbarType("error");
-                              setOpen(true);
-                            }
-                          }}
-                          sx={{ mr: 1, backgroundColor: theme.palette.success.main }}>
-                          <AddIcon />     Add Product
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  {showNote &&
-                    <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} sx={{ mt: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
-                      <Grid item xs={8}>
-                        <Typography style={{ color: "red", textAlign: "center" }}>
-                          Note:- Once product added you can't change Inclusive Materials option. If you want to change the Inclusive Materials check box tick option, please remove all product and try again!
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  }
-                </Grid>
-              </Grid>
-              <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)", marginTop: "15px" }}>
-                <Typography variant="h6">Product Details</Typography>
-              </Grid>
-              <Grid>
-                {productItem.length === 0 ? (
-                  <></>
-                ) : (
-                  <>
-                    <Grid item xs={4} sm={8} md={12} sx={{ mt: 2 }}>
-                      <TableContainer component={Paper} sx={{ width: "100%" }}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                          <TableHead style={{ backgroundColor: theme.palette.success.main, color: "white" }}>
-                            <TableRow>
-                              <TableCell sx={{ width: "200px", color: "white" }}>Product Name</TableCell>
-                              <TableCell sx={{ width: "80px", color: "white" }}>Unit</TableCell>
-                              <TableCell sx={{ width: "96px", color: "white" }}>Quantity</TableCell>
-                              <TableCell sx={{ width: "96px", color: "white" }}>Rate</TableCell>
-                              <TableCell sx={{ width: "96px", color: "white" }}>Amount</TableCell>
-                              <TableCell sx={{ width: "200px", color: "white" }}>Remarks</TableCell>
-                              <TableCell sx={{ width: "80px", color: "white" }}>Action</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {productItem.map((row: QuotationWiseProductModel, index: number) => (
-
-                              <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                                <TableCell component="th" scope="row">
-                                  {row.productName}
-                                </TableCell>
-                                <TableCell align="center">
-                                  {row.unit}
-                                </TableCell>
-                                <TableCell align="center">
-                                  <TextField sx={{ width: "96px" }} disabled placeholder="" variant="outlined" size="small" value={row.quantity} />
-                                </TableCell>
-                                <TableCell align="center">
-                                  <TextField sx={{ width: "96px" }} disabled placeholder="" variant="outlined" size="small" value={row.rate} />
-                                </TableCell>
-                                <TableCell align="center">
-                                  <TextField sx={{ width: "96px" }} disabled placeholder="" variant="outlined" size="small" value={row.amount} />
-                                </TableCell>
-                                <TableCell align="center">
-                                  <TextField sx={{ width: "220px" }} disabled placeholder="" variant="outlined" size="small" value={row.remarks} />
-                                </TableCell>
-                                <TableCell>
-                                  <Button
-                                    variant="contained"
-                                    sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-                                    onClick={() => {
-                                      let NewArr = [...productItem];
-                                      NewArr.splice(index, 1);
-                                      setProductItem(NewArr);
-                                      if (NewArr.length === 0) {
-                                        setShowNote(false);
-                                        setShowButton(false);
-                                      }
-                                    }}
-                                  >
-                                    Remove
-                                  </Button>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                          {/* <TableRow>
-                            <TableCell align="right" colSpan={4}>Sub Total</TableCell>
-                            <TableCell align="center">
-                              <TextField sx={{ width: "96px" }} disabled placeholder="" variant="outlined" size="small" value={UpdateSubTotal(productItem)} />
-                            </TableCell>
-                          </TableRow> */}
-                        </Table>
-                      </TableContainer>
-                    </Grid>
-                    <Grid item xs={4} sm={4} md={3} sx={{ mt: 1, display: "flex", justifyContent: "center" }}>
-
-                      {/* take button here */}
-
-                    </Grid>
-                  </>
-                )}
-
-              </Grid>
-              <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)", marginTop: "15px" }}>
-                <Typography variant="h6">Terms & Condition</Typography>
-              </Grid>
-              <Grid container rowSpacing={1} sx={{ marginTop: "20px", }}>
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} >
-                  <TextField
-                    fullWidth
-                    id="filled-textarea"
-                    placeholder=""
-                    multiline
-                    minRows={5}
-                    maxRows={10}
-                    variant="outlined"
-                    onChange={(e) => {
-                      setTermsConditions((e.target as HTMLInputElement).value);
-                    }}
-                    value={termsConditions}
-                  />
-                </Grid>
-              </Grid>
-              {showButton &&
-                <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} sx={{ mt: 3 }} >
-                  <Grid item xs={6}>
-                    <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
-                      <Grid item sm={8}>
-                        <FormGroup>
-                          <FormControlLabel control={<Checkbox checked={sendToClient} onChange={sendToClienthandleChange} />}
-                            labelPlacement="start" label="Send to Client" />
-                        </FormGroup>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button variant="contained" onClick={handleSubmitClick} style={{ marginTop: "-4px" }} sx={{ mr: 1, backgroundColor: theme.palette.success.main }}>
-                      {selectedID > 0 ? "Update" : "Submit"}
-                    </Button>
-                  </Grid>
-                </Grid>
-              }
-            </TabPanel>
-
-            <TabPanel value={value} index={1}>
               <Grid item xs={4} sm={8} md={12}>
                 {loading ? (
                   <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
@@ -1839,7 +1255,7 @@ const QuotationWise = () => {
                   </Box>
                 ) : (
                   <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                    {quotationSendPendingList.length === 0 ? (
+                    {quotationPendingList.length === 0 ? (
                       <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                     ) : (
                       <>
@@ -1849,7 +1265,7 @@ const QuotationWise = () => {
                             variant="outlined"
                             size="small"
                             onChange={(e) => {
-                              onChangeSearch_SendPending((e.target as HTMLInputElement).value);
+                              onChangeSearch_Pending((e.target as HTMLInputElement).value);
                             }}
                             value={searchQuery}
                             InputProps={{
@@ -1868,8 +1284,8 @@ const QuotationWise = () => {
                           }}
                           autoHeight={true}
                           rowHeight={100}
-                          rows={quotationSendPendingListTemp}
-                          columns={quotationSendPendingColumns}
+                          rows={quotationPendingListTemp}
+                          columns={clientQuotationPendingColumns}
                           pageSize={pageSize}
                           rowsPerPageOptions={[5, 10, 20]}
                           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -1877,22 +1293,17 @@ const QuotationWise = () => {
                           onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                             if (param.field === "action") {
                               debugger;
-
                               var ele = (e.target as any).className;
-                              const arrActivity = [...quotationSendPendingList];
+                              const arrActivity = [...quotationPendingList];
                               let a: QuotationSendPendingModel | undefined = arrActivity.find((el) => el.id === param.row.id);
 
-                              if (ele.includes("edit") === true) {
-                                debugger;
-                                handleEdit((e.target as any).textContent, a);
+                              if (ele.includes("approve") == true) {
+                                SetApproveID(a.id);
+                                setApproveDialogCancel(true);
                               }
-                              else if (ele.includes("cancelQuotation") == true) {
-                                SetCancelID(a.id);
-                                setConfirmQuotationCancel(true);
-                              }
-                              else if (ele.includes("sendQuotationToClient") == true) {
-                                SetQuotationToClientID(a.id);
-                                setConfirmQuotationToClient(true);
+                              else if (ele.includes("reject") == true) {
+                                SetRejectID(a.id);
+                                setRejectDialogCancel(true);
                               }
                             }
                           }}
@@ -1912,7 +1323,7 @@ const QuotationWise = () => {
 
             </TabPanel>
 
-            <TabPanel value={value} index={2}>
+            <TabPanel value={value} index={1}>
               <Grid item xs={4} sm={8} md={12}>
                 {loading ? (
                   <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
@@ -1920,7 +1331,7 @@ const QuotationWise = () => {
                   </Box>
                 ) : (
                   <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                    {quotationApprovePendingList.length === 0 ? (
+                    {quotationApprovedList.length === 0 ? (
                       <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                     ) : (
                       <>
@@ -1948,77 +1359,15 @@ const QuotationWise = () => {
                             pointerEvents: dataGridPointer,
                           }}
                           autoHeight={true}
-                          rows={quotationApprovePendingListTemp}
-                          columns={quotationApprovePendingColumns}
-                          pageSize={pageSize}
-                          rowsPerPageOptions={[5, 10, 20]}
-                          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                          disableSelectionOnClick
-                          onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                            const arrActivity = [...quotationApprovePendingList];
-                            let a: QuotationApprovePendingModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                            // handelEditAndDelete((e.target as any).textContent, a);
-                          }}
-                          sx={{
-                            "& .MuiDataGrid-columnHeaders": {
-                              backgroundColor: theme.palette.primary.main,
-                              color: theme.palette.primary.contrastText,
-                            },
-                            mb: 1,
-                          }}
-                        />
-                      </>
-                    )}
-                  </div>
-                )}
-              </Grid>
-            </TabPanel>
-
-            <TabPanel value={value} index={3}>
-              <Grid item xs={4} sm={8} md={12}>
-                {loading ? (
-                  <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                    <CircularProgress />
-                  </Box>
-                ) : (
-                  <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                    {quotationApprovedList.length === 0 ? (
-                      <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
-                    ) : (
-                      <>
-                        <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                          <TextField
-                            placeholder="Search"
-                            variant="outlined"
-                            size="small"
-                            onChange={(e) => {
-                              onChangeSearch_ApprovedList((e.target as HTMLInputElement).value);
-                            }}
-                            value={searchQuery}
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <SearchIcon />
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        </Grid>
-                        <DataGrid
-                          style={{
-                            opacity: dataGridOpacity,
-                            pointerEvents: dataGridPointer,
-                          }}
-                          autoHeight={true}
                           rows={quotationApprovedListTemp}
-                          columns={quotationApprovedColumns}
+                          columns={clientQuotationPendingColumns}
                           pageSize={pageSize}
                           rowsPerPageOptions={[5, 10, 20]}
                           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                           disableSelectionOnClick
                           onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                             const arrActivity = [...quotationApprovedList];
-                            let a: QuotationApprovedModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                            let a: QuotationSendPendingModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                             // handelEditAndDelete((e.target as any).textContent, a);
                           }}
                           sx={{
@@ -2036,7 +1385,7 @@ const QuotationWise = () => {
               </Grid>
             </TabPanel>
 
-            <TabPanel value={value} index={4}>
+            <TabPanel value={value} index={2}>
               <Grid item xs={4} sm={8} md={12}>
                 {loading ? (
                   <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
@@ -2054,7 +1403,7 @@ const QuotationWise = () => {
                             variant="outlined"
                             size="small"
                             onChange={(e) => {
-                              onChangeSearch_Rejected((e.target as HTMLInputElement).value);
+                              onChangeSearch_RejectedList((e.target as HTMLInputElement).value);
                             }}
                             value={searchQuery}
                             InputProps={{
@@ -2073,14 +1422,14 @@ const QuotationWise = () => {
                           }}
                           autoHeight={true}
                           rows={quotationRejectedListTemp}
-                          columns={quotationRejectedColumns}
+                          columns={quotationApprovedColumns}
                           pageSize={pageSize}
                           rowsPerPageOptions={[5, 10, 20]}
                           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                           disableSelectionOnClick
                           onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                             const arrActivity = [...quotationRejectedList];
-                            let a: QuotationRejectedModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                            let a: QuotationSendPendingModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                             // handelEditAndDelete((e.target as any).textContent, a);
                           }}
                           sx={{
@@ -2096,78 +1445,6 @@ const QuotationWise = () => {
                   </div>
                 )}
               </Grid>
-            </TabPanel>
-            <TabPanel value={value} index={5}>
-              <Grid item xs={4} sm={8} md={12}>
-                {loading ? (
-                  <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                    <CircularProgress />
-                  </Box>
-                ) : (
-                  <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                    {quotationCancellationList.length === 0 ? (
-                      <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
-                    ) : (
-                      <>
-                        <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                          <TextField
-                            placeholder="Search"
-                            variant="outlined"
-                            size="small"
-                            onChange={(e) => {
-                              onChangeSearch_SendPending((e.target as HTMLInputElement).value);
-                            }}
-                            value={searchQuery}
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <SearchIcon />
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        </Grid>
-                        <DataGrid
-                          style={{
-                            opacity: dataGridOpacity,
-                            pointerEvents: dataGridPointer,
-                          }}
-                          autoHeight={true}
-                          rowHeight={100}
-                          rows={quotationCancellationListTemp}
-                          columns={quotationCancellationColumns}
-                          pageSize={pageSize}
-                          rowsPerPageOptions={[5, 10, 20]}
-                          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                          disableSelectionOnClick
-                          onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                            if (param.field === "action") {
-                              debugger;
-
-                              var ele = (e.target as any).className;
-                              const arrActivity = [...quotationCancellationList];
-                              let a: QuotationCancellationModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-
-                              if (ele.includes("edit") === true) {
-                                debugger;
-                                handleCancel((e.target as any).textContent, a);
-                              }
-                            }
-                          }}
-                          sx={{
-                            "& .MuiDataGrid-columnHeaders": {
-                              backgroundColor: theme.palette.primary.main,
-                              color: theme.palette.primary.contrastText,
-                            },
-                            mb: 1,
-                          }}
-                        />
-                      </>
-                    )}
-                  </div>
-                )}
-              </Grid>
-
             </TabPanel>
 
           </Grid>
@@ -2413,32 +1690,32 @@ const QuotationWise = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={confirmQuotationCancel} onClose={handleConfirmQuotationDialogueClose}>
+      <Dialog open={approveDialogCancel} onClose={handleApproveDialogueClose}>
         <DialogTitle>Confirmation</DialogTitle>
         <DialogContent>
-          <DialogContentText>Confirm to Cancel ?</DialogContentText>
+          <DialogContentText>Do you confirm to Approve?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleConfirmQuotationDialogueClose}>Cancel</Button>
+          <Button onClick={handleApproveDialogueClose}>Cancel</Button>
           <Button
             onClick={() => {
-              CancelQuotation();
+              ApproveQuotation();
             }}
           >
             OK
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={confirmQuotationToClient} onClose={handleConfirmQuotationToClientDialogueClose}>
+      <Dialog open={rejectDialogCancel} onClose={handleRejectDialogueClose}>
         <DialogTitle>Confirmation</DialogTitle>
         <DialogContent>
-          <DialogContentText>Confirm to send client ?</DialogContentText>
+          <DialogContentText>Do you confirm to Reject?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleConfirmQuotationToClientDialogueClose}>Cancel</Button>
+          <Button onClick={handleRejectDialogueClose}>Cancel</Button>
           <Button
             onClick={() => {
-              QuotationToCient();
+              RejectQuotation();
             }}
           >
             OK
@@ -2449,4 +1726,4 @@ const QuotationWise = () => {
   );
 };
 
-export default QuotationWise;
+export default ClientQuotation;

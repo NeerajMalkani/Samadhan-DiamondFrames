@@ -763,33 +763,53 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
       ],
     },
-    // {
-    //   title: "Enquiry & Estimation",
-    //   icon: <Inventory2Icon />,
-    //   expanded: true,
-    //   items: [
-    //     {
-    //       title: "Image Gallery",
-    //       isActive: window.location.href.toLowerCase().includes("imagegallery/category"),
-    //       navigation: () => {
-    //         open[1](false);
-    //         setTimeout(() => {
-    //           navigate(`/generaluser/imagegallery/category`);
-    //         }, 300);
-    //       },
-    //     },
-    //     {
-    //       title: "Your Estimations",
-    //       isActive: window.location.href.toLowerCase().includes("userestimation"),
-    //       navigation: () => {
-    //         open[1](false);
-    //         setTimeout(() => {
-    //           navigate(`/generaluser/userestimation`);
-    //         }, 300);
-    //       },
-    //     },
-    //   ],
-    // },
+    {
+      title: "My Client Role Activity",
+      icon: <Inventory2Icon />,
+      expanded: true,
+      items: [
+        {
+          title: "My Quotation",
+          isActive: window.location.href.toLowerCase().includes("clients/quotationandestimation/quotationwise"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/clients/quotationandestimation/quotationwise`);
+            }, 300);
+          },
+        },
+        {
+          title: "My Design Estimation",
+          isActive: window.location.href.toLowerCase().includes("userestimation"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generaluser/userestimation`);
+            }, 300);
+          },
+        },
+        {
+          title: "My Budgets",
+          isActive: window.location.href.toLowerCase().includes("userestimation"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generaluser/userestimation`);
+            }, 300);
+          },
+        },
+        {
+          title: "My On Going Projects",
+          isActive: window.location.href.toLowerCase().includes("userestimation"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generaluser/userestimation`);
+            }, 300);
+          },
+        },
+      ],
+    },
   ];
 
   const MenuItemsArchitect= [

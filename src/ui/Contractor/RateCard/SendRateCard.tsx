@@ -150,7 +150,6 @@ const SendRateCard = () => {
         if (!isNaN(parseInt(id))) {
             setSelectedID(parseInt(id));
             FetchRateCardByID(parseInt(id));
-
             FetchActvityRoles();
         }
         else {
@@ -193,7 +192,6 @@ const SendRateCard = () => {
             SetClientNameError("");
             setCName(ac?.contactPerson);
             setClientNo(ac?.contactMobileNumber);
-
         }
     };
 
@@ -367,7 +365,6 @@ const SendRateCard = () => {
             setPn("--Select--");
             setPnID(0);
             setProductList([]);
-            debugger;
             setProductFullData([]);
         }
         setProductError("");
@@ -376,7 +373,6 @@ const SendRateCard = () => {
 
 
     const handleCNChange = (event: SelectChangeEvent) => {
-        debugger;
         let categoryName: number = parseInt(event.target.value);
         let ac = categoryList.find((el) => el.id === categoryName);
         if (ac !== undefined) {
@@ -396,7 +392,6 @@ const SendRateCard = () => {
         };
         Provider.getAll(`master/getcontractorratecardproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
             .then((response: any) => {
-                debugger;
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         const fullData = response.data.data.map((o) => ({
@@ -431,17 +426,18 @@ const SendRateCard = () => {
                                 serviceID: item.serviceID,
                                 categoryID: item.categoryID,
                                 unitOfSalesID: item.unitOfSalesID,
-                                selectedUnitID: item.selectedUnitID,
+                                //selectedUnitID: item.selectedUnitID,
                                 productName: item.productName,
                                 serviceName: item.serviceName,
                                 categoryName: item.categoryName,
+                                selectedUnitID: selectedUnit == "foot" ? item.unit1ID : item.unit2ID,
                                 unit: selectedUnit == "foot" ? item.unit1Name : item.unit2Name,
                                 altUnit: selectedUnit == "foot" ? item.unit2Name : item.unit1Name,
                                 rate: selectedUnit == "foot" ? item.footRate : item.meterRate,
-                                altRate: selectedUnit == "foot" ? item.meterRate : item.footRate
+                                //altRate: selectedUnit == "foot" ? item.meterRate : item.footRate
+                                altRate: selectedUnit == "foot" ? (parseFloat(item.footRate) * parseFloat(item.meterConversion)).toFixed(2) : (parseFloat(item.meterRate) * parseFloat(item.footConversion)).toFixed(2)
                             });
                         });
-                        debugger;
                         setProductItem(arr);
                         setShowButton(true);
                         setShowNote(true);
@@ -475,34 +471,34 @@ const SendRateCard = () => {
         setConfirmOpen(false);
     };
 
-    const handleToggle = (value: RateCardProductModel) => () => {
-        debugger;
+    const handleToggle = (value: RateCardProductModel) => {
         let dataIndex = -1;
-        const currentIndex = productItem.find(function (item, i) {
-            if (item.productID === value.productID) {
-                dataIndex = i;
-                return i;
-            }
-        });
-        let tempProductList = [...productList];
-        var itemIndex = tempProductList.findIndex((x) => x.productID == value.productID);
-        const newChecked = [...productItem];
-        let newRate = "", newUnit = "", altRate = "", altUnit = "";
+        var currentIndex = productItem.findIndex((x) => x.productID === value.productID);
+        if (currentIndex > -1) {
+            dataIndex = currentIndex;
+        }
 
-        if (unitOfSales == "foot") {
+        let tempProductList = [...productList];
+        var itemIndex = tempProductList.findIndex((x) => x.productID === value.productID);
+        const newChecked = [...productItem];
+        let newRate = "", newUnit = "", altRate = "", altUnit = "", selectedUnit = 0;
+
+        if (unitOfSales === "foot") {
             newRate = value.footRate;
             newUnit = value.unit1Name;
             altRate = value.meterRate;
             altUnit = value.unit2Name;
+            selectedUnit = value.unit1ID;
         }
         else {
             newRate = value.meterRate;
             newUnit = value.unit2Name;
             altRate = value.footRate;
             altUnit = value.unit1Name;
+            selectedUnit = value.unit2ID;
         }
 
-        if (currentIndex === undefined || currentIndex === null) {
+        if (currentIndex === undefined || currentIndex === null || currentIndex === -1) {
             newChecked.push({
                 productID: value.productID,
                 productName: value.productName,
@@ -510,7 +506,7 @@ const SendRateCard = () => {
                 categoryName: value.categoryName,
                 serviceID: value.serviceID,
                 categoryID: value.categoryID,
-                selectedUnitID: value.selectedUnitID,
+                selectedUnitID: selectedUnit,
                 unitOfSalesID: value.unitOfSalesID,
                 rate: newRate,
                 unit: newUnit,
@@ -525,18 +521,32 @@ const SendRateCard = () => {
 
         setProductItem(newChecked);
         setProductList(tempProductList);
-        setShowNote(true);
-        setShowButton(true);
+        if (newChecked.length > 0) {
+            setShowNote(true);
+            setShowButton(true);
+        }
+        else {
+            setShowNote(false);
+            setShowButton(false);
+        }
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (productItem.length == 0) {
+        if (productItem.length === 0) {
             setCheckInclusiveMaterial(event.target.checked);
         }
     };
 
     const handleSubmitClick = () => {
-        if (productItem.length !== 0) {
+        let isValid = true;
+
+        if (clientName === "--Select--") {
+            isValid = false;
+            SetClientNameError("Please select Client name");
+            IsSetClientNameError(true);
+        }
+
+        if (productItem.length !== 0 && isValid) {
             InsertUpdateData();
         }
         else {
@@ -547,9 +557,7 @@ const SendRateCard = () => {
     };
 
     const InsertUpdateData = () => {
-        debugger;
         let productArr = [];
-
         productItem.find(function (item, i) {
             productArr.push({
                 ID: 0,
@@ -566,22 +574,19 @@ const SendRateCard = () => {
         let contractorRateCardMapping = [{
             ID: selectedID,
             ClientID: clientNameID,
-            SelectedUnitID: unitOfSales == "foot" ? 1 : 2,
+            SelectedUnitID: unitOfSales === "foot" ? 1 : 2,
             UnitOfSalesID: 0,
             InclusiveMaterials: checkInclusiveMaterial,
             AddedByUserID: cookies.dfc.UserID
         }];
 
         let contractorRateCardMappingItems = productArr;
-
         let params = {
             contractorRateCardMapping: contractorRateCardMapping,
             contractorRateCardMappingItems: contractorRateCardMappingItems
         };
-        debugger;
         Provider.create("master/insertupdatesendratecard", params)
             .then((response) => {
-                debugger;
                 if (response.data && response.data.code === 200) {
                     navigate(`/contractor/ratecard/sendratecardlist`);
                 } else if (response.data.code === 304) {
@@ -603,8 +608,6 @@ const SendRateCard = () => {
                 setOpen(true);
             });
     };
-
-
 
     //#endregion
 
@@ -819,7 +822,7 @@ const SendRateCard = () => {
                                                                 let NewArr = [...productItem];
                                                                 NewArr.splice(index, 1);
                                                                 setProductItem(NewArr);
-                                                                if (NewArr.length == 0) {
+                                                                if (NewArr.length === 0) {
                                                                     setShowNote(false);
                                                                     setShowButton(false);
                                                                 }
@@ -843,10 +846,10 @@ const SendRateCard = () => {
                     )}
 
                     {showButton &&
-                        <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} sx={{ mt: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
-                            <Grid item xs={8}>
+                        <Grid container direction="row" justifyContent="center" alignItems="center" rowSpacing={1} sx={{ mt: 3 }} >
+                            <Grid item xs={12}>
                                 <Button variant="contained" onClick={handleSubmitClick} style={{ marginTop: "-4px" }} sx={{ mr: 1, backgroundColor: theme.palette.success.main }}>
-                                    Submit
+                                    {selectedID > 0 ? "Update" : "Submit"}
                                 </Button>
                             </Grid>
                         </Grid>
@@ -877,7 +880,7 @@ const SendRateCard = () => {
                 </DialogContent>
 
             </Dialog>
-            <Dialog
+            <Dialog maxWidth="lg"
                 open={openProductDialog}
                 onClose={(event, reason) => {
                     if (reason !== "backdropClick") {
@@ -887,7 +890,7 @@ const SendRateCard = () => {
                 disableEscapeKeyDown
             >
                 <DialogTitle>Choose Product</DialogTitle>
-                <DialogContent sx={{ width: 480 }}>
+                <DialogContent sx={{ width: 640 }}>
                     <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={{ xs: 1, md: 2 }}>
                         <Grid item xs={4} sm={5} md={6}>
                             <FormControl fullWidth size="small">
@@ -929,21 +932,87 @@ const SendRateCard = () => {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={4} sm={8} md={12}>
-                            <List sx={{ width: "100%", maxWidth: 360, height: 240, bgcolor: "background.paper" }}>
-                                {productList.map((value: RateCardProductModel, index: number) => {
-                                    const labelId = `checkbox-list-label-${index}`;
-                                    return (
-                                        <ListItem key={index} disablePadding>
-                                            <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                                                <ListItemIcon>
-                                                    <Checkbox edge="start" checked={value.isChecked} tabIndex={-1} disableRipple inputProps={{ "aria-labelledby": labelId }} />
-                                                </ListItemIcon>
-                                                <ListItemText id={labelId} primary={value.productName} />
-                                            </ListItemButton>
-                                        </ListItem>
-                                    );
-                                })}
+                        <Grid item xs={6} sm={8} md={12}>
+                            <List sx={{ width: "100%", maxWidth: 650, height: 240, bgcolor: "background.paper" }}>
+                                <TableContainer component={Paper}>
+                                    <Table sx={{ minWidth: 480 }} aria-label="simple table">
+                                        <TableHead style={{ backgroundColor: theme.palette.success.main, color: "white" }}>
+                                            <TableRow>
+                                                <TableCell style={{ color: "white" }} align="center">Product Name</TableCell>
+                                                <TableCell style={{ color: "white" }} align="center">Unit</TableCell>
+                                                <TableCell style={{ color: "white" }} align="center">Rate</TableCell>
+                                                <TableCell style={{ color: "white" }} align="center">Action</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {productList.map((value: RateCardProductModel, index: number) => {
+
+                                                return (
+
+                                                    <TableRow
+                                                        key={index}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                                        <TableCell align="left">{value.productName}</TableCell>
+                                                        <TableCell component="th" scope="row">
+                                                            {unitOfSales === "foot" ? value.unit1Name : value.unit2Name}
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            <TextField sx={{ width: "80px" }} placeholder="" variant="outlined"
+                                                                size="small"
+                                                                defaultValue={unitOfSales === "foot" ? value.footRate : value.meterRate}
+                                                                onChange={(e) => {
+                                                                    if (unitOfSales === "foot") {
+                                                                        value.footRate = e.target.value;
+                                                                        if (parseInt(e.target.value.trim()) > 0) {
+                                                                            value.meterRate = (parseFloat(e.target.value) * parseFloat(value.meterConversion)).toString();
+                                                                        }
+                                                                        else {
+                                                                            value.meterRate = "0";
+                                                                        }
+                                                                    }
+                                                                    else {
+                                                                        value.meterRate = e.target.value;
+                                                                        if (parseInt(e.target.value.trim()) > 0) {
+                                                                            value.footRate = (parseFloat(e.target.value) * parseFloat(value.footConversion)).toString();
+                                                                        }
+                                                                        else {
+                                                                            value.footRate = "0";
+                                                                        }
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            <Button
+                                                                startIcon={<AddIcon />}
+                                                                variant="contained"
+                                                                sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+                                                                onClick={() => {
+                                                                    let newPrice = "";
+                                                                    if (unitOfSales === "foot") {
+                                                                        newPrice = value.footRate;
+                                                                    }
+                                                                    else {
+                                                                        newPrice = value.meterRate;
+                                                                    }
+                                                                    if (parseInt(newPrice) > 0) {
+                                                                        handleToggle(value)
+                                                                    }
+                                                                    else {
+                                                                        alert("Price enter a valid price");
+                                                                    }
+                                                                }}>
+                                                                Add
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+
                             </List>
                         </Grid>
                     </Grid>

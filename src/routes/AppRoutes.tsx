@@ -69,6 +69,7 @@ import AddServiceProduct from "../ui/Admin/Master/AddServiceProduct";
 import SendRateCard from "../ui/Contractor/RateCard/SendRateCard";
 import SendRateCardList from "../ui/Contractor/RateCard/SendRateCardList";
 import QuotationWise from "../ui/Contractor/QuotationAndEstimation/QuotationWise";
+import ClientQuotation from "../ui/Clients/QuotationAndEstimation/QuotationWise";
 
 
 
@@ -151,6 +152,7 @@ const AppRoutes = () => {
               <Route path="contractor/ratecard/sendratecard" element={<SendRateCard />} />
               <Route path="contractor/ratecard/sendratecardlist" element={<SendRateCardList />} />
               <Route path="contractor/quotationandestimation/quotationwise" element={<QuotationWise />} />
+              <Route path="clients/quotationandestimation/quotationwise" element={<ClientQuotation />} />
             </Routes>
           </BrowserRouter>
         </Box>

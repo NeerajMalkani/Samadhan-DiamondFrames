@@ -101,8 +101,54 @@ export interface RateCardProductModel {
   unit2Name: string;
   selectedUnitID: number;
   isChecked: boolean;
-  footRate:string;
-  meterRate:string;
+  footRate: string;
+  meterRate: string;
+  footConversion: string;
+  meterConversion: string;
+}
+
+export interface QuotationWiseProductModel {
+  id: number;
+  srno: number;
+  activityRoleName: string;
+  serviceName: string;
+  categoryName: string;
+  productCode: string;
+  productName: string;
+  hsnSacCode: string;
+  gstRate: number;
+  unitName: string;
+  display: string;
+  action: string;
+  serviceID: number;
+  unitOfSalesID: number;
+  categoryID: number;
+  activityID: number;
+  productID: number;
+  alternateUnitOfSales: number;
+  conversionRate: number;
+  rateWithMaterials: number;
+  rateWithoutMaterials: number;
+  serviceDisplay: string;
+  shortSpecification: string;
+  specification: string;
+  unit1ID: number;
+  unit1Name: string;
+  unit2ID: number;
+  unit2Name: string;
+  selectedUnitID: number;
+  isChecked: boolean;
+  footRate: string;
+  meterRate: string;
+  footConversion: string;
+  meterConversion: string;
+  amount: string;
+  quantity: string;
+  unit: string;
+  altUnit: string;
+  rate: string;
+  altRate: string;
+  remarks: string;
 }
 
 //  {
@@ -159,21 +205,21 @@ export interface RoleDetails {
 }
 
 export interface BranchModel {
-  regionalOfficeID:number;
+  regionalOfficeID: number;
   branchType: string;
   branchTypeID: number;
-  branchAdminID:number;
-  contactPersonNo:string;
-  locationName:string;
-  stateID:number;
-  cityID:number;
-  branchAdmin:string;
-  pincode:number;
-  accountNo:string;
-  bankName:string;
-  bankBranchName:string;
-  ifscCode:string;
-  address:string;
+  branchAdminID: number;
+  contactPersonNo: string;
+  locationName: string;
+  stateID: number;
+  cityID: number;
+  branchAdmin: string;
+  pincode: number;
+  accountNo: string;
+  bankName: string;
+  bankBranchName: string;
+  ifscCode: string;
+  address: string;
   gstNo: string;
   panNo: string;
   display: string;
@@ -563,34 +609,34 @@ export interface RateCardModel {
   action: string;
 }
 
-export interface SendRateCardModel{
-  id:number;
-  clientName:string;
-  contactNo:string;
-  unit:string;
-  inclusiveMaterials:string;
-  sendStatus:string;
-  action:string;
+export interface SendRateCardModel {
+  id: number;
+  clientName: string;
+  contactNo: string;
+  unit: string;
+  inclusiveMaterials: string;
+  sendStatus: string;
+  action: string;
 }
 
-export interface ProductDetailsModel{
-  id:number;
-  serviceName:string;
-  categoryName:string;
-  productName:string;
-  unit:string;
-  rate:string;
-  action:string;
+export interface ProductDetailsModel {
+  id: number;
+  serviceName: string;
+  categoryName: string;
+  productName: string;
+  unit: string;
+  rate: string;
+  action: string;
 }
 
-export interface QuotationProductDetailsModel{
-  productName:string;
-  unit:string;
-  quantity:string;
-  rate:string;
-  amount:string;
-  remarks:string;
-  action:string;
+export interface QuotationProductDetailsModel {
+  productName: string;
+  unit: string;
+  quantity: string;
+  rate: string;
+  amount: string;
+  remarks: string;
+  action: string;
 }
 
 export interface ClientModel {
@@ -686,36 +732,74 @@ export interface DeclinedModel {
 export interface QuotationSendPendingModel {
   id: number;
   srno: number;
+  clientID: number;
   quotationNo: string;
-  projectName:string;
-  clientContactPersonNumber:string;
-  quotationUnit:string;
-  materials:string;
-  status: boolean;
-  action: boolean;
+  projectName: string;
+  contactPerson: string;
+  contactNumber: string;
+  clientContactPersonNumber: string;
+  projectDescription: string;
+  projectSiteAddress: string;
+  stateID: number;
+  cityID: number;
+  selectedUnitID: number;
+  termsNCondition: string;
+  unit: string;
+  inclusiveMaterials: boolean;
+  status: number;
+  action: string;
+}
+
+export interface QuotationCancellationModel {
+  id: number;
+  srno: number;
+  clientID: number;
+  quotationNo: string;
+  projectName: string;
+  contactPerson: string;
+  contactNumber: string;
+  clientContactPersonNumber: string;
+  projectDescription: string;
+  projectSiteAddress: string;
+  stateID: number;
+  cityID: number;
+  selectedUnitID: number;
+  termsNCondition: string;
+  unit: string;
+  inclusiveMaterials: boolean;
+  status: number;
+  action: string;
 }
 
 export interface QuotationApprovePendingModel {
   id: number;
   srno: number;
+  clientID: number;
   quotationNo: string;
-  projectName:string;
-  clientContactPersonNumber:string;
-  quotationUnit:string;
-  materials:string;
-  clientStatus:number;
-  quotationStatus:number;
-  action: boolean;
+  projectName: string;
+  contactPerson: string;
+  contactNumber: string;
+  clientContactPersonNumber: string;
+  projectDescription: string;
+  projectSiteAddress: string;
+  stateID: number;
+  cityID: number;
+  selectedUnitID: number;
+  termsNCondition: string;
+  unit: string;
+  inclusiveMaterials: boolean;
+  status: number;
+  action: string;
 }
 
 export interface QuotationApprovedModel {
   id: number;
   srno: number;
   quotationNo: string;
-  projectName:string;
-  clientContactPersonNumber:string;
-  quotationUnit:string;
-  materials:string;
+  projectName: string;
+  clientContactPersonNumber: string;
+  quotationUnit: string;
+  materials: string;
   status: boolean;
   action: boolean;
 }
@@ -724,9 +808,9 @@ export interface QuotationRejectedModel {
   id: number;
   srno: number;
   quotationNo: string;
-  projectName:string;
-  clientContactPersonNumber:string;
-  quotationUnit:string;
-  materials:string;
+  projectName: string;
+  clientContactPersonNumber: string;
+  quotationUnit: string;
+  materials: string;
   status: boolean;
- }
+}
