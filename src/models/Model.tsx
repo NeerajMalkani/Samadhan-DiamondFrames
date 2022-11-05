@@ -813,4 +813,64 @@ export interface QuotationRejectedModel {
   quotationUnit: string;
   materials: string;
   status: boolean;
+ }
+
+ export interface ModeTypeModel {
+  id: number;
+  modeType: string;
 }
+
+export interface CategoryNameModel {
+  id: number;
+  categoryName: string;
+}
+
+export interface PayModeModel {
+  id: number;
+  payMode: string;
+}
+
+
+export interface SubCategoryNameModel {
+  id: number;
+  subCategoryName: string;
+}
+
+export interface EntryTypeModel {
+  id: number;
+  entryType: string;
+}
+
+export interface BudgetModel {
+  id: number;
+  budget: string;
+}
+
+export interface ExpensesModel {
+  id: number;
+  expenses: string;
+}
+
+
+export interface IncomeModel {
+  id: number;
+  income: string;
+}
+
+
+export interface InboxSttelementModel {
+  id: number;
+  inbox: string;
+}
+
+export interface InboxLendingModel {
+  id: number;
+  lending: string;
+}
+
+export interface InboxCompanyModel {
+  id: number;
+  company: string;
+}
+
+

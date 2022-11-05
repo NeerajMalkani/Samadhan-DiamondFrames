@@ -69,7 +69,13 @@ import AddServiceProduct from "../ui/Admin/Master/AddServiceProduct";
 import SendRateCard from "../ui/Contractor/RateCard/SendRateCard";
 import SendRateCardList from "../ui/Contractor/RateCard/SendRateCardList";
 import QuotationWise from "../ui/Contractor/QuotationAndEstimation/QuotationWise";
-import ClientQuotation from "../ui/Clients/QuotationAndEstimation/QuotationWise";
+import CategoryName from "../ui/GeneralUsers/PocketDiary/Setting/CategoryName";
+import SubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/SubCategoryName";
+import BudgetSetup from "../ui/GeneralUsers/PocketDiary/Setting/BudgetSetup";
+import AddExpenses from "../ui/GeneralUsers/PocketDiary/AddExpenses";
+import AddSources from "../ui/GeneralUsers/PocketDiary/AddSource";
+import Inbox from "../ui/GeneralUsers/PocketDiary/Inbox";
+
 
 
 
@@ -152,7 +158,12 @@ const AppRoutes = () => {
               <Route path="contractor/ratecard/sendratecard" element={<SendRateCard />} />
               <Route path="contractor/ratecard/sendratecardlist" element={<SendRateCardList />} />
               <Route path="contractor/quotationandestimation/quotationwise" element={<QuotationWise />} />
-              <Route path="clients/quotationandestimation/quotationwise" element={<ClientQuotation />} />
+              <Route path="generalusers/pocketdiary/setting/categoryname" element={<CategoryName/>}/>
+              <Route path="generalusers/pocketdiary/setting/subcategoryname" element={<SubCategoryName/>}/>
+              <Route path="generalusers/pocketdiary/setting/budgetsetup" element={<BudgetSetup/>}/>
+              <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses/>}/>
+              <Route path="generalusers/pocketdiary/addsource" element={<AddSources/>}/>
+              <Route path="generalusers/pocketdiary/inbox" element={<Inbox/>}/>
             </Routes>
           </BrowserRouter>
         </Box>

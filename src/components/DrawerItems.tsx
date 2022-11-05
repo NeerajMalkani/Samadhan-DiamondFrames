@@ -322,6 +322,73 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
       ],
     },
+    {
+      title: "Pocket Dairy",
+      icon: <BusinessIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Category Name",
+          isActive: window.location.href.toLowerCase().includes("categoryname"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/setting/categoryname`);
+            }, 300);
+          },
+        },
+        {
+          title: " Sub Category Name",
+          isActive: window.location.href.toLowerCase().includes("subcategoryname"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/setting/subcategoryname`);
+            }, 300);
+          },
+        },
+        {
+          title: "Budget Setup",
+          isActive: window.location.href.toLowerCase().includes("budgetSetup"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/setting/budgetsetup`);
+            }, 300);
+          },
+        },
+        {
+          title: "Add Expenses",
+          isActive: window.location.href.toLowerCase().includes("addexpenses"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/addexpenses`);
+            }, 300);
+          },
+        },
+        {
+          title: "Add Source",
+          isActive: window.location.href.toLowerCase().includes("addsource"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/addsource`);
+            }, 300);
+          },
+        },
+        {
+          title: "Inbox",
+          isActive: window.location.href.toLowerCase().includes("inbox"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/inbox`);
+            }, 300);
+          },
+        },
+      ],
+    },
   ];
 
   const MenuItemsDealer = [

@@ -3491,51 +3491,25 @@ export const quotationRejectedColumns: GridColDef[] = [
   },
 ]; 
 
-export const clientQuotationPendingColumns: GridColDef[] = [
-  {
-    field: "srno",
     headerName: "Sr. No.",
-    flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: "quotationNo",
-    headerName: "Quotation No",
+    field: "modeTypeName",
+    headerName: "Mode Type Name",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "projectName",
-    headerName: "Project Name",
+    field: "categoryName",
+    headerName: "Category Name",
     flex: 1.8,
     minWidth: 140,
-    sortable: false,
   },
   {
-    field: "clientContactPersonNumber",
-    headerName: "Client Contact Person & Number",
-    flex: 1.8,
-    minWidth: 240,
-    sortable: false,
-  },
-  {
-    field: "unit",
-    headerName: "Quotation Unit",
-    flex: 1.8,
-    minWidth: 140,
-    sortable: false,
-  },
-  {
-    field: "materials",
-    headerName: "Materials",
-    flex: 1.8,
-    minWidth: 140,
-    sortable: false,
-  },
-  {
-    field: "status",
-    headerName: "Status",
+    field: "display",
+    headerName: "Display",
     flex: 1.8,
     minWidth: 140,
     sortable: false,
@@ -3544,21 +3518,455 @@ export const clientQuotationPendingColumns: GridColDef[] = [
     field: "action",
     headerName: "Action",
     flex: 1,
-    minWidth: 120,
+    minWidth: 100,
     sortable: false,
     renderCell: (e) => (
       <Grid>
-        <Grid>
-          <Button id="approve" className="approve" variant="text" sx={{ mr: 1 }}>
-            Approve
-          </Button>
-        </Grid>
-        <Grid>
-          <Button id="reject" className="reject" variant="text" sx={{ mr: 1 }}>
-            Reject
-          </Button>
-        </Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
       </Grid>
     ),
+  },
+];
+
+export const subCategoryNameColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "modeTypeName",
+    headerName: "Mode Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "subCategoryName",
+    headerName: " Sub Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+export const BudgetColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "entryTypeName",
+    headerName: "Entry Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "modeTypeName",
+    headerName: "Mode Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "subCategoryName",
+    headerName: " Sub Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "budgetAmount",
+    headerName: " Budget Amount",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+export const ExpensesColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "data",
+    headerName: "Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "entryTypeName",
+    headerName: "Entry Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "subCategoryName",
+    headerName: " Sub Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "paymentType",
+    headerName: "Payment Type",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "amount",
+    headerName: " Amount",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "attachment",
+    headerName: " Attachment",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+export const IncomeColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "data",
+    headerName: "Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "entryTypeName",
+    headerName: "Entry Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "subCategoryName",
+    headerName: " Sub Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "paymentType",
+    headerName: "Payment Type",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "amount",
+    headerName: " Amount",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "attachment",
+    headerName: " Attachment",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+export const InboxSettlementListColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "data",
+    headerName: "Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "contactName",
+    headerName: "Contact Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "contactPhoneNo",
+    headerName: "Contact Phone No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "amount",
+    headerName: "Amount",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.8,
+    minWidth: 140,
+  },
+];
+
+export const InboxLendingListColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "data",
+    headerName: "Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "contactName",
+    headerName: "Contact Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "contactPhoneNo",
+    headerName: "Contact Phone No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "amount",
+    headerName: "Amount",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.8,
+    minWidth: 140,
+  },
+];
+
+export const InboxComapnyListColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "data",
+    headerName: "Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "contactName",
+    headerName: "Contact Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "contactPhoneNo",
+    headerName: "Contact Phone No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "amount",
+    headerName: "Amount",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.8,
+    minWidth: 140,
   },
 ];
