@@ -45,25 +45,34 @@ const LoginPage = () => {
   /* #endregion */
 
   /* #region  Handle event and click listeners */
-   //#region Functions
+  //#region Functions
   const loginClick = () => {
+    debugger;
     setIsLoading(true);
     if (username && password) {
       if (password.length > 2) {
         let params = {
-          Username: username,
-          Password: password,
+          data: {
+            uname: username,
+            auth: password,
+          }
         };
-
-        Provider.getAll(`registration/login?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.createDF("apicommon/spawu7S4urax/tYjD/logincheck/", params)
           .then((response: any) => {
+            debugger;
             console.log(response.data);
             if (response.data && response.data.code === 200) {
+              // const user = {
+              //   UserID: response.data.data[0].userID,
+              //   FullName: response.data.data[0].fullName,
+              //   RoleID: response.data.data[0].roleID,
+              //   RoleName: response.data.data[0].roleName,
+              // };
               const user = {
-                UserID: response.data.data[0].userID,
-                FullName: response.data.data[0].fullName,
-                RoleID: response.data.data[0].roleID,
-                RoleName: response.data.data[0].roleName,
+                UserID: 1,
+                FullName: "Jahangir Shaikh",
+                RoleID: 1,
+                RoleName: "Admin",
               };
               setCookie("dfc", JSON.stringify(user), { path: "/" });
               navigate(`/dashboard`);

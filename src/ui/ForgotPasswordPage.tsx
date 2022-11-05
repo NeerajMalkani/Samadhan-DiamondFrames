@@ -19,7 +19,7 @@ import { restrictNumericMobile, ValidateFields } from "../utils/validations";
 
 const ForgotPasswordPage = () => {
 
-   //#region Variables
+  //#region Variables
   const [isMobileError, setIsMobileError] = useState<boolean>(false);
   const [mobileError, setMobileError] = useState<string>("");
   const [mobile, setMobile] = useState<string>("");
@@ -41,13 +41,13 @@ const ForgotPasswordPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-   //#endregion 
+  //#endregion 
 
 
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
       navigate(`/dashboard`);
@@ -192,8 +192,46 @@ const ForgotPasswordPage = () => {
         setIsLoading(false);
       });
   };
- //#endregion 
- 
+
+  const GETOTP = () => {
+    debugger;
+    setIsLoading(true);
+    const params = {
+      data: {
+        Mobileno: mobile
+      }
+      // Username: mobile,
+      // Password: password1,
+      // OTP: parseInt(otp1 + otp2 + otp3 + otp4),
+    };
+    Provider.create("apicommon/spawu7S4urax/tYjD/forgotmobilenocheck/", params)
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+
+          let otp = response.data.data.OTP_No;
+
+          setOTP1(otp.toString().substring(0, 1));
+          setOTP2(otp.toString().substring(1, 2));
+          setOTP3(otp.toString().substring(2, 3));
+          setOTP4(otp.toString().substring(3, 4));
+
+          //navigate(`/login`);
+        } else {
+          setSnackbarMessage(communication.InvalidMobileNotExists);
+          setIsSnackbarOpen(true);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+        setIsLoading(false);
+      });
+  };
+
+  //#endregion 
+
   return (
     <Box height="100vh" className="flex-center">
       <Paper
@@ -278,7 +316,8 @@ const ForgotPasswordPage = () => {
                 variant="text"
                 disabled={otpButtonDisabled}
                 onClick={() => {
-                  ValidateOTP();
+                  //ValidateOTP();
+                  GETOTP();
                 }}
               >
                 Get OTP

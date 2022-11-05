@@ -20,7 +20,7 @@ import Provider from "../api/Provider";
 
 const SignupPage = () => {
 
-   //#region Variables
+  //#region Variables
   const [isFullNameError, setIsFullNameError] = useState<boolean>(false);
   const [fullNameError, setFullNameError] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
@@ -46,12 +46,12 @@ const SignupPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-   //#endregion 
-  
-   const [cookies, setCookie] = useCookies(["dfc"]);
+  //#endregion 
+
+  const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
-   //#region Functions
+  //#region Functions
   useEffect(() => {
     if (cookies && cookies.dfc && cookies.dfc.UserID)
       navigate(`/dashboard`);
@@ -159,6 +159,7 @@ const SignupPage = () => {
   };
 
   const ValidateOTP = () => {
+    debugger;
     if (mobile.length === 0 || !ValidateFields("phonenumber", mobile)) {
       setIsMobileError(true);
       setIsOTPInvalid(true);
@@ -187,29 +188,23 @@ const SignupPage = () => {
   };
 
   const InsertNewUser = () => {
+    debugger;
     setIsLoading(true);
     const params = {
-      FullName: fullName,
-      Password: password1,
-      RoleID: 2,
-      OTP: parseInt(otp1 + otp2 + otp3 + otp4),
-      IsVerified: true,
-      IsActive: true,
-      Username: mobile,
-      Status: 1,
+      data: {
+        Mobileno: mobile,
+        firstname: fullName,
+        auth: password1,
+        confirm_password: password1,
+        EntryFrom: "Browser"
+      }
     };
-    Provider.create("registration/insertuser", params)
+    Provider.createDF("apicommon/spawu7S4urax/tYjD/newuserprofilecreate/", params)
       .then((response) => {
+        debugger;
         if (response.data && response.data.code === 200) {
-          const user = {
-            UserID: response.data.data[0].userID,
-            FullName: response.data.data[0].fullName,
-            RoleID: response.data.data[0].roleID,
-            RoleName: response.data.data[0].roleID == 1 ? "Admin" : "General User"
-          };
-          setCookie("dfc", JSON.stringify(user), { path: "/" });
-          navigate(`/dashboard`);
-        } else if (response.data.code === 304){
+          navigate(`/login`);
+        } else if (response.data.code === 304) {
           setSnackbarMessage(communication.AlreadyExists);
           setIsSnackbarOpen(true);
         } else {
@@ -224,7 +219,45 @@ const SignupPage = () => {
         setIsLoading(false);
       });
   };
- //#endregion 
+
+  const GETOTP = () => {
+    debugger;
+    const params = {
+      data: {
+        Mobileno: mobile,
+        EntryFrom: 1
+      }
+    };
+    Provider.createDF("apicommon/spawu7S4urax/tYjD/mobilenocheck/", params)
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+
+          let otp = response.data.data.OTP_No;
+          if (otp !== "") {
+            setOTP1(otp.toString().substring(0, 1));
+            setOTP2(otp.toString().substring(1, 2));
+            setOTP3(otp.toString().substring(2, 3));
+            setOTP4(otp.toString().substring(3, 4));
+          }
+
+        } else if (response.data.code === 304) {
+          setSnackbarMessage(communication.AlreadyExists);
+          setIsSnackbarOpen(true);
+        } else {
+          setSnackbarMessage(response.data.message);
+          setIsSnackbarOpen(true);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+        setIsLoading(false);
+      });
+  };
+
+  //#endregion 
 
   return (
     <Box height="100vh" className="flex-center">
@@ -327,7 +360,8 @@ const SignupPage = () => {
                 variant="text"
                 disabled={otpButtonDisabled}
                 onClick={() => {
-                  ValidateOTP();
+                  //ValidateOTP();
+                  GETOTP();
                 }}
               >
                 Get OTP

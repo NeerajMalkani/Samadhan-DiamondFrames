@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://api.starselector.com/api"; //"http://43.204.210.148/api";
+//const BASE_URL = "https://api.starselector.com/api"; //"http://43.204.210.148/api";
+const BASE_URL = "https://dfsolutions.in/api"; //"http://43.204.210.148/api";
 
 class Provider {
   getAll(resource: string) {
@@ -20,12 +21,16 @@ class Provider {
     });
   }
   create(resource: string, params: any) {
-    return axios.post<any>(`${BASE_URL}/${resource}`, params, {
-      headers: {
-        "Content-Type": "application/json",
-        XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
-      },
-    });
+    return axios.post<any>(`${BASE_URL}/${resource}`, params,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
+        },
+      });
+  }
+  createDF(resource: string, params: any) {
+    return axios.post<any>(`${BASE_URL}/${resource}`, params);
   }
   update(resource: string, params: any, id: any) {
     return axios.put<any>(
