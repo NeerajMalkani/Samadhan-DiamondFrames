@@ -1056,7 +1056,7 @@ const ClientList = () => {
                                             </InputAdornment>
                                             ),
                                         }}
-                                        />
+                                    />
                                     </Grid>
                                     <DataGrid
                                         style={{

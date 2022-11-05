@@ -84,8 +84,10 @@ const EmployeeListPage = () => {
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
+  // const [searchQuery, setSearchQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  const [acitvityNameListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
  //#endregion 
 
  //#region Functions
@@ -334,18 +336,37 @@ const EmployeeListPage = () => {
     setOpen(false);
   };
 
+  // const onChangeSearch = (query: string) => {
+  //   // setSearchQuery(query);
+  //   // if (query === "") {
+  //   //   setActivityNamesListTemp(activityNamesList);
+  //   // } else {
+  //   //   setActivityNamesListTemp(
+  //   //     activityNamesList.filter((el: ActivityRoleNameModel) => {
+  //   //       return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
+  //   //     })
+  //   //   );
+  //   // }
+  // };
   const onChangeSearch = (query: string) => {
-    // setSearchQuery(query);
-    // if (query === "") {
-    //   setActivityNamesListTemp(activityNamesList);
-    // } else {
-    //   setActivityNamesListTemp(
-    //     activityNamesList.filter((el: ActivityRoleNameModel) => {
-    //       return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
-    //     })
-    //   );
-    // }
-  };
+    setSearchQuery(query);
+    if (query === "") {
+      setEmployeeListTemp(employeeList);
+      } else {
+        setEmployeeListTemp(
+          employeeList.filter((el: EmployeeModel) => {
+            return el.employeeName.toString().toLowerCase().includes(query.toLowerCase()) ||
+            el.mobileNo.toString().toLowerCase().includes(query.toLowerCase()) 
+            // ||
+            // el.branchName.toString().toLowerCase().includes(query.toLowerCase()) ||
+            // el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
+            // el.designationName.toString().toLowerCase().includes(query.toLowerCase())
+            
+          })
+        );
+      }
+};
+
 
   const setOTPDialog = () => {
     setOpen(true);
@@ -659,7 +680,7 @@ const EmployeeListPage = () => {
                       onChange={(e) => {
                         onChangeSearch((e.target as HTMLInputElement).value);
                       }}
-                      value={searchQuery}
+                      
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
