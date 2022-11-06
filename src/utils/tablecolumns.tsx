@@ -3491,6 +3491,9 @@ export const quotationRejectedColumns: GridColDef[] = [
   },
 ]; 
 
+export const categoryNameColumns: GridColDef[] = [
+  {
+    field: "srno",
     headerName: "Sr. No.",
     minWidth: 60,
     sortable: false,
