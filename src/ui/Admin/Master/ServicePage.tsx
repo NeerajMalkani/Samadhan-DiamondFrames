@@ -7,7 +7,7 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { serviceColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import { theme } from "../../../theme/AppTheme";
-import { ServiceNameModel } from "../../../models/Model";
+import { DFServiceNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import ListIcon from "@mui/icons-material/List";
@@ -21,11 +21,11 @@ const ServicePage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [serviceName, setServiceName] = React.useState("");
-  const [serviceNamesList, setServiceNamesList] = useState<Array<ServiceNameModel>>([]); // React.useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] = useState<Array<DFServiceNameModel>>([]); // React.useContext(DataContext).serviceNameList;
   const [servicenameError, setservicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
@@ -38,12 +38,12 @@ const ServicePage = () => {
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<ServiceNameModel>>([]);
+  const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<DFServiceNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
- //#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
@@ -58,17 +58,28 @@ const ServicePage = () => {
   };
 
   const FetchData = (type: string) => {
+    debugger;
     ResetFields();
-    Provider.getAll("master/getservices")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        service_refno: "all"
+      }
+    };
+    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicerefnocheck/", params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.id = a.service_refno;
+              a.view_status = a.view_status ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
+
+
             setServiceNamesList(arrList);
             setServiceNamesListTemp(arrList);
             if (type !== "") {
@@ -99,8 +110,8 @@ const ServicePage = () => {
       setServiceNamesListTemp(serviceNamesList);
     } else {
       setServiceNamesListTemp(
-        serviceNamesList.filter((el: ServiceNameModel) => {
-          return el.serviceName.toString().toLowerCase().includes(query.toLowerCase());
+        serviceNamesList.filter((el: DFServiceNameModel) => {
+          return el.service_name.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -133,12 +144,12 @@ const ServicePage = () => {
     setDataGridPointer("auto");
   };
 
-  const handelEditAndDelete = (type: string | null, a: ServiceNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: DFServiceNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.display);
-      setServiceName(a?.serviceName);
+      setDisplay(a.view_status);
+      setServiceName(a?.service_name);
       setSelectedID(a.id);
       setservicenameError("");
       setIsServicenameError(false);
@@ -169,17 +180,13 @@ const ServicePage = () => {
     debugger;
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicenamecretae/", {
-        // ServiceName: paramServiceName,
-        // Display: checked,
-
+      Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicenamecreate/", {
         data: {
           Sess_UserRefno: cookies.dfc.Sess_group_refno,
           service_name: paramServiceName,
           production_unit: "1",
           view_status: checked ? 1 : 0
         }
-
       })
         .then((response) => {
           debugger;
@@ -204,12 +211,21 @@ const ServicePage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateservices", {
-        id: selectedID,
-        ServiceName: paramServiceName,
-        Display: checked,
+      Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicenameupdate/", {
+        //Provider.create("master/updateservices", {
+        // id: selectedID,
+        // ServiceName: paramServiceName,
+        // Display: checked,
+        data: {
+          Sess_UserRefno: cookies.dfc.Sess_group_refno,
+          service_refno: selectedID,
+          service_name: paramServiceName,
+          production_unit: "1",
+          view_status: checked ? 1 : 0
+        }
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
           } else if (response.data.code === 304) {
@@ -239,7 +255,7 @@ const ServicePage = () => {
     }
     setOpen(false);
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -337,7 +353,7 @@ const ServicePage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...serviceNamesList];
-                        let a: ServiceNameModel | undefined = arrActivity.find((el) => el.id == param.row.id);
+                        let a: DFServiceNameModel | undefined = arrActivity.find((el) => el.id == param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{

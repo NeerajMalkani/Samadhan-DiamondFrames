@@ -242,13 +242,13 @@ export const serviceColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "serviceName",
+    field: "service_name",
     headerName: "Service Name",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "display",
+    field: "view_status",
     headerName: "Display",
     flex: 1.8,
     minWidth: 140,

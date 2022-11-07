@@ -181,6 +181,15 @@ export interface ServiceNameModel {
   action: string;
 }
 
+export interface DFServiceNameModel {
+  id: number;
+  srno: number;
+  service_refno: number;
+  service_name: string;
+  view_status: string;
+  action: string;
+}
+
 export interface UnitOfSalesModel {
   id: number;
   srno: number;
