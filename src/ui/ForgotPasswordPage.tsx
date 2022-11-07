@@ -110,7 +110,7 @@ const ForgotPasswordPage = () => {
         setSnackbarMessage(communication.InvalidPasswordsMatch);
         setIsSnackbarOpen(true);
       } else {
-        UpdateUser();
+        VerifyUser();
       }
     }
   };
@@ -168,16 +168,46 @@ const ForgotPasswordPage = () => {
     setIsSnackbarOpen(false);
   };
 
-  const UpdateUser = () => {
+  const VerifyUser = () => {
     setIsLoading(true);
     const params = {
-      Username: mobile,
-      Password: password1,
-      OTP: parseInt(otp1 + otp2 + otp3 + otp4),
+      data: {
+        "Mobileno": mobile,
+        "otpno": parseInt(otp1 + otp2 + otp3 + otp4)
+      }
     };
-    Provider.create("registration/updateuserpassword", params)
+    Provider.createDF("apicommon/spawu7S4urax/tYjD/forgotpasswordcheck/", params)
       .then((response) => {
-        console.log(response.data);
+        debugger;
+        if (response.data && response.data.code === 200) {
+          UpdateUser(response.data.data.user_refno);
+        } else {
+          setSnackbarMessage(communication.InvalidMobileNotExists);
+          setIsSnackbarOpen(true);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+        setIsLoading(false);
+      });
+  };
+
+  const UpdateUser = (userid) => {
+    debugger;
+    setIsLoading(true);
+    const params = {
+      data: {
+        "user_refno": userid,
+        "Mobileno": mobile,
+        "auth": password1,
+        "confirm_password": password1
+      }
+    };
+    Provider.createDF("apicommon/spawu7S4urax/tYjD/alterpasswordcheck/", params)
+      .then((response) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           navigate(`/login`);
         } else {

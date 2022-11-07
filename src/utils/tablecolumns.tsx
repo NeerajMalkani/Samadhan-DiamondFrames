@@ -3361,9 +3361,77 @@ export const quotationApprovePendingColumns: GridColDef[] = [
   },
 ];
 
-
-
-
+export const clientQuotationPendingColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "quotationNo",
+    headerName: "Quotation No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "projectName",
+    headerName: "Project Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "clientContactPersonNumber",
+    headerName: "Client Contact Person & Number",
+    flex: 1.8,
+    minWidth: 240,
+    sortable: false,
+  },
+  {
+    field: "unit",
+    headerName: "Quotation Unit",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "materials",
+    headerName: "Materials",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 120,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Grid>
+          <Button id="approve" className="approve" variant="text" sx={{ mr: 1 }}>
+            Approve
+          </Button>
+        </Grid>
+        <Grid>
+          <Button id="reject" className="reject" variant="text" sx={{ mr: 1 }}>
+            Reject
+          </Button>
+        </Grid>
+      </Grid>
+    ),
+  },
+];
 
 export const quotationApprovedColumns: GridColDef[] = [
   {

@@ -29,6 +29,7 @@ const DrawerItems = ({ open }: OpenObj) => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   useEffect(() => {
+    debugger;
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
     else {
       SetCookieRoleID(cookies.dfc.RoleID);
@@ -879,7 +880,7 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
   ];
 
-  const MenuItemsArchitect= [
+  const MenuItemsArchitect = [
     {
       title: "My Profile",
       icon: <BusinessIcon />,
@@ -1110,24 +1111,24 @@ const DrawerItems = ({ open }: OpenObj) => {
 
 
   let MenuArr: Array<any> = [];
-
-  switch (CookieRoleID) {
-    case 1:
+  debugger;
+  switch (CookieRoleID.toString()) {
+    case '2':
       MenuArr = [...MenuItemsAdmin];
       break;
-    case 2:
+    case '3':
       MenuArr = [...MenuItemsGeneralUser];
       break;
-    case 3:
+    case '4':
       MenuArr = [...MenuItemsContractor];
       break;
-    case 4:
+    case '5':
       MenuArr = [...MenuItemsDealer];
       break;
-      case 5:
-        MenuArr = [...MenuItemsArchitect];
+    case '6':
+      MenuArr = [...MenuItemsArchitect];
       break;
-      case 6:
+    case '7':
       MenuArr = [...MenuItemsClients];
       break;
   }

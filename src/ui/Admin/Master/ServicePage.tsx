@@ -166,13 +166,23 @@ const ServicePage = () => {
   };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
+    debugger;
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("master/insertservices", {
-        ServiceName: paramServiceName,
-        Display: checked,
+      Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicenamecretae/", {
+        // ServiceName: paramServiceName,
+        // Display: checked,
+
+        data: {
+          Sess_UserRefno: cookies.dfc.Sess_group_refno,
+          service_name: paramServiceName,
+          production_unit: "1",
+          view_status: checked ? 1 : 0
+        }
+
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else if (response.data.code === 304) {

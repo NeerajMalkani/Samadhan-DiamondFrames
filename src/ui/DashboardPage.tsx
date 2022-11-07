@@ -327,7 +327,7 @@ const DashboardPage = () => {
               </Grid>
             </Grid>
 
-            {CookieRoleID === 2 ? (
+            {CookieRoleID === 3 ? (
               <Grid item xs={4} sm={6} md={6} sx={{ mt: 1 }}>
                 <FormControl fullWidth size="small" error={roleError}>
                   <Typography sx={{ mb: 1 }}>Switch Role</Typography>
@@ -366,7 +366,7 @@ const DashboardPage = () => {
                     console.log(index);
                   }}
                 /> */}
-                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID === 2 || CookieRoleID === 3) ? handleCardClick : () => { }} type="category" />
+                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID === 3 || CookieRoleID === 4) ? handleCardClick : () => { }} type="category" />
               </Grid>
             </Grid>
             <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>
