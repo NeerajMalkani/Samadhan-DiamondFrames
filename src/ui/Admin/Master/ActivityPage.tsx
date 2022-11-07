@@ -22,11 +22,11 @@ const ActivityPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [activityName, setActivityName] = React.useState("");
-  const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);//React.useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);//React.useContext(DataContext).activityNamesList;
 
   const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
 
@@ -43,7 +43,7 @@ const ActivityPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
- //#endregion 
+  //#endregion 
 
   //#region Functions
   useEffect(() => {
@@ -59,11 +59,19 @@ const ActivityPage = () => {
     setButtonLoading(false);
   };
 
-  
+
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("master/getactivityroles")
+    //Provider.getAll("master/getactivityroles")
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: "all"
+      }
+    };
+    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/grouprefnocheck/", params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
@@ -165,7 +173,7 @@ const ActivityPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
@@ -192,7 +200,7 @@ const ActivityPage = () => {
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
@@ -232,7 +240,7 @@ const ActivityPage = () => {
       );
     }
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -297,7 +305,7 @@ const ActivityPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {activityNamesList.length === 0 ? (
-                 <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
