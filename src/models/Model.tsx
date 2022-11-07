@@ -7,6 +7,13 @@ export interface ActivityRoleNameModel {
   display: string;
   action: string;
 }
+export interface DFActivityRoleNameModel {
+  id: number;
+  srno: number;
+  group_name: string;
+  view_status: string;
+  action: string;
+}
 
 export interface CategoryModel {
   id: number;

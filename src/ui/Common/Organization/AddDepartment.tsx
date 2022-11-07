@@ -177,7 +177,9 @@ const AddDepartment = () => {
     } else {
       setGridDepartmentListTemp(
         gridDepartmentList.filter((el: DepartmentNameModel) => {
-          return el.departmentName.toString().toLowerCase().includes(query.toLowerCase());
+          return el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
+          el.display.toString().toLowerCase().includes(query.toLowerCase())||
+          el.action.toString().toLowerCase().includes(query.toLowerCase())
         })
       );
     }

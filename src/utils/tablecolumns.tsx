@@ -104,13 +104,13 @@ export const activityColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "activityRoleName",
+    field: "group_name",
     headerName: "Activity Name",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "display",
+    field: "view_status",
     headerName: "Display",
     flex: 1.8,
     minWidth: 140,
