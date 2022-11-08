@@ -1,4 +1,4 @@
-import { NumericLiteral } from "typescript";
+import { NumericLiteral } from 'typescript';
 
 export interface ActivityRoleNameModel {
   id: number;
@@ -208,6 +208,18 @@ export interface UnitOfSalesModel {
   unit2Name: string;
   unit2ID: number;
 }
+export interface DFUnitOfSalesModel {
+  id: number;
+  srno: number;
+  view_status: string;
+  action: string;
+  unit_name_text: string;
+  // displayUnit: string;
+  unit_name: string;
+  unit1ID: number;
+  convert_unit_name: string;
+  unit2ID: number;
+}
 
 export interface UserCreds {
   UserID: number;
@@ -239,7 +251,6 @@ export interface BranchModel {
   gstNo: string;
   panNo: string;
   display: string;
-
 }
 
 export interface BranchTypeModel {
@@ -538,7 +549,7 @@ export interface ButtonSettings {
 
 export interface ActionButtons {
   title: string;
-  type: "text" | "outlined" | "contained";
+  type: 'text' | 'outlined' | 'contained';
   callBack: Function;
 }
 
@@ -706,7 +717,6 @@ export interface IdCardModel {
   isActive: string;
 }
 
-
 export interface ApprovredModel {
   id: number;
   userID: number;
@@ -829,9 +839,9 @@ export interface QuotationRejectedModel {
   quotationUnit: string;
   materials: string;
   status: boolean;
- }
+}
 
- export interface ModeTypeModel {
+export interface ModeTypeModel {
   id: number;
   modeType: string;
 }
@@ -845,7 +855,6 @@ export interface PayModeModel {
   id: number;
   payMode: string;
 }
-
 
 export interface SubCategoryNameModel {
   id: number;
@@ -867,12 +876,10 @@ export interface ExpensesModel {
   expenses: string;
 }
 
-
 export interface IncomeModel {
   id: number;
   income: string;
 }
-
 
 export interface InboxSttelementModel {
   id: number;
@@ -888,5 +895,3 @@ export interface InboxCompanyModel {
   id: number;
   company: string;
 }
-
-

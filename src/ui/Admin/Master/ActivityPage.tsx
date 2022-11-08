@@ -98,7 +98,7 @@ const ActivityPage = () => {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.group_refno;
+              a.id = a.unit_category_refno;
               a.view_status = a.view_status ? 'Yes' : 'No';
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
@@ -232,12 +232,13 @@ const ActivityPage = () => {
         // id: selectedID,
         // ActivityRoleName: paramActivityName,
         // Display: checked,
+
         //=======================
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           group_refno: selectedID,
           group_name: paramActivityName,
-          sview_status: checked ? 1 : 0,
+          view_status: checked ? 1 : 0,
         },
       })
         .then((response) => {
