@@ -14,49 +14,55 @@ export const categoryColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: 'categoryName',
+    field: 'category_name',
     headerName: 'Category Name',
     flex: 1.5,
   },
   {
-    field: 'activityRoleName',
+    field: 'group_refno_name',
     headerName: 'Activity Role Name',
     flex: 1.8,
   },
   {
-    field: 'serviceName',
+    field: 'service_refno_name',
     headerName: 'Service Name',
     flex: 1.8,
   },
 
   {
-    field: 'hsnsacCode',
+    field: 'hsn_sac_code',
     headerName: 'HSN / SAC Code',
     flex: 1,
     sortable: false,
     maxWidth: 150,
   },
   {
-    field: 'gstRate',
+    field: 'gst_rate',
     headerName: 'GST Rate',
     flex: 0.5,
     sortable: false,
     minWidth: 100,
     renderCell: (params) => {
-      return params.value.toFixed(2) + '%';
+      return parseFloat(params.value).toFixed(2) + '%';
     },
   },
   {
-    field: 'unitName',
+    /* field: 'unitName',*/
+    field: 'unit_category_names',
     headerName: 'Unit of Sales',
     flex: 1.5,
     sortable: false,
     renderCell: (params) => {
       if (params.value !== null && params.value !== undefined) {
-        const a = params.value.split(',');
+        debugger;
+        const a =
+          params.value[0].indexOf(',') > -1
+            ? params.value.split(',')
+            : params.value;
         return (
           <div>
             {a.map((k: string) => {
+              debugger;
               return <Typography color='textSecondary'>{k.trim()}</Typography>;
             })}
           </div>
@@ -65,7 +71,8 @@ export const categoryColumns: GridColDef[] = [
     },
   },
   {
-    field: 'display',
+    /*filed:"display"*/
+    field: 'view_status',
     headerName: 'Display',
     sortable: false,
     flex: 0.5,

@@ -31,6 +31,23 @@ export interface CategoryModel {
   serviceID: number;
   roleID: number;
 }
+export interface DFCategoryModel {
+  id: number;
+  srno: number;
+  category_refno: number;
+  group_refno_name: string;
+  service_refno_name: string;
+  category_name: string;
+  productName: string;
+  hsn_sac_code: string;
+  gst_rate: string;
+  unitID: string;
+  unit_category_names: string;
+  view_status: string;
+  action: string;
+  serviceID: number;
+  roleID: number;
+}
 
 export interface UnitModel {
   id: number;

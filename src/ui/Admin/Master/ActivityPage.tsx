@@ -98,7 +98,7 @@ const ActivityPage = () => {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.unit_category_refno;
+              a.id = a.group_refno;
               a.view_status = a.view_status ? 'Yes' : 'No';
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
