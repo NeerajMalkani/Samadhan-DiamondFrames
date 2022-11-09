@@ -912,3 +912,46 @@ export interface InboxCompanyModel {
   id: number;
   company: string;
 }
+
+export interface BrandConversionValueModel {
+  id: number;
+  srno: number;
+  serviceName: string;
+  categoryName: string;
+  brandName: string;
+  conversionName: string;
+  action: string;
+}
+
+export interface ServiceModel {
+  id: number;
+  serviceName: string;
+}
+
+export interface CategoryModel {
+  id: number;
+  categoryName: string;
+}
+
+export interface BrandModel {
+  id: number;
+  brandName: string;
+}
+
+export interface productModel {
+  id: number;
+  productName: string;
+}
+
+export interface OpeningStockModel {
+  id: number;
+  srno: number;
+  addedDate: string;
+  serviceName: string;
+  categoryName: string;
+  productName: string;
+  brandName: string;
+  totalProducts: string;
+  weightPerPiece: string;
+  action: string;
+}

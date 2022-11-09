@@ -1109,6 +1109,271 @@ const DrawerItems = ({ open }: OpenObj) => {
     },
   ];
 
+  const MenuItemsManufacture = [
+    {
+      title: "Production Unit?Master",
+      icon: <BusinessIcon />,
+      expanded: true,
+      items: [
+        // {
+        //   title: "Basic Details",
+        //   isActive: window.location.href.toLowerCase().includes("cbasic"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/companyprofile/cbasic`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "My Services",
+        //   isActive: window.location.href.toLowerCase().includes("myservices"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/companyprofile/cmyservice`);
+        //     }, 300);
+        //   },
+        // },
+      ],
+    },
+    {
+      title: "Employee",
+      icon: <PointOfSaleIcon />,
+      expanded: true,
+      items: [
+        // {
+        //   title: "Design Wise",
+        //   isActive: window.location.href.toLowerCase().includes("quotationandestimation/designwise"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/quotationandestimation/designwise`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "Quotation Wise",
+        //   isActive: window.location.href.toLowerCase().includes("contractorquotationwise"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/master/contractorquotationwise`);
+        //     }, 300);
+        //   },
+        // },
+      ],
+    },
+    {
+      title: "Product for Production",
+      icon: <BusinessIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Basic Details",
+          isActive: window.location.href.toLowerCase().includes("cbasic"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/companyprofile/cbasic`);
+            }, 300);
+          },
+        },
+        // {
+        //   title: "Architech & Consultant-Boq",
+        //   isActive: window.location.href.toLowerCase().includes("enquiries/architectandconsultant"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/enquiries/architectandconsultant`);
+        //     }, 300);
+        //   },
+        // },
+      ],
+    },
+    {
+      title: "Purchase Order List",
+      icon: <HailIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Employee New / List",
+          isActive: window.location.href.toLowerCase().includes("employeelist"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/employee/employeelist`);
+            }, 300);
+          },
+        },
+        {
+          title: "Employee Report",
+          isActive: window.location.href.toLowerCase().includes("employeereport"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/master/employeereport`);
+            }, 300);
+          },
+        },
+      ],
+    },
+    {
+      title: "Vendor Order Form",
+      icon: <CorporateFareIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Add Department",
+          isActive: window.location.href.toLowerCase().includes("adddepartment"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/organization/department`);
+            }, 300);
+          },
+        },
+        {
+          title: "Add Branch",
+          isActive: window.location.href.toLowerCase().includes("addbranch"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/organization/branch`);
+            }, 300);
+          },
+        },
+        {
+          title: "Add Designation",
+          isActive: window.location.href.toLowerCase().includes("addesignation"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/organization/designation`);
+            }, 300);
+          },
+        },
+      ],
+    },
+    {
+      title: "Rate Card",
+      icon: <PaidIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Architect Rate Card Setup",
+          isActive: window.location.href.toLowerCase().includes("architectratecardsetup"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/architect/architectratecardsetup`);
+            }, 300);
+          },
+        },
+        // {
+        //   title: "Send Rate Card",
+        //   isActive: window.location.href.toLowerCase().includes("sendratecard"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/master/sendratecard`);
+        //     }, 300);
+        //   },
+        // },
+      ],
+    },
+    {
+      title: "Production Status",
+      icon: <AirlineSeatReclineNormalIcon />,
+      expanded: true,
+      items: [
+        {
+          title: "Clients",
+          isActive: window.location.href.toLowerCase().includes("clientlist"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/client/clientlist`);
+            }, 300);
+          },
+        },
+      ],
+    },
+    {
+      title: "Summary of Materials",
+      icon: <InstallDesktopIcon />,
+      expanded: true,
+      items: [
+        // {
+        //   title: "Yet Start",
+        //   isActive: window.location.href.toLowerCase().includes("projects/yetstartproject"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/projects/yetstartproject`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "On Going",
+        //   isActive: window.location.href.toLowerCase().includes("projects/Ongoingproject"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/projects/Ongoingproject`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "Completed",
+        //   isActive: window.location.href.toLowerCase().includes("projects/completedproject"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/projects/completedproject`);
+        //     }, 300);
+        //   },
+        // },
+      ],
+    },
+    {
+      title: "Reports",
+      icon: <InstallDesktopIcon />,
+      expanded: true,
+      items: [
+        // {
+        //   title: "Yet Start",
+        //   isActive: window.location.href.toLowerCase().includes("projects/yetstartproject"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/projects/yetstartproject`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "On Going",
+        //   isActive: window.location.href.toLowerCase().includes("projects/Ongoingproject"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/projects/Ongoingproject`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "Completed",
+        //   isActive: window.location.href.toLowerCase().includes("projects/completedproject"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/contractor/projects/completedproject`);
+        //     }, 300);
+        //   },
+        // },
+      ],
+    },
+  ];
 
   let MenuArr: Array<any> = [];
   debugger;
@@ -1130,6 +1395,9 @@ const DrawerItems = ({ open }: OpenObj) => {
       break;
     case '7':
       MenuArr = [...MenuItemsClients];
+      break;
+      case '8':
+      MenuArr = [...MenuItemsManufacture];
       break;
   }
 

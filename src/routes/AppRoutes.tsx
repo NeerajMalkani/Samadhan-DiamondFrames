@@ -75,6 +75,9 @@ import BudgetSetup from "../ui/GeneralUsers/PocketDiary/Setting/BudgetSetup";
 import AddExpenses from "../ui/GeneralUsers/PocketDiary/AddExpenses";
 import AddSources from "../ui/GeneralUsers/PocketDiary/AddSource";
 import Inbox from "../ui/GeneralUsers/PocketDiary/Inbox";
+import DashboardManufacture from "../ui/DashboardManufacture";
+import BrandConversionValue from "../ui/Manufacture/ProductionUnitMaster/BrandConversionValue";
+import OpeningStock from "../ui/Manufacture/ProductionUnitMaster/OpeningStock";
 
 
 
@@ -164,6 +167,10 @@ const AppRoutes = () => {
               <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses/>}/>
               <Route path="generalusers/pocketdiary/addsource" element={<AddSources/>}/>
               <Route path="generalusers/pocketdiary/inbox" element={<Inbox/>}/>
+              <Route path="dashboardmanufacture" element={<DashboardManufacture/>}/>
+              <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue/>}/>
+              <Route path="manufacture/productionunitmaster/openingstock" element={<OpeningStock/>}/>
+
             </Routes>
           </BrowserRouter>
         </Box>

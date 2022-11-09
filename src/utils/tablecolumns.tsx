@@ -4150,3 +4150,146 @@ export const InboxComapnyListColumns: GridColDef[] = [
     minWidth: 140,
   },
 ];
+
+
+export const brandConversionValueColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "brandName",
+    headerName: "Brand Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "conversionValue",
+    headerName: "Conversion value",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Update
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+export const openingStockColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "addedDate",
+    headerName: "Added Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "productName",
+    headerName: "Product Name >>brand",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "totalProducts",
+    headerName: "Total Products",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "weight",
+    headerName: "Weight Per Piece",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Update
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];
