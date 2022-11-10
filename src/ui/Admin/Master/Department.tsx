@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
 import NoData from "../../../components/NoData";
-import { DepartmentNameModel } from "../../../models/Model";
+import { DFDepartmentNameModel } from "../../../models/Model";
 import { theme } from "../../../theme/AppTheme";
 import { communication } from "../../../utils/communication";
 import { departmentColumns } from "../../../utils/tablecolumns";
@@ -25,7 +25,7 @@ const DepartmentPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [departmentName, setDepartmentName] = useState("");
-  const [departmentNameList, setDepartmentNameList] =useState<Array<DepartmentNameModel>>([]);// useContext(DataContext).departmentNamesList;
+  const [departmentNameList, setDepartmentNameList] =useState<Array<DFDepartmentNameModel>>([]);// useContext(DataContext).departmentNamesList;
   const [departmentNameError, setDepartmentNameError] = useState("");
   const [isDepartmentNameError, setIsDepartmentNameError] = useState(false);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -37,7 +37,7 @@ const DepartmentPage = () => {
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [departmentNameListTemp, setDepartmentNameListTemp] = useState<Array<DepartmentNameModel>>([]);
+  const [departmentNameListTemp, setDepartmentNameListTemp] = useState<Array<DFDepartmentNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
  //#endregion 
@@ -77,13 +77,20 @@ const DepartmentPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("master/getdepartments")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        department_refno: "all"
+    },
+    };
+    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/departmentrefnocheck/',params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.id=a.department_refno;
+              a.view_status = a.view_status === '1' ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -122,12 +129,13 @@ const DepartmentPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DepartmentNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: DFDepartmentNameModel | undefined) => {
+
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.display);
-      setDepartmentName(a?.departmentName);
+      setDisplay(a.view_status);
+      setDepartmentName(a?.department_name);
       setSelectedID(a.id);
       setDepartmentNameError("");
       setIsDepartmentNameError(false);
@@ -138,11 +146,17 @@ const DepartmentPage = () => {
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertdepartment", {
-        DepartmentName: paramActivityName,
-        Display: checked,
+      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/departmentnamecreate/',{
+        // DepartmentName: paramActivityName,
+        // Display: checked,
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          department_name: paramActivityName,
+          view_status: checked ? 1 : 0,
+      },
       })
         .then((response: any) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
           }else if (response.data.code === 304) {
@@ -164,12 +178,19 @@ const DepartmentPage = () => {
           setSnackbarType("error");
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updatedepartment", {
-        id: selectedID,
-        DepartmentName: paramActivityName,
-        Display: checked,
+      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/departmentnameupdate/', {
+        // id: selectedID,
+        // DepartmentName: paramActivityName,
+        // Display: checked,
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          department_refno: selectedID,
+          department_name:  paramActivityName,
+          view_status: checked ? 1 : 0,
+      },
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
           }else if (response.data.code === 304) {
@@ -206,8 +227,8 @@ const DepartmentPage = () => {
       setDepartmentNameListTemp(departmentNameList);
     } else {
       setDepartmentNameListTemp(
-        departmentNameList.filter((el: DepartmentNameModel) => {
-          return el.departmentName.toString().toLowerCase().includes(query.toLowerCase());
+        departmentNameList.filter((el: DFDepartmentNameModel) => {
+          return el.department_name.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -312,7 +333,7 @@ const DepartmentPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...departmentNameList];
-                        let a: DepartmentNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: DFDepartmentNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
 
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}

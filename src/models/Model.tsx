@@ -291,6 +291,15 @@ export interface DepartmentNameModel {
   action: string;
 }
 
+export interface DFDepartmentNameModel {
+  id: number;
+  srno: number;
+  department_name: string;
+  view_status: string;
+  action: string;
+}
+
+
 export interface DesignationNameModel {
   id: number;
   srno: number;
@@ -300,13 +309,23 @@ export interface DesignationNameModel {
   action: string;
 }
 
+export interface DFDesignationNameModel {
+  id: number;
+  srno: number;
+  designation_name: string;
+  view_status: string;
+  reportingAuthority: string;
+  action: string;
+}
+
+
 export interface EWayBillModel {
   id: number;
   srno: number;
-  stateName: string;
-  inStateLimit: number;
-  interStateLimit: number;
-  display: string;
+  state_name: string;
+  in_state_limit: number;
+  inter_state_limit: number;
+  view_status: string;
   action: string;
 }
 

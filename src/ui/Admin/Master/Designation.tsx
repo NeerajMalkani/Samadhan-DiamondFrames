@@ -6,7 +6,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import { DesignationNameModel } from "../../../models/Model";
+import { DFDesignationNameModel } from "../../../models/Model";
 import { theme } from "../../../theme/AppTheme";
 import { communication } from "../../../utils/communication";
 import { designationColumns } from "../../../utils/tablecolumns";
@@ -25,7 +25,7 @@ const DesignationPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [designationName, setDesignationName] = useState("");
-  const [designationNameList, setDesignationNameList] = useState<Array<DesignationNameModel>>([]);
+  const [designationNameList, setDesignationNameList] = useState<Array<DFDesignationNameModel>>([]);
   //  useContext(DataContext).designationNamesList;
   const [designationNameError, setDesignationNameError] = useState("");
   const [isDesignationNameError, setIsDesignationNameError] = useState(false);
@@ -39,7 +39,7 @@ const DesignationPage = () => {
   const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [designationNameListTemp, setDesignationNameListTemp] = useState<Array<DesignationNameModel>>([]);
+  const [designationNameListTemp, setDesignationNameListTemp] = useState<Array<DFDesignationNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
  //#endregion 
@@ -50,10 +50,12 @@ const DesignationPage = () => {
   }, []);
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    debugger;
     setDisplay((event.target as HTMLInputElement).value);
   };
 
   const handleSubmitClick = () => {
+    debugger;
     const IsTextFiledError = designationName.trim() === "";
     setDesignationNameError(IsTextFiledError ? communication.BlankActivityName : "");
     setIsDesignationNameError(IsTextFiledError);
@@ -78,13 +80,21 @@ const DesignationPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("master/getdesignations")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        designation_refno: "all"
+    },
+  };
+    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/designationrefnocheck/',params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.id=a.designation_refno;
+              a.view_status = a.view_status === '1' ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -113,6 +123,7 @@ const DesignationPage = () => {
   };
 
   const handleCancelClick = () => {
+    debugger;
     setDisplay("Yes");
     setDesignationName("");
     setDesignationNameError("");
@@ -123,12 +134,13 @@ const DesignationPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DesignationNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: DFDesignationNameModel | undefined) => {
+    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.display);
-      setDesignationName(a?.designationName);
+      setDisplay(a.view_status);
+      setDesignationName(a?.designation_name);
       setSelectedID(a.id);
       setDesignationNameError("");
       setIsDesignationNameError(false);
@@ -143,8 +155,8 @@ const DesignationPage = () => {
       setDesignationNameListTemp(designationNameList);
     } else {
       setDesignationNameListTemp(
-        designationNameList.filter((el: DesignationNameModel) => {
-          return el.designationName.toString().toLowerCase().includes(query.toLowerCase());
+        designationNameList.filter((el: DFDesignationNameModel) => {
+          return el.designation_name.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -152,11 +164,17 @@ const DesignationPage = () => {
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertdesignation", {
-        DesignationName: paramActivityName,
-        Display: checked,
+      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/designationnamecreate/', {
+        // DesignationName: paramActivityName,
+        // Display: checked,
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          designation_name: paramActivityName,
+          view_status: checked ? 1 : 0,
+      },
       })
         .then((response: any) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else if (response.data.code === 304) {
@@ -178,12 +196,19 @@ const DesignationPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updatedesignation", {
-        id: selectedID,
-        DesignationName: paramActivityName,
-        Display: checked,
+      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/designationnameupdate/', {
+        // id: selectedID,
+        // DesignationName: paramActivityName,
+        // Display: checked ? 1 : 0,
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          designation_refno: selectedID,
+          designation_name: paramActivityName,
+          view_status: checked ? 1 : 0,
+      },
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
           } else if (response.data.code === 304) {
@@ -311,7 +336,7 @@ const DesignationPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...designationNameList];
-                        let a: DesignationNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: DFDesignationNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
 
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}

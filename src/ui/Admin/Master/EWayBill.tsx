@@ -38,7 +38,7 @@ const EWayBillPage = () => {
       navigate(`/login`);
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
 
@@ -76,9 +76,9 @@ const EWayBillPage = () => {
   const [ewayBillListTemp, setEwayBillListTemp] = useState<Array<EWayBillModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-//#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
@@ -89,26 +89,33 @@ const EWayBillPage = () => {
   }, []);
 
   const ResetFields = () => {
-   // setSelectedID(0);
+    // setSelectedID(0);
     // setActionStatus("new");
     // setDataGridOpacity(1);
     // setDataGridPointer("auto");
     // setButtonDisplay("none");
     // setButtonLoading(false);
-     handleCancelClick();
+    handleCancelClick();
 
 
   };
 
-  const FetchData = (type:string) => {
+  const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("master/getewaybills")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        ewaybill_refno: "all"
+      },
+    };
+    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/ewaybillrefnocheck/', params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.id = a.ewaybill_refno;
+              a.view_status = a.view_status === '1' ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -136,23 +143,24 @@ const EWayBillPage = () => {
   };
 
   const FetchStates = () => {
-    Provider.getAll("master/getstates")
+    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/getstateewaybillform/', null)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             // setStatesFullData(response.data.data);
             const stateData: any = [];
+          
             response.data.data.map((data: any, i: number) => {
               stateData.push({
-                id: data.id,
-                label: data.stateName,
+                id: data.state_refno,
+                label: data.state_name,
               });
             });
             setStatesFullData(stateData);
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handelEditAndDelete = (
@@ -166,16 +174,17 @@ const EWayBillPage = () => {
     ) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
+      debugger;
       setSelectedID(a.id);
-      setDisplay(a.display);
-      setSelectedStateName(a?.stateName);
+      setDisplay(a.view_status);
+      setSelectedStateName(a?.state_name);
       let stateData: any = statesFullData.find(
-        (el: any) => el.label === a?.stateName
+        (el: any) => el.label === a?.state_name
       );
 
       setSelectedStateID(stateData.id);
-      setSelectedInStateLimit(a?.inStateLimit.toString());
-      setSelectedInterStateLimit(a?.interStateLimit.toString());
+      setSelectedInStateLimit(a?.in_state_limit.toString());
+      setSelectedInterStateLimit(a?.inter_state_limit.toString());
       setIsStateError(false);
       setStateError("");
       setIsInterStateError(false);
@@ -239,16 +248,26 @@ const EWayBillPage = () => {
   const InsertUpdateData = () => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("master/insertewaybill", {
-        StateID: selectedStateID,
-        InStateLimit: selectedInStateLimit,
-        InterStateLimit: selectedInterStateLimit,
-        Display: display === "Yes",
+      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/ewaybillcreate/', {
+        
+        // state_refno: selectedStateID,
+        // in_state_limit: selectedInStateLimit,
+        // inter_state_limit: selectedInterStateLimit,
+        // Display: display === "Yes",
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          group_refno: cookies.dfc.Sess_group_refno,
+          state_refno: selectedStateID,
+          in_state_limit: selectedInStateLimit,
+          inter_state_limit: selectedInterStateLimit,
+          view_status: display === "Yes" ? 1: 0
+        },
       })
         .then((response: any) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
@@ -267,17 +286,27 @@ const EWayBillPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateewaybill", {
-        ID: selectedID,
-        StateID: selectedStateID,
-        InStateLimit: selectedInStateLimit,
-        InterStateLimit: selectedInterStateLimit,
-        Display: display === "Yes",
+      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/ewaybillupdate/', {
+        // ID: selectedID,
+        // StateID: selectedStateID,
+        // InStateLimit: selectedInStateLimit,
+        // InterStateLimit: selectedInterStateLimit,
+        // Display: display === "Yes",
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          ewaybill_refno: selectedID,
+          group_refno: cookies.dfc.Sess_group_refno,
+          state_refno: selectedStateID,
+          in_state_limit: selectedInStateLimit,
+          inter_state_limit: selectedInterStateLimit,
+          view_status: display === "Yes" ? 1: 0
+        },
       })
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
@@ -315,12 +344,12 @@ const EWayBillPage = () => {
     } else {
       setEwayBillListTemp(
         ewayBillList.filter((el: EWayBillModel) => {
-          return el.stateName.toString().toLowerCase().includes(query.toLowerCase());
+          return el.state_name.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -348,6 +377,7 @@ const EWayBillPage = () => {
               options={statesFullData}
               sx={{ width: 300 }}
               onChange={(event: React.SyntheticEvent, value: any) => {
+                debugger;
                 setIsStateError(false);
                 setStateError("");
                 if (value !== null) {
@@ -446,7 +476,7 @@ const EWayBillPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">
-            E-Way bill List
+              E-Way bill List
             </Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
@@ -463,54 +493,54 @@ const EWayBillPage = () => {
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {ewayBillList.length === 0 ? (
-                <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
                   <>
-                  <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                    <TextField
-                      placeholder="Search"
-                      variant="outlined"
-                      size="small"
-                      value={searchQuery}
-                      onChange={(e) => {
-                        onChangeSearch((e.target as HTMLInputElement).value);
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search"
+                        variant="outlined"
+                        size="small"
+                        value={searchQuery}
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <GridSearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
                       }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <GridSearchIcon />
-                          </InputAdornment>
-                        ),
+                      autoHeight={true}
+                      rows={ewayBillListTemp}
+                      columns={eWayBillColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        const arrActivity = [...ewayBillList];
+                        let a: EWayBillModel | undefined = arrActivity.find(
+                          (el) => el.id === param.row.id
+                        );
+                        handelEditAndDelete((e.target as any).textContent, a);
+                      }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
                       }}
                     />
-  
-                  </Grid>
-                  <DataGrid
-                    style={{
-                      opacity: dataGridOpacity,
-                      pointerEvents: dataGridPointer,
-                    }}
-                    autoHeight={true}
-                    rows={ewayBillListTemp}
-                    columns={eWayBillColumns}
-                    pageSize={pageSize}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    disableSelectionOnClick
-                    onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                      const arrActivity = [...ewayBillList];
-                      let a: EWayBillModel | undefined = arrActivity.find(
-                        (el) => el.id === param.row.id
-                      );
-                      handelEditAndDelete((e.target as any).textContent, a);
-                    }}
-                    sx={{
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                      },
-                    }}
-                  />
                   </>
                 )}
               </div>
