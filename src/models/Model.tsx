@@ -1,4 +1,5 @@
 import { NumericLiteral } from 'typescript';
+import { UrlWithStringQuery } from 'url';
 
 export interface ActivityRoleNameModel {
   id: number;
@@ -10,7 +11,6 @@ export interface ActivityRoleNameModel {
 export interface DFActivityRoleNameModel {
   id: number;
   srno: number;
-  group_refno: string;
   group_name: string;
   view_status: string;
   action: string;
@@ -209,7 +209,7 @@ export interface ServiceNameModel {
 export interface DFServiceNameModel {
   id: number;
   srno: number;
-  service_refno: string;
+  service_refno: number;
   service_name: string;
   view_status: string;
   action: string;
@@ -229,16 +229,13 @@ export interface UnitOfSalesModel {
 export interface DFUnitOfSalesModel {
   id: number;
   srno: number;
-  unit_category_refno:string;
-  unit_name:string;
-  convert_unit_name:string;
-  unit_name_convert_unit_name:string;
   view_status: string;
-  // action: string;
+  action: string;
   unit_name_text: string;
-  // // displayUnit: string;
-  // unit_name: string;
+  // displayUnit: string;
+  unit_name: string;
   unit1ID: number;
+  convert_unit_name: string;
   unit2ID: number;
 }
 
@@ -771,6 +768,21 @@ export interface ApprovredModel {
   action: boolean;
 }
 
+export interface DFApprovredModel {
+  id: number;
+  userID: number;
+  srno: number;
+  user_refno: string;
+  company_name: string;
+  firstname: string;
+  mobile_no: string;
+  group_name: string;
+  departmentname: string;
+  designation_name: string;
+  password: string;
+  approve_status:boolean;
+}
+
 export interface PendingModel {
   id: number;
   srno: number;
@@ -779,6 +791,17 @@ export interface PendingModel {
   contactName: string;
   mobileNo: number;
   status: boolean;
+  action: boolean;
+}
+export interface DFPendingModel {
+  id: number;
+  srno: number;
+  role: string;
+  user_refno:string;
+  company_name: string;
+  firstname: string;
+  mobile_no: number;
+  approve_status: string;
   action: boolean;
 }
 export interface DeclinedModel {
@@ -792,6 +815,20 @@ export interface DeclinedModel {
   username: string;
   password: string;
   status: boolean;
+  action: boolean;
+}
+export interface DFDeclinedModel {
+  id: number;
+  userID: number;
+  srno: number;
+  user_refno:string,
+  company_name: string;
+  activityrole: string;
+  departmentname: string;
+  designationname: string;
+  username: string;
+  password: string;
+  approve_status: boolean;
   action: boolean;
 }
 
