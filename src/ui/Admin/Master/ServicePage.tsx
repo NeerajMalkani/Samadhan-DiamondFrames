@@ -58,7 +58,6 @@ const ServicePage = () => {
   };
 
   const FetchData = (type: string) => {
-    debugger;
     ResetFields();
     let params = {
       data: {
@@ -68,13 +67,12 @@ const ServicePage = () => {
     };
     Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicerefnocheck/", params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.service_refno;
-              a.view_status = a.view_status ? "Yes" : "No";
+              a.view_status = a.view_status === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -146,6 +144,7 @@ const ServicePage = () => {
 
   const handelEditAndDelete = (type: string | null, a: DFServiceNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
+      debugger;
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.view_status);
@@ -156,24 +155,6 @@ const ServicePage = () => {
       setButtonDisplay("unset");
       setActionStatus("edit");
     }
-    // else if (type?.toLowerCase() === "delete" && a !== undefined) {
-    //   setSelectedID(a.id);
-    //   Provider.deleteAllParams("master/deleteservices", { ID: a.id })
-    //     .then((response) => {
-    //       if (response.data && response.data.code === 200) {
-    //         FetchData();
-    //       } else {
-    //         setSnackMsg(communication.Error);
-    //         setOpen(true);
-    //         ResetFields();
-    //       }
-    //     })
-    //     .catch((e) => {
-    //       ResetFields();
-    //       setSnackMsg(communication.NetworkError);
-    //       setOpen(true);
-    //     });
-    // }
   };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
@@ -189,7 +170,6 @@ const ServicePage = () => {
         }
       })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else if (response.data.code === 304) {
@@ -212,10 +192,6 @@ const ServicePage = () => {
         });
     } else if (actionStatus === "edit") {
       Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicenameupdate/", {
-        //Provider.create("master/updateservices", {
-        // id: selectedID,
-        // ServiceName: paramServiceName,
-        // Display: checked,
         data: {
           Sess_UserRefno: cookies.dfc.Sess_group_refno,
           service_refno: selectedID,
@@ -225,7 +201,6 @@ const ServicePage = () => {
         }
       })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
           } else if (response.data.code === 304) {

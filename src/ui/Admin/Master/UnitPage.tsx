@@ -96,18 +96,14 @@ const UnitPage = () => {
         unit_category_refno: 'all',
       },
     };
-    Provider.createDF(
-      'apiappadmin/spawu7S4urax/tYjD/unitcategoryrefnocheck/',
-      params
-    )
+    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/unitcategoryrefnocheck/', params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.unit_category_refno;
-              a.view_status = a.view_status ? 1 : 0;
+              a.view_status = a.view_status === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -197,13 +193,9 @@ const UnitPage = () => {
   };
 
   const InsertUpdateData = (unit1: string, unit2: string, checked: boolean) => {
-    debugger;
     setButtonLoading(true);
     if (actionStatus === 'new') {
       Provider.createDF('apiappadmin/spawu7S4urax/tYjD/unitnamecreate/', {
-        // Unit1Name: unit1,
-        // Unit2Name: unit2,
-        // Display: checked,
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           unit_name: unit1,
@@ -236,18 +228,6 @@ const UnitPage = () => {
     } else if (actionStatus === 'edit') {
       debugger;
       Provider.createDF('apiappadmin/spawu7S4urax/tYjD/unitnameupdate/', {
-        // Unit1Name: unit1,
-        // Unit2Name: unit2,
-        // Unit1ID: unit1ID,
-        // Unit2ID: unit2ID,
-        // Display: checked,
-        // "data": {
-        //   "Sess_UserRefno": "2",
-        //   "unit_category_refno": "1",
-        //   "unit_name": "Sq.Ft",
-        //   "convert_unit_name": "Sq.Mtr",
-        //   "view_status": "1"
-        // }
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           unit_category_refno: selectedID,
@@ -258,10 +238,7 @@ const UnitPage = () => {
       })
         .then((response: any) => {
           debugger;
-          if (
-            response.data &&
-            (response.data.code === 200 || response.data.code === 204)
-          ) {
+          if (response.data && (response.data.code === 200 || response.data.code === 204)) {
             FetchData('updated');
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);

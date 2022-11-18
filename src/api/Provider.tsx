@@ -1,11 +1,11 @@
 import axios from "axios";
 
-//const BASE_URL = "https://api.starselector.com/api"; //"http://43.204.210.148/api";
+const BASE_URL_OLD = "https://api.starselector.com/api"; //"http://43.204.210.148/api";
 const BASE_URL = "https://dfsolutions.in/api"; //"http://43.204.210.148/api";
 
 class Provider {
   getAll(resource: string) {
-    return axios.get<Array<any>>(`${BASE_URL}/${resource}`, {
+    return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
       headers: {
         "Content-Type": "application/json",
         XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
@@ -13,7 +13,7 @@ class Provider {
     });
   }
   get(resource: string, id: string) {
-    return axios.get<any>(`${BASE_URL}/${resource}/${id}`, {
+    return axios.get<any>(`${BASE_URL_OLD}/${resource}/${id}`, {
       headers: {
         "Content-Type": "application/json",
         XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
@@ -21,7 +21,7 @@ class Provider {
     });
   }
   create(resource: string, params: any) {
-    return axios.post<any>(`${BASE_URL}/${resource}`, params,
+    return axios.post<any>(`${BASE_URL_OLD}/${resource}`, params,
       {
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,7 @@ class Provider {
   }
   update(resource: string, params: any, id: any) {
     return axios.put<any>(
-      `${BASE_URL}/${resource}/${id}`,
+      `${BASE_URL_OLD}/${resource}/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +45,7 @@ class Provider {
     );
   }
   delete(resource: string, id: any) {
-    return axios.delete<any>(`${BASE_URL}/${resource}/${id}`, {
+    return axios.delete<any>(`${BASE_URL_OLD}/${resource}/${id}`, {
       headers: {
         "Content-Type": "application/json",
         XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
@@ -53,7 +53,7 @@ class Provider {
     });
   }
   deleteAll(resource: string) {
-    return axios.delete<any>(`${BASE_URL}/${resource}`, {
+    return axios.delete<any>(`${BASE_URL_OLD}/${resource}`, {
       headers: {
         "Content-Type": "application/json",
         XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
@@ -62,7 +62,7 @@ class Provider {
   }
 
   deleteAllParams(resource: string, params: any) {
-    return axios.delete(`${BASE_URL}/${resource}`, {
+    return axios.delete(`${BASE_URL_OLD}/${resource}`, {
       headers: {
         "Content-Type": "application/json",
         XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",

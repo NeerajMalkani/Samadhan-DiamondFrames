@@ -163,9 +163,10 @@ const ActivityPage = () => {
     a: DFActivityRoleNameModel | undefined
   ) => {
     if (type?.toLowerCase() === 'edit' && a !== undefined) {
+      debugger;
       setDataGridOpacity(0.3);
       setDataGridPointer('none');
-      // setDisplay(a.view_status);
+      setDisplay(a.view_status);
       setActivityName(a?.group_name);
       setSelectedID(a.id);
       setactivitynameError('');
@@ -205,9 +206,10 @@ const ActivityPage = () => {
         },
       })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData('added');
+            ResetFields();
+            setButtonLoading(false);
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -219,6 +221,7 @@ const ActivityPage = () => {
             setSnackbarType('error');
             setOpen(true);
           }
+          setButtonLoading(false);
         })
         .catch((e) => {
           ResetFields();
@@ -227,13 +230,7 @@ const ActivityPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === 'edit') {
-      debugger;
       Provider.createDF('apiappadmin/spawu7S4urax/tYjD/groupnameupdate/', {
-        // id: selectedID,
-        // ActivityRoleName: paramActivityName,
-        // Display: checked,
-
-        //=======================
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           group_refno: selectedID,
@@ -242,9 +239,9 @@ const ActivityPage = () => {
         },
       })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData('updated');
+            ResetFields();
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -256,6 +253,7 @@ const ActivityPage = () => {
             setSnackbarType('error');
             setOpen(true);
           }
+          setButtonLoading(false);
         })
         .catch((e) => {
           ResetFields();

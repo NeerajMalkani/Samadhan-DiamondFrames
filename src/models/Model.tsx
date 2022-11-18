@@ -10,6 +10,7 @@ export interface ActivityRoleNameModel {
 export interface DFActivityRoleNameModel {
   id: number;
   srno: number;
+  group_refno: string;
   group_name: string;
   view_status: string;
   action: string;
@@ -208,7 +209,7 @@ export interface ServiceNameModel {
 export interface DFServiceNameModel {
   id: number;
   srno: number;
-  service_refno: number;
+  service_refno: string;
   service_name: string;
   view_status: string;
   action: string;
@@ -228,13 +229,16 @@ export interface UnitOfSalesModel {
 export interface DFUnitOfSalesModel {
   id: number;
   srno: number;
+  unit_category_refno:string;
+  unit_name:string;
+  convert_unit_name:string;
+  unit_name_convert_unit_name:string;
   view_status: string;
-  action: string;
+  // action: string;
   unit_name_text: string;
-  // displayUnit: string;
-  unit_name: string;
+  // // displayUnit: string;
+  // unit_name: string;
   unit1ID: number;
-  convert_unit_name: string;
   unit2ID: number;
 }
 
