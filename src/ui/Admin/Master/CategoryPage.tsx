@@ -33,6 +33,7 @@ import {
   DFCategoryModel,
   ServiceNameModel,
   UnitOfSalesModel,
+  DFUnitOfSalesModel1
 } from '../../../models/Model';
 import { useCookies } from 'react-cookie';
 import { communication } from '../../../utils/communication';
@@ -43,6 +44,7 @@ import {
 } from '../../../utils/validations';
 import NoData from '../../../components/NoData';
 import ListIcon from '@mui/icons-material/List';
+import { truncate } from 'fs';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -73,6 +75,7 @@ const CategoryPage = () => {
   const [arn, setArn] = useState('--Select--');
   const [arnID, setArnID] = useState<number>(0);
   const [sn, setSn] = useState('--Select--');
+  const [sn1, setSn1] = useState('--Select--');
   const [snID, setSnID] = useState<number>(0);
   const [cn, setCn] = useState('');
   const [hsn, setHsn] = useState('');
@@ -83,6 +86,10 @@ const CategoryPage = () => {
 
   const [unitsOfSales, setUnitsOfSales] = useState<string[]>([]);
   const [unitsOfSalesID, setUnitsOfSalesID] = useState<number[]>([]);
+
+  const [personName, setPersonName] = React.useState<string[]>([]);
+
+
 
   const [display, setDisplay] = useState('Yes');
   const [activityNamesList, setActivityNamesList] = useState<
@@ -95,6 +102,9 @@ const CategoryPage = () => {
     Array<UnitOfSalesModel>
   >([]); //React.useContext(DataContext).unitOfSalesList;
   const [categoryList, setCategoryList] = useState<Array<DFCategoryModel>>([]); //React.useContext(DataContext).categoryList;
+
+  const [SalesName, SetSalesName] = useState<Array<DFUnitOfSalesModel1>>([]); //React.useContext(DataContext).categoryList;
+
 
   const [categoryListTemp, setCategoryListTemp] = useState<
     Array<DFCategoryModel>
@@ -125,16 +135,71 @@ const CategoryPage = () => {
   const [unitErrorText, setUnitErrorText] = useState<string>('');
 
   const [actionStatus, setActionStatus] = useState<string>('new');
+  
   const [selectedID, setSelectedID] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>(
     'error'
   );
+
+  const [UnitId, setUnitId] = useState([]);
+
   const theme = useTheme();
+
+
 
   useEffect(() => {
     FetchData('');
+    FetchActivityName();
+
   }, []);
+
+  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+    // let ac = SalesName.find(
+    //   (el) => el.unit_name === event.target.value
+    // );
+    const intersection = SalesName.filter(element => event.target.value.includes(element.unit_name));
+    let a = []
+
+    intersection.map((data)=>{
+       a.push(data.unit_id)
+    })
+    setUnitId(a)
+    console.log('aniket',a)
+  };
+
+  const FetchActivityName = async () => {
+
+    let params = {
+      data: {
+
+      },
+    };
+
+    setLoading(true)
+    await Provider.createDF('/apiappadmin/spawu7S4urax/tYjD/getactivityrolecategoryform/', params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setActivityNamesList(response.data.data)
+
+          }
+        }
+
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        //Show snackbar
+      });
+  };
 
   const ResetFields = () => {
     setSelectedID(0);
@@ -151,6 +216,11 @@ const CategoryPage = () => {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
         category_refno: 'all',
+      },
+    };
+    let param = {
+      data: {
+
       },
     };
     Provider.createDF(
@@ -193,47 +263,56 @@ const CategoryPage = () => {
         setSnackbarType('error');
       });
 
-    if (activityNamesList.length === 0) {
-      Provider.getAll('master/getmainactivities')
-        .then((response: any) => {
-          if (response.data && response.data.code === 200) {
-            if (response.data.data) {
-              response.data.data = response.data.data.filter((el: any) => {
-                return el.display;
-              });
-              setActivityNamesList(response.data.data);
-            }
-          } else {
-            //Show snackbar
-          }
-          //  setLoading(false);
-        })
-        .catch((e) => {
-          //  setLoading(false);
-          //Show snackbar
-        });
-    }
 
-    if (serviceNameList.length === 0) {
-      Provider.getAll('master/getservices')
-        .then((response: any) => {
-          if (response.data && response.data.code === 200) {
-            if (response.data.data) {
-              response.data.data = response.data.data.filter((el: any) => {
-                return el.display;
-              });
-              setServiceNameList(response.data.data);
-            }
-          } else {
-            //Show snackbar
+
+
+
+
+    Provider.createDF('/apiappadmin/spawu7S4urax/tYjD/getservicenamecategoryform/', param)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
+            setServiceNameList(response.data.data);
           }
-          // setLoading(false);
-        })
-        .catch((e) => {
-          // setLoading(false);
+        } else {
           //Show snackbar
-        });
-    }
+        }
+        // setLoading(false);
+      })
+      .catch((e) => {
+        // setLoading(false);
+        //Show snackbar
+      });
+
+
+
+    Provider.createDF('/apiappadmin/spawu7S4urax/tYjD/getunitofsalenamecategoryform/', param)
+      .then((response: any) => {
+        let a = []
+
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data.map((e) => {
+              let ob = {};
+              ob["unit_name"] = e.unit_name;
+              ob["unit_id"] = e.unit_category_refno;
+              a.push(ob);
+            });
+            SetSalesName(a);
+            console.log(a, 'testing_final')
+          }
+        } else {
+          //Show snackbar
+        }
+        // setLoading(false);
+      })
+      .catch((e) => {
+        //  setLoading(false);
+        //Show snackbar
+      });
 
     if (unitOfSalesList.length === 0) {
       Provider.getAll('master/getunitofsales')
@@ -260,10 +339,10 @@ const CategoryPage = () => {
   const handleARNChange = (event: SelectChangeEvent) => {
     let activityName: string = event.target.value;
     let ac = activityNamesList.find(
-      (el) => el.activityRoleName === activityName
+      (el) => el.group_name === activityName
     );
     if (ac !== undefined) {
-      setArnID(ac?.id);
+      setArnID(ac.group_refno);
       setArn(activityName);
       setActionRoleError(false);
       setActionRoleErrorText('');
@@ -272,14 +351,27 @@ const CategoryPage = () => {
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
-    let ac = serviceNameList.find((el) => el.serviceName === serviceName);
+    let ac = serviceNameList.find((el) => el.service_name === serviceName);
     if (ac !== undefined) {
       setSn(serviceName);
-      setSnID(ac?.id);
+      setSnID(ac?.service_refno);
       setServiceNameError(false);
       setServiceNameErrorText('');
     }
   };
+
+  const handleSNChange1 = (event: SelectChangeEvent) => {
+    let unitName: string = event.target.value;
+    // let ac = serviceNameList.find((el) => el.unit_name === unitName);
+
+    setSn1(unitName);
+    // setSnID(ac?.service_refno);
+    setUnitError(false);
+    setUnitErrorText('');
+
+  };
+
+
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
     const {
       target: { value },
@@ -319,15 +411,29 @@ const CategoryPage = () => {
       setServiceNameErrorText(communication.SelectServiceName);
     }
 
-    if (unitsOfSales.length === 0) {
+    if (UnitId.length<0) {
       isValid = false;
       setUnitError(true);
       setUnitErrorText(communication.SelectUnitName);
-    } else if (unitsOfSales.length > 3) {
-      isValid = false;
-      setUnitError(true);
-      setUnitErrorText(communication.SelectUnitOnly3);
     }
+
+    if (UnitId.length>0) {
+      isValid = true;
+      setUnitError(false);
+      setUnitErrorText('');
+    }
+
+    // if (unitsOfSales.length === 0) {
+    //   isValid = false;
+    //   setUnitError(true);
+    //   setUnitErrorText(communication.SelectUnitName);
+    // } else if (unitsOfSales.length > 3) {
+    //   isValid = false;
+    //   setUnitError(true);
+    //   setUnitErrorText(communication.SelectUnitOnly3);
+    // }
+
+
 
     if (cn.trim() === '') {
       isValid = false;
@@ -434,16 +540,21 @@ const CategoryPage = () => {
   };
 
   const InsertUpdateData = () => {
+
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        category_name: cn,
+        hsn_sac_code: hsn,
+        group_refno: arnID,
+        service_refno: snID,
+        gst_rate: parseFloat(gst),
+        view_status: display,
+        unit_category_refno: UnitId,
+      },
+    };
     if (actionStatus === 'new') {
-      Provider.create('master/insertcategory', {
-        CategoryName: cn,
-        RoleID: arnID,
-        ServiceID: snID,
-        HSNSACCode: hsn,
-        GSTRate: parseFloat(gst),
-        Display: display === 'Yes',
-        UnitID: unitsOfSalesID.toString(),
-      })
+      Provider.create('/apiappadmin/spawu7S4urax/tYjD/categorynamecreate/',params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData('added');
@@ -561,10 +672,12 @@ const CategoryPage = () => {
                 <MenuItem disabled={true} value='--Select--'>
                   --Select--
                 </MenuItem>
-                {activityNamesList.map((item, index) => {
+                {activityNamesList && activityNamesList.map((item, index) => {
+                  console.log('testing', item.group_name)
+
                   return (
-                    <MenuItem key={index + 1} value={item.activityRoleName}>
-                      {item.activityRoleName}
+                    <MenuItem key={item.group_refno} value={item.group_name}>
+                      {item.group_name}
                     </MenuItem>
                   );
                 })}
@@ -586,10 +699,10 @@ const CategoryPage = () => {
                   return (
                     <MenuItem
                       //selected={index === 1}
-                      key={item.id}
-                      value={item.serviceName}
+                      key={item.service_refno}
+                      value={item.service_name}
                     >
-                      {item.serviceName}
+                      {item.service_name}
                     </MenuItem>
                   );
                 })}
@@ -609,7 +722,8 @@ const CategoryPage = () => {
               size='small'
               value={cn}
               onChange={(e) => {
-                setCn(e.currentTarget.value);
+                let activityName: string = e.currentTarget.value
+                setCn(activityName);
                 setCategoryNameError(false);
                 setCategoryNameErrorText('');
               }}
@@ -668,7 +782,7 @@ const CategoryPage = () => {
                 <b>Unit of Sales</b>
                 <label style={{ color: '#ff0000' }}>*</label>
               </Typography>
-              <Select
+              {/* <Select
                 multiple
                 value={unitsOfSales}
                 onChange={handleUnitChange}
@@ -700,7 +814,52 @@ const CategoryPage = () => {
                     {units.displayUnit}
                   </MenuItem>
                 ))}
+              </Select> */}
+
+              {/* <Select value={sn1} onChange={handleSNChange1} multiple>
+                <MenuItem disabled={true} value='--Select--'>
+                  --Select--
+                </MenuItem>
+                {SalesName&&SalesName.map((item, index) => {
+                  return (
+                    <MenuItem
+                      //selected={index === 1}
+                      key={item.unit_name}
+                      value={item.unit_name}
+                    >
+                      {item.unit_name}
+                    </MenuItem>
+                  );
+                })}
+              </Select> */}
+
+              <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip"
+                multiple
+                value={personName}
+                onChange={handleChange}
+                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                {SalesName.map((name) => (
+                  <MenuItem
+                    key={name.unit_id}
+                    value={name.unit_name}
+                    style={getStyles(name.unit_name, personName, theme)}
+                  >
+                    {name.unit_name}
+                  </MenuItem>
+                ))}
               </Select>
+
               <FormHelperText>{unitErrorText}</FormHelperText>
             </FormControl>
           </Grid>
@@ -715,8 +874,8 @@ const CategoryPage = () => {
                 value={display}
                 onChange={handleDisplayChange}
               >
-                <FormControlLabel value='Yes' control={<Radio />} label='Yes' />
-                <FormControlLabel value='No' control={<Radio />} label='No' />
+                <FormControlLabel value={0} control={<Radio />} label='Yes' />
+                <FormControlLabel value={1} control={<Radio />} label='No' />
               </RadioGroup>
             </FormControl>
           </Grid>
