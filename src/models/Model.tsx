@@ -1,11 +1,13 @@
-import { NumericLiteral } from 'typescript';
+// import { NumericLiteral } from 'typescript';
 
 export interface ActivityRoleNameModel {
   id: number;
   srno: number;
   activityRoleName: string;
+  group_name: string;
   display: string;
   action: string;
+  group_refno: number;
 }
 export interface DFActivityRoleNameModel {
   id: number;
@@ -198,11 +200,13 @@ export interface QuotationWiseProductModel {
 
 export interface ServiceNameModel {
   id: number;
+  service_refno: number;
   srno: number;
   serviceID: number;
   serviceName: string;
   display: string;
   action: string;
+  service_name: string;
 }
 
 export interface DFServiceNameModel {
@@ -236,6 +240,20 @@ export interface DFUnitOfSalesModel {
   unit1ID: number;
   convert_unit_name: string;
   unit2ID: number;
+}
+export interface DFUnitOfSalesModel1 {
+  id: number;
+  srno: number;
+  unit_id: number;
+  view_status: string;
+  action: string;
+  unit_name_text: string;
+  // displayUnit: string;
+  unit_name: string;
+  unit1ID: number;
+  convert_unit_name: string;
+  unit2ID: number;
+  unit_category_refno:number
 }
 
 export interface UserCreds {

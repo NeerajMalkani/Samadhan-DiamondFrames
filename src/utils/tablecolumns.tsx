@@ -47,8 +47,8 @@ export const categoryColumns: GridColDef[] = [
     },
   },
   {
-    /* field: 'unitName',*/
-    field: 'unit_category_names',
+     field: 'unit_category_refno',
+    // field: 'unit_category_names',
     headerName: 'Unit of Sales',
     flex: 1.5,
     sortable: false,
