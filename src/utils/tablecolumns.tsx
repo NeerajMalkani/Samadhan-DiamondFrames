@@ -6,6 +6,9 @@ import Box from '@mui/material/Box';
 import { Style } from '@mui/icons-material';
 import Provider from '../api/Provider';
 
+
+
+
 export const categoryColumns: GridColDef[] = [
   {
     field: 'srno',
@@ -873,7 +876,7 @@ export const workFloorColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: 'workFloorName',
+    field: 'workfloor_name',
     headerName: 'Work Floor Name',
     flex: 1.8,
     minWidth: 140,
@@ -892,6 +895,7 @@ export const workFloorColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => (
+      
       <Grid>
         <Button variant='text' sx={{ mr: 1 }}>
           Edit
@@ -2308,60 +2312,60 @@ export const clientSearchResult: GridColDef[] = [
 
 export const approvedColumns: GridColDef[] = [
   {
-    field: 'srno',
-    headerName: 'Sr. No.',
+    field: 'user_refno',
+    headerName: 'Ref No.',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'company',
+    field: 'company_name',
     headerName: 'Company & Contact Details',
     flex: 4,
     minWidth: 160,
-    renderCell: (params) => (
-      <div>
-        <Typography>
-          {NullOrEmpty(params.row.company)
-            ? ''
-            : params.row.company.split(',')[0]}
-        </Typography>
-        <Typography>
-          {NullOrEmpty(params.row.company)
-            ? ''
-            : params.row.company.split(',')[1]}
-        </Typography>
-        <Typography>
-          {NullOrEmpty(params.row.company)
-            ? ''
-            : params.row.company.split(',')[2]}
-        </Typography>
-      </div>
-    ),
+    // renderCell: (params) => (
+    //   <div>
+    //     <Typography>
+    //       {NullOrEmpty(params.row.company)
+    //         ? ''
+    //         : params.row.company.split(',')[0]}
+    //     </Typography>
+    //     <Typography>
+    //       {NullOrEmpty(params.row.company)
+    //         ? ''
+    //         : params.row.company.split(',')[1]}
+    //     </Typography>
+    //     <Typography>
+    //       {NullOrEmpty(params.row.company)
+    //         ? ''
+    //         : params.row.company.split(',')[2]}
+    //     </Typography>
+    //   </div>
+    // ),
   },
+  // {
+  //   field: 'activityRoleName',
+  //   headerName: 'Activity Role',
+  //   flex: 1.8,
+  //   minWidth: 140,
+  //   sortable: false,
+  // },
   {
-    field: 'activityRoleName',
-    headerName: 'Activity Role',
-    flex: 1.8,
-    minWidth: 140,
-    sortable: false,
-  },
-  {
-    field: 'department',
+    field: 'departmentname',
     headerName: 'Department',
     flex: 1.5,
     minWidth: 120,
     sortable: false,
   },
   {
-    field: 'designation',
+    field: 'designationname',
     headerName: 'Designation',
     flex: 1.5,
     minWidth: 120,
     sortable: false,
   },
   {
-    field: 'username',
+    field: 'user_name',
     headerName: 'User Name',
     flex: 1.5,
     minWidth: 120,
@@ -2375,7 +2379,7 @@ export const approvedColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: 'status',
+    field: 'approve_status',
     headerName: 'Status',
     flex: 1.5,
     maxWidth: 100,
@@ -2404,46 +2408,53 @@ export const approvedColumns: GridColDef[] = [
 
 export const declinedColumns: GridColDef[] = [
   {
-    field: 'srno',
+    field: 'user_refno',
     headerName: 'Sr. No.',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'activityRoleName',
-    headerName: 'Role',
+    field: 'company_name',
+    headerName: 'Company',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'company',
-    headerName: 'ComapnyName',
+    field: 'firstname',
+    headerName: 'First Name',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'contactName',
-    headerName: 'Contact Name',
+    field: 'mobile_no',
+    headerName: 'Contact No',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'mobileNo',
-    headerName: 'Mobile No',
+    field: 'group_name',
+    headerName: 'Group Name',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'status',
+    field: 'approve_status',
     headerName: 'Status',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
+    renderCell: (e) => (
+      <Grid>
+      <Button variant='text' sx={{ mr: 1 }} >
+         Decline
+      </Button>      
+    </Grid>
+  ),
   },
   {
     field: 'action',
@@ -2451,59 +2462,134 @@ export const declinedColumns: GridColDef[] = [
     flex: 0.8,
     minWidth: 60,
     sortable: false,
+    renderCell: (e) => (
+        <Grid>
+        <Button variant='text' sx={{ mr: 1 }} >
+           Approve
+        </Button>      
+      </Grid>
+    ),
   },
 ];
 
 export const pendingColumns: GridColDef[] = [
   {
-    field: 'srno',
-    headerName: 'Sr. No.',
+    field: 'user_refno',
+    headerName: 'Ref No',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'activityRoleName',
-    headerName: 'Role',
+    field: 'company_name',
+    headerName: 'Company Name',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'company',
-    headerName: 'ComapnyName',
+    field: 'firstname',
+    headerName: 'First Name',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'contactName',
-    headerName: 'Contact Name',
+    field: 'mobile_no',
+    headerName: 'Contact No',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'mobileNo',
-    headerName: 'Mobile No',
+    field: 'group_name',
+    headerName: 'Activity Role',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'status',
+    field: 'approved_status',
     headerName: 'Status',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
+    renderCell: (e) => (
+      
+        
+      <Grid>
+    
+        <Button variant='text' sx={{ mr: 1 }} style={{fontSize:"11px"}}>
+           {/* { somevar.approve_status === 0 ? 'pending':'success' } */}
+           pending
+        </Button>
+        
+  
+       
+      </Grid>
+    ),
   },
   {
-    field: 'action',
-    headerName: 'Action',
+    field: 'approve',
+    headerName: 'Approve',
     flex: 0.8,
     minWidth: 60,
     sortable: false,
+    renderCell: (e) => (
+      
+        
+      <Grid>
+      
+        <Button  variant='text' sx={{ mr: 1 }} style={{fontSize:"11px"}} >
+           {/* { somevar.approve_status === 0 ? 'pending':'success' } */}
+           Approve
+        </Button>
+        
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
   },
+  {
+    field: 'decline',
+    headerName: 'Decline',
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+    renderCell: (e) => (
+      
+        
+      <Grid>
+      
+        <Button variant='text' sx={{ mr: 1 }} style={{fontSize:"11px"}}>
+           {/* { somevar.approve_status === 0 ? 'pending':'success' } */}
+           Decline
+        </Button>
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  }
 ];
 
 export const userNewEnquiry: GridColDef[] = [

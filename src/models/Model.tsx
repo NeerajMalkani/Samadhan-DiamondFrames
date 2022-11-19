@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 // import { NumericLiteral } from 'typescript';
+=======
+import { NumericLiteral } from 'typescript';
+import { UrlWithStringQuery } from 'url';
+>>>>>>> 58e49af1ebc4ffd328c8937fbce761467f9f5ec4
 
 export interface ActivityRoleNameModel {
   id: number;
@@ -785,6 +790,21 @@ export interface ApprovredModel {
   action: boolean;
 }
 
+export interface DFApprovredModel {
+  id: number;
+  userID: number;
+  srno: number;
+  user_refno: string;
+  company_name: string;
+  firstname: string;
+  mobile_no: string;
+  group_name: string;
+  departmentname: string;
+  designation_name: string;
+  password: string;
+  approve_status:boolean;
+}
+
 export interface PendingModel {
   id: number;
   srno: number;
@@ -793,6 +813,17 @@ export interface PendingModel {
   contactName: string;
   mobileNo: number;
   status: boolean;
+  action: boolean;
+}
+export interface DFPendingModel {
+  id: number;
+  srno: number;
+  role: string;
+  user_refno:string;
+  company_name: string;
+  firstname: string;
+  mobile_no: number;
+  approve_status: string;
   action: boolean;
 }
 export interface DeclinedModel {
@@ -806,6 +837,20 @@ export interface DeclinedModel {
   username: string;
   password: string;
   status: boolean;
+  action: boolean;
+}
+export interface DFDeclinedModel {
+  id: number;
+  userID: number;
+  srno: number;
+  user_refno:string,
+  company_name: string;
+  activityrole: string;
+  departmentname: string;
+  designationname: string;
+  username: string;
+  password: string;
+  approve_status: boolean;
   action: boolean;
 }
 
