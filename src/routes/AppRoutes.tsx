@@ -1,4 +1,4 @@
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box, CssBaseline,ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
@@ -78,8 +78,9 @@ import Inbox from "../ui/GeneralUsers/PocketDiary/Inbox";
 import DashboardManufacture from "../ui/DashboardManufacture";
 import BrandConversionValue from "../ui/Manufacture/ProductionUnitMaster/BrandConversionValue";
 import OpeningStock from "../ui/Manufacture/ProductionUnitMaster/OpeningStock";
-
-
+import ProductProduction from "../ui/Manufacture/ProductProduction";
+import ProductOrderList from "../ui/Manufacture/ProductOrderList";
+import CreateNewProductOrder from "../ui/Manufacture/CreateNewProductOrder";
 
 
 
@@ -170,7 +171,10 @@ const AppRoutes = () => {
               <Route path="dashboardmanufacture" element={<DashboardManufacture/>}/>
               <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue/>}/>
               <Route path="manufacture/productionunitmaster/openingstock" element={<OpeningStock/>}/>
-
+              <Route path="manufacture/productproduction" element={<ProductProduction/>}/>
+              <Route path="manufacture/productOrderList" element={<ProductOrderList/>}/>
+              <Route path="manufacture/newproductorder" element={<CreateNewProductOrder />}/>
+               
             </Routes>
           </BrowserRouter>
         </Box>

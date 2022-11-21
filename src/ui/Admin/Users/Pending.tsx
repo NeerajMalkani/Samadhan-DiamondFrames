@@ -24,7 +24,7 @@ import Provider from "../../../api/Provider";
 import { pendingColumns } from "../../../utils/tablecolumns";
 import { DFPendingModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
-import "react-toastify/dist/ReactToastify.css"
+// import "react-toastify/dist/ReactToastify.css"
 
 const Pending = () => {
   //return <></>;
