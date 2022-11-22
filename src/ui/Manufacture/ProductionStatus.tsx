@@ -1,5 +1,4 @@
 import { Box, TextField, Button, Container, FormControl, InputAdornment, CircularProgress, FormControlLabel, Typography, Select, Grid, Menu, Snackbar, MenuItem, AlertColor, FormHelperText } from "@mui/material";
-// import Header from "../../../components/Header";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 // import { theme } from "../../../theme/AppTheme";
@@ -10,31 +9,36 @@ import CheckIcon from "@mui/icons-material/Check";
 import Checkbox from '@mui/material/Checkbox';
 import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
 import { border } from "@mui/system";
-// import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
-// import { ServiceModel, CategoryModel, BrandModel, productModel, OpeningStockModel } from "../../../models/Model";
-// import Provider from "../../../api/Provider";
+
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import ListIcon from '@mui/icons-material/List';
-// import NoData from '../../../components/NoData';
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
-import Header from "../../components/Header";
 import NoData from "../../components/NoData";
+import { productionStatusColumn } from "../../utils/tablecolumns";
+import { BrandModel, CategoryModel, OpeningStockModel, ProductionStatusModel, productModel, ServiceModel } from "../../models/Model";
 import { theme } from "../../theme/AppTheme";
-// import "./ProductionUnitMaster/ProductOrderList.css"
-import { openingProductColumn } from "../../utils/tablecolumns";
+import Header from "../../components/Header";
+// import Header from "../../../components/Header";
+
+
+// import { BrandModel, CategoryModel,OpeningStockModel, productModel, ServiceModel, venderOrderFormModel,InvoiceRecieptFormModel } from "../../../models/Model";
+// import { theme } from "../../../theme/AppTheme";
+// import NoData from "../../../components/NoData";
+// import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
+
+// import "./ProductionUnitMaster/ProductionStatus.css"
 
 
 
 let st_ID = 0, ct_ID = 0;
 
 
-const ProductOrderList = () => {
+const ProductionStatus = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
     const [CookieUserID, SetCookieUseID] = useState(0);
     let navigate = useNavigate();
@@ -471,20 +475,19 @@ const ProductOrderList = () => {
                         }}>
                         + Create New
                     </Button> */}
-                     <Button variant="contained"onClick={() => navigate("/manufacture/newproductorder")} sx={{mr:2}}> + Create new</Button>
+                     <Button variant="contained"onClick={() => navigate("/manufacture/addProductionStatus")} sx={{mr:2}}> + Add new Production</Button>
 
                 </Grid>
             </Grid>
             <Container maxWidth="lg">
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Grid item xs={4} sm={8} md={12}>
-                        <Typography variant='h4'> Manufacture Purchase Order</Typography>
+                        <Typography variant='h4'>  Production</Typography>
                     </Grid>
                     <Grid item xs={2} sm={6}>
-                        <Typography variant="h5">Manufacture Purchase Order List</Typography>
+                        <Typography variant="h5">Production List</Typography>
                     </Grid>
                 </Grid>
-
 
                 <Grid
                     item
@@ -559,7 +562,7 @@ const ProductOrderList = () => {
                                         }}
                                         autoHeight={true}
                                         rows={openingStockListTemp}
-                                        columns={openingProductColumn}
+                                        columns={productionStatusColumn}
                                         pageSize={pageSize}
                                         rowsPerPageOptions={[5, 10, 20]}
                                         onPageSizeChange={(newPageSize) =>
@@ -571,7 +574,7 @@ const ProductOrderList = () => {
                                             e: React.MouseEvent<HTMLElement>
                                         ) => {
                                             const arrActivity = [...openingStockList];
-                                            let a: OpeningStockModel | undefined =
+                                            let a: ProductionStatusModel | undefined =
                                                 arrActivity.find((el) => el.id === param.row.id);
                                             // handelEditAndDelete((e.target as any).textContent, a);
                                         }}
@@ -593,4 +596,4 @@ const ProductOrderList = () => {
     );
 };
 
-export default ProductOrderList;
+export default ProductionStatus;

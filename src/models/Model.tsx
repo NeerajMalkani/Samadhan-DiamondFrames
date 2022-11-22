@@ -1,9 +1,7 @@
-<<<<<<< HEAD
-// import { NumericLiteral } from 'typescript';
-=======
+
 import { NumericLiteral } from 'typescript';
 import { UrlWithStringQuery } from 'url';
->>>>>>> 58e49af1ebc4ffd328c8937fbce761467f9f5ec4
+// >>>>>>> 58e49af1ebc4ffd328c8937fbce761467f9f5ec4
 
 export interface ActivityRoleNameModel {
   id: number;
@@ -1026,6 +1024,42 @@ export interface productModel {
 }
 
 export interface OpeningStockModel {
+  id: number;
+  srno: number;
+  addedDate: string;
+  serviceName: string;
+  categoryName: string;
+  productName: string;
+  brandName: string;
+  totalProducts: string;
+  weightPerPiece: string;
+  action: string;
+}
+export interface venderOrderFormModel {
+  id: number;
+  srno: number;
+  addedDate: string;
+  serviceName: string;
+  categoryName: string;
+  productName: string;
+  brandName: string;
+  totalProducts: string;
+  weightPerPiece: string;
+  action: string;
+}
+export interface InvoiceRecieptFormModel {
+  id: number;
+  srno: number;
+  addedDate: string;
+  serviceName: string;
+  categoryName: string;
+  productName: string;
+  brandName: string;
+  totalProducts: string;
+  weightPerPiece: string;
+  action: string;
+}
+export interface ProductionStatusModel {
   id: number;
   srno: number;
   addedDate: string;

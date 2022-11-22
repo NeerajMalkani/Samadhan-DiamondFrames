@@ -22,19 +22,21 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
-import Header from "../../components/Header";
-import NoData from "../../components/NoData";
-import { theme } from "../../theme/AppTheme";
-// import "./ProductionUnitMaster/ProductOrderList.css"
-import { openingProductColumn } from "../../utils/tablecolumns";
+import Header from "../../../components/Header";
+import NoData from "../../../components/NoData";
+import { venderOrderForm } from "../../../utils/tablecolumns";
+import { theme } from "../../../theme/AppTheme";
+import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel, venderOrderFormModel } from "../../../models/Model";
+// import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
+
+// import "./ProductionUnitMaster/venderOrderFormList.css"
 
 
 
 let st_ID = 0, ct_ID = 0;
 
 
-const ProductOrderList = () => {
+const VenderOrderFormList = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
     const [CookieUserID, SetCookieUseID] = useState(0);
     let navigate = useNavigate();
@@ -471,19 +473,20 @@ const ProductOrderList = () => {
                         }}>
                         + Create New
                     </Button> */}
-                     <Button variant="contained"onClick={() => navigate("/manufacture/newproductorder")} sx={{mr:2}}> + Create new</Button>
+                     <Button variant="contained"onClick={() => navigate("/manufacture/venderorderaddform")} sx={{mr:2}}> + Create New Vendor Order Form</Button>
 
                 </Grid>
             </Grid>
             <Container maxWidth="lg">
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Grid item xs={4} sm={8} md={12}>
-                        <Typography variant='h4'> Manufacture Purchase Order</Typography>
+                        <Typography variant='h4'> Manufacture Vendor Order</Typography>
                     </Grid>
                     <Grid item xs={2} sm={6}>
-                        <Typography variant="h5">Manufacture Purchase Order List</Typography>
+                        <Typography variant="h5">Manufacture Vendor Order List</Typography>
                     </Grid>
                 </Grid>
+                {/* <hr></hr> */}
 
 
                 <Grid
@@ -559,7 +562,7 @@ const ProductOrderList = () => {
                                         }}
                                         autoHeight={true}
                                         rows={openingStockListTemp}
-                                        columns={openingProductColumn}
+                                        columns={venderOrderForm}
                                         pageSize={pageSize}
                                         rowsPerPageOptions={[5, 10, 20]}
                                         onPageSizeChange={(newPageSize) =>
@@ -571,7 +574,7 @@ const ProductOrderList = () => {
                                             e: React.MouseEvent<HTMLElement>
                                         ) => {
                                             const arrActivity = [...openingStockList];
-                                            let a: OpeningStockModel | undefined =
+                                            let a: venderOrderFormModel | undefined =
                                                 arrActivity.find((el) => el.id === param.row.id);
                                             // handelEditAndDelete((e.target as any).textContent, a);
                                         }}
@@ -593,4 +596,4 @@ const ProductOrderList = () => {
     );
 };
 
-export default ProductOrderList;
+export default VenderOrderFormList;

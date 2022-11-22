@@ -19,22 +19,28 @@ import ListIcon from '@mui/icons-material/List';
 // import NoData from '../../../components/NoData';
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import Header from "../../../components/Header";
+import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../../models/Model";
+import { theme } from "../../../theme/AppTheme";
+import NoData from "../../../components/NoData";
+
+import { invoiceRecieptFormColumn } from "../../../utils/tablecolumns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
-import Header from "../../components/Header";
-import NoData from "../../components/NoData";
-import { theme } from "../../theme/AppTheme";
-// import "./ProductionUnitMaster/CreateNewProductOrder.css"
-import { openingProductColumn } from "../../utils/tablecolumns";
-
+// import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
+// import Header from "../../components/Header";
+// import NoData from "../../components/NoData";
+// import { theme } from "../../theme/AppTheme";
+// import "./ProductionUnitMaster/ProductProduction.css"
+// import { invoi } from "../../utils/tablecolumns";
+// import { invoiceRecieptColumn } from "../../../utils/tablecolumns";
 
 
 let st_ID = 0, ct_ID = 0;
 
 
-const CreateNewProductOrder = () => {
+const AddInvoiceReciept = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
     const [CookieUserID, SetCookieUseID] = useState(0);
     let navigate = useNavigate();
@@ -308,8 +314,6 @@ const CreateNewProductOrder = () => {
         setDisplay((event.target as HTMLInputElement).value);
     };
 
-    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-
     //   const handleSubmitClick = () => {
     //     debugger;
     //     let isValid: Boolean = true;
@@ -458,11 +462,13 @@ const CreateNewProductOrder = () => {
     //     // }
     //   };
     //#endregion 
+    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 
     return (
         <Box sx={{ mt: 11 }}>
             <Header />
+            <Container maxWidth="lg">
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "flex-end", }}>
                 <Grid>
                     {/* <Button sx={{mt:1,mr:2}}
@@ -473,343 +479,106 @@ const CreateNewProductOrder = () => {
                         }}>
                         + Create New
                     </Button> */}
-                     <Button variant="contained"onClick={() => navigate(-1)} sx={{mr:2}}>View Purchase Order List </Button>
+                     <Button variant="contained"onClick={() => navigate(-1)} sx={{mr:2,mt:2}}>View Purchase Order List </Button>
 
                 </Grid>
             </Grid>
-            <Container maxWidth="lg">
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Grid item xs={4} sm={8} md={12}>
-                        <Typography variant='h4'>  Purchase Order</Typography>
+                        <Typography variant='h4'>Invoice Reciept</Typography>
                     </Grid>
-                    <Grid item xs={2} sm={6}>
-                        <Typography variant="h5"> Purchase Order ADD/EDIT</Typography>
+                    <Grid item xs={2} sm={4}>
+                        <Typography variant="h5">Invoice Reciept (Add/Edit)</Typography>
                     </Grid>
                 </Grid>
-                <div style={{ display: 'flex', marginTop: "30px" }}>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Service Name
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isServiceNameError}>
-                                <Select value={serviceName} onChange={handleSNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        GYPSUM & POP
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        PLYWOOD & FURNITURE
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        IRON & STEEL
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                       ACOUSTIC SYSYTEM
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                      TEST 22 TEST 65 
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        TEST 2
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        TEST 66
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        TEST 77
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        TEST 88
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        TEST 1000
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --select--
-                                    </MenuItem>
-                                    {serviceNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.serviceName}>
-                                                {item.serviceName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{serviceNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
+               <hr></hr>
+                {/* <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
+                    <Grid item sm={4}>
+                        <label><label style={{ color: "#ff0000" }}>*</label>Date</label>
                     </Grid>
-                    <br></br>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Category Name
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isCategoryNameError}>
-                                <Select value={categoryName} onChange={handleCNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --Select--
-                                    </MenuItem>
-                                    {categoryNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.categoryName}>
-                                                {item.categoryName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{categoryNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Supplier Name
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isBrandNameError}>
-                                <Select value={brandName} onChange={handleBNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        Biswal(Saroj)
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --select--
-                                    </MenuItem>
-                                    {brandNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.brandName}>
-                                                {item.brandName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{brandNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                </div>
-                <div style={{ display: 'flex', marginTop: "60px" }}>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Vendor Company Name (Delivery Address)
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isServiceNameError}>
-                                <Select value={serviceName} onChange={handleSNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        Buhari Steel(Tasleem)
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --select--
-                                    </MenuItem>
-                              
-                           
-                                    {serviceNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.serviceName}>
-                                                {item.serviceName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{serviceNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <br></br>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Product Name(Thickness)
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isCategoryNameError}>
-                                <Select value={categoryName} onChange={handleCNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --Select--
-                                    </MenuItem>
-                                    {categoryNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.categoryName}>
-                                                {item.categoryName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{categoryNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Width  of GP Coil in mtr
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isBrandNameError}>
-                                <Select value={brandName} onChange={handleBNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        1.200
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        1.000
-                                    </MenuItem>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --select--
-                                    </MenuItem>
-                                    {brandNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.brandName}>
-                                                {item.brandName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{brandNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                </div>
-                <div style={{ display: 'flex', marginTop: "60px" }}>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label>Manufacture Brand
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isServiceNameError}>
-                                <Select value={serviceName} onChange={handleSNChange}>
-                                  
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --select--
-                                    </MenuItem>
-                              
-                           
-                                    {serviceNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.serviceName}>
-                                                {item.serviceName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{serviceNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <br></br>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Mass of Zinc Coating
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isCategoryNameError}>
-                                <Select value={categoryName} onChange={handleCNChange}>
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --Select--
-                                    </MenuItem>
-                                    {categoryNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.categoryName}>
-                                                {item.categoryName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{categoryNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={6}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Number of GP Coil
-                            </label>
-                        </Grid>
-                        <Grid item sm={8}>
-                            <FormControl fullWidth size="small" error={isBrandNameError}>
-                                <Select value={brandName} onChange={handleBNChange}>
-                                  
-                                    <MenuItem disabled={true} value="--Select--">
-                                        --select--
-                                    </MenuItem>
-                                    {brandNameList.map((item, index) => {
-                                        return (
-                                            <MenuItem key={index} value={item.brandName}>
-                                                {item.brandName}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                                <FormHelperText>{brandNameError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                </div>
-                <div style={{ display: 'flex', marginTop: "60px" }}>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={4}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Total Wieght
-                            </label>
-                        </Grid>
-                        <Grid item sm={6}>
-                            <TextField
-                                variant="outlined"
-                                size="small"
-                                error={isTotalProductError}
-                                helperText={totalProductError}
-                                value={totalProduct}
-                                onChange={(e) => {
-                                    setTotalProduct((e.target as HTMLInputElement).value);
-                                    setIsTotalProductError(false);
-                                    setTotalProductError("");
-                                }}
-                            ></TextField>
-                            </Grid>
-                    </Grid>
-                    <br></br>
-                    <Grid container spacing={{ xs: 1, md: 2, }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={4}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Total Length
-                            </label>
-                        </Grid>
-                        <Grid item sm={6}>
-                            <TextField
-                                variant="outlined"
-                                size="small"
-                                error={isTotalProductError}
-                                helperText={totalProductError}
-                                value={totalProduct}
-                                onChange={(e) => {
-                                    setTotalProduct((e.target as HTMLInputElement).value);
-                                    setIsTotalProductError(false);
-                                    setTotalProductError("");
-                                }}
-                            ></TextField>
-                            </Grid>
-                    </Grid>
+                    <Grid item sm={4}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          clearable
+                          value={date}
+                          onChange={handleDateChange}
+                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+                      </LocalizationProvider>
 
-                </div>
-                <div style={{ display: 'flex', marginTop: "60px" }}>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={4}>
+                    </Grid>
+                </Grid> */}
+                  
+                <br></br>
+                
+                <div style={{ display: 'flex', marginTop: "50px",alignItems:"center", }}>
+                    
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
                             <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Amount
+                                <label style={{ color: "#ff0000" }}>*</label> Purchase Order No 
+                            </label>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <FormControl fullWidth size="small" error={isServiceNameError}>
+                                <Select value={serviceName} onChange={handleSNChange}>
+                                    <MenuItem disabled={true} value="--Select--">
+                                        SSP/002
+                                    </MenuItem>
+                                    <MenuItem disabled={true} value="--Select--">
+                                        SSP/003
+                                    </MenuItem>
+                                    <MenuItem disabled={true} value="--Select--">
+                                        SSP/004
+                                    </MenuItem>
+                                    <MenuItem disabled={true} value="--Select--">
+                                     --select--
+                                    </MenuItem>
+                                    {serviceNameList.map((item, index) => {
+                                        return (
+                                            <MenuItem key={index} value={item.serviceName}>
+                                                {item.serviceName}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                                <FormHelperText>{serviceNameError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                    <br></br>
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                            <label>
+                                <label style={{ color: "#ff0000" }}>*</label> Job  Order No
+                            </label>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <FormControl fullWidth size="small" error={isCategoryNameError}>
+                                <Select value={categoryName} onChange={handleCNChange}>
+                                    <MenuItem disabled={true} value="--Select--">
+                                        --Select--
+                                    </MenuItem>
+                                    {categoryNameList.map((item, index) => {
+                                        return (
+                                            <MenuItem key={index} value={item.categoryName}>
+                                                {item.categoryName}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                                <FormHelperText>{categoryNameError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                   
+                </div>
+                <div style={{ display: 'flex', marginTop: "50px",alignItems:"center", }}>
+                    
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                            <label>
+                                <label style={{ color: "#ff0000" }}>*</label> Invoice No 
                             </label>
                         </Grid>
                         <Grid item sm={6}>
@@ -828,28 +597,163 @@ const CreateNewProductOrder = () => {
                             </Grid>
                     </Grid>
                     <br></br>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                        <Grid item sm={4}>
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
                             <label>
-                                <label style={{ color: "#ff0000" }}>*</label>  Display
+                                <label style={{ color: "#ff0000" }}>*</label> Invoice Entry Date
                             </label>
                         </Grid>
-                        <Grid>
-                        <Checkbox {...label} defaultChecked style={{marginTop:"7px",marginLeft:"-30px"}}/>
-                        </Grid>
+                        <Grid item sm={6}>
+                            <TextField
+                                variant="outlined"
+                                size="small"
+                                error={isTotalProductError}
+                                helperText={totalProductError}
+                                value={totalProduct}
+                                onChange={(e) => {
+                                    setTotalProduct((e.target as HTMLInputElement).value);
+                                    setIsTotalProductError(false);
+                                    setTotalProductError("");
+                                }}
+                            >22-11-2022</TextField>
+                            </Grid>
                     </Grid>
-
+                   
                 </div>
+                <div style={{ display: 'flex', marginTop: "50px",alignItems:"center", }}>
+                    
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                            <label>
+                                <label style={{ color: "#ff0000" }}>*</label> Date of Invoice 
+                            </label>
+                        </Grid>
+                        <Grid item sm={6}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          clearable
+                          value={date}
+                          onChange={handleDateChange}
+                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+                      </LocalizationProvider>
 
-
-                <br></br>
+                    </Grid>
+                      
+                    </Grid>
+                    <br></br>
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                            <label>
+                                <label style={{ color: "#ff0000" }}>*</label> Invoice Entry Date
+                            </label>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <TextField
+                                variant="outlined"
+                                size="small"
+                                error={isTotalProductError}
+                                helperText={totalProductError}
+                                value={totalProduct}
+                                onChange={(e) => {
+                                    setTotalProduct((e.target as HTMLInputElement).value);
+                                    setIsTotalProductError(false);
+                                    setTotalProductError("");
+                                }}
+                            >22-11-2022</TextField>
+                            </Grid>
+                    </Grid>
+                   
+                </div>
+                <div style={{ display: 'flex', marginTop: "50px",alignItems:"center", }}>
+                    
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                            <label>
+                                <label style={{ color: "#ff0000" }}>*</label> Supplier Name 
+                            </label>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <TextField
+                                variant="outlined"
+                                size="small"
+                                error={isTotalProductError}
+                                helperText={totalProductError}
+                                value={totalProduct}
+                                onChange={(e) => {
+                                    setTotalProduct((e.target as HTMLInputElement).value);
+                                    setIsTotalProductError(false);
+                                    setTotalProductError("");
+                                }}
+                            >0.00</TextField>
+                            </Grid>
+                    </Grid>
+                    <br></br>
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                            <label>
+                                <label style={{ color: "#ff0000" }}>*</label>  Basic Amount
+                            </label>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <TextField
+                                variant="outlined"
+                                size="small"
+                                error={isTotalProductError}
+                                helperText={totalProductError}
+                                value={totalProduct}
+                                onChange={(e) => {
+                                    setTotalProduct((e.target as HTMLInputElement).value);
+                                    setIsTotalProductError(false);
+                                    setTotalProductError("");
+                                }}
+                            >22-11-2022</TextField>
+                            </Grid>
+                    </Grid>
+                   
+                </div>
+                                
+                    <div>
+                    <div style={{ display: 'flex', marginTop: "50px",alignItems:"center", }}>
+                    
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                            <label>
+                                <label style={{ color: "#ff0000" }}>*</label> Transpoortation Charges
+                            </label>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <TextField
+                                variant="outlined"
+                                size="small"
+                                error={isTotalProductError}
+                                helperText={totalProductError}
+                                value={totalProduct}
+                                onChange={(e) => {
+                                    setTotalProduct((e.target as HTMLInputElement).value);
+                                    setIsTotalProductError(false);
+                                    setTotalProductError("");
+                                }}
+                            >0.00</TextField>
+                            </Grid>
+                    </Grid>
+                    <br></br>
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
+                        <Grid item sm={5}>
+                        
+                        </Grid>
+                        <Grid item sm={6}>
+          
+                            </Grid>
+                    </Grid>
+                   
+                </div>
+                   
+                </div>
                 
-                
-
-
-
-
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",marginTop:"54px" }}>
+               
+              <br></br>
+              <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",marginTop:"54px" }}>
                     <Grid>
                         <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1,mb:2 }} >
                             Submit
@@ -863,4 +767,4 @@ const CreateNewProductOrder = () => {
     );
 };
 
-export default CreateNewProductOrder;
+export default AddInvoiceReciept;

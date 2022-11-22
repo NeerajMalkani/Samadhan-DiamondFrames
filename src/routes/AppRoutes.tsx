@@ -81,6 +81,12 @@ import OpeningStock from "../ui/Manufacture/ProductionUnitMaster/OpeningStock";
 import ProductProduction from "../ui/Manufacture/ProductProduction";
 import ProductOrderList from "../ui/Manufacture/ProductOrderList";
 import CreateNewProductOrder from "../ui/Manufacture/CreateNewProductOrder";
+import VenderOrderFormList from "../ui/Manufacture/VendorForm/VenderOrderFormList";
+import VenderOrderAddForm from "../ui/Manufacture/VendorForm/VenderOrderAddForm";
+import InvoiceRecieptList from "../ui/Manufacture/VendorForm/InvoiceRecieptList";
+import AddInvoiceReciept from "../ui/Manufacture/VendorForm/AddInvoiceReciept";
+import ProductionStatus from "../ui/Manufacture/ProductionStatus";
+import AddProductionStatus from "../ui/Manufacture/AddProductionStatus";
 
 
 
@@ -174,6 +180,17 @@ const AppRoutes = () => {
               <Route path="manufacture/productproduction" element={<ProductProduction/>}/>
               <Route path="manufacture/productOrderList" element={<ProductOrderList/>}/>
               <Route path="manufacture/newproductorder" element={<CreateNewProductOrder />}/>
+              <Route path="manufacture/venderOrderForm" element={<VenderOrderFormList/>}/>
+              <Route path="/manufacture/venderorderaddform" element={<VenderOrderAddForm />}/>
+              <Route path="manufacture/invoicerecieptlist" element={<InvoiceRecieptList/>}/>
+              <Route path="manufacture/addinvoicerecieptlist" element={<AddInvoiceReciept />}/>
+              <Route path="manufacture/productionstatus" element={<ProductionStatus/>}/>
+              <Route path="manufacture/addProductionStatus" element={<AddProductionStatus />}/>
+
+
+
+
+
                
             </Routes>
           </BrowserRouter>
