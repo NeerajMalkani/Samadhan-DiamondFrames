@@ -1,13 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Button,
-  Grid,
-  Paper,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Button, Grid, Paper, Snackbar, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -18,7 +10,6 @@ import { communication } from "../utils/communication";
 import { restrictNumericMobile, ValidateFields } from "../utils/validations";
 
 const ForgotPasswordPage = () => {
-
   //#region Variables
   const [isMobileError, setIsMobileError] = useState<boolean>(false);
   const [mobileError, setMobileError] = useState<string>("");
@@ -41,16 +32,14 @@ const ForgotPasswordPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  //#endregion 
-
+  //#endregion
 
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
   //#region Functions
   useEffect(() => {
-    if (cookies && cookies.dfc && cookies.dfc.UserID)
-      navigate(`/dashboard`);
+    if (cookies && cookies.dfc && cookies.dfc.UserID) navigate(`/dashboard`);
   }, []);
 
   const onOTP1Changed = (text: string) => {
@@ -85,12 +74,7 @@ const ForgotPasswordPage = () => {
       setIsMobileError(true);
       setMobileError(communication.BlankMobile);
     }
-    if (
-      otp1.length === 0 &&
-      otp2.length === 0 &&
-      otp3.length === 0 &&
-      otp4.length === 0
-    ) {
+    if (otp1.length === 0 && otp2.length === 0 && otp3.length === 0 && otp4.length === 0) {
       isValid = false;
       setIsOTPInvalid(true);
     }
@@ -158,10 +142,7 @@ const ForgotPasswordPage = () => {
     }
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -172,13 +153,12 @@ const ForgotPasswordPage = () => {
     setIsLoading(true);
     const params = {
       data: {
-        "Mobileno": mobile,
-        "otpno": parseInt(otp1 + otp2 + otp3 + otp4)
-      }
+        Mobileno: mobile,
+        otpno: parseInt(otp1 + otp2 + otp3 + otp4),
+      },
     };
-    Provider.createDF("apicommon/spawu7S4urax/tYjD/forgotpasswordcheck/", params)
+    Provider.createDF(Provider.API_URLS.ForgotPasswordCheck, params)
       .then((response) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           UpdateUser(response.data.data.user_refno);
         } else {
@@ -195,19 +175,17 @@ const ForgotPasswordPage = () => {
   };
 
   const UpdateUser = (userid) => {
-    debugger;
     setIsLoading(true);
     const params = {
       data: {
-        "user_refno": userid,
-        "Mobileno": mobile,
-        "auth": password1,
-        "confirm_password": password1
-      }
+        user_refno: userid,
+        Mobileno: mobile,
+        auth: password1,
+        confirm_password: password1,
+      },
     };
-    Provider.createDF("apicommon/spawu7S4urax/tYjD/alterpasswordcheck/", params)
+    Provider.createDF(Provider.API_URLS.AlterPasswordCheck, params)
       .then((response) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           navigate(`/login`);
         } else {
@@ -224,21 +202,15 @@ const ForgotPasswordPage = () => {
   };
 
   const GETOTP = () => {
-    debugger;
     setIsLoading(true);
     const params = {
       data: {
-        Mobileno: mobile
-      }
-      // Username: mobile,
-      // Password: password1,
-      // OTP: parseInt(otp1 + otp2 + otp3 + otp4),
+        Mobileno: mobile,
+      },
     };
-    Provider.create("apicommon/spawu7S4urax/tYjD/forgotmobilenocheck/", params)
+    Provider.create(Provider.API_URLS.ForgotMobileNoCheck, params)
       .then((response) => {
-        debugger;
         if (response.data && response.data.code === 200) {
-
           let otp = response.data.data.OTP_No;
 
           setOTP1(otp.toString().substring(0, 1));
@@ -260,7 +232,7 @@ const ForgotPasswordPage = () => {
       });
   };
 
-  //#endregion 
+  //#endregion
 
   return (
     <Box height="100vh" className="flex-center">
@@ -275,13 +247,7 @@ const ForgotPasswordPage = () => {
           },
         }}
       >
-        <img
-          className="margin-bottom-24"
-          src={companyLogo}
-          alt="Samadhan-Diamond Frames"
-          width={104}
-          height={104}
-        />
+        <img className="margin-bottom-24" src={companyLogo} alt="Samadhan-Diamond Frames" width={104} height={104} />
         <Typography variant="h5" className="text-align-center padding-bottom-8">
           Create New Account
         </Typography>
@@ -309,38 +275,10 @@ const ForgotPasswordPage = () => {
           </Grid>
           <Grid sx={{ mb: 2 }}>
             <Box display="flex" flexDirection="row">
-              <TextField
-                variant="filled"
-                size="small"
-                value={otp1}
-                disabled
-                onChange={(e) => onOTP1Changed(e.target.value)}
-                sx={{ width: 48, height: 48, mr: 1 }}
-              />
-              <TextField
-                variant="filled"
-                size="small"
-                value={otp2}
-                disabled
-                onChange={(e) => onOTP2Changed(e.target.value)}
-                sx={{ width: 48, height: 48, mr: 1 }}
-              />
-              <TextField
-                variant="filled"
-                size="small"
-                value={otp3}
-                disabled
-                onChange={(e) => onOTP3Changed(e.target.value)}
-                sx={{ width: 48, height: 48, mr: 1 }}
-              />
-              <TextField
-                variant="filled"
-                size="small"
-                value={otp4}
-                disabled
-                onChange={(e) => onOTP4Changed(e.target.value)}
-                sx={{ width: 48, height: 48 }}
-              />
+              <TextField variant="filled" size="small" value={otp1} disabled onChange={(e) => onOTP1Changed(e.target.value)} sx={{ width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" value={otp2} disabled onChange={(e) => onOTP2Changed(e.target.value)} sx={{ width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" value={otp3} disabled onChange={(e) => onOTP3Changed(e.target.value)} sx={{ width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" value={otp4} disabled onChange={(e) => onOTP4Changed(e.target.value)} sx={{ width: 48, height: 48 }} />
 
               <Button
                 variant="text"
@@ -353,11 +291,7 @@ const ForgotPasswordPage = () => {
                 Get OTP
               </Button>
             </Box>
-            <Typography
-              variant="caption"
-              style={{ display: isOTPInvalid ? "block" : "none" }}
-              sx={{ pt: 0.6, pl: 1.8, color: "error.main" }}
-            >
+            <Typography variant="caption" style={{ display: isOTPInvalid ? "block" : "none" }} sx={{ pt: 0.6, pl: 1.8, color: "error.main" }}>
               {communication.InvalidOTP}
             </Typography>
           </Grid>
@@ -408,11 +342,7 @@ const ForgotPasswordPage = () => {
           </Grid>
         </Grid>
       </Paper>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert
           // onClose={handleSnackbarClose}
           severity="error"

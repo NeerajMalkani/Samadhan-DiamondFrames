@@ -1,21 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  AlertColor,
-  Autocomplete,
-  Box,
-  Button,
-  CircularProgress,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  InputAdornment,
-  Radio,
-  RadioGroup,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Autocomplete, Box, Button, CircularProgress, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
@@ -34,8 +18,7 @@ const EWayBillPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
   useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
-      navigate(`/login`);
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
   //#region Variables
@@ -43,14 +26,11 @@ const EWayBillPage = () => {
   const [display, setDisplay] = useState("Yes");
 
   const [ewayBillList, setEwayBillList] = useState<Array<EWayBillModel>>([]);
-  //useContext(DataContext).eWayBillList;
 
   const [pageSize, setPageSize] = useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">(
-    "auto"
-  );
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
   const [actionStatus, setActionStatus] = useState<string>("new");
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
@@ -76,7 +56,7 @@ const EWayBillPage = () => {
   const [ewayBillListTemp, setEwayBillListTemp] = useState<Array<EWayBillModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-  //#endregion 
+  //#endregion
 
   //#region Functions
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,15 +69,7 @@ const EWayBillPage = () => {
   }, []);
 
   const ResetFields = () => {
-    // setSelectedID(0);
-    // setActionStatus("new");
-    // setDataGridOpacity(1);
-    // setDataGridPointer("auto");
-    // setButtonDisplay("none");
-    // setButtonLoading(false);
     handleCancelClick();
-
-
   };
 
   const FetchData = (type: string) => {
@@ -105,17 +77,17 @@ const EWayBillPage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        ewaybill_refno: "all"
+        ewaybill_refno: "all",
       },
     };
-    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/ewaybillrefnocheck/', params)
+    Provider.createDF(Provider.API_URLS.EWayBillRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.ewaybill_refno;
-              a.view_status = a.view_status === '1' ? "Yes" : "No";
+              a.view_status = a.view_status === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -143,13 +115,11 @@ const EWayBillPage = () => {
   };
 
   const FetchStates = () => {
-    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/getstateewaybillform/', null)
+    Provider.createDF(Provider.API_URLS.GetStateEWayBillForm, null)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            // setStatesFullData(response.data.data);
             const stateData: any = [];
-          
             response.data.data.map((data: any, i: number) => {
               stateData.push({
                 id: data.state_refno,
@@ -160,27 +130,17 @@ const EWayBillPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
-  const handelEditAndDelete = (
-    type: string | null,
-    a: EWayBillModel | undefined
-  ) => {
-    if (
-      type?.toLowerCase() === "edit" &&
-      a !== undefined &&
-      statesFullData !== undefined
-    ) {
+  const handelEditAndDelete = (type: string | null, a: EWayBillModel | undefined) => {
+    if (type?.toLowerCase() === "edit" && a !== undefined && statesFullData !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      debugger;
       setSelectedID(a.id);
       setDisplay(a.view_status);
       setSelectedStateName(a?.state_name);
-      let stateData: any = statesFullData.find(
-        (el: any) => el.label === a?.state_name
-      );
+      let stateData: any = statesFullData.find((el: any) => el.label === a?.state_name);
 
       setSelectedStateID(stateData.id);
       setSelectedInStateLimit(a?.in_state_limit.toString());
@@ -248,23 +208,17 @@ const EWayBillPage = () => {
   const InsertUpdateData = () => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/ewaybillcreate/', {
-        
-        // state_refno: selectedStateID,
-        // in_state_limit: selectedInStateLimit,
-        // inter_state_limit: selectedInterStateLimit,
-        // Display: display === "Yes",
+      Provider.createDF(Provider.API_URLS.EWayBillCreate, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           group_refno: cookies.dfc.Sess_group_refno,
           state_refno: selectedStateID,
           in_state_limit: selectedInStateLimit,
           inter_state_limit: selectedInterStateLimit,
-          view_status: display === "Yes" ? 1: 0
+          view_status: display === "Yes" ? 1 : 0,
         },
       })
         .then((response: any) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else if (response.data.code === 304) {
@@ -286,12 +240,7 @@ const EWayBillPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/ewaybillupdate/', {
-        // ID: selectedID,
-        // StateID: selectedStateID,
-        // InStateLimit: selectedInStateLimit,
-        // InterStateLimit: selectedInterStateLimit,
-        // Display: display === "Yes",
+      Provider.createDF(Provider.API_URLS.EWayBillUpdate, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           ewaybill_refno: selectedID,
@@ -299,11 +248,10 @@ const EWayBillPage = () => {
           state_refno: selectedStateID,
           in_state_limit: selectedInStateLimit,
           inter_state_limit: selectedInterStateLimit,
-          view_status: display === "Yes" ? 1: 0
+          view_status: display === "Yes" ? 1 : 0,
         },
       })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
           } else if (response.data.code === 304) {
@@ -327,10 +275,7 @@ const EWayBillPage = () => {
     }
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -349,17 +294,13 @@ const EWayBillPage = () => {
       );
     }
   };
-  //#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={{ xs: 1, md: 2 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
+        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">E-Way bill</Typography>
           </Grid>
@@ -377,7 +318,6 @@ const EWayBillPage = () => {
               options={statesFullData}
               sx={{ width: 300 }}
               onChange={(event: React.SyntheticEvent, value: any) => {
-                debugger;
                 setIsStateError(false);
                 setStateError("");
                 if (value !== null) {
@@ -386,16 +326,7 @@ const EWayBillPage = () => {
                 }
               }}
               value={selectedStateName}
-              renderInput={(params) => (
-                <TextField
-                  variant="outlined"
-                  {...params}
-                  label=""
-                  size="small"
-                  error={isStateError}
-                  helperText={stateError}
-                />
-              )}
+              renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
             />
           </Grid>
           <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
@@ -429,9 +360,7 @@ const EWayBillPage = () => {
               variant="outlined"
               size="small"
               onChange={(e) => {
-                setSelectedInterStateLimit(
-                  (e.target as HTMLInputElement).value
-                );
+                setSelectedInterStateLimit((e.target as HTMLInputElement).value);
                 setIsInterStateError(false);
                 setInterStateError("");
               }}
@@ -445,49 +374,26 @@ const EWayBillPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup
-                row
-                name="row-radio-buttons-group"
-                value={display}
-                onChange={handleDisplayChange}
-              >
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Button
-              variant="contained"
-              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
-              style={{ display: buttonDisplay }}
-              onClick={handleCancelClick}
-            >
+            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
               Cancel
             </Button>
-            <LoadingButton
-              loading={buttonLoading}
-              variant="contained"
-              sx={{ mt: 1 }}
-              onClick={handleSubmitClick}
-            >
+            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
               Submit
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              E-Way bill List
-            </Typography>
+            <Typography variant="h6">E-Way bill List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box
-                height="300px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ m: 2 }}
-              >
+              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
                 <CircularProgress />
               </Box>
             ) : (
@@ -513,7 +419,6 @@ const EWayBillPage = () => {
                           ),
                         }}
                       />
-
                     </Grid>
                     <DataGrid
                       style={{
@@ -529,9 +434,7 @@ const EWayBillPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...ewayBillList];
-                        let a: EWayBillModel | undefined = arrActivity.find(
-                          (el) => el.id === param.row.id
-                        );
+                        let a: EWayBillModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -548,11 +451,7 @@ const EWayBillPage = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>

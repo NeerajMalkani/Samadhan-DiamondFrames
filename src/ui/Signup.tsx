@@ -1,25 +1,15 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  Button,
-  Grid,
-  Paper,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Button, Grid, Paper, Snackbar, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import companyLogo from "../assets/logo192.png";
 import { communication } from "../utils/communication";
-import { theme } from "../theme/AppTheme";
 import { restrictNumericMobile, ValidateFields } from "../utils/validations";
 import { useCookies } from "react-cookie";
 import Provider from "../api/Provider";
 
 const SignupPage = () => {
-
   //#region Variables
   const [isFullNameError, setIsFullNameError] = useState<boolean>(false);
   const [fullNameError, setFullNameError] = useState<string>("");
@@ -46,15 +36,14 @@ const SignupPage = () => {
   const [otpButtonDisabled, setOTPButtonDisabled] = useState<boolean>(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  //#endregion 
+  //#endregion
 
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
   //#region Functions
   useEffect(() => {
-    if (cookies && cookies.dfc && cookies.dfc.UserID)
-      navigate(`/dashboard`);
+    if (cookies && cookies.dfc && cookies.dfc.UserID) navigate(`/dashboard`);
   }, []);
 
   const onOTP1Changed = (text: string) => {
@@ -94,12 +83,7 @@ const SignupPage = () => {
       setIsMobileError(true);
       setMobileError(communication.BlankMobile);
     }
-    if (
-      otp1.length === 0 &&
-      otp2.length === 0 &&
-      otp3.length === 0 &&
-      otp4.length === 0
-    ) {
+    if (otp1.length === 0 && otp2.length === 0 && otp3.length === 0 && otp4.length === 0) {
       isValid = false;
       setIsOTPInvalid(true);
     }
@@ -129,9 +113,7 @@ const SignupPage = () => {
     setFullName(text);
     setFullNameError("");
     setIsFullNameError(false);
-
   };
-
 
   const onMobileChanged = (text: string) => {
     setMobile(text);
@@ -159,7 +141,6 @@ const SignupPage = () => {
   };
 
   const ValidateOTP = () => {
-    debugger;
     if (mobile.length === 0 || !ValidateFields("phonenumber", mobile)) {
       setIsMobileError(true);
       setIsOTPInvalid(true);
@@ -177,10 +158,7 @@ const SignupPage = () => {
     }
   };
 
-  const handleSnackbarClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -188,7 +166,6 @@ const SignupPage = () => {
   };
 
   const InsertNewUser = () => {
-    debugger;
     setIsLoading(true);
     const params = {
       data: {
@@ -196,12 +173,11 @@ const SignupPage = () => {
         firstname: fullName,
         auth: password1,
         confirm_password: password1,
-        EntryFrom: "Browser"
-      }
+        EntryFrom: "Browser",
+      },
     };
-    Provider.createDF("apicommon/spawu7S4urax/tYjD/newuserprofilecreate/", params)
+    Provider.createDF(Provider.API_URLS.NewUserProfile, params)
       .then((response) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           navigate(`/login`);
         } else if (response.data.code === 304) {
@@ -221,18 +197,15 @@ const SignupPage = () => {
   };
 
   const GETOTP = () => {
-    debugger;
     const params = {
       data: {
         Mobileno: mobile,
-        EntryFrom: 1
-      }
+        EntryFrom: 1,
+      },
     };
-    Provider.createDF("apicommon/spawu7S4urax/tYjD/mobilenocheck/", params)
+    Provider.createDF(Provider.API_URLS.MobileCheck, params)
       .then((response) => {
-        debugger;
         if (response.data && response.data.code === 200) {
-
           let otp = response.data.data.OTP_No;
           if (otp !== "") {
             setOTP1(otp.toString().substring(0, 1));
@@ -240,7 +213,6 @@ const SignupPage = () => {
             setOTP3(otp.toString().substring(2, 3));
             setOTP4(otp.toString().substring(3, 4));
           }
-
         } else if (response.data.code === 304) {
           setSnackbarMessage(communication.AlreadyExists);
           setIsSnackbarOpen(true);
@@ -257,7 +229,7 @@ const SignupPage = () => {
       });
   };
 
-  //#endregion 
+  //#endregion
 
   return (
     <Box height="100vh" className="flex-center">
@@ -272,13 +244,7 @@ const SignupPage = () => {
           },
         }}
       >
-        <img
-          className="margin-bottom-24"
-          src={companyLogo}
-          alt="Samadhan-Diamond Frames"
-          width={104}
-          height={104}
-        />
+        <img className="margin-bottom-24" src={companyLogo} alt="Samadhan-Diamond Frames" width={104} height={104} />
         <Typography variant="h5" className="text-align-center padding-bottom-8">
           Create New Account
         </Typography>
@@ -323,38 +289,10 @@ const SignupPage = () => {
           </Grid>
           <Grid sx={{ mb: 2 }}>
             <Box display="flex" flexDirection="row">
-              <TextField
-                variant="filled"
-                size="small"
-                disabled
-                value={otp1}
-                onChange={(e) => onOTP1Changed(e.target.value)}
-                sx={{ width: 48, height: 48, mr: 1 }}
-              />
-              <TextField
-                variant="filled"
-                size="small"
-                disabled
-                value={otp2}
-                onChange={(e) => onOTP2Changed(e.target.value)}
-                sx={{ width: 48, height: 48, mr: 1 }}
-              />
-              <TextField
-                variant="filled"
-                size="small"
-                disabled
-                value={otp3}
-                onChange={(e) => onOTP3Changed(e.target.value)}
-                sx={{ width: 48, height: 48, mr: 1 }}
-              />
-              <TextField
-                variant="filled"
-                size="small"
-                disabled
-                value={otp4}
-                onChange={(e) => onOTP4Changed(e.target.value)}
-                sx={{ width: 48, height: 48 }}
-              />
+              <TextField variant="filled" size="small" disabled value={otp1} onChange={(e) => onOTP1Changed(e.target.value)} sx={{ width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" disabled value={otp2} onChange={(e) => onOTP2Changed(e.target.value)} sx={{ width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" disabled value={otp3} onChange={(e) => onOTP3Changed(e.target.value)} sx={{ width: 48, height: 48, mr: 1 }} />
+              <TextField variant="filled" size="small" disabled value={otp4} onChange={(e) => onOTP4Changed(e.target.value)} sx={{ width: 48, height: 48 }} />
 
               <Button
                 variant="text"
@@ -367,11 +305,7 @@ const SignupPage = () => {
                 Get OTP
               </Button>
             </Box>
-            <Typography
-              variant="caption"
-              style={{ display: isOTPInvalid ? "block" : "none" }}
-              sx={{ pt: 0.6, pl: 1.8, color: "error.main" }}
-            >
+            <Typography variant="caption" style={{ display: isOTPInvalid ? "block" : "none" }} sx={{ pt: 0.6, pl: 1.8, color: "error.main" }}>
               {communication.InvalidOTP}
             </Typography>
           </Grid>
@@ -422,11 +356,7 @@ const SignupPage = () => {
           </Grid>
         </Grid>
       </Paper>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+      <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <Alert
           // onClose={handleSnackbarClose}
           severity="error"

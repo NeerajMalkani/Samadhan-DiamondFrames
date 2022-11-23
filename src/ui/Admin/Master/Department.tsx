@@ -21,11 +21,11 @@ const DepartmentPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [departmentName, setDepartmentName] = useState("");
-  const [departmentNameList, setDepartmentNameList] =useState<Array<DFDepartmentNameModel>>([]);// useContext(DataContext).departmentNamesList;
+  const [departmentNameList, setDepartmentNameList] = useState<Array<DFDepartmentNameModel>>([]); // useContext(DataContext).departmentNamesList;
   const [departmentNameError, setDepartmentNameError] = useState("");
   const [isDepartmentNameError, setIsDepartmentNameError] = useState(false);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -40,9 +40,9 @@ const DepartmentPage = () => {
   const [departmentNameListTemp, setDepartmentNameListTemp] = useState<Array<DFDepartmentNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
 
   useEffect(() => {
     FetchData("");
@@ -80,17 +80,17 @@ const DepartmentPage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        department_refno: "all"
-    },
+        department_refno: "all",
+      },
     };
-    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/departmentrefnocheck/',params)
+    Provider.createDF(Provider.API_URLS.DepartmentRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id=a.department_refno;
-              a.view_status = a.view_status === '1' ? "Yes" : "No";
+              a.id = a.department_refno;
+              a.view_status = a.view_status === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -130,7 +130,6 @@ const DepartmentPage = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: DFDepartmentNameModel | undefined) => {
-
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -146,20 +145,17 @@ const DepartmentPage = () => {
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/departmentnamecreate/',{
-        // DepartmentName: paramActivityName,
-        // Display: checked,
+      Provider.createDF(Provider.API_URLS.DepartmentNameCreate, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           department_name: paramActivityName,
           view_status: checked ? 1 : 0,
-      },
+        },
       })
         .then((response: any) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
@@ -178,22 +174,18 @@ const DepartmentPage = () => {
           setSnackbarType("error");
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/departmentnameupdate/', {
-        // id: selectedID,
-        // DepartmentName: paramActivityName,
-        // Display: checked,
+      Provider.createDF(Provider.API_URLS.DepartmentNameUpdate, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           department_refno: selectedID,
-          department_name:  paramActivityName,
+          department_name: paramActivityName,
           view_status: checked ? 1 : 0,
-      },
+        },
       })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
@@ -233,7 +225,7 @@ const DepartmentPage = () => {
       );
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -286,9 +278,7 @@ const DepartmentPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Department List
-            </Typography>
+            <Typography variant="h6">Department List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

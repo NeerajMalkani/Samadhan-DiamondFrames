@@ -21,12 +21,11 @@ const DesignationPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [designationName, setDesignationName] = useState("");
   const [designationNameList, setDesignationNameList] = useState<Array<DFDesignationNameModel>>([]);
-  //  useContext(DataContext).designationNamesList;
   const [designationNameError, setDesignationNameError] = useState("");
   const [isDesignationNameError, setIsDesignationNameError] = useState(false);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -42,20 +41,18 @@ const DesignationPage = () => {
   const [designationNameListTemp, setDesignationNameListTemp] = useState<Array<DFDesignationNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    debugger;
     setDisplay((event.target as HTMLInputElement).value);
   };
 
   const handleSubmitClick = () => {
-    debugger;
     const IsTextFiledError = designationName.trim() === "";
     setDesignationNameError(IsTextFiledError ? communication.BlankActivityName : "");
     setIsDesignationNameError(IsTextFiledError);
@@ -83,18 +80,17 @@ const DesignationPage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        designation_refno: "all"
-    },
-  };
-    Provider.createDF('apiappadmin/spawu7S4urax/tYjD/designationrefnocheck/',params)
+        designation_refno: "all",
+      },
+    };
+    Provider.createDF(Provider.API_URLS.DesignationRefNoCheck, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id=a.designation_refno;
-              a.view_status = a.view_status === '1' ? "Yes" : "No";
+              a.id = a.designation_refno;
+              a.view_status = a.view_status === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -123,7 +119,6 @@ const DesignationPage = () => {
   };
 
   const handleCancelClick = () => {
-    debugger;
     setDisplay("Yes");
     setDesignationName("");
     setDesignationNameError("");
@@ -135,7 +130,6 @@ const DesignationPage = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: DFDesignationNameModel | undefined) => {
-    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -164,17 +158,14 @@ const DesignationPage = () => {
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/designationnamecreate/', {
-        // DesignationName: paramActivityName,
-        // Display: checked,
+      Provider.createDF(Provider.API_URLS.DesignationNameCreate, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           designation_name: paramActivityName,
           view_status: checked ? 1 : 0,
-      },
+        },
       })
         .then((response: any) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("added");
           } else if (response.data.code === 304) {
@@ -196,19 +187,15 @@ const DesignationPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/designationnameupdate/', {
-        // id: selectedID,
-        // DesignationName: paramActivityName,
-        // Display: checked ? 1 : 0,
+      Provider.createDF(Provider.API_URLS.DesignationNameUpdate, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           designation_refno: selectedID,
           designation_name: paramActivityName,
           view_status: checked ? 1 : 0,
-      },
+        },
       })
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             FetchData("updated");
           } else if (response.data.code === 304) {
@@ -238,7 +225,7 @@ const DesignationPage = () => {
     }
     setOpen(false);
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>

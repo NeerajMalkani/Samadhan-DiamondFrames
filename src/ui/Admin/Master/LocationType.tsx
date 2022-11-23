@@ -71,11 +71,11 @@ const LocationTypePage = () => {
   const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [locationTypeList, setLocationTypeList] = useState<Array<LocationTypeModel>>([]); //useContext(DataContext).locationTypeList;
+  const [locationTypeList, setLocationTypeList] = useState<Array<LocationTypeModel>>([]);
   const [locationTypeListTemp, setLocationTypeListTemp] = useState<Array<LocationTypeModel>>([]);
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); //useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); 
 
-  const [serviceNamesList, setServiceNamesList] = useState<Array<DFServiceNameModel>>([]); // useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] = useState<Array<DFServiceNameModel>>([]); 
 
   const [activityList, setActivityList] = useState<string[]>([]);
   const [activityListID, setActivityListID] = useState<number[]>([]);
@@ -94,7 +94,7 @@ const LocationTypePage = () => {
   const [activitySelectAll, setActivitySelectAll] = useState<string>("Select All");
   const [serviceSelectAll, setServiceSelectAll] = useState<string>("Select All");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-  //#endregion 
+  //#endregion
 
   //#region Functions
   useEffect(() => {
@@ -440,7 +440,7 @@ const LocationTypePage = () => {
     setServiceError(false);
     setServiceErrorText("");
   };
-  //#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>

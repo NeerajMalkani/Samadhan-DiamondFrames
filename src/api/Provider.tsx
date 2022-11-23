@@ -4,6 +4,46 @@ const BASE_URL_OLD = "https://api.starselector.com/api"; //"http://43.204.210.14
 const BASE_URL = "https://dfsolutions.in/api"; //"http://43.204.210.148/api";
 
 class Provider {
+  API_URLS = {
+    /******************************LOGIN************************************/
+    LoginCheck: "logincheck/",
+    UserFromRefNo: "userrefnocheck/",
+
+    /******************************SIGN UP************************************/
+    NewUserProfile: "newuserprofilecreate/",
+
+    /******************************FORGOT PASSWORD************************************/
+    MobileCheck: "mobilenocheck/",
+    ForgotMobileNoCheck: "forgotmobilenocheck/",
+    ForgotPasswordCheck: "forgotpasswordcheck/",
+    AlterPasswordCheck: "alterpasswordcheck/",
+
+    /******************************Admin Master************************************/
+    GroupFromRefNo: "grouprefnocheck/",
+    GroupNameCreate: "groupnamecreate/",
+    GroupNameUpdate: "groupnameupdate/",
+
+    ServiceFromRefNo: "servicerefnocheck/",
+    ServiceNameCreate: "servicenamecreate/",
+    ServiceNameUpdate: "servicenameupdate/",
+
+    UnitCategoryFromRefNo: "unitcategoryrefnocheck/",
+    UnitNameCreate: "unitnamecreate/",
+    UnitNameUpdate: "unitnameupdate/",
+
+    DepartmentRefNoCheck: "departmentrefnocheck/",
+    DepartmentNameCreate: "departmentnamecreate/",
+    DepartmentNameUpdate: "departmentnameupdate/",
+
+    DesignationRefNoCheck: "designationrefnocheck/",
+    DesignationNameCreate: "designationnamecreate/",
+    DesignationNameUpdate: "designationnameupdate/",
+
+    EWayBillRefNoCheck: "ewaybillrefnocheck/",
+    GetStateEWayBillForm: "getstateewaybillform/",
+    EWayBillCreate: "ewaybillcreate/",
+    EWayBillUpdate: "ewaybillupdate/",
+  };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
       headers: {
@@ -21,13 +61,12 @@ class Provider {
     });
   }
   create(resource: string, params: any) {
-    return axios.post<any>(`${BASE_URL_OLD}/${resource}`, params,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
-        },
-      });
+    return axios.post<any>(`${BASE_URL_OLD}/${resource}`, params, {
+      headers: {
+        "Content-Type": "application/json",
+        XApiKey: "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp",
+      },
+    });
   }
   createDF(resource: string, params: any) {
     return axios.post<any>(`${BASE_URL}/${resource}`, params);

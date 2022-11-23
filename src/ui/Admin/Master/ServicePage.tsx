@@ -41,7 +41,7 @@ const ServicePage = () => {
   const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<DFServiceNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-  //#endregion 
+  //#endregion
 
   //#region Functions
   useEffect(() => {
@@ -62,10 +62,10 @@ const ServicePage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        service_refno: "all"
-      }
+        service_refno: "all",
+      },
     };
-    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicerefnocheck/", params)
+    Provider.createDF(Provider.API_URLS.ServiceFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -76,7 +76,6 @@ const ServicePage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-
 
             setServiceNamesList(arrList);
             setServiceNamesListTemp(arrList);
@@ -144,7 +143,6 @@ const ServicePage = () => {
 
   const handelEditAndDelete = (type: string | null, a: DFServiceNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
-      debugger;
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.view_status);
@@ -158,16 +156,15 @@ const ServicePage = () => {
   };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
-    debugger;
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicenamecreate/", {
+      Provider.createDF(Provider.API_URLS.ServiceNameCreate, {
         data: {
           Sess_UserRefno: cookies.dfc.Sess_group_refno,
           service_name: paramServiceName,
           production_unit: "1",
-          view_status: checked ? 1 : 0
-        }
+          view_status: checked ? 1 : 0,
+        },
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -191,14 +188,14 @@ const ServicePage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF("apiappadmin/spawu7S4urax/tYjD/servicenameupdate/", {
+      Provider.createDF(Provider.API_URLS.ServiceNameUpdate, {
         data: {
           Sess_UserRefno: cookies.dfc.Sess_group_refno,
           service_refno: selectedID,
           service_name: paramServiceName,
           production_unit: "1",
-          view_status: checked ? 1 : 0
-        }
+          view_status: checked ? 1 : 0,
+        },
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -230,7 +227,7 @@ const ServicePage = () => {
     }
     setOpen(false);
   };
-  //#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
