@@ -565,6 +565,7 @@ const SummaryMaterial = () => {
                     )}
                 </Grid>
                 
+                
                 <div className="col-lg-12 col-md-12 col-sm-12">
                     <div className="table-responsive mb-3">
                         <h3 className="panel-title panel-title-new">Total Available Material & Scraps</h3>
