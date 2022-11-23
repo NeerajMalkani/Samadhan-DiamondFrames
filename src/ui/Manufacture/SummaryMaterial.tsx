@@ -2,24 +2,28 @@ import { Box, TextField, Button, Container, FormControl, InputAdornment, Circula
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
+import CheckIcon from "@mui/icons-material/Check";
+import Checkbox from '@mui/material/Checkbox';
+import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
+import { border } from "@mui/system";
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import ListIcon from '@mui/icons-material/List';
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-import Header from "../../../components/Header";
-import { invoiceRecieptFormColumn } from "../../../utils/tablecolumns";
-import { BrandModel, CategoryModel,OpeningStockModel, productModel, ServiceModel, venderOrderFormModel,InvoiceRecieptFormModel } from "../../../models/Model";
-import { theme } from "../../../theme/AppTheme";
-import NoData from "../../../components/NoData";
 
+import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel, summaryMaterialModel } from "../../models/Model";
+import Header from "../../components/Header";
+import NoData from "../../components/NoData";
+import { theme } from "../../theme/AppTheme";
+import { openingProductColumn, summaryMaterialColumn } from "../../utils/tablecolumns";
 
 
 
 let st_ID = 0, ct_ID = 0;
 
 
-const InvoiceRecieptList = () => {
+const SummaryMaterial = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
     const [CookieUserID, SetCookieUseID] = useState(0);
     let navigate = useNavigate();
@@ -446,29 +450,17 @@ const InvoiceRecieptList = () => {
     return (
         <Box sx={{ mt: 11 }}>
             <Header />
-            <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "flex-end", }}>
-                <Grid>
-                    {/* <Button sx={{mt:1,mr:2}}
-                        variant="text"
-                        // disabled={otpButtonDisabled}
-                        onClick={() => {
-                            addProduct();
-                        }}>
-                        + Create New
-                    </Button> */}
-                     <Button variant="contained"onClick={() => navigate("/manufacture/addinvoicerecieptlist")} sx={{mr:2}}> + Add Invoice Reciept</Button>
-
-                </Grid>
-            </Grid>
+         
             <Container maxWidth="lg">
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Grid item xs={4} sm={8} md={12}>
-                        <Typography variant='h4'> Invoice Reciept</Typography>
+                        <Typography variant='h4'> Summary of Material</Typography>
                     </Grid>
                     <Grid item xs={2} sm={6}>
-                        <Typography variant="h5">Invoice Reciept List</Typography>
+                        <Typography variant="h5">Summary of Material (Raw & Ready)</Typography>
                     </Grid>
                 </Grid>
+
 
                 <Grid
                     item
@@ -543,7 +535,7 @@ const InvoiceRecieptList = () => {
                                         }}
                                         autoHeight={true}
                                         rows={openingStockListTemp}
-                                        columns={invoiceRecieptFormColumn}
+                                        columns={summaryMaterialColumn}
                                         pageSize={pageSize}
                                         rowsPerPageOptions={[5, 10, 20]}
                                         onPageSizeChange={(newPageSize) =>
@@ -555,7 +547,7 @@ const InvoiceRecieptList = () => {
                                             e: React.MouseEvent<HTMLElement>
                                         ) => {
                                             const arrActivity = [...openingStockList];
-                                            let a: InvoiceRecieptFormModel | undefined =
+                                            let a: summaryMaterialModel | undefined =
                                                 arrActivity.find((el) => el.id === param.row.id);
                                             // handelEditAndDelete((e.target as any).textContent, a);
                                         }}
@@ -572,9 +564,50 @@ const InvoiceRecieptList = () => {
                         </div>
                     )}
                 </Grid>
+                
+                <div className="col-lg-12 col-md-12 col-sm-12">
+                    <div className="table-responsive mb-3">
+                        <h3 className="panel-title panel-title-new">Total Available Material & Scraps</h3>
+                        <hr/>
+                        <table className="table table-bordered table-hover" id="DataGridTable1">
+                            <thead className="thead-new" style={{   backgroundColor: theme.palette.primary.main,
+                                     color: theme.palette.primary.contrastText,}}>
+                                <tr>
+                                    <th style={{textAlign:"center",color:"white "}}>
+                                        Slitting Invoice Scrap Total
+                                        <br></br>
+                                    </th>
+                                    <th style={{textAlign:"center",color:"white "}}>
+                                       Total Scrap
+                                      <br />
+                                        <strong style={{fontSize:"10px"}}>
+                                        (Slitting Invoice Scrap Total + Prodiction Done Scrap Total  + Opening Stock Scrap Total) - (Sales Scrap Total) 
+                                        </strong>
+                                       
+                                    </th>
+                                    <th style={{textAlign:"center",color:"white "}}>
+                                        Total Material Available
+                                        <br />
+                                        <strong style={{fontSize:"10px"}}>
+                                        (Available Raw Material Kg Total + Prodiction Done  Kg Total  + Total Scrap)
+                                        </strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style={{textAlign:"center",fontWeight:"bold",fontSize:"14px"}}>395.91Kg</td>
+                                    <td style={{textAlign:"center",fontWeight:"bold",fontSize:"14px"}}>410.10Kg</td>
+                                    <td style={{textAlign:"center",fontWeight:"bold",fontSize:"14px"}}>26845.959Kg</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </Container>
         </Box>
     );
 };
 
-export default InvoiceRecieptList;
+export default SummaryMaterial;

@@ -1071,3 +1071,15 @@ export interface ProductionStatusModel {
   weightPerPiece: string;
   action: string;
 }
+export interface summaryMaterialModel {
+  id: number;
+  srno: number;
+  addedDate: string;
+  serviceName: string;
+  categoryName: string;
+  productName: string;
+  brandName: string;
+  totalProducts: string;
+  weightPerPiece: string;
+  action: string;
+}

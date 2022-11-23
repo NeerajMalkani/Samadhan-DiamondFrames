@@ -1,40 +1,16 @@
 import { Box, TextField, Button, Container, FormControl, InputAdornment, CircularProgress, FormControlLabel, Typography, Select, Grid, Menu, Snackbar, MenuItem, AlertColor, FormHelperText } from "@mui/material";
-// import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-// import { theme } from "../../../theme/AppTheme";
 import { useCookies } from "react-cookie";
-import ModeIcon from "@mui/icons-material/Mode";
-// import { communication } from "../../../utils/communication";
-import CheckIcon from "@mui/icons-material/Check";
-import Checkbox from '@mui/material/Checkbox';
-import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
-import { border } from "@mui/system";
-// import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
-// import { ServiceModel, CategoryModel, BrandModel, productModel, OpeningStockModel } from "../../../models/Model";
-// import Provider from "../../../api/Provider";
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import ListIcon from '@mui/icons-material/List';
-// import NoData from '../../../components/NoData';
-import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import Header from "../../../components/Header";
 import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../../models/Model";
-import { theme } from "../../../theme/AppTheme";
-import NoData from "../../../components/NoData";
-
-import { invoiceRecieptFormColumn } from "../../../utils/tablecolumns";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-// import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
-// import Header from "../../components/Header";
-// import NoData from "../../components/NoData";
-// import { theme } from "../../theme/AppTheme";
-// import "./ProductionUnitMaster/ProductProduction.css"
-// import { invoi } from "../../utils/tablecolumns";
-// import { invoiceRecieptColumn } from "../../../utils/tablecolumns";
+
 
 
 let st_ID = 0, ct_ID = 0;
