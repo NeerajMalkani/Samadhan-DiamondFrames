@@ -87,6 +87,7 @@ import InvoiceRecieptList from "../ui/Manufacture/VendorForm/InvoiceRecieptList"
 import AddInvoiceReciept from "../ui/Manufacture/VendorForm/AddInvoiceReciept";
 import ProductionStatus from "../ui/Manufacture/ProductionStatus";
 import AddProductionStatus from "../ui/Manufacture/AddProductionStatus";
+import SummaryMaterial from "../ui/Manufacture/SummaryMaterial";
 
 
 
@@ -186,6 +187,8 @@ const AppRoutes = () => {
               <Route path="manufacture/addinvoicerecieptlist" element={<AddInvoiceReciept />}/>
               <Route path="manufacture/productionstatus" element={<ProductionStatus/>}/>
               <Route path="manufacture/addProductionStatus" element={<AddProductionStatus />}/>
+              <Route path="manufacture/summaryMaterial" element={<SummaryMaterial/>}/>
+
 
 
 

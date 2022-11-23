@@ -4719,3 +4719,88 @@ export const productionStatusColumn: GridColDef[] = [
     ),
   },
 ];
+export const summaryMaterialColumn: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "service_name",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "category_name",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "product_name",
+    headerName: "Product Name >>brand",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "product_length",
+    headerName: "Product Length in Meter",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "product_raw",
+    headerName: "Product(Thickness off Raw Material)",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "raw_material",
+    headerName: "Raw Material Width in mm",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: 'display',
+    headerName: 'Display',
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Update
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];

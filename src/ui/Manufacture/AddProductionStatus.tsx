@@ -7,15 +7,12 @@ import { useCookies } from "react-cookie";
 
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-// import NoData from '../../../components/NoData';
-import SearchIcon from '@mui/icons-material/Search';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { BrandModel, CategoryModel, OpeningStockModel, productModel, ServiceModel } from "../../models/Model";
 
  
-// import { invoiceRecieptColumn } from "../../../utils/tablecolumns";
 
 
 let st_ID = 0, ct_ID = 0;
