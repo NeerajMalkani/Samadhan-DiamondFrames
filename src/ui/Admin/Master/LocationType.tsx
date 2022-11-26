@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header";
-import { ActivityRoleNameModel, LocationTypeModel, DFServiceNameModel } from "../../../models/Model";
+import { ActivityRoleNameModel, LocationTypeModel, ServiceNameModel } from "../../../models/Model";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { LoadingButton } from "@mui/lab";
@@ -76,7 +76,7 @@ const LocationTypePage = () => {
   const [locationTypeListTemp, setLocationTypeListTemp] = useState<Array<LocationTypeModel>>([]);
   const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);
 
-  const [serviceNamesList, setServiceNamesList] = useState<Array<DFServiceNameModel>>([]);
+  const [serviceNamesList, setServiceNamesList] = useState<Array<ServiceNameModel>>([]);
 
   const [activityList, setActivityList] = useState<string[]>([]);
   const [activityListID, setActivityListID] = useState<number[]>([]);
@@ -119,10 +119,11 @@ const LocationTypePage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
+            debugger
             setLocationTypeList(arrList);
             setLocationTypeListTemp(arrList);
             if (type !== "") {
@@ -160,6 +161,7 @@ const LocationTypePage = () => {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
+          
             arrList.map(function (a: any, index: number) {
               return a.display;
             });
@@ -281,7 +283,7 @@ const LocationTypePage = () => {
 
   const handelEditAndDelete = (type: string | null, a: LocationTypeModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
-      let arrAct = a.activityName.split(",");
+      let arrAct = a.activityRoleName.split(",");
       const results = arrAct.map((element) => {
         return element.trim();
       });
@@ -303,7 +305,7 @@ const LocationTypePage = () => {
 
       setServiceList(resultsSer);
 
-      let aID1: any = serviceNamesList.filter((el: DFServiceNameModel) => {
+      let aID1: any = serviceNamesList.filter((el: ServiceNameModel) => {
         return resultsSer.indexOf(el.service_name) !== -1;
       });
 
@@ -433,11 +435,11 @@ const LocationTypePage = () => {
     let un: any = event.target.value;
     if (un.indexOf("Select All") !== -1) {
       let arrAct: any = [];
-      serviceNamesList.map(function (a: DFServiceNameModel) {
+      serviceNamesList.map(function (a: ServiceNameModel) {
         arrAct.push(a.service_name);
       });
       setServiceList(arrAct);
-      let aID1: any = serviceNamesList.filter((el: DFServiceNameModel) => {
+      let aID1: any = serviceNamesList.filter((el: ServiceNameModel) => {
         return arrAct.indexOf(el.service_name) !== -1;
       });
 
@@ -450,7 +452,7 @@ const LocationTypePage = () => {
       setServiceListID([]);
       setServiceSelectAll("Select All");
     } else {
-      let a: any = serviceNamesList.filter((el: DFServiceNameModel) => {
+      let a: any = serviceNamesList.filter((el: ServiceNameModel) => {
         return un.indexOf(el.service_name) !== -1;
       });
 
@@ -563,7 +565,7 @@ const LocationTypePage = () => {
                 >
                   <b>{serviceSelectAll}</b>
                 </MenuItem>
-                {serviceNamesList.map((units: DFServiceNameModel) => (
+                {serviceNamesList.map((units: ServiceNameModel) => (
                   <MenuItem selected={true} key={units.service_refno} value={units.service_name} style={getStyles(units.service_name, serviceList, theme)}>
                     {units.service_name}
                   </MenuItem>
