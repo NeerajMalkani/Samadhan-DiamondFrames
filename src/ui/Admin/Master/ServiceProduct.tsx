@@ -17,7 +17,7 @@ import {
   Snackbar,
   TextField,
   Typography,
-  Stack
+  Stack,
 } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
@@ -25,16 +25,11 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitModel, UnitOfSalesModel, UnitWithConversionModel } from "../../../models/Model";
+import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitModel, UnitWithConversionModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import { ValidateGSTRate } from "../../../utils/validations";
-import AddIcon from '@mui/icons-material/Add';
-
-function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
-  return {
-    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
-  };
-}
+import AddIcon from "@mui/icons-material/Add";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ServiceProductPage = () => {
   let navigate = useNavigate();
@@ -46,7 +41,6 @@ const ServiceProductPage = () => {
   }, []);
 
   //#region Variables
-  //const [pID, setPID] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -72,7 +66,7 @@ const ServiceProductPage = () => {
   const [gst, setGst] = useState("");
 
   const [unitsOfSales, setUnitsOfSales] = useState<string>("--Select--");
-  //const [unitsOfSalesID, setUnitsOfSalesID] = useState<number>(0);
+
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
 
@@ -94,12 +88,12 @@ const ServiceProductPage = () => {
 
   const [display, setDisplay] = useState("Yes");
 
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); // useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]); // useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitWithConversionModel>>([]); //useContext(DataContext).unitOfSalesList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);
+  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitWithConversionModel>>([]);
   const [unitList, setUnitList] = useState<Array<UnitModel>>([]);
-  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]); //useContext(DataContext).categoryList;
-  const [productList, setProductList] = useState<Array<ProductModel>>([]); // useContext(DataContext).productList;
+  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
+  const [productList, setProductList] = useState<Array<ProductModel>>([]);
   const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
   const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -116,17 +110,26 @@ const ServiceProductPage = () => {
   const [selectedUnit, setSelectedUnit] = useState<string>("");
   const [selectedUnitID, setSelectedUnitID] = useState<number>(0);
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-  //#endregion 
+  //#endregion
 
   //#region Functions
   const FetchData = (type: string) => {
-    Provider.getAll("master/getserviceproductsv1")
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        service_refno: "0",
+        category_refno: "0",
+        product_refno: "0",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ServiceProductFilter, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display == 1 ? "Yes" : "No";
               let sr = { srno: index + 1 };
               let id = { id: index + 1 };
               a = Object.assign(a, sr);
@@ -158,12 +161,13 @@ const ServiceProductPage = () => {
   };
 
   const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "Contractor";
+              return el.display == 1 && el.activityRoleName === "Contractor";
             });
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
@@ -172,41 +176,50 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
     let params = {
-      ID: selectedID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedID,
+      },
     };
 
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNameServiceProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display==1;
+            // });
             setServiceNameList(response.data.data);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
     //, callbackFunction: any = null
+
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivityID,
+        service_refno: selectedServiceID,
+      },
     };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNameServiceProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setCategoryList(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
@@ -214,24 +227,25 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
-
-
 
   const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivityID,
+        category_refno: selectedCategoryID,
+      },
     };
-    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ProductServiceProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setProductList(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
@@ -239,21 +253,22 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchUnitsFromProduct = (selectedID: number, callbackFunction: any = null) => {
-    debugger;
     let params = {
-      ProductID: selectedID,
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: selectedID,
+      },
     };
 
-    Provider.getAll(`master/getproductunitbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.UnitNameSelectedForProduct, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-
+            response.data.data = APIConverter(response.data.data);
             setUnitOfSalesList(response.data.data);
             const units = [];
             response.data.data.filter((el: any) => {
@@ -269,7 +284,7 @@ const ServiceProductPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   useEffect(() => {
@@ -284,10 +299,6 @@ const ServiceProductPage = () => {
       setSn(event.target.value as string);
       setSnID(ac.id);
       FetchCategoriesFromServices(arnID, ac.id);
-      //  SetResetServiceName(false);
-      //  SetResetCategoryName(true);
-      //  SetResetUnitName(true);
-      //  FetchCategoriesFromServices(ac.id);
     }
   };
 
@@ -305,7 +316,6 @@ const ServiceProductPage = () => {
       FetchProductsFromCategory(arnID, snID, ac.id);
     }
   };
-
 
   const handlePNChnage = (event: SelectChangeEvent) => {
     let productName: string = event.target.value;
@@ -411,16 +421,25 @@ const ServiceProductPage = () => {
   const UpdateData = () => {
     debugger;
     setButtonLoading(true);
-    Provider.create("master/updateproduct", {
-      ProductID: pnID,
-      RateWithMaterials: rateWithMaterial,
-      RateWithoutMaterials: rateWithoutMaterial,
-      AlternateUnitOfSales: alternateUnit,
-      ShortSpecification: shortSpecification,
-      Specification: specification,
-      ServiceDisplay: display === "Yes",
-      SelectedUnitID: selectedUnitID,
-    })
+
+    const params = {
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: arnID,
+        service_refno: snID,
+        category_refno: cnID,
+        product_refno: pnID,
+        unitcategoryrefno_unitrefno: selectedUnitID,
+        with_material_rate: rateWithMaterial,
+        without_material_rate: rateWithoutMaterial,
+        unit_conversion_value: alternateUnit,
+        short_desc: shortSpecification,
+        specification: specification,
+        view_status: display === "Yes" ? 1 : 0,
+      },
+    };
+
+    Provider.create(Provider.API_URLS.ServiceProductUpdate, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           FetchData("updated");
@@ -471,15 +490,6 @@ const ServiceProductPage = () => {
     setDataGridPointer("auto");
     setActionStatus("new");
   };
-
-  //   const SetResetActivityName = (isBlank: boolean) => {
-  //     if (isBlank) {
-  //       setArn("--Select--");
-  //       setArnID(0);
-  //     }
-  //     setactivitynameError("");
-  //     setIsActivitynameError(false);
-  //   };
 
   const SetResetServiceName = (isBlank: boolean) => {
     if (isBlank) {
@@ -545,19 +555,7 @@ const ServiceProductPage = () => {
     setIsAlternateUnitError(false);
   };
 
-  const GetStringifyJson = (params: any) => {
-    var string_ = JSON.stringify(params);
-
-    string_ = string_.replace(/{/g, "");
-    string_ = string_.replace(/}/g, "");
-    string_ = string_.replace(/:/g, "=");
-    string_ = string_.replace(/,/g, "&");
-    string_ = string_.replace(/"/g, "");
-
-    return string_;
-  };
-
-  //#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -570,13 +568,11 @@ const ServiceProductPage = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="h4">Add/Edit Service Product</Typography>
-              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/master/addserviceproduct")}>View List</Button>
+              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/master/addserviceproduct")}>
+                View List
+              </Button>
             </Stack>
           </Grid>
-
-          {/* <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">Add/Edit Service Product</Typography>
-          </Grid> */}
           <Grid item xs={4} sm={4} md={6} sx={{ mt: 1 }}>
             <FormControl fullWidth size="small">
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -850,7 +846,6 @@ const ServiceProductPage = () => {
               Submit
             </LoadingButton>
           </Grid>
-
         </Grid>
       </Container>
       <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
@@ -858,8 +853,6 @@ const ServiceProductPage = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-
-
     </Box>
   );
 };

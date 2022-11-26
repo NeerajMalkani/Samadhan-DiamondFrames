@@ -12,6 +12,7 @@ import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const UnitPage = () => {
   let navigate = useNavigate();
@@ -67,14 +68,15 @@ const UnitPage = () => {
     ResetFields();
     let params = {
       data: {
-        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_UserRefno:"2",
         unit_category_refno: "all",
       },
     };
-    Provider.createDF(Provider.API_URLS.UnitCategoryFromRefNo, params)
+    Provider.createDFAdmin(Provider.API_URLS.UnitCategoryFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.unit_category_refno;
@@ -167,9 +169,9 @@ const UnitPage = () => {
   const InsertUpdateData = (unit1: string, unit2: string, checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.createDF(Provider.API_URLS.UnitNameCreate, {
+      Provider.createDFAdmin(Provider.API_URLS.UnitNameCreate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           unit_name: unit1,
           convert_unit_name: unit2,
           view_status: checked ? 1 : 0,
@@ -197,9 +199,9 @@ const UnitPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF(Provider.API_URLS.UnitNameUpdate, {
+      Provider.createDFAdmin(Provider.API_URLS.UnitNameUpdate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           unit_category_refno: selectedID,
           unit_name: unit1,
           convert_unit_name: unit2,

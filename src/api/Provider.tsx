@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const BASE_URL_OLD = "https://api.starselector.com/api"; //"http://43.204.210.148/api";
-const BASE_URL = "https://dfsolutions.in/api"; //"http://43.204.210.148/api";
+const BASE_URL_OLD = "https://api.starselector.com/api";
+const BASE_URL = "https://dfsolutions.in/api";
+const BASE_URL_Admin = "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
 
 class Provider {
   API_URLS = {
@@ -43,6 +44,33 @@ class Provider {
     GetStateEWayBillForm: "getstateewaybillform/",
     EWayBillCreate: "ewaybillcreate/",
     EWayBillUpdate: "ewaybillupdate/",
+
+    LocationTypeRefNoCheck: "locationtyperefnocheck/",
+    LocationTypeCreate: "locationtypecreate/",
+    LocationTypeUpdate: "locationtypeupdate/",
+
+    CategoryFromRefNo: "categoryrefnocheck/",
+    CategoryNameCreate: "categorynamecreate/",
+    CategoryNameUpdate: "categorynameupdate/",
+
+    ProductFromRefNo: "productrefnocheck/",
+    ActivityRoleForProduct: "getactivityroleproductform/",
+    ServiceForProduct: "getservicenameproductform/",
+    CategoryForProduct: "getcategorynameproductform/",
+    CategoryDataForProduct: "getcategorydataproductform/",
+    UnitNameSelectedForProduct: "getunitnameserviceproductform/",
+    UnitNameForProduct: "getunitnameproductform/",
+    ProductNameCreate: "productnamecreate/",
+    ProductNameUpdate: "productnameupdate/",
+
+    ServiceProductFilter: "serviceproductfilter/",
+    ActivityRoleServiceProduct: "getactivityroleserviceproductform/",
+    ServiceNameServiceProduct: "getservicenameserviceproductform/",
+    CategoryNameServiceProduct: "getcategorynameserviceproductform/",
+    CategoryDataServiceProduct: "getcategorydataserviceproductform/",
+    ProductServiceProduct: "getproductnameserviceproductform/",
+    ServiceProductCreate: "serviceproductcreate/",
+    ServiceProductUpdate: "serviceproductupdate/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
@@ -109,5 +137,13 @@ class Provider {
       data: params,
     });
   }
+  createDFAdmin(resource: string, params: any = null) {
+    if (params) {
+      return axios.post(`${BASE_URL_Admin}/${resource}`, params);
+    } else {
+      return axios.post(`${BASE_URL_Admin}/${resource}`);
+    }
+  }
 }
+
 export default new Provider();

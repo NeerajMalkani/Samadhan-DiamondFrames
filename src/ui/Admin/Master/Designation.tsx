@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
@@ -12,6 +12,7 @@ import { communication } from "../../../utils/communication";
 import { designationColumns } from "../../../utils/tablecolumns";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const DesignationPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -79,14 +80,15 @@ const DesignationPage = () => {
     ResetFields();
     let params = {
       data: {
-        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_UserRefno: "2",
         designation_refno: "all",
       },
     };
-    Provider.createDF(Provider.API_URLS.DesignationRefNoCheck, params)
+    Provider.createDFAdmin(Provider.API_URLS.DesignationRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.designation_refno;
@@ -158,9 +160,9 @@ const DesignationPage = () => {
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.createDF(Provider.API_URLS.DesignationNameCreate, {
+      Provider.createDFAdmin(Provider.API_URLS.DesignationNameCreate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           designation_name: paramActivityName,
           view_status: checked ? 1 : 0,
         },
@@ -187,9 +189,9 @@ const DesignationPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF(Provider.API_URLS.DesignationNameUpdate, {
+      Provider.createDFAdmin(Provider.API_URLS.DesignationNameUpdate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           designation_refno: selectedID,
           designation_name: paramActivityName,
           view_status: checked ? 1 : 0,

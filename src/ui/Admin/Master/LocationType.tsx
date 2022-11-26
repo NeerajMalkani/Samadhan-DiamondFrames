@@ -22,7 +22,7 @@ import {
   Theme,
   Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header";
@@ -35,6 +35,7 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { locationTypeColumns } from "../../../utils/tablecolumns";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -73,9 +74,9 @@ const LocationTypePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationTypeList, setLocationTypeList] = useState<Array<LocationTypeModel>>([]);
   const [locationTypeListTemp, setLocationTypeListTemp] = useState<Array<LocationTypeModel>>([]);
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); 
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);
 
-  const [serviceNamesList, setServiceNamesList] = useState<Array<DFServiceNameModel>>([]); 
+  const [serviceNamesList, setServiceNamesList] = useState<Array<DFServiceNameModel>>([]);
 
   const [activityList, setActivityList] = useState<string[]>([]);
   const [activityListID, setActivityListID] = useState<number[]>([]);
@@ -105,10 +106,17 @@ const LocationTypePage = () => {
 
   const FetchLocationType = (type: string) => {
     handleCancelClick();
-    Provider.getAll("master/getlocationtypes")
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        locationtype_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.LocationTypeRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
@@ -140,10 +148,17 @@ const LocationTypePage = () => {
   };
 
   const FetchActivity = () => {
-    Provider.getAll("master/getactivityroles")
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.GroupFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               return a.display;
@@ -165,10 +180,17 @@ const LocationTypePage = () => {
   };
 
   const FetchService = () => {
-    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/getservicenamelocationtypeform/", null)
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        service_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ServiceFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             setServiceNamesList(arrList);
           }
@@ -307,11 +329,12 @@ const LocationTypePage = () => {
   const InsertUpdateData = () => {
     setButtonLoading(true);
     if (actionStatus.toLocaleLowerCase() === "new") {
-      Provider.create("master/insertlocationtype", {
-        BranchType: location,
-        ActivityID: activityListID.toString(),
-        ServiceID: serviceListID.toString(),
-        Display: display === "Yes",
+      Provider.createDFAdmin(Provider.API_URLS.LocationTypeCreate, {
+        Sess_UserRefno: "2",
+        locationtype_name: location,
+        group_refno: activityListID.toString(),
+        service_refno: serviceListID.toString(),
+        view_status: display === "Yes" ? 1 : 0,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -328,19 +351,19 @@ const LocationTypePage = () => {
           setButtonLoading(false);
         })
         .catch((e) => {
-          // console.log(e);
           setButtonLoading(false);
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
           setOpen(true);
         });
     } else if (actionStatus.toLocaleLowerCase() === "edit") {
-      Provider.create("master/updatelocationtype", {
-        ID: selectedID,
-        BranchType: location,
-        ActivityID: activityListID.toString(),
-        ServiceID: serviceListID.toString(),
-        Display: display === "Yes",
+      Provider.createDFAdmin(Provider.API_URLS.LocationTypeUpdate, {
+        Sess_UserRefno: "2",
+        locationtype_refno: selectedID,
+        locationtype_name: location,
+        group_refno: activityListID.toString(),
+        service_refno: serviceListID.toString(),
+        view_status: display === "Yes" ? 1 : 0,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {

@@ -2,7 +2,7 @@ import { LoadingButton } from "@mui/lab";
 import { Alert, AlertColor, Autocomplete, Box, Button, CircularProgress, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
@@ -13,6 +13,7 @@ import { theme } from "../../../theme/AppTheme";
 import { communication } from "../../../utils/communication";
 import { eWayBillColumns } from "../../../utils/tablecolumns";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const EWayBillPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -76,14 +77,15 @@ const EWayBillPage = () => {
     ResetFields();
     let params = {
       data: {
-        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_UserRefno: "2",
         ewaybill_refno: "all",
       },
     };
-    Provider.createDF(Provider.API_URLS.EWayBillRefNoCheck, params)
+    Provider.createDFAdmin(Provider.API_URLS.EWayBillRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.ewaybill_refno;
@@ -115,10 +117,11 @@ const EWayBillPage = () => {
   };
 
   const FetchStates = () => {
-    Provider.createDF(Provider.API_URLS.GetStateEWayBillForm, null)
+    Provider.createDFAdmin(Provider.API_URLS.GetStateEWayBillForm, null)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const stateData: any = [];
             response.data.data.map((data: any, i: number) => {
               stateData.push({
@@ -208,9 +211,9 @@ const EWayBillPage = () => {
   const InsertUpdateData = () => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.createDF(Provider.API_URLS.EWayBillCreate, {
+      Provider.createDFAdmin(Provider.API_URLS.EWayBillCreate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           group_refno: cookies.dfc.Sess_group_refno,
           state_refno: selectedStateID,
           in_state_limit: selectedInStateLimit,
@@ -240,9 +243,9 @@ const EWayBillPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF(Provider.API_URLS.EWayBillUpdate, {
+      Provider.createDFAdmin(Provider.API_URLS.EWayBillUpdate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           ewaybill_refno: selectedID,
           group_refno: cookies.dfc.Sess_group_refno,
           state_refno: selectedStateID,

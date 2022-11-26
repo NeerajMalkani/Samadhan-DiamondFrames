@@ -8,7 +8,6 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
-  Icon,
   InputAdornment,
   Radio,
   RadioGroup,
@@ -30,6 +29,7 @@ import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ActivityPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -79,14 +79,15 @@ const ActivityPage = () => {
   const FetchData = (type: string) => {
     let params = {
       data: {
-        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_UserRefno: "2",
         group_refno: "all",
       },
     };
-    Provider.createDF(Provider.API_URLS.GroupFromRefNo, params)
+    Provider.createDFAdmin(Provider.API_URLS.GroupFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.group_refno;
@@ -163,9 +164,9 @@ const ActivityPage = () => {
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.createDF(Provider.API_URLS.GroupNameCreate, {
+      Provider.createDFAdmin(Provider.API_URLS.GroupNameCreate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           group_name: paramActivityName,
           view_status: checked ? 1 : 0,
         },
@@ -195,9 +196,9 @@ const ActivityPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF(Provider.API_URLS.GroupNameUpdate, {
+      Provider.createDFAdmin(Provider.API_URLS.GroupNameUpdate, {
         data: {
-          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_UserRefno: "2",
           group_refno: selectedID,
           group_name: paramActivityName,
           view_status: checked ? 1 : 0,

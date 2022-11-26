@@ -30,9 +30,9 @@ import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, U
 import { useCookies } from "react-cookie";
 import { communication } from "../../../utils/communication";
 import { LoadingButton } from "@mui/lab";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ProductPage = () => {
   let navigate = useNavigate();
@@ -42,7 +42,7 @@ const ProductPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -76,11 +76,11 @@ const ProductPage = () => {
   const [unitErrorText, setUnitErrorText] = React.useState<string>("");
 
   const [display, setDisplay] = React.useState("Yes");
-  const [activityNamesList, setActivityNamesList] =useState<Array<ActivityRoleNameModel>>([]);// React.useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);//React.useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);//React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);//React.useContext(DataContext).categoryList;
-  const [productList, setProductList] = useState<Array<ProductModel>>([]);//React.useContext(DataContext).productList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); 
+  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);
+  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
+  const [productList, setProductList] = useState<Array<ProductModel>>([]); 
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
@@ -94,17 +94,18 @@ const ProductPage = () => {
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
   const theme = useTheme();
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRoleForProduct)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setActivityNamesList(response.data.data);
           }
         }
@@ -114,16 +115,20 @@ const ProductPage = () => {
 
   const FetchServicesFromActivity = (selectedID: number) => {
     let params = {
-      ID: selectedID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedID,
+      },
     };
 
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceForProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setServiceNameList(response.data.data);
           }
         }
@@ -133,16 +138,21 @@ const ProductPage = () => {
 
   const FetchCategoriesFromServices = (activityID: number, selectedItem: number, callbackFunction: any = null) => {
     let params = {
-      ActivityID: activityID,
-      ServiceID: selectedItem,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: activityID,
+        service_refno: selectedItem,
+      },
     };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+
+    Provider.createDFAdmin(Provider.API_URLS.CategoryForProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setCategoryList(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
@@ -155,15 +165,18 @@ const ProductPage = () => {
 
   const FetchUnitsFromCategory = (selectedItem: number) => {
     let params = {
-      ID: selectedItem,
+      data: {
+        Sess_UserRefno: "2",
+        category_refno: selectedItem,
+      },
     };
-    Provider.getAll(`master/getunitbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.UnitNameForProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setUnitOfSalesList(response.data.data);
           }
         }
@@ -176,15 +189,22 @@ const ProductPage = () => {
     FetchActvityRoles();
   }, []);
 
-  const GetProductData = (type:string) => {
+  const GetProductData = (type: string) => {
     handleCancelClick();
-    Provider.getAll("master/getproducts")
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ProductFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.view_status = a.view_status === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               let id = { id: index + 1 };
               a = Object.assign(a, sr);
@@ -323,18 +343,23 @@ const ProductPage = () => {
   };
 
   const InsertData = () => {
-    Provider.create("master/insertproduct", {
-      ProductName: productName,
-      ActivityID: arnID,
-      ServiceID: snID,
-      CategoryID: cnID,
-      UnitOfSalesID: unitsOfSalesID,
-      Display: display === "Yes",
-    })
+    const params = {
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: arnID,
+        service_refno: snID,
+        category_refno: cnID,
+        unitcategoryrefno_unitrefno: unitsOfSalesID,
+        product_name: productName,
+        view_status: display === "Yes" ? 1 : 0,
+      },
+    };
+
+    Provider.createDFAdmin("master/insertproduct", params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           GetProductData("added");
-        }else if (response.data.code === 304) {
+        } else if (response.data.code === 304) {
           setSnackbarMessage(communication.ExistsError);
           setIsSnackbarOpen(true);
           setSnackbarType("error");
@@ -354,19 +379,24 @@ const ProductPage = () => {
   };
 
   const UpdateData = () => {
-    Provider.create("master/updateproduct", {
-      ProductID: pID,
-      ProductName: productName,
-      ActivityID: arnID,
-      ServiceID: snID,
-      CategoryID: cnID,
-      UnitOfSalesID: unitsOfSalesID,
-      Display: display === "Yes",
-    })
+    const params = {
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: pID,
+        group_refno: arnID,
+        service_refno: snID,
+        category_refno: cnID,
+        unitcategoryrefno_unitrefno: unitsOfSalesID,
+        product_name: productName,
+        view_status: display === "Yes" ? 1 : 0,
+      },
+    };
+
+    Provider.createDFAdmin(Provider.API_URLS.ProductNameUpdate, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           GetProductData("updated");
-        }else if (response.data.code === 304) {
+        } else if (response.data.code === 304) {
           setSnackbarMessage(communication.ExistsError);
           setIsSnackbarOpen(true);
           setSnackbarType("error");
@@ -517,7 +547,7 @@ const ProductPage = () => {
       );
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -691,9 +721,7 @@ const ProductPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Product List
-            </Typography>
+            <Typography variant="h6">Product List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

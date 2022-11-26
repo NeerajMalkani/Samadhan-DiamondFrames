@@ -12,6 +12,7 @@ import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ServicePage = () => {
   let navigate = useNavigate();
@@ -61,14 +62,15 @@ const ServicePage = () => {
     ResetFields();
     let params = {
       data: {
-        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_UserRefno: "2",
         service_refno: "all",
       },
     };
-    Provider.createDF(Provider.API_URLS.ServiceFromRefNo, params)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = a.service_refno;
@@ -158,9 +160,9 @@ const ServicePage = () => {
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.createDF(Provider.API_URLS.ServiceNameCreate, {
+      Provider.createDFAdmin(Provider.API_URLS.ServiceNameCreate, {
         data: {
-          Sess_UserRefno: cookies.dfc.Sess_group_refno,
+          Sess_UserRefno: "2",
           service_name: paramServiceName,
           production_unit: "1",
           view_status: checked ? 1 : 0,
@@ -188,9 +190,9 @@ const ServicePage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDF(Provider.API_URLS.ServiceNameUpdate, {
+      Provider.createDFAdmin(Provider.API_URLS.ServiceNameUpdate, {
         data: {
-          Sess_UserRefno: cookies.dfc.Sess_group_refno,
+          Sess_UserRefno: "2",
           service_refno: selectedID,
           service_name: paramServiceName,
           production_unit: "1",
