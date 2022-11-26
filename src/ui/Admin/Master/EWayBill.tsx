@@ -88,8 +88,8 @@ const EWayBillPage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.ewaybill_refno;
-              a.view_status = a.view_status === "1" ? "Yes" : "No";
+            //  a.id = a.ewaybill_refno;
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -141,7 +141,7 @@ const EWayBillPage = () => {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setSelectedID(a.id);
-      setDisplay(a.view_status);
+      setDisplay(a.display);
       setSelectedStateName(a?.state_name);
       let stateData: any = statesFullData.find((el: any) => el.label === a?.state_name);
 

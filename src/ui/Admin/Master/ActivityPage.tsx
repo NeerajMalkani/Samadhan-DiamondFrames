@@ -23,7 +23,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
 import { activityColumns } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
-import { DFActivityRoleNameModel } from "../../../models/Model";
+import { ActivityRoleNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
@@ -43,7 +43,7 @@ const ActivityPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [activityName, setActivityName] = React.useState("");
-  const [activityNamesList, setActivityNamesList] = useState<Array<DFActivityRoleNameModel>>([]); //React.useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); //React.useContext(DataContext).activityNamesList;
 
   const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
 
@@ -90,8 +90,8 @@ const ActivityPage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.group_refno;
-              a.view_status = a.view_status === "1" ? "Yes" : "No";
+             // a.id = a.group_refno;
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -148,12 +148,12 @@ const ActivityPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DFActivityRoleNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.view_status);
-      setActivityName(a?.group_name);
+      setDisplay(a.display);
+      setActivityName(a?.activityRoleName);
       setSelectedID(a.id);
       setactivitynameError("");
       setIsActivitynameError(false);
@@ -243,8 +243,8 @@ const ActivityPage = () => {
       setActivityNamesListTemp(activityNamesList);
     } else {
       setActivityNamesListTemp(
-        activityNamesList.filter((el: DFActivityRoleNameModel) => {
-          return el.group_name.toString().toLowerCase().includes(query.toLowerCase());
+        activityNamesList.filter((el: ActivityRoleNameModel) => {
+          return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -379,7 +379,7 @@ const ActivityPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...activityNamesList];
-                        let a: DFActivityRoleNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: ActivityRoleNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{

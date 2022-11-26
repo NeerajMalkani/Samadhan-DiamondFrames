@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASE_URL_OLD = "https://api.starselector.com/api";
-const BASE_URL = "https://dfsolutions.in/api";
+const BASE_URL = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD";
 const BASE_URL_Admin = "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
 
 class Provider {

@@ -38,6 +38,11 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "locationtype_refno", "id");
     renameKey(obj, "service_refno_name", "serviceName");
     renameKey(obj, "locationtype_name", "branchType");
+    renameKey(obj, "department_name", "departmentName");
+    renameKey(obj, "department_refno", "id");
+    renameKey(obj, "designation_name", "designationName");
+    renameKey(obj, "designation_refno", "id");
+    renameKey(obj, "ewaybill_refno", "id");
   });
 
   return response;

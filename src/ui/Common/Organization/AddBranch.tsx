@@ -36,7 +36,7 @@ import { CityModel, BranchTypeModel, StateModel, EmployeeModel } from "../../../
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { SelectChangeEvent } from "@mui/material";
 import { ForkRight } from "@mui/icons-material";
-import id from "date-fns/esm/locale/id";
+// import id from "date-fns/esm/locale/id";
 
 const AddBranch = () => {
 

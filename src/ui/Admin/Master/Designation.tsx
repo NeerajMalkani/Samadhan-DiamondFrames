@@ -6,7 +6,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import { DFDesignationNameModel } from "../../../models/Model";
+import { DesignationNameModel } from "../../../models/Model";
 import { theme } from "../../../theme/AppTheme";
 import { communication } from "../../../utils/communication";
 import { designationColumns } from "../../../utils/tablecolumns";
@@ -26,7 +26,7 @@ const DesignationPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [designationName, setDesignationName] = useState("");
-  const [designationNameList, setDesignationNameList] = useState<Array<DFDesignationNameModel>>([]);
+  const [designationNameList, setDesignationNameList] = useState<Array<DesignationNameModel>>([]);
   const [designationNameError, setDesignationNameError] = useState("");
   const [isDesignationNameError, setIsDesignationNameError] = useState(false);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -39,7 +39,7 @@ const DesignationPage = () => {
   const [snackMsg, setSnackMsg] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [designationNameListTemp, setDesignationNameListTemp] = useState<Array<DFDesignationNameModel>>([]);
+  const [designationNameListTemp, setDesignationNameListTemp] = useState<Array<DesignationNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   //#endregion
@@ -91,8 +91,8 @@ const DesignationPage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.designation_refno;
-              a.view_status = a.view_status === "1" ? "Yes" : "No";
+              //a.id = a.designation_refno;
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -131,12 +131,12 @@ const DesignationPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DFDesignationNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: DesignationNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.view_status);
-      setDesignationName(a?.designation_name);
+      setDisplay(a.display);
+      setDesignationName(a?.designationName);
       setSelectedID(a.id);
       setDesignationNameError("");
       setIsDesignationNameError(false);
@@ -151,8 +151,8 @@ const DesignationPage = () => {
       setDesignationNameListTemp(designationNameList);
     } else {
       setDesignationNameListTemp(
-        designationNameList.filter((el: DFDesignationNameModel) => {
-          return el.designation_name.toString().toLowerCase().includes(query.toLowerCase());
+        designationNameList.filter((el: DesignationNameModel) => {
+          return el.designationName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -325,7 +325,7 @@ const DesignationPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...designationNameList];
-                        let a: DFDesignationNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: DesignationNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
 
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}

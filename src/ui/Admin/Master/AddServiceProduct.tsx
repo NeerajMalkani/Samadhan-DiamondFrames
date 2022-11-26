@@ -83,7 +83,7 @@ const AddServiceProduct = () => {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display==1 ? "Yes" : "No";
               let sr = { srno: index + 1 };
               let id = { id: index + 1 };
               a = Object.assign(a, sr);

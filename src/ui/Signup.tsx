@@ -203,8 +203,10 @@ const SignupPage = () => {
         EntryFrom: 1,
       },
     };
+    debugger;
     Provider.createDF(Provider.API_URLS.MobileCheck, params)
       .then((response) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           let otp = response.data.data.OTP_No;
           if (otp !== "") {
@@ -298,6 +300,7 @@ const SignupPage = () => {
                 variant="text"
                 disabled={otpButtonDisabled}
                 onClick={() => {
+                  debugger;
                   //ValidateOTP();
                   GETOTP();
                 }}

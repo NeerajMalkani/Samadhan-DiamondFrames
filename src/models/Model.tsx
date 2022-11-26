@@ -346,7 +346,7 @@ export interface EWayBillModel {
   state_name: string;
   in_state_limit: number;
   inter_state_limit: number;
-  view_status: string;
+  display: string;
   action: string;
 }
 
@@ -354,7 +354,7 @@ export interface LocationTypeModel {
   id: number;
   srno: number;
   serviceName: string;
-  activityName: string;
+  activityRoleName: string;
   branchType: string;
   display: string;
   action: string;

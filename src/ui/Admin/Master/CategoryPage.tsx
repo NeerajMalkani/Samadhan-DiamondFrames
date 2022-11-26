@@ -28,7 +28,7 @@ import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import { categoryColumns } from "../../../utils/tablecolumns";
 import Provider from "../../../api/Provider";
-import { ActivityRoleNameModel, DFCategoryModel, ServiceNameModel, UnitOfSalesModel, DFUnitOfSalesModel1 } from "../../../models/Model";
+import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, DFUnitOfSalesModel1 } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { communication } from "../../../utils/communication";
 import { LoadingButton } from "@mui/lab";
@@ -78,14 +78,14 @@ const CategoryPage = () => {
   const [personName, setPersonName] = React.useState<string[]>([]);
 
   const [display, setDisplay] = useState("Yes");
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); //React.useContext(DataContext).activityNamesList;
-  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]); // React.useContext(DataContext).serviceNameList;
-  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]); //React.useContext(DataContext).unitOfSalesList;
-  const [categoryList, setCategoryList] = useState<Array<DFCategoryModel>>([]); //React.useContext(DataContext).categoryList;
+  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);
+  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);
+  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);
+  const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
 
-  const [SalesName, SetSalesName] = useState<Array<DFUnitOfSalesModel1>>([]); //React.useContext(DataContext).categoryList;
+  const [SalesName, SetSalesName] = useState<Array<DFUnitOfSalesModel1>>([]);
 
-  const [categoryListTemp, setCategoryListTemp] = useState<Array<DFCategoryModel>>([]);
+  const [categoryListTemp, setCategoryListTemp] = useState<Array<CategoryModel>>([]);
   const [pageSize, setPageSize] = useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
@@ -131,9 +131,7 @@ const CategoryPage = () => {
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
-    // let ac = SalesName.find(
-    //   (el) => el.unit_name === event.target.value
-    // );
+
     const intersection = SalesName.filter((element) => event.target.value.includes(element.unit_name));
     let a = [];
 
@@ -141,7 +139,7 @@ const CategoryPage = () => {
       a.push(data.unit_id);
     });
     setUnitId(a);
-    console.log("aniket", a);
+    //console.log("aniket", a);
   };
 
   const FetchActivityName = async () => {
@@ -195,8 +193,8 @@ const CategoryPage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.category_refno;
-              a.view_status = a.view_status ? "Yes" : "No";
+              //  a.id = a.category_refno;
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
               return a;
@@ -262,12 +260,12 @@ const CategoryPage = () => {
             response.data.data = APIConverter(response.data.data);
             response.data.data.map((e) => {
               let ob = {};
-              ob["unit_name"] = e.unit_name;
-              ob["unit_id"] = e.unit_category_refno;
+              ob["unit_name"] = e.displayUnit;
+              ob["unit_id"] = e.id;
               a.push(ob);
             });
             SetSalesName(a);
-            console.log(a, "testing_final");
+            // console.log(a, "testing_final");
           }
         } else {
           //Show snackbar
@@ -285,9 +283,9 @@ const CategoryPage = () => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
               response.data.data = APIConverter(response.data.data);
-              response.data.data = response.data.data.filter((el: any) => {
-                return el.display;
-              });
+              // response.data.data = response.data.data.filter((el: any) => {
+              //   return el.display;
+              // });
               setUnitOfSalesList(response.data.data);
             }
           } else {
@@ -304,9 +302,9 @@ const CategoryPage = () => {
 
   const handleARNChange = (event: SelectChangeEvent) => {
     let activityName: string = event.target.value;
-    let ac = activityNamesList.find((el) => el.group_name === activityName);
+    let ac = activityNamesList.find((el) => el.activityRoleName === activityName);
     if (ac !== undefined) {
-      setArnID(ac.group_refno);
+      setArnID(ac.id);
       setArn(activityName);
       setActionRoleError(false);
       setActionRoleErrorText("");
@@ -315,10 +313,10 @@ const CategoryPage = () => {
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
-    let ac = serviceNameList.find((el) => el.service_name === serviceName);
+    let ac = serviceNameList.find((el) => el.serviceName === serviceName);
     if (ac !== undefined) {
       setSn(serviceName);
-      setSnID(ac?.service_refno);
+      setSnID(ac?.serviceID);
       setServiceNameError(false);
       setServiceNameErrorText("");
     }
@@ -445,21 +443,21 @@ const CategoryPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DFCategoryModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: CategoryModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.view_status);
-      setSn(a.service_refno_name);
+      setDisplay(a.display);
+      setSn(a.serviceName);
       setSnID(a.serviceID);
-      setArn(a.group_refno_name);
+      setArn(a.activityRoleName);
       setArnID(a.roleID);
-      setCn(a.category_name);
-      setHsn(a.hsn_sac_code);
-      setGst(a.gst_rate);
-
-      if (a.unit_category_names !== null) {
-        let arrUnits = a.unit_category_names.split(",");
+      setCn(a.categoryName);
+      setHsn(a.hsnsacCode);
+      setGst(a.gstRate);
+debugger
+      if (a.unitName !== null) {
+        let arrUnits = a.unitName.split("<br>");
         const results = arrUnits.map((element) => {
           return element.trim();
         });
@@ -471,6 +469,21 @@ const CategoryPage = () => {
 
         const unitID = a1.map((data: any) => data.id);
         setUnitsOfSalesID(unitID.join(","));
+        setUnitId(unitID);
+
+
+        // setPersonName(
+        //   // On autofill we get a stringified value.
+        //   typeof value === "string" ? value.split(",") : value
+        // );
+    
+        // const intersection = SalesName.filter((element) => event.target.value.includes(element.unit_name));
+        // let a = [];
+    
+        // intersection.map((data) => {
+        //   a.push(data.unit_id);
+        // });
+        // setUnitId(a);
       }
       setSelectedID(a.id);
       setButtonDisplay("unset");
@@ -515,7 +528,7 @@ const CategoryPage = () => {
           setSnackbarType("error");
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.CategoryNameCreate, {
+      Provider.createDFAdmin(Provider.API_URLS.CategoryNameUpdate, {
         Sess_UserRefno: "2",
         category_refno: selectedID,
         category_name: cn,
@@ -563,8 +576,8 @@ const CategoryPage = () => {
       setCategoryListTemp(categoryList);
     } else {
       setCategoryListTemp(
-        categoryList.filter((el: DFCategoryModel) => {
-          return el.category_name.toString().toLowerCase().includes(query.toLowerCase());
+        categoryList.filter((el: CategoryModel) => {
+          return el.categoryName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -603,11 +616,9 @@ const CategoryPage = () => {
                 </MenuItem>
                 {activityNamesList &&
                   activityNamesList.map((item, index) => {
-                    console.log("testing", item.group_name);
-
                     return (
-                      <MenuItem key={item.group_refno} value={item.group_name}>
-                        {item.group_name}
+                      <MenuItem key={item.id} value={item.activityRoleName}>
+                        {item.activityRoleName}
                       </MenuItem>
                     );
                   })}
@@ -629,10 +640,10 @@ const CategoryPage = () => {
                   return (
                     <MenuItem
                       //selected={index === 1}
-                      key={item.service_refno}
-                      value={item.service_name}
+                      key={item.serviceID}
+                      value={item.serviceName}
                     >
-                      {item.service_name}
+                      {item.serviceName}
                     </MenuItem>
                   );
                 })}
@@ -774,11 +785,13 @@ const CategoryPage = () => {
                 )}
                 MenuProps={MenuProps}
               >
-                {SalesName.map((name) => (
-                  <MenuItem key={name.unit_id} value={name.unit_name} style={getStyles(name.unit_name, personName, theme)}>
-                    {name.unit_name}
-                  </MenuItem>
-                ))}
+                {SalesName.map((name) => {
+                  return (
+                    <MenuItem key={name.unit_id} value={name.unit_name} style={getStyles(name.unit_name, personName, theme)}>
+                      {name.unit_name}
+                    </MenuItem>
+                  );
+                })}
               </Select>
 
               <FormHelperText>{unitErrorText}</FormHelperText>
@@ -871,7 +884,7 @@ const CategoryPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...categoryList];
-                        let a: DFCategoryModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: CategoryModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{

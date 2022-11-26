@@ -1,13 +1,13 @@
 import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
-import React, { KeyboardEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Provider from "../../../api/Provider";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { serviceColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import { theme } from "../../../theme/AppTheme";
-import { DFServiceNameModel } from "../../../models/Model";
+import { ServiceNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import ListIcon from "@mui/icons-material/List";
@@ -26,7 +26,7 @@ const ServicePage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [serviceName, setServiceName] = React.useState("");
-  const [serviceNamesList, setServiceNamesList] = useState<Array<DFServiceNameModel>>([]); // React.useContext(DataContext).serviceNameList;
+  const [serviceNamesList, setServiceNamesList] = useState<Array<ServiceNameModel>>([]);
   const [servicenameError, setservicenameError] = useState("");
   const [isServicenameError, setIsServicenameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
@@ -39,7 +39,7 @@ const ServicePage = () => {
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<DFServiceNameModel>>([]);
+  const [serviceNamesListTemp, setServiceNamesListTemp] = useState<Array<ServiceNameModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   //#endregion
@@ -73,8 +73,8 @@ const ServicePage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.service_refno;
-              a.view_status = a.view_status === "1" ? "Yes" : "No";
+              //   a.id = a.service_refno;
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -109,8 +109,8 @@ const ServicePage = () => {
       setServiceNamesListTemp(serviceNamesList);
     } else {
       setServiceNamesListTemp(
-        serviceNamesList.filter((el: DFServiceNameModel) => {
-          return el.service_name.toString().toLowerCase().includes(query.toLowerCase());
+        serviceNamesList.filter((el: ServiceNameModel) => {
+          return el.serviceName.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -143,12 +143,12 @@ const ServicePage = () => {
     setDataGridPointer("auto");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DFServiceNameModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: ServiceNameModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-      setDisplay(a.view_status);
-      setServiceName(a?.service_name);
+      setDisplay(a.display);
+      setServiceName(a?.serviceName);
       setSelectedID(a.id);
       setservicenameError("");
       setIsServicenameError(false);
@@ -327,7 +327,7 @@ const ServicePage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...serviceNamesList];
-                        let a: DFServiceNameModel | undefined = arrActivity.find((el) => el.id == param.row.id);
+                        let a: ServiceNameModel | undefined = arrActivity.find((el) => el.id == param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{

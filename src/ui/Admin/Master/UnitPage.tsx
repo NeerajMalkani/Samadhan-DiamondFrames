@@ -7,7 +7,7 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { unitColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import { theme } from "../../../theme/AppTheme";
-import { DFUnitOfSalesModel } from "../../../models/Model";
+import { UnitOfSalesModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import ListIcon from "@mui/icons-material/List";
@@ -29,7 +29,7 @@ const UnitPage = () => {
   const [unit2Name, setUnit2Name] = React.useState("");
   const [unit1ID, setUnit1ID] = React.useState(0);
   const [unit2ID, setUnit2ID] = React.useState(0);
-  const [unitNamesList, setUnitNamesList] = useState<Array<DFUnitOfSalesModel>>([]);
+  const [unitNamesList, setUnitNamesList] = useState<Array<UnitOfSalesModel>>([]);
   const [unit1Error, setUnit1Error] = useState("");
   const [isUnit1Error, setIsunit1Error] = useState(false);
   const [unit2Error, setUnit2Error] = useState("");
@@ -45,7 +45,7 @@ const UnitPage = () => {
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const [unitNamesListTemp, setUnitNamesListTemp] = useState<Array<DFUnitOfSalesModel>>([]);
+  const [unitNamesListTemp, setUnitNamesListTemp] = useState<Array<UnitOfSalesModel>>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   //#endregion
@@ -68,7 +68,7 @@ const UnitPage = () => {
     ResetFields();
     let params = {
       data: {
-        Sess_UserRefno:"2",
+        Sess_UserRefno: "2",
         unit_category_refno: "all",
       },
     };
@@ -79,8 +79,8 @@ const UnitPage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = a.unit_category_refno;
-              a.view_status = a.view_status === "1" ? "Yes" : "No";
+              // a.id = a.unit_category_refno;
+              a.display = a.view_status === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -147,15 +147,15 @@ const UnitPage = () => {
     setDataGridPointer("auto");
   };
 
-  const handelEditAndDelete = (type: string | null, a: DFUnitOfSalesModel | undefined) => {
+  const handelEditAndDelete = (type: string | null, a: UnitOfSalesModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setUnit1ID(a.unit1ID);
       setUnit2ID(a.unit2ID);
-      setDisplay(a.view_status);
-      setUnit1Name(a.unit_name_text.split("/")[0].trim());
-      setUnit2Name(a.unit_name_text.split("/")[1].trim());
+      setDisplay(a.display);
+      setUnit1Name(a.displayUnit.split("/")[0].trim());
+      setUnit2Name(a.displayUnit.split("/")[1].trim());
       setSelectedID(a.id);
       setUnit1Error("");
       setUnit2Error("");
@@ -245,8 +245,8 @@ const UnitPage = () => {
       setUnitNamesListTemp(unitNamesList);
     } else {
       setUnitNamesListTemp(
-        unitNamesList.filter((el: DFUnitOfSalesModel) => {
-          return el.view_status.toString().toLowerCase().includes(query.toLowerCase());
+        unitNamesList.filter((el: UnitOfSalesModel) => {
+          return el.displayUnit.toString().toLowerCase().includes(query.toLowerCase());
         })
       );
     }
@@ -400,7 +400,7 @@ const UnitPage = () => {
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...unitNamesList];
-                        let a: DFUnitOfSalesModel | undefined = arrActivity.find((el) => el.id == param.row.id);
+                        let a: UnitOfSalesModel | undefined = arrActivity.find((el) => el.id == param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
