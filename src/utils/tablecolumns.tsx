@@ -440,11 +440,12 @@ export const serviceProductColumns: GridColDef[] = [
     flex: 1.8,
     //  minWidth: 140,
     renderCell: (params) => {
-      if (params.row.selectedUnitID === params.row.unit1ID) {
-        return params.value + " / " + params.row.unit1Name;
-      } else {
-        return params.value + " / " + params.row.unit2Name;
-      }
+      return params.value + " / " + params.row.selectedUnit;
+      // if (params.row.selectedUnitID === params.row.unit1ID) {
+        
+      // } else {
+      //   return params.value + " / " + params.row.selectedUnit;
+      // }
     },
   },
   {
@@ -452,27 +453,28 @@ export const serviceProductColumns: GridColDef[] = [
     headerName: "Rate (without material)",
     flex: 1.8,
     renderCell: (params) => {
-      if (params.row.selectedUnitID === params.row.unit1ID) {
-        return params.value + " / " + params.row.unit1Name;
-      } else {
-        return params.value + " / " + params.row.unit2Name;
-      }
+      return params.value + " / " + params.row.selectedUnit;
+      // if (params.row.selectedUnitID === params.row.unit1ID) {
+        
+      // } else {
+      //   return params.value + " / " + params.row.unit2Name;
+      // }
     },
     //  minWidth: 140,
   },
-  {
-    field: "alternateUnitOfSales",
-    headerName: "Alternate Unit of Sale",
-    flex: 1.8,
-    renderCell: (params) => {
-      if (params.row.selectedUnitID === params.row.unit1ID) {
-        return params.row.unit2Name;
-      } else {
-        return params.row.unit1Name;
-      }
-    },
-    //  minWidth: 140,
-  },
+  // {
+  //   field: "alternateUnitOfSales",
+  //   headerName: "Alternate Unit of Sale",
+  //   flex: 1.8,
+  //   renderCell: (params) => {
+  //     if (params.row.selectedUnitID === params.row.unit1ID) {
+  //       return params.row.unit2Name;
+  //     } else {
+  //       return params.row.unit1Name;
+  //     }
+  //   },
+  //   //  minWidth: 140,
+  // },
   {
     field: "display",
     headerName: "Display",
@@ -794,7 +796,6 @@ export const locationTypeColumns: GridColDef[] = [
     flex: 1.8,
     minWidth: 140,
     renderCell: (params) => {
-      debugger
       if (params.value !== null && params.value !== undefined) {
       //  const a = params.value.split(",");
         return (
@@ -859,7 +860,7 @@ export const workFloorColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "workfloor_name",
+    field: "workFloorName",
     headerName: "Work Floor Name",
     flex: 1.8,
     minWidth: 140,

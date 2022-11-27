@@ -75,6 +75,11 @@ const EWayBillPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
+    if (type !== "") {
+      setSnackMsg("EWayBill " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -95,11 +100,7 @@ const EWayBillPage = () => {
             });
             setEwayBillList(response.data.data);
             setEwayBillListTemp(response.data.data);
-            if (type !== "") {
-              setSnackMsg("EWayBill " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
+          
           }
         } else {
           setSnackMsg(communication.NoData);

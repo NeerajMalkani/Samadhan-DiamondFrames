@@ -41,7 +41,7 @@ const ServiceProductPage = () => {
   }, []);
 
   //#region Variables
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const [arn, setArn] = useState("");
@@ -94,9 +94,9 @@ const ServiceProductPage = () => {
   const [unitList, setUnitList] = useState<Array<UnitModel>>([]);
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
   const [productList, setProductList] = useState<Array<ProductModel>>([]);
-  const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
-  const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
-  const [pageSize, setPageSize] = useState<number>(5);
+  // const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
+  // const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
+  // const [pageSize, setPageSize] = useState<number>(5);
   const [showauos, setShowauos] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
 
@@ -113,52 +113,52 @@ const ServiceProductPage = () => {
   //#endregion
 
   //#region Functions
-  const FetchData = (type: string) => {
-    let params = {
-      data: {
-        Sess_UserRefno: "2",
-        service_refno: "0",
-        category_refno: "0",
-        product_refno: "0",
-      },
-    };
-    Provider.createDFAdmin(Provider.API_URLS.ServiceProductFilter, params)
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = APIConverter(response.data.data);
-            const arrList = [...response.data.data];
-            arrList.map(function (a: any, index: number) {
-              a.display = a.display == 1 ? "Yes" : "No";
-              let sr = { srno: index + 1 };
-              let id = { id: index + 1 };
-              a = Object.assign(a, sr);
-              a = Object.assign(a, id);
-              return a;
-            });
+  // const FetchData = (type: string) => {
+  //   let params = {
+  //     data: {
+  //       Sess_UserRefno: "2",
+  //       service_refno: "0",
+  //       category_refno: "0",
+  //       product_refno: "0",
+  //     },
+  //   };
+  //   Provider.createDFAdmin(Provider.API_URLS.ServiceProductFilter, params)
+  //     .then((response: any) => {
+  //       if (response.data && response.data.code === 200) {
+  //         if (response.data.data) {
+  //           response.data.data = APIConverter(response.data.data);
+  //           const arrList = [...response.data.data];
+  //           arrList.map(function (a: any, index: number) {
+  //             a.display = a.display == 1 ? "Yes" : "No";
+  //             let sr = { srno: index + 1 };
+  //             let id = { id: index + 1 };
+  //             a = Object.assign(a, sr);
+  //             a = Object.assign(a, id);
+  //             return a;
+  //           });
 
-            setServiceProductList(arrList);
-            setProductListTemp(arrList);
-            if (type !== "") {
-              setSnackbarMessage("Service product " + type);
-              setIsSnackbarOpen(true);
-              setSnackbarType("success");
-            }
-          }
-        } else {
-          setSnackbarMessage(communication.NoData);
-          setIsSnackbarOpen(true);
-          setSnackbarType("info");
-        }
-        setLoading(false);
-      })
-      .catch((e) => {
-        setLoading(false);
-        setSnackbarMessage(e.message);
-        setSnackbarType("error");
-        setIsSnackbarOpen(true);
-      });
-  };
+  //           setServiceProductList(arrList);
+  //           setProductListTemp(arrList);
+  //           if (type !== "") {
+  //             setSnackbarMessage("Service product " + type);
+  //             setIsSnackbarOpen(true);
+  //             setSnackbarType("success");
+  //           }
+  //         }
+  //       } else {
+  //         setSnackbarMessage(communication.NoData);
+  //         setIsSnackbarOpen(true);
+  //         setSnackbarType("info");
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch((e) => {
+  //       setLoading(false);
+  //       setSnackbarMessage(e.message);
+  //       setSnackbarType("error");
+  //       setIsSnackbarOpen(true);
+  //     });
+  // };
 
   const FetchActvityRoles = () => {
     Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
@@ -166,9 +166,9 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display == 1 && el.activityRoleName === "Contractor";
-            });
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display == 1 && el.activityRoleName === "Contractor";
+            // });
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
             setArnID(response.data.data[0].id);
@@ -269,12 +269,13 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
+            debugger;
             setUnitOfSalesList(response.data.data);
             const units = [];
-            response.data.data.filter((el: any) => {
+            response.data.data.forEach((el: any) => {
               units.push({
-                id: el.unitID,
-                unitName: el.unitName,
+                id: el.id,
+                unitName: el.displayUnit,
               });
             });
             setUnitList(units);
@@ -287,8 +288,28 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
+  const FetchCategoryDataFromCategory = (selectedItem) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        category_refno: selectedItem,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.CategoryDataForProduct, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setHsn(response.data.data[0].hsnsacCode);
+            setGst(response.data.data[0].gstRate + "%");
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   useEffect(() => {
-    FetchData("");
+    //FetchData("");
     FetchActvityRoles();
   }, []);
 
@@ -311,8 +332,7 @@ const ServiceProductPage = () => {
       SetResetCategoryName(false);
       SetResetProductName(true);
       SetResetUnitName(true);
-      setGst(parseFloat(ac.gstRate).toFixed(2) + "%");
-      setHsn(ac.hsnsacCode);
+      FetchCategoryDataFromCategory(ac.id);
       FetchProductsFromCategory(arnID, snID, ac.id);
     }
   };
@@ -333,18 +353,18 @@ const ServiceProductPage = () => {
     debugger;
     setUnitsOfSales(event.target.value);
 
-    if (unitOfSalesList[0].unitName === event.target.value) {
-      setSelectedUnit(unitOfSalesList[1].unitName);
-      setSelectedUnitID(unitOfSalesList[0].unitID);
-      if (unitOfSalesList[0].conversionRate != null) {
-        setAlternateUnit(unitOfSalesList[0].conversionRate.toString());
-      }
+    if (unitOfSalesList[0].displayUnit === event.target.value) {
+      setSelectedUnit(unitOfSalesList[1].displayUnit);
+      setSelectedUnitID(unitOfSalesList[1].id);
+      // if (unitOfSalesList[0].conversionRate != null) {
+      //   setAlternateUnit(unitOfSalesList[0].conversionRate.toString());
+      // }
     } else {
-      setSelectedUnit(unitOfSalesList[0].unitName);
-      setSelectedUnitID(unitOfSalesList[1].unitID);
-      if (unitOfSalesList[1].conversionRate != null) {
-        setAlternateUnit(unitOfSalesList[1].conversionRate.toString());
-      }
+      setSelectedUnit(unitOfSalesList[0].displayUnit);
+      setSelectedUnitID(unitOfSalesList[0].id);
+      // if (unitOfSalesList[1].conversionRate != null) {
+      //   setAlternateUnit(unitOfSalesList[1].conversionRate.toString());
+      // }
     }
 
     setShowauos(true);
@@ -438,11 +458,12 @@ const ServiceProductPage = () => {
         view_status: display === "Yes" ? 1 : 0,
       },
     };
-
-    Provider.create(Provider.API_URLS.ServiceProductUpdate, params)
+debugger;
+    Provider.create(Provider.API_URLS.ServiceProductCreate, params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
-          FetchData("updated");
+          //FetchData("updated");
           handleCancelClick();
         } else if (response.data.code === 304) {
           setSnackbarMessage(communication.ExistsError);
@@ -456,6 +477,7 @@ const ServiceProductPage = () => {
         setButtonLoading(false);
       })
       .catch((e) => {
+        debugger
         setSnackbarMessage(communication.NetworkError);
         setSnackbarType("error");
         setIsSnackbarOpen(true);

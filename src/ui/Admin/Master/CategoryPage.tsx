@@ -151,7 +151,7 @@ const CategoryPage = () => {
     };
 
     setLoading(true);
-    await Provider.createDFAdmin(Provider.API_URLS.GroupFromRefNo, params)
+    await Provider.createDFAdmin(Provider.API_URLS.ActivityRoleCategory, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -179,6 +179,11 @@ const CategoryPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
+    if (type !== "") {
+      setSnackMsg("Category " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -201,12 +206,6 @@ const CategoryPage = () => {
             });
             setCategoryList(arrList);
             setCategoryListTemp(arrList);
-
-            if (type !== "") {
-              setSnackMsg("Category " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -316,7 +315,7 @@ const CategoryPage = () => {
     let ac = serviceNameList.find((el) => el.serviceName === serviceName);
     if (ac !== undefined) {
       setSn(serviceName);
-      setSnID(ac?.serviceID);
+      setSnID(ac?.id);
       setServiceNameError(false);
       setServiceNameErrorText("");
     }
@@ -423,6 +422,8 @@ const CategoryPage = () => {
       setGst("");
       setUnitsOfSales([]);
       setUnitsOfSalesID([]);
+      setPersonName([]);
+      setUnitId([]);
     }
   };
 
@@ -437,6 +438,8 @@ const CategoryPage = () => {
     setGst("");
     setUnitsOfSales([]);
     setUnitsOfSalesID([]);
+    setPersonName([]);
+    setUnitId([]);
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
@@ -445,17 +448,24 @@ const CategoryPage = () => {
 
   const handelEditAndDelete = (type: string | null, a: CategoryModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
+      let a1: any = activityNamesList.filter((el) => {
+        return el.activityRoleName === a.activityRoleName;
+      });
+
+      let a2: any = serviceNameList.filter((el) => {
+        return el.serviceName === a.serviceName;
+      });
+
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
       setSn(a.serviceName);
-      setSnID(a.serviceID);
+      setSnID(a2[0].id);
       setArn(a.activityRoleName);
-      setArnID(a.roleID);
+      setArnID(a1[0].id);
       setCn(a.categoryName);
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
-debugger
       if (a.unitName !== null) {
         let arrUnits = a.unitName.split("<br>");
         const results = arrUnits.map((element) => {
@@ -468,22 +478,10 @@ debugger
         });
 
         const unitID = a1.map((data: any) => data.id);
-        setUnitsOfSalesID(unitID.join(","));
+        const unitName = a1.map((data: any) => data.displayUnit);
         setUnitId(unitID);
 
-
-        // setPersonName(
-        //   // On autofill we get a stringified value.
-        //   typeof value === "string" ? value.split(",") : value
-        // );
-    
-        // const intersection = SalesName.filter((element) => event.target.value.includes(element.unit_name));
-        // let a = [];
-    
-        // intersection.map((data) => {
-        //   a.push(data.unit_id);
-        // });
-        // setUnitId(a);
+        setPersonName(unitName);
       }
       setSelectedID(a.id);
       setButtonDisplay("unset");
@@ -492,19 +490,19 @@ debugger
   };
 
   const InsertUpdateData = () => {
-    let params = {
-      data: {
-        Sess_UserRefno: "2",
-        category_name: cn,
-        hsn_sac_code: hsn,
-        group_refno: arnID,
-        service_refno: snID,
-        gst_rate: parseFloat(gst),
-        view_status: display,
-        unit_category_refno: UnitId,
-      },
-    };
     if (actionStatus === "new") {
+      let params = {
+        data: {
+          Sess_UserRefno: "2",
+          category_name: cn,
+          hsn_sac_code: hsn,
+          group_refno: arnID,
+          service_refno: snID,
+          gst_rate: parseFloat(gst),
+          view_status: display === "Yes" ? 1 : 0,
+          unit_category_refno: UnitId,
+        },
+      };
       Provider.createDFAdmin(Provider.API_URLS.CategoryNameCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -528,17 +526,20 @@ debugger
           setSnackbarType("error");
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.CategoryNameUpdate, {
-        Sess_UserRefno: "2",
-        category_refno: selectedID,
-        category_name: cn,
-        group_refno: arnID,
-        service_refno: snID,
-        hsn_sac_code: hsn,
-        gst_rate: parseFloat(gst),
-        unit_category_refno: unitsOfSalesID.toString(),
-        view_status: display === "Yes" ? 1 : 0,
-      })
+      let params = {
+        data: {
+          Sess_UserRefno: "2",
+          category_refno: selectedID,
+          category_name: cn,
+          group_refno: arnID,
+          service_refno: snID,
+          hsn_sac_code: hsn,
+          gst_rate: parseFloat(gst),
+          unit_category_refno: UnitId,
+          view_status: display === "Yes" ? 1 : 0,
+        },
+      };
+      Provider.createDFAdmin(Provider.API_URLS.CategoryNameUpdate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
@@ -803,8 +804,8 @@ debugger
             </Typography>
             <FormControl>
               <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
-                <FormControlLabel value={0} control={<Radio />} label="Yes" />
-                <FormControlLabel value={1} control={<Radio />} label="No" />
+                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>

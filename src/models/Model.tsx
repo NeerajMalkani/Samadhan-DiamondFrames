@@ -63,6 +63,7 @@ export interface UnitWithConversionModel {
   id: number;
   unitID: number;
   unitName: string;
+  displayUnit: string;
   conversionRate: number;
 }
 
@@ -353,8 +354,8 @@ export interface EWayBillModel {
 export interface LocationTypeModel {
   id: number;
   srno: number;
-  serviceName: string;
-  activityRoleName: string;
+  serviceName: [];
+  activityRoleName: [];
   branchType: string;
   display: string;
   action: string;

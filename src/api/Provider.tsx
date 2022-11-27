@@ -49,6 +49,7 @@ class Provider {
     LocationTypeCreate: "locationtypecreate/",
     LocationTypeUpdate: "locationtypeupdate/",
 
+    ActivityRoleCategory: "getactivityrolecategoryform/",
     CategoryFromRefNo: "categoryrefnocheck/",
     CategoryNameCreate: "categorynamecreate/",
     CategoryNameUpdate: "categorynameupdate/",
@@ -71,6 +72,14 @@ class Provider {
     ProductServiceProduct: "getproductnameserviceproductform/",
     ServiceProductCreate: "serviceproductcreate/",
     ServiceProductUpdate: "serviceproductupdate/",
+
+    WorkFloorRefNoCheck: "workfloorrefnocheck/",
+    WorkFloorCreate: "workfloornamecreate/",
+    WorkFloorUpdate: "workfloornameupdate/",
+
+    WorkLocationRefNoCheck: "worklocationrefnocheck/",
+    WorkLocationCreate: "worklocationnamecreate/",
+    WorkLocationUpdate: "worklocationnameupdate/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

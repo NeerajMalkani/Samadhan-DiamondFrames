@@ -198,6 +198,11 @@ const ProductPage = () => {
 
   const GetProductData = (type: string) => {
     handleCancelClick();
+    if (type !== "") {
+      setSnackbarMessage("Product " + type);
+      setIsSnackbarOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -220,11 +225,7 @@ const ProductPage = () => {
             });
             setProductList(arrList);
             setProductListTemp(arrList);
-            if (type !== "") {
-              setSnackbarMessage("Product " + type);
-              setIsSnackbarOpen(true);
-              setSnackbarType("success");
-            }
+            
           }
         } else {
           setIsSnackbarOpen(true);

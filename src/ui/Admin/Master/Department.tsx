@@ -26,7 +26,7 @@ const DepartmentPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [departmentName, setDepartmentName] = useState("");
-  const [departmentNameList, setDepartmentNameList] = useState<Array<DepartmentNameModel>>([]); 
+  const [departmentNameList, setDepartmentNameList] = useState<Array<DepartmentNameModel>>([]);
   const [departmentNameError, setDepartmentNameError] = useState("");
   const [isDepartmentNameError, setIsDepartmentNameError] = useState(false);
   const [pageSize, setPageSize] = useState<number>(5);
@@ -77,6 +77,11 @@ const DepartmentPage = () => {
   };
 
   const FetchData = (type: string) => {
+    if (type !== "") {
+      setSnackMsg("Department " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     ResetFields();
     let params = {
       data: {
@@ -90,7 +95,6 @@ const DepartmentPage = () => {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
-            debugger
             arrList.map(function (a: any, index: number) {
               //a.id = a.department_refno;
               a.display = a.display === "1" ? "Yes" : "No";
@@ -99,11 +103,6 @@ const DepartmentPage = () => {
             });
             setDepartmentNameList(response.data.data);
             setDepartmentNameListTemp(response.data.data);
-            if (type !== "") {
-              setSnackMsg("Department " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -148,7 +147,7 @@ const DepartmentPage = () => {
 
   const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      debugger
+      debugger;
       Provider.createDFAdmin(Provider.API_URLS.DepartmentNameCreate, {
         data: {
           Sess_UserRefno: "2",

@@ -1,4 +1,21 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Icon,
+  InputAdornment,
+  Radio,
+  RadioGroup,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -13,6 +30,7 @@ import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const WorkFloorPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -43,9 +61,9 @@ const WorkFloorPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-//#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
 
   useEffect(() => {
     FetchData("");
@@ -62,23 +80,30 @@ const WorkFloorPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("servicecatalogue/getworkfloors")
+    if (type !== "") {
+      setSnackMsg("Work Floor " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        workfloor_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.WorkFloorRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
             setWorkfloorNamesList(arrList);
             setWorkfloorNamesListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Work Floor " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackbarType("info");
@@ -136,24 +161,28 @@ const WorkFloorPage = () => {
       setIsWorkfloornameError(false);
       setButtonDisplay("unset");
       setActionStatus("edit");
-    }   
+    }
   };
 
   const InsertUpdateData = (paramWorkfloorName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("servicecatalogue/insertworkfloor", {
-        WorkFloorName: paramWorkfloorName,
-        Display: checked,
-      })
+      const params = {
+        data: {
+          Sess_UserRefno: "2",
+          workfloor_name: paramWorkfloorName,
+          view_status: checked ? 1 : 0,
+        },
+      };
+      Provider.createDFAdmin(Provider.API_URLS.WorkFloorCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
             ResetFields();
-          }  else {
+          } else {
             ResetFields();
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -167,20 +196,24 @@ const WorkFloorPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("servicecatalogue/updateworkfloor", {
-        ID: selectedID,
-        WorkFloorName: paramWorkfloorName,
-        Display: checked,
-      })
+      const params = {
+        data: {
+          Sess_UserRefno: "2",
+          workfloor_refno: selectedID,
+          workfloor_name: paramWorkfloorName,
+          view_status: checked ? 1 : 0,
+        },
+      };
+      Provider.createDFAdmin(Provider.API_URLS.WorkFloorUpdate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
-          }else if (response.data.code === 304) {
+          } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
             setSnackbarType("error");
             ResetFields();
-          }  else {
+          } else {
             ResetFields();
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -215,7 +248,7 @@ const WorkFloorPage = () => {
       );
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -268,9 +301,7 @@ const WorkFloorPage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Work Floor List
-            </Typography>
+            <Typography variant="h6">Work Floor List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

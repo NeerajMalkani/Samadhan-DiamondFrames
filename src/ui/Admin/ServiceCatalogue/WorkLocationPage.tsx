@@ -30,6 +30,7 @@ import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const WorkLocationPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -39,7 +40,7 @@ const WorkLocationPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [worklocationName, setWorklocationName] = React.useState("");
@@ -60,9 +61,9 @@ const WorkLocationPage = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
   }, []);
@@ -78,10 +79,22 @@ const WorkLocationPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
-    Provider.getAll("servicecatalogue/getworklocations")
+    if (type !== "") {
+      setSnackMsg("Work Floor " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        worklocation_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.WorkLocationRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
@@ -90,11 +103,6 @@ const WorkLocationPage = () => {
             });
             setWorklocationNamesList(arrList);
             setWorklocationNamesListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Work Floor " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackbarType("info");
@@ -157,10 +165,14 @@ const WorkLocationPage = () => {
 
   const InsertUpdateData = (paramWorklocationName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("servicecatalogue/insertworklocation", {
-        WorkLocationName: paramWorklocationName,
-        Display: checked,
-      })
+      const params = {
+        data: {
+          Sess_UserRefno: "2",
+          worklocation_name: paramWorklocationName,
+          view_status: checked ? 1 : 0,
+        },
+      };
+      Provider.createDFAdmin(Provider.API_URLS.WorkLocationCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
@@ -183,11 +195,15 @@ const WorkLocationPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("servicecatalogue/updateworklocation", {
-        ID: selectedID,
-        WorkLocationName: paramWorklocationName,
-        Display: checked,
-      })
+      const params = {
+        data: {
+          Sess_UserRefno: "2",
+          worklocation_refno: selectedID,
+          worklocation_name: paramWorklocationName,
+          view_status: checked ? 1 : 0,
+        },
+      };
+      Provider.createDFAdmin(Provider.API_URLS.WorkLocationUpdate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
@@ -231,7 +247,7 @@ const WorkLocationPage = () => {
       );
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>

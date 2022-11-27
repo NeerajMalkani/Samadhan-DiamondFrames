@@ -1,4 +1,3 @@
-
 import {
   Alert,
   AlertColor,
@@ -32,7 +31,7 @@ import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, U
 import { communication } from "../../../utils/communication";
 import { serviceProductColumns } from "../../../utils/tablecolumns";
 import ListIcon from "@mui/icons-material/List";
-
+import { APIConverter } from "../../../utils/apiconverter";
 
 const AddServiceProduct = () => {
   let navigate = useNavigate();
@@ -68,7 +67,6 @@ const AddServiceProduct = () => {
 
   //#endredgion
 
-
   //#region Functions
 
   useEffect(() => {
@@ -77,13 +75,22 @@ const AddServiceProduct = () => {
   }, []);
 
   const FetchData = (type: string) => {
-    Provider.getAll("master/getserviceproductsv1")
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        service_refno: "0",
+        category_refno: "0",
+        product_refno: "0",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ServiceProductFilter, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display==1 ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               let id = { id: index + 1 };
               a = Object.assign(a, sr);
@@ -129,7 +136,7 @@ const AddServiceProduct = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
@@ -148,7 +155,7 @@ const AddServiceProduct = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const handleSNChangeFilter = (event: SelectChangeEvent) => {
@@ -200,7 +207,7 @@ const AddServiceProduct = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const GetStringifyJson = (params: any) => {
@@ -271,14 +278,12 @@ const AddServiceProduct = () => {
     setIsSnackbarOpen(false);
   };
 
-
   const handleEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
     debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-
-          }
+    }
   };
 
   const handleClose = () => {
@@ -290,7 +295,6 @@ const AddServiceProduct = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-
         <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
           <Typography variant="h6" sx={{ mt: 2 }}>
             Service Product List

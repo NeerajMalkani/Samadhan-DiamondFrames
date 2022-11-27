@@ -66,6 +66,11 @@ const UnitPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
+    if (type !== "") {
+      setSnackMsg("Unit " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -86,11 +91,6 @@ const UnitPage = () => {
             });
             setUnitNamesList(arrList);
             setUnitNamesListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Unit " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setOpen(true);
