@@ -1,4 +1,20 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  Radio,
+  RadioGroup,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -61,11 +77,6 @@ const ActivityPage = () => {
   };
 
   const FetchData = (type: string) => {
-    if (type !== "") {
-      setSnackMsg("Activity role " + type);
-      setOpen(true);
-      setSnackbarType("success");
-    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -76,16 +87,22 @@ const ActivityPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              // a.id = a.group_refno;
+             // a.id = a.group_refno;
               a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
             setActivityNamesList(arrList);
             setActivityNamesListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Activity role " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
           setSnackbarType("info");

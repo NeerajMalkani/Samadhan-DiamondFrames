@@ -45,6 +45,7 @@ const LoginPage = () => {
   /* #region  Handle event and click listeners */
   //#region Functions
   const loginClick = () => {
+    debugger;
     setIsLoading(true);
     if (username && password) {
       if (password.length > 2) {
@@ -56,6 +57,7 @@ const LoginPage = () => {
         };
         Provider.createDF(Provider.API_URLS.LoginCheck, params)
           .then((response: any) => {
+            debugger;
             if (response.data && response.data.code === 200) {
               GetUserDetails(response.data.data.user_refno);
             } else {
@@ -65,6 +67,7 @@ const LoginPage = () => {
             setIsLoading(false);
           })
           .catch((e) => {
+            debugger;
             setSnackbarMessage(e.message);
             setIsSnackbarOpen(true);
             setIsLoading(false);
@@ -84,6 +87,7 @@ const LoginPage = () => {
   };
 
   const GetUserDetails = (user_refno) => {
+    debugger;
     setIsLoading(true);
     if (username && password) {
       if (password.length > 2) {
@@ -94,6 +98,7 @@ const LoginPage = () => {
         };
         Provider.createDF(Provider.API_URLS.UserFromRefNo, params)
           .then((response: any) => {
+            debugger;
             if (response.data && response.data.code === 200) {
               const user = {
                 UserID: user_refno,
