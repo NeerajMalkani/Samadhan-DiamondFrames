@@ -1,25 +1,6 @@
 import { useTheme } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  AlertColor,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useEffect, useRef, useState } from "react";
@@ -47,7 +28,7 @@ const PostNewDesignPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [arnID, setArnID] = useState<number>(0);
@@ -111,9 +92,9 @@ const PostNewDesignPage = () => {
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Design");
   const [selectedID, setSelectedID] = useState<number>(0);
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
@@ -608,7 +589,7 @@ const PostNewDesignPage = () => {
       FetchWorkLocation();
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>

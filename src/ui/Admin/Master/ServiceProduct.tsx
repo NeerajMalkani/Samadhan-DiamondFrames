@@ -1,24 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, Container, FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography, Stack } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -458,7 +439,7 @@ const ServiceProductPage = () => {
         view_status: display === "Yes" ? 1 : 0,
       },
     };
-debugger;
+    debugger;
     Provider.create(Provider.API_URLS.ServiceProductCreate, params)
       .then((response: any) => {
         debugger;
@@ -477,7 +458,7 @@ debugger;
         setButtonLoading(false);
       })
       .catch((e) => {
-        debugger
+        debugger;
         setSnackbarMessage(communication.NetworkError);
         setSnackbarType("error");
         setIsSnackbarOpen(true);

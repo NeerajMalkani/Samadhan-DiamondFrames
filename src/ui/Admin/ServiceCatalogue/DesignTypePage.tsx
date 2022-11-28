@@ -1,26 +1,5 @@
-import { SignalCellularConnectedNoInternet2BarRounded } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -33,9 +12,9 @@ import { CategoryModel, DesignTypeModel, ProductModel, ServiceNameModel } from "
 import { communication } from "../../../utils/communication";
 import { designTypeColumns } from "../../../utils/tablecolumns";
 import ListIcon from "@mui/icons-material/List";
-import { AWSImagePath } from "../../../utils/paths";
 import uuid from "react-uuid";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const DesignTypePage = () => {
   let navigate = useNavigate();
@@ -46,7 +25,7 @@ const DesignTypePage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [arnID, setArnID] = useState<number>(0);
@@ -96,34 +75,41 @@ const DesignTypePage = () => {
   const [designButtonText, setDesignButtonText] = useState("Upload Design");
   const [errorDI, setDIError] = useState(false);
   const [errorDIText, setDIErrorText] = useState("");
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
   }, []);
 
   const FetchData = (type: string) => {
-    Provider.getAll("servicecatalogue/getdesigntypes")
+    if (type !== "") {
+      setSnackbarMessage("Design Type " + type);
+      setIsSnackbarOpen(true);
+      setSnackbarType("success");
+    }
+
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        designtype_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.DesignTypeRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
               return a;
             });
             setDesignTypeListList(arrList);
             setDesignTypeListTemp(arrList);
-
-            if (type !== "") {
-              setSnackbarMessage("Design Type " + type);
-              setIsSnackbarOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackbarMessage(communication.NoData);
@@ -141,77 +127,99 @@ const DesignTypePage = () => {
   };
 
   const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRolesDesignType)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "Contractor";
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display && el.activityRoleName === "Contractor";
+            // });
             setArnID(response.data.data[0].id);
             FetchServicesFromActivity(response.data.data[0].id);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
     let params = {
-      ID: selectedID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedID,
+      },
     };
-
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNameDesignType, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setServiceNameList(response.data.data);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number) => {
+    // let params = {
+    //   ActivityID: selectedActivityID,
+    //   ServiceID: selectedServiceID,
+    // };
+    //Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivityID,
+        service_refno: selectedServiceID,
+      },
     };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNameDesignType, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setCategoryList(response.data.data);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number) => {
+    // let params = {
+    //   ActivityID: selectedActivityID,
+    //   ServiceID: selectedServiceID,
+    //   CategoryID: selectedCategoryID,
+    // };
+    // Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivityID,
+        category_refno: selectedCategoryID,
+      },
     };
-    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ProductNameDesignType, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setProductList(response.data.data);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
@@ -293,12 +301,11 @@ const DesignTypePage = () => {
     }
 
     if (isValid) {
-      if (uploadFileUpload !== null) {
-        uploadImage();
-      } else {
-        UpdateData("Success", uploadedImage);
-      }
-
+      // if (uploadFileUpload !== null) {
+      //   uploadImage();
+      // } else {
+      UpdateData("Success");
+      //}
     }
   };
 
@@ -309,18 +316,31 @@ const DesignTypePage = () => {
     UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, UpdateData);
   };
 
-  const UpdateData = (Status: string, fileName: string) => {
+  const UpdateData = (Status: string) => {
     if (Status.toLowerCase() === "success") {
       setButtonLoading(true);
       if (actionStatus === "new") {
-        Provider.create("servicecatalogue/insertdesigntype", {
-          DesignTypeName: designTypeName,
-          ServiceID: snID,
-          CategoryID: cnID,
-          ProductID: pnID,
-          Display: display === "Yes",
-          DesignImage: AWSImagePath + fileName
-        })
+        //   Provider.create("servicecatalogue/insertdesigntype", {
+        //     DesignTypeName: designTypeName,
+        //     ServiceID: snID,
+        //     CategoryID: cnID,
+        //     ProductID: pnID,
+        //     Display: display === "Yes",
+        //     DesignImage: AWSImagePath + fileName,
+        //   })
+        const params = {
+          data: {
+            Sess_UserRefno: "2",
+            designtype_name: designTypeName,
+            group_refno: arnID,
+            service_refno: snID,
+            category_refno: cnID,
+            product_refno: pnID,
+            view_status: display === "Yes" ? 1 : 0,
+          },
+          designtype_image: uploadFileUpload,
+        };
+        Provider.createDFAdmin(Provider.API_URLS.DesignTypeCreate, params)
           .then((response: any) => {
             if (response.data && response.data.code === 200) {
               FetchData("added");
@@ -343,15 +363,29 @@ const DesignTypePage = () => {
             setButtonLoading(false);
           });
       } else if (actionStatus === "edit") {
-        Provider.create("servicecatalogue/updatedesigntype", {
-          ID: dtID,
-          DesignTypeName: designTypeName,
-          ServiceID: snID,
-          CategoryID: cnID,
-          ProductID: pnID,
-          Display: display === "Yes",
-          DesignImage: AWSImagePath + fileName
-        })
+        // Provider.create("servicecatalogue/updatedesigntype", {
+        //   ID: dtID,
+        //   DesignTypeName: designTypeName,
+        //   ServiceID: snID,
+        //   CategoryID: cnID,
+        //   ProductID: pnID,
+        //   Display: display === "Yes",
+        //   DesignImage: AWSImagePath + fileName,
+        // })
+        const params = {
+          data: {
+            Sess_UserRefno: "2",
+            designtype_refno: dtID,
+            designtype_name: designTypeName,
+            group_refno: arnID,
+            service_refno: snID,
+            category_refno: cnID,
+            product_refno: pnID,
+            view_status: display === "Yes" ? 1 : 0,
+          },
+          designtype_image: uploadFileUpload,
+        };
+        Provider.createDFAdmin(Provider.API_URLS.DesignTypeUpdate, params)
           .then((response: any) => {
             if (response.data && response.data.code === 200) {
               FetchData("updated");
@@ -374,14 +408,12 @@ const DesignTypePage = () => {
             setButtonLoading(false);
           });
       }
-    }
-    else {
+    } else {
       setSnackbarMessage(communication.Error);
       setSnackbarType("error");
       setIsSnackbarOpen(true);
       setButtonLoading(false);
     }
-
   };
 
   const handleCancelClick = () => {
@@ -408,9 +440,6 @@ const DesignTypePage = () => {
     setDesignButtonText("Upload Design");
     setUploadedImage("");
     setUploadFileUpload(null);
-
-
-
   };
 
   const handelEditAndDelete = (type: string | null, a: DesignTypeModel | undefined) => {
@@ -471,18 +500,6 @@ const DesignTypePage = () => {
     setIsProductError(false);
   };
 
-  const GetStringifyJson = (params: any) => {
-    var string_ = JSON.stringify(params);
-
-    string_ = string_.replace(/{/g, "");
-    string_ = string_.replace(/}/g, "");
-    string_ = string_.replace(/:/g, "=");
-    string_ = string_.replace(/,/g, "&");
-    string_ = string_.replace(/"/g, "");
-
-    return string_;
-  };
-
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
@@ -495,7 +512,7 @@ const DesignTypePage = () => {
       );
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -648,9 +665,7 @@ const DesignTypePage = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Design Type Product List
-            </Typography>
+            <Typography variant="h6">Design Type Product List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (

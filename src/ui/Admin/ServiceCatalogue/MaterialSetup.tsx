@@ -1,44 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  Checkbox,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tabs,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, Checkbox, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, MenuItem, Paper, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Typography } from "@mui/material";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -215,9 +176,9 @@ const MaterialSetup = () => {
   const [brandError, setBrandError] = useState("");
 
   const [selectedID, setSelectedID] = useState<number>(0);
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
@@ -956,7 +917,7 @@ const MaterialSetup = () => {
       })
       .catch((e) => {});
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>

@@ -1,27 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Theme,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, Chip, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Theme, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -130,7 +107,6 @@ const LocationTypePage = () => {
             });
             setLocationTypeList(arrList);
             setLocationTypeListTemp(arrList);
-          
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -161,7 +137,7 @@ const LocationTypePage = () => {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
-          
+
             arrList.map(function (a: any, index: number) {
               return a.display;
             });
@@ -283,8 +259,7 @@ const LocationTypePage = () => {
 
   const handelEditAndDelete = (type: string | null, a: LocationTypeModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
-
-      const results : string[] =  a.activityRoleName;
+      const results: string[] = a.activityRoleName;
       setActivityList(results);
       let aID: any = activityNamesList.filter((el: ActivityRoleNameModel) => {
         return results.indexOf(el.activityRoleName) !== -1;
@@ -296,7 +271,7 @@ const LocationTypePage = () => {
       setActivityError(false);
       setActivityErrorText("");
 
-      const resultsSer : string[] =  a.serviceName;
+      const resultsSer: string[] = a.serviceName;
 
       setServiceList(resultsSer);
 

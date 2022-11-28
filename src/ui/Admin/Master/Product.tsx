@@ -1,24 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
@@ -225,7 +205,6 @@ const ProductPage = () => {
             });
             setProductList(arrList);
             setProductListTemp(arrList);
-            
           }
         } else {
           setIsSnackbarOpen(true);
@@ -503,7 +482,7 @@ const ProductPage = () => {
       // setCnID(a?.categoryID);
 
       SetResetCategoryName(false);
- 
+
       setProductName(a?.productName);
       SetResetProductName(false);
 
