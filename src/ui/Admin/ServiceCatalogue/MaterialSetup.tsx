@@ -16,6 +16,7 @@ import { communication } from "../../../utils/communication";
 import { uniqueByKey } from "../../../utils/JSCommonFunction";
 import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -187,24 +188,32 @@ const MaterialSetup = () => {
 
   const FetchData = (type: string) => {
     handleCancelClick();
-    Provider.getAll("servicecatalogue/getmaterialsetup")
+
+    if (type !== "") {
+      setSnackMsg("Material setup " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
+
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        materials_setup_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.MaterialsSetupRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
             setMaterialSetupList(arrList);
             setMaterialSetupListTemp(arrList);
-
-            if (type !== "") {
-              setSnackMsg("Material setup " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -220,42 +229,47 @@ const MaterialSetup = () => {
   };
 
   const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRolesMaterialSetup)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            let contractorData = response.data.data.find((el) => {
-              return el.display && el.activityRoleName === "Contractor";
-            });
-            setArnID(contractorData.id);
+            response.data.data = APIConverter(response.data.data);
+            // let contractorData = response.data.data.find((el) => {
+            //   return el.display && el.activityRoleName === "Contractor";
+            // });
+            setArnID(response.data.data[0].id);
 
-            let dealerData = response.data.data.find((el) => {
-              return el.display && el.activityRoleName === "Dealer";
-            });
-            setArnDealerID(dealerData.id);
+            // let dealerData = response.data.data.find((el) => {
+            //   return el.display && el.activityRoleName === "Dealer";
+            // });
+            // setArnDealerID(dealerData.id);
 
-            FetchServicesFromActivity(contractorData.id, "contractor");
-            FetchServicesFromActivity(contractorData.id, "dealer");
+            FetchServicesFromActivity(response.data.data[0].id);
+            //FetchServicesFromActivity(contractorData.id, "dealer");
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedItemID: number, type: string) => {
+  const FetchServicesFromActivity = (selectedItemID: number) => {
     let params = {
-      ID: selectedItemID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedItemID,
+      },
     };
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNameMaterialSetup, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el) => {
-              return el.display;
-            });
-            if (type === "contractor") setServiceNameList(response.data.data);
-            else if (type === "dealer") setServiceNameDealerList(response.data.data);
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el) => {
+            //   return el.display;
+            // });
+            // if (type === "contractor") setServiceNameList(response.data.data);
+            // else if (type === "dealer") setServiceNameDealerList(response.data.data);
+            setServiceNameList(response.data.data);
           }
         }
       })
@@ -264,19 +278,23 @@ const MaterialSetup = () => {
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, type: string) => {
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivityID,
+        service_refno: selectedServiceID,
+      },
     };
-
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNameMaterialSetup, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            if (type === "contractor") setCategoryList(response.data.data);
-            else if (type === "dealer") setCategoryDealerList(response.data.data);
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
+            // if (type === "contractor") setCategoryList(response.data.data);
+            // else if (type === "dealer") setCategoryDealerList(response.data.data);
+            setCategoryList(response.data.data);
           }
         }
       })
@@ -286,30 +304,34 @@ const MaterialSetup = () => {
   const FetchProductsFromCategory = (selectedActivitryID: number, selectedServiceID: number, selectedCategoryID: number, type: string) => {
     debugger;
     let params = {
-      ActivityID: selectedActivitryID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivitryID,
+        category_refno: selectedCategoryID,
+      },
     };
-    Provider.getAll(`master/${type === "contractor" ? "getproductsbycategoryid" : "getproductsbycategoryidforbrands"}?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ProductNameMaterialSetup, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            if (type === "contractor") setProductList(response.data.data);
-            else if (type === "dealer") {
-              const fullData = response.data.data.map((o) => ({
-                ...o,
-                isChecked: productItem.find((el) => {
-                  return el.productID === o.productID;
-                })
-                  ? true
-                  : false,
-              }));
-              setProductDealerList(fullData);
-            }
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
+            // if (type === "contractor") setProductList(response.data.data);
+            // else if (type === "dealer") {
+            //   const fullData = response.data.data.map((o) => ({
+            //     ...o,
+            //     isChecked: productItem.find((el) => {
+            //       return el.productID === o.productID;
+            //     })
+            //       ? true
+            //       : false,
+            //   }));
+            //   setProductDealerList(fullData);
+            // }
+            setProductList(response.data.data);
           }
         }
       })
@@ -318,18 +340,19 @@ const MaterialSetup = () => {
 
   const FetchDesignTypeFromProduct = (selectedActivitryID: number, selectedServiceID: number, selectedCategoryID: number, selectedItem: number) => {
     let params = {
-      ActivityID: selectedActivitryID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
-      ProductID: selectedItem,
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: selectedItem,
+      },
     };
-    Provider.getAll(`servicecatalogue/getdesigntypebyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ProductDesignTypeMaterialSetup, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el) => {
+            //   return el.display;
+            // });
             setProductDesignTypeList(response.data.data);
           }
         }
@@ -343,13 +366,16 @@ const MaterialSetup = () => {
     else productids = data.map((data1) => data1.productID);
 
     let params = {
-      ProductID: productids.join(","),
+      data: {
+        Sess_UserRefno: "2",
+        product_refno_Array: productids.join(","),
+      },
     };
-
-    Provider.getAll(`servicecatalogue/getbrandsbyproductids?${new URLSearchParams(params)}`)
+    Provider.createDFAdmin(Provider.API_URLS.BrandNamelistPopupMaterialSetup, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setBrandProductList(response.data.data);
             let BrandData: Array<BrandItemModel> = uniqueByKey(response.data.data, "brandID");
             setBrandList(BrandData);
@@ -400,7 +426,6 @@ const MaterialSetup = () => {
   };
 
   const handleCNDealerChange = (event: SelectChangeEvent) => {
-    debugger;
     let categoryName: number = parseInt(event.target.value);
     let ac = categoryDealerList.find((el) => el.id === categoryName);
     if (ac !== undefined) {
