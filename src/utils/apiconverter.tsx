@@ -6,7 +6,7 @@ export const APIConverter = (response: any) => {
     }
   }
 
-  response.forEach((obj) => {
+  response.forEach((obj: any) => {
     renameKey(obj, "product_refno", "productID");
     renameKey(obj, "product_name", "productName");
     renameKey(obj, "product_refno", "id");
@@ -55,10 +55,9 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "company_product_price", "price");
     renameKey(obj, "company_brand_refno", "brandID");
     renameKey(obj, "company_brand_name", "brandName");
-    renameKey(obj, "company_product_refno", "productID");
-    renameKey(obj, "company_product_price", "price");
-    renameKey(obj, "company_brand_refno", "brandID");
-    renameKey(obj, "company_brand_name", "brandName");
+    renameKey(obj, "design_image_url", "designImage");
+    renameKey(obj, "design_no", "designNumber");
+    
   });
 
   return response;

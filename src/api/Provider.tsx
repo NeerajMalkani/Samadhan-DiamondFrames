@@ -3,6 +3,7 @@ import axios from "axios";
 const BASE_URL_OLD = "https://api.starselector.com/api";
 const BASE_URL = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD";
 const BASE_URL_Admin = "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
+const BASE_URL_Dashboard = "https://dfsolutions.in/api/apidashboard/spawu7S4urax/tYjD";
 
 class Provider {
   API_URLS = {
@@ -72,7 +73,6 @@ class Provider {
     ProductServiceProduct: "getproductnameserviceproductform/",
     ServiceProductCreate: "serviceproductcreate/",
     ServiceProductUpdate: "serviceproductupdate/",
-
     WorkFloorRefNoCheck: "workfloorrefnocheck/",
     WorkFloorCreate: "workfloornamecreate/",
     WorkFloorUpdate: "workfloornameupdate/",
@@ -102,6 +102,15 @@ class Provider {
     MaterialsSetupRefNoCheck: "materialssetuprefnocheck/",
     MaterialsSetupCreate: "materialsetupcreate/",
     MaterialsSetupUpdate: "materialsetupupdate/",
+    /******************************Dashboard************************************/
+
+    GetdashboardTotaluser: "getdashboard_totaluser/",
+    GetdashboardUserswitchto: "getdashboard_userswitchto/",
+    Getdashboard_Userswitchto_Proceed: "getdashboard_userswitchto_proceed/",
+    GetdashboardServicecatalogue: "getdashboard_servicecatalogue/",
+    GetserviceimagegalleryByServicerefno:"getserviceimagegallery_by_servicerefno/",
+    Getgotoestimation: "getgotoestimation/",
+
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
@@ -173,6 +182,13 @@ class Provider {
       return axios.post(`${BASE_URL_Admin}/${resource}`, params);
     } else {
       return axios.post(`${BASE_URL_Admin}/${resource}`);
+    }
+  }
+  createDFDashboard(resource: string, params: any = null) {
+    if (params) {
+      return axios.post(`${BASE_URL_Dashboard}/${resource}`, params);
+    } else {
+      return axios.post(`${BASE_URL_Dashboard}/${resource}`);
     }
   }
 }

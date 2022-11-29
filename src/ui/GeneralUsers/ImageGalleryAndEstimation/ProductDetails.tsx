@@ -35,6 +35,7 @@ import { restrictNumericMobile } from "../../../utils/validations";
 import { DataGrid } from "@mui/x-data-grid";
 import { materialSetupColumns, searchClientColumns } from "../../../utils/tablecolumns";
 import CreateClient from "../../../components/Client";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ImageGalleryProductDetailsPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -52,7 +53,8 @@ const ImageGalleryProductDetailsPage = () => {
     } else {
       SetCookieUseID(cookies.dfc.UserID);
       setSelectedData(retrunValueFromLocation(location, "", true));
-      setLoading(false);
+      FetchImageGalleryProductDetail(retrunValueFromLocation(location, "", true));
+
       let TotalArea = CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
       setTotalSqFt(TotalArea);
 
@@ -62,7 +64,7 @@ const ImageGalleryProductDetailsPage = () => {
       }
     }
   }, []);
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -96,9 +98,9 @@ const ImageGalleryProductDetailsPage = () => {
 
   const [userClientError, setUserClientError] = useState("");
   const [isUserClientError, setIsUserClientError] = useState(false);
- //#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   const CreateLengthFeet = (count: number) => {
     let menuItems = [];
     for (let i = 0; i < count; i++) {
@@ -139,6 +141,43 @@ const ImageGalleryProductDetailsPage = () => {
     setOpen(false);
   };
 
+  const FetchImageGalleryProductDetail = (data: any) => {
+    debugger;
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+        service_refno: data.id,
+        designtype_refno: data.designTypeID,
+        "product_refno": data.productID,
+        designgallery_refno: data.designgallery_refno
+      },
+    };
+    Provider.createDF(Provider.API_URLS.Getgotoestimation, params)
+      //Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setSelectedData(response.data.data[0]);
+            setLoading(false);
+          }
+        } else {
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
+
   const FetchEstimationMaterialSetupData = (materialSetupID, from, userDesignEstimationID, labourCost) => {
     let params = {
       MaterialSetupID: materialSetupID,
@@ -161,7 +200,7 @@ const ImageGalleryProductDetailsPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchEstimationData = (userDesignEstimationID, from) => {
@@ -176,7 +215,7 @@ const ImageGalleryProductDetailsPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const InsertDesignEstimationEnquiry = (from: string, fromCount: number, subtotal: number, userDesignEstimationID: number, labourCost) => {
@@ -195,7 +234,7 @@ const ImageGalleryProductDetailsPage = () => {
     if (fromCount === 2) {
       params["ID"] = userDesignEstimationID;
     }
- 
+
     if (selectedData.type === "contractor") {
       params["ClientID"] = selectedUserNameID;
       params["ApprovalStatus"] = 0;
@@ -344,7 +383,7 @@ const ImageGalleryProductDetailsPage = () => {
         setOpen(true);
       });
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
