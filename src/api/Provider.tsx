@@ -108,13 +108,20 @@ class Provider {
     GetdashboardUserswitchto: "getdashboard_userswitchto/",
     Getdashboard_Userswitchto_Proceed: "getdashboard_userswitchto_proceed/",
     GetdashboardServicecatalogue: "getdashboard_servicecatalogue/",
-    GetserviceimagegalleryByServicerefno:"getserviceimagegallery_by_servicerefno/",
+    GetserviceimagegalleryByServicerefno: "getserviceimagegallery_by_servicerefno/",
     Getgotoestimation: "getgotoestimation/",
 
     PostNewDesignRefNoCheck: "postnewdesignrefnocheck/",
     PostNewDesignCreate: "postnewdesigncreate/",
     PostNewDesignUpdate: "postnewdesignupdate/",
 
+    DealerBrandMasterRefnoCheck: "dealerbrandmasterrefnocheck/",
+    DealerBrandMasterCreate: "dealerbrandmastercreate/",
+    DealerbrandMasterUpdate: "dealerbrandmasterupdate/",
+
+    DealerBuyerCategoryRefNoCheck: "dealerbuyercategoryrefnocheck/",
+    DealerBuyerCategoryCreate: "dealerbuyercategorycreate/",
+    DealerBuyerCategoryUpdate: "dealerbuyercategoryupdate/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
