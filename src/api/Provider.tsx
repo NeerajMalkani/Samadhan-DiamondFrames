@@ -111,6 +111,10 @@ class Provider {
     GetserviceimagegalleryByServicerefno:"getserviceimagegallery_by_servicerefno/",
     Getgotoestimation: "getgotoestimation/",
 
+    PostNewDesignRefNoCheck: "postnewdesignrefnocheck/",
+    PostNewDesignCreate: "postnewdesigncreate/",
+    PostNewDesignUpdate: "postnewdesignupdate/",
+
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

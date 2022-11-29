@@ -124,7 +124,6 @@ const BrandPage = () => {
                 FetchActvityRoles(UserID);
                 FetchBrands(UserID);
                 FetchBuyerCategories(UserID);
-                // FetchBuyerCategoriesDiscounts();
               }
             }
           }

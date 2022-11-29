@@ -169,11 +169,6 @@ const DesignTypePage = () => {
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callback = null) => {
-    // let params = {
-    //   ActivityID: selectedActivityID,
-    //   ServiceID: selectedServiceID,
-    // };
-    //Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -200,12 +195,7 @@ const DesignTypePage = () => {
   };
 
   const FetchProductsFromCategory = (selectedActivityID: number, selectedCategoryID: number, callback = null) => {
-    // let params = {
-    //   ActivityID: selectedActivityID,
-    //   ServiceID: selectedServiceID,
-    //   CategoryID: selectedCategoryID,
-    // };
-    // Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+   
     let params = {
       data: {
         Sess_UserRefno: "2",
