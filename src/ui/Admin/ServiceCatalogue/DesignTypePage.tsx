@@ -652,9 +652,13 @@ const DesignTypePage = () => {
                     //ref={fileInput}
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
-                        setUploadFileUpload(e.currentTarget.files[0]);
-
                         let FileName = e.currentTarget.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                          console.log(evt.target.result);
+                          setUploadFileUpload(evt.target.result);
+                        };
+                        reader.readAsDataURL(e.currentTarget.files[0]);
                         if (FileName !== undefined) {
                           setDIErrorText(FileName.trim());
                           setImage(FileName);
