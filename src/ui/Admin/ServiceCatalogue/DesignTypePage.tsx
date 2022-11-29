@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
 import NoData from "../../../components/NoData";
-import { CategoryModel, DesignTypeModel, ProductModel, ServiceNameModel } from "../../../models/Model";
+import { CategoryModel, DesignTypeModel, productModel, ProductModel, ServiceNameModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import { designTypeColumns } from "../../../utils/tablecolumns";
 import ListIcon from "@mui/icons-material/List";
@@ -143,7 +143,7 @@ const DesignTypePage = () => {
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedID: number) => {
+  const FetchServicesFromActivity = (selectedID: number, callback = null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -159,13 +159,16 @@ const DesignTypePage = () => {
             //   return el.display;
             // });
             setServiceNameList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number) => {
+  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callback = null) => {
     // let params = {
     //   ActivityID: selectedActivityID,
     //   ServiceID: selectedServiceID,
@@ -187,13 +190,16 @@ const DesignTypePage = () => {
             //   return el.display;
             // });
             setCategoryList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number) => {
+  const FetchProductsFromCategory = (selectedActivityID: number, selectedCategoryID: number, callback = null) => {
     // let params = {
     //   ActivityID: selectedActivityID,
     //   ServiceID: selectedServiceID,
@@ -216,6 +222,9 @@ const DesignTypePage = () => {
             //   return el.display;
             // });
             setProductList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
@@ -243,7 +252,7 @@ const DesignTypePage = () => {
       setCnID(ac.id);
       SetResetCategoryName(false);
       SetResetProductName(true);
-      FetchProductsFromCategory(arnID, snID, ac.id);
+      FetchProductsFromCategory(arnID, ac.id);
     }
   };
 
@@ -383,7 +392,7 @@ const DesignTypePage = () => {
             product_refno: pnID,
             view_status: display === "Yes" ? 1 : 0,
           },
-          designtype_image: uploadFileUpload,
+          designtype_image: uploadFileUpload ? uploadFileUpload : "",
         };
         Provider.createDFAdmin(Provider.API_URLS.DesignTypeUpdate, params)
           .then((response: any) => {
@@ -449,19 +458,36 @@ const DesignTypePage = () => {
       setDisplay(a.display);
       setdtID(a.id);
       setSn(a?.serviceName);
-      setSnID(a?.serviceID);
+      FetchServicesFromActivity(arnID, (list) => {
+        let srid = list.find((el: any) => {
+          return el.serviceName === a?.serviceName;
+        }).id;
+        setSnID(srid);
+
+        FetchCategoriesFromServices(arnID, srid, (categoryList: any) => {
+          let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === a?.categoryName);
+          if (ca !== undefined) {
+            setCnID(ca.id);
+            FetchProductsFromCategory(arnID, ca.id, (productList) => {
+              let pa: productModel | undefined = productList.find((el: any) => el.productName === a?.productName);
+              if (pa !== undefined) setPnID(pa?.id);
+            });
+          }
+        });
+      });
+
+      //setSnID(a?.serviceID);
       SetResetServiceName(false);
 
       setCn(a?.categoryName);
-      setCnID(a?.categoryID);
+      // setCnID(a?.categoryID);
 
       SetResetCategoryName(false);
-      FetchCategoriesFromServices(arnID, a?.serviceID);
+      //  FetchCategoriesFromServices(arnID, a?.serviceID);
 
       setPn(a?.productName);
-      setPnID(a?.productID);
       SetResetProductName(false);
-      FetchProductsFromCategory(arnID, a.serviceID, a.categoryID);
+
       setDesignTypeName(a.designTypeName);
 
       setDisplay(a?.display);
