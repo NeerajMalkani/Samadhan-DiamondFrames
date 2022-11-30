@@ -6,7 +6,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitModel, UnitWithConversionModel } from "../../../models/Model";
+import { ActivityRoleNameModel, CategoryModel, productModel, ProductModel, ServiceNameModel, UnitModel, UnitWithConversionModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import { ValidateGSTRate } from "../../../utils/validations";
 import AddIcon from "@mui/icons-material/Add";
@@ -24,6 +24,7 @@ const ServiceProductPage = () => {
   //#region Variables
   // const [loading, setLoading] = useState(true);
   const [type, setType] = useState("New");
+  const [selectedID, setSelectedID] = useState(0);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const [arn, setArn] = useState("");
@@ -109,7 +110,7 @@ const ServiceProductPage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display == 1 ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               // let id = { id: index + 1 };
               a = Object.assign(a, sr);
@@ -118,12 +119,36 @@ const ServiceProductPage = () => {
             });
 
             setServiceProductList(arrList);
-            // setProductListTemp(arrList);
-            // if (type !== "") {
-            //   setSnackbarMessage("Service product " + type);
-            //   setIsSnackbarOpen(true);
-            //   setSnackbarType("success");
-            // }
+
+            FetchServicesFromActivity(arnID,(list)=>{
+              let srid = list.find((el: any) => {
+                return el.serviceName === arrList[0].serviceName;
+              }).id;
+              setSnID(srid);
+              FetchCategoriesFromServices(arnID, srid, (categoryList: any) => {
+                let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
+                if (ca !== undefined) {
+                  setCnID(ca.id);
+                  FetchCategoryDataFromCategory(ca.id);
+                  FetchProductsFromCategory(arnID, ca.id, (productList) => {
+                    let pa: productModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
+                    if (pa !== undefined) {
+                      setPnID(pa?.id);
+                      FetchUnitsFromProduct(pa?.id, ()=>{
+                        let unit: UnitModel | undefined = unitList.find((el: any) => el.displayUnit === arrList[0]?.displayUnit);
+                        if (unit !== undefined) {
+                          setPnID(unit?.id);
+                        }
+                      });
+                }
+                  }); 
+                }
+              });
+
+            });
+            setRateWithMaterial(arrList[0].rateWithMaterials);
+            setRateWithoutMaterial(arrList[0].rateWithoutMaterials);
+            setAlternateUnit(arrList[0].conversionRate);
           }
         } else {
           setSnackbarMessage(communication.NoData);
@@ -156,7 +181,7 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedID: number) => {
+  const FetchServicesFromActivity = (selectedID: number, callback=null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -170,6 +195,9 @@ const ServiceProductPage = () => {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             setServiceNameList(response.data.data);
+            if(callback){
+              callback(response.data.data);
+            }
           }
         }
       })
@@ -278,6 +306,7 @@ const ServiceProductPage = () => {
     let paramVal: string = window.location.pathname.split("/").pop();
     if (!isNaN(parseInt(paramVal))) {
       setType("edit");
+      setSelectedID(parseInt(paramVal));
       FetchData(parseInt(paramVal));
     }
     FetchActvityRoles();
@@ -428,13 +457,21 @@ const ServiceProductPage = () => {
         view_status: display === "Yes" ? 1 : 0,
       },
     };
+
+    if(type==="edit"){
+      params.data["service_product_refno"] =selectedID;
+    }
+
     debugger;
-    Provider.create(Provider.API_URLS.ServiceProductCreate, params)
+    Provider.create(type==="edit"?Provider.API_URLS.ServiceProductUpdate:Provider.API_URLS.ServiceProductCreate, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
           //FetchData("updated");
           handleCancelClick();
+          if(type==="edit"){
+            navigate("/master/addserviceproduct");
+          }
         } else if (response.data.code === 304) {
           setSnackbarMessage(communication.ExistsError);
           setIsSnackbarOpen(true);

@@ -663,7 +663,7 @@ const PostNewDesignPage = () => {
                 FetchDesignTypeFromProductID(pa?.id, ()=>{
                   let pa1: ProductDetailsModel | undefined = productList.find((el: any) => el.designTypeName === a?.designTypeName);
                   if (pa1 !== undefined) setPdtID(pa1?.id);
-                })
+                });
               }
             }); 
           }

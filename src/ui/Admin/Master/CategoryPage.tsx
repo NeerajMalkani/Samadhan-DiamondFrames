@@ -445,8 +445,8 @@ const CategoryPage = () => {
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
       if (a.unitName !== null) {
-        let arrUnits = a.unitName.split("<br>");
-        const results = arrUnits.map((element) => {
+        let arrUnits = a.unitName;//.split("<br>");
+        const results = arrUnits.map((element:string) => {
           return element.trim();
         });
         setUnitsOfSales(results);

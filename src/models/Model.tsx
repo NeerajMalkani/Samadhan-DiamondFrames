@@ -30,7 +30,7 @@ export interface CategoryModel {
   hsnsacCode: string;
   gstRate: string;
   unitID: string;
-  unitName: string;
+  unitName: [];
   display: string;
   action: string;
   serviceID: number;

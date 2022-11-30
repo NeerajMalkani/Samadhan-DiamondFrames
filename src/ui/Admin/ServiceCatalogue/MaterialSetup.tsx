@@ -234,18 +234,8 @@ const MaterialSetup = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // let contractorData = response.data.data.find((el) => {
-            //   return el.display && el.activityRoleName === "Contractor";
-            // });
             setArnID(response.data.data[0].id);
-
-            // let dealerData = response.data.data.find((el) => {
-            //   return el.display && el.activityRoleName === "Dealer";
-            // });
-            // setArnDealerID(dealerData.id);
-
             FetchServicesFromActivity(response.data.data[0].id);
-            //FetchServicesFromActivity(contractorData.id, "dealer");
           }
         }
       })
@@ -263,12 +253,7 @@ const MaterialSetup = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el) => {
-            //   return el.display;
-            // });
-            // if (type === "contractor") setServiceNameList(response.data.data);
-            // else if (type === "dealer") setServiceNameDealerList(response.data.data);
+            response.data.data = APIConverter(response.data.data);           
             setServiceNameList(response.data.data);
           }
         }
@@ -276,7 +261,7 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, type: string) => {
+  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -289,11 +274,6 @@ const MaterialSetup = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
-            // if (type === "contractor") setCategoryList(response.data.data);
-            // else if (type === "dealer") setCategoryDealerList(response.data.data);
             setCategoryList(response.data.data);
           }
         }
@@ -316,21 +296,6 @@ const MaterialSetup = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
-            // if (type === "contractor") setProductList(response.data.data);
-            // else if (type === "dealer") {
-            //   const fullData = response.data.data.map((o) => ({
-            //     ...o,
-            //     isChecked: productItem.find((el) => {
-            //       return el.productID === o.productID;
-            //     })
-            //       ? true
-            //       : false,
-            //   }));
-            //   setProductDealerList(fullData);
-            // }
             setProductList(response.data.data);
           }
         }
@@ -350,9 +315,6 @@ const MaterialSetup = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el) => {
-            //   return el.display;
-            // });
             setProductDesignTypeList(response.data.data);
           }
         }
@@ -395,7 +357,7 @@ const MaterialSetup = () => {
       SetResetCategoryName(true);
       SetResetProductName(true);
       SetResetProductDesignType(true);
-      FetchCategoriesFromServices(arnID, serviceName, "contractor");
+      FetchCategoriesFromServices(arnID, serviceName);
     }
   };
 
@@ -407,7 +369,7 @@ const MaterialSetup = () => {
       setSnDealerID(serviceName);
       SetResetCategoryDealerName();
       SetResetProductDealerName();
-      FetchCategoriesFromServices(arnDealerID, serviceName, "dealer");
+      FetchCategoriesFromServices(arnDealerID, serviceName);
     }
   };
 

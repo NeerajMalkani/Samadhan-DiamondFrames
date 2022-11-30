@@ -54,10 +54,10 @@ export const categoryColumns: GridColDef[] = [
     sortable: false,
     renderCell: (params) => {
       if (params.value !== null && params.value !== undefined) {
-        const a =  params.value.split("<br>");
+       // const a =  params.value.split("<br>");
         return (
           <div>
-            {a.map((k: string) => {
+            {params.value.map((k: string) => {
               return <Typography color="textSecondary">{k.trim()}</Typography>;
             })}
           </div>
