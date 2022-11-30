@@ -852,7 +852,7 @@ const MaterialSetup = () => {
       CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
       setSubTotal("0");
 
-      FetchCategoriesFromServices(arnID, a.serviceID, "contractor");
+      FetchCategoriesFromServices(arnID, a.serviceID);
       FetchProductsFromCategory(arnID, a.serviceID, a.categoryID, "contractor");
       FetchDesignTypeFromProduct(arnID, a.serviceID, a.categoryID, a.productID);
       FetchProductsFromMaterialSetup(a.id);
