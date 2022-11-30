@@ -98,8 +98,8 @@ const EWayBillPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setEwayBillList(response.data.data);
-            setEwayBillListTemp(response.data.data);
+            setEwayBillList(arrList);
+            setEwayBillListTemp(arrList);
           
           }
         } else {

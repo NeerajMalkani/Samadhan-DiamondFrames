@@ -101,8 +101,8 @@ const DesignationPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setDesignationNameList(response.data.data);
-            setDesignationNameListTemp(response.data.data);
+            setDesignationNameList(arrList);
+            setDesignationNameListTemp(arrList);
           }
         } else {
           setSnackMsg(communication.NoData);

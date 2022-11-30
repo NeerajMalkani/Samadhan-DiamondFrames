@@ -101,8 +101,8 @@ const DepartmentPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setDepartmentNameList(response.data.data);
-            setDepartmentNameListTemp(response.data.data);
+            setDepartmentNameList(arrList);
+            setDepartmentNameListTemp(arrList);
           }
         } else {
           setSnackMsg(communication.NoData);
