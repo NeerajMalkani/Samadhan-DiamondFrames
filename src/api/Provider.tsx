@@ -65,6 +65,7 @@ class Provider {
     ProductNameCreate: "productnamecreate/",
     ProductNameUpdate: "productnameupdate/",
 
+    ServiceProductrefNoCheck:"serviceproductrefnocheck/",
     ServiceProductFilter: "serviceproductfilter/",
     ActivityRoleServiceProduct: "getactivityroleserviceproductform/",
     ServiceNameServiceProduct: "getservicenameserviceproductform/",
