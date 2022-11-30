@@ -364,6 +364,7 @@ const MaterialSetup = () => {
     }
   };
 
+  
   const handleSNDealerChange = (event: SelectChangeEvent) => {
     let serviceName: number = parseInt(event.target.value);
     let ac = serviceNameDealerList.find((el) => el.id === serviceName);
