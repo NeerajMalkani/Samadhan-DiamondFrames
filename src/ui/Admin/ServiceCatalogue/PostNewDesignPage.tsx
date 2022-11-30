@@ -108,7 +108,7 @@ const PostNewDesignPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            setDesignNo("DC-" + response.data.data[0].autoincrement_design_no.toString().padStart(4, "0"));
+            setDesignNo("DS-" + response.data.data[0].autoincrement_design_no.toString().padStart(4, "0"));
           }
         }
       })
@@ -141,7 +141,7 @@ const PostNewDesignPage = () => {
             });
             setPostNewDesign(arrList);
             setPostNewDesignTemp(arrList);
-            setDesignNo("DS-" + (arrList.length + 1).toString());
+           // setDesignNo("DS-" + (arrList.length + 1).toString());
           }
         } else {
           setSnackbarMessage(communication.NoData);
