@@ -24,7 +24,7 @@ const ServiceProductPage = () => {
   //#region Variables
   // const [loading, setLoading] = useState(true);
   const [type, setType] = useState("New");
-  const [selectedID, setSelectedID] = useState(0);
+  const [selectedID, setSelectedID] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const [arn, setArn] = useState("");
@@ -96,7 +96,7 @@ const ServiceProductPage = () => {
   //#endregion
 
   //#region Functions
-  const FetchData = (id: number) => {
+  const FetchData = (id: string) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -119,36 +119,64 @@ const ServiceProductPage = () => {
             });
 
             setServiceProductList(arrList);
-
-            FetchServicesFromActivity(arnID,(list)=>{
+            FetchActvityRoles((arnData)=>{
+            FetchServicesFromActivity(arnData, (list) => {
               let srid = list.find((el: any) => {
                 return el.serviceName === arrList[0].serviceName;
               }).id;
               setSnID(srid);
-              FetchCategoriesFromServices(arnID, srid, (categoryList: any) => {
-                let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
-                if (ca !== undefined) {
-                  setCnID(ca.id);
-                  FetchCategoryDataFromCategory(ca.id);
-                  FetchProductsFromCategory(arnID, ca.id, (productList) => {
-                    let pa: productModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
-                    if (pa !== undefined) {
-                      setPnID(pa?.id);
-                      FetchUnitsFromProduct(pa?.id, ()=>{
-                        let unit: UnitModel | undefined = unitList.find((el: any) => el.displayUnit === arrList[0]?.displayUnit);
-                        if (unit !== undefined) {
-                          setPnID(unit?.id);
-                        }
-                      });
-                }
-                  }); 
-                }
-              });
+              setSn(arrList[0].serviceName);
 
-            });
+                FetchCategoriesFromServices(arnData, srid, (categoryList: any) => {
+               let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
+               if (ca !== undefined) {
+                setCnID(ca.id);
+                setCn(ca.categoryName);
+                FetchCategoryDataFromCategory(ca.id);
+
+                 FetchProductsFromCategory(arnData, ca.id, (productList) => {
+                  let pa: ProductModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
+                   if (pa !== undefined) {
+                     setPnID(pa.productID);
+                     setPn(pa.productName);
+
+                      FetchUnitsFromProduct(pa.productID, (unitList)=>{
+                      let unit: UnitModel | undefined = unitList.find((el: any) => el.unitName === arrList[0]?.selectedUnit);
+                      if (unit !== undefined) {
+                        setPnID(unit?.id);
+                      }
+                    })
+               }
+              })
+            }
+          })
+            })
+           } );
+            // FetchCategoriesFromServices(arnID, srid, (categoryList: any) => {
+            //   let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
+            //   if (ca !== undefined) {
+            //     setCnID(ca.id);
+            //     FetchCategoryDataFromCategory(ca.id);
+            //     FetchProductsFromCategory(arnID, ca.id, (productList) => {
+            //       let pa: productModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
+            //       if (pa !== undefined) {
+            //         setPnID(pa?.id);
+            //         FetchUnitsFromProduct(pa?.id, ()=>{
+            //           let unit: UnitModel | undefined = unitList.find((el: any) => el.displayUnit === arrList[0]?.displayUnit);
+            //           if (unit !== undefined) {
+            //             setPnID(unit?.id);
+            //           }
+            //         });
+            //   }
+            //     });
+            //   }
+            // });
+
             setRateWithMaterial(arrList[0].rateWithMaterials);
             setRateWithoutMaterial(arrList[0].rateWithoutMaterials);
             setAlternateUnit(arrList[0].conversionRate);
+            setShortSpecification(arrList[0].shortSpecification);
+            setSpecification(arrList[0].specification);
           }
         } else {
           setSnackbarMessage(communication.NoData);
@@ -165,7 +193,7 @@ const ServiceProductPage = () => {
       });
   };
 
-  const FetchActvityRoles = () => {
+  const FetchActvityRoles = (callback=null) => {
     Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -174,14 +202,21 @@ const ServiceProductPage = () => {
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
             setArnID(response.data.data[0].id);
-            FetchServicesFromActivity(response.data.data[0].id);
+            
+            if (type === "New") {
+              FetchServicesFromActivity(response.data.data[0].id);
+            }
+
+            if(callback){
+              callback(response.data.data[0].id);
+            }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedID: number, callback=null) => {
+  const FetchServicesFromActivity = (selectedID: number, callback = null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -195,7 +230,7 @@ const ServiceProductPage = () => {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             setServiceNameList(response.data.data);
-            if(callback){
+            if (callback) {
               callback(response.data.data);
             }
           }
@@ -239,9 +274,10 @@ const ServiceProductPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
             response.data.data = APIConverter(response.data.data);
             setProductList(response.data.data);
-            if (callbackFunction !== null) {
+            if (callbackFunction) {
               callbackFunction(response.data.data);
             }
           }
@@ -260,10 +296,11 @@ const ServiceProductPage = () => {
 
     Provider.createDFAdmin(Provider.API_URLS.UnitNameSelectedForProduct, params)
       .then((response: any) => {
+        
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            debugger;
+           
             setUnitOfSalesList(response.data.data);
             const units = [];
             response.data.data.forEach((el: any) => {
@@ -273,8 +310,9 @@ const ServiceProductPage = () => {
               });
             });
             setUnitList(units);
-            if (callbackFunction !== null) {
-              callbackFunction(response.data.data);
+            debugger;
+            if (callbackFunction) {
+              callbackFunction(units);
             }
           }
         }
@@ -304,12 +342,14 @@ const ServiceProductPage = () => {
 
   useEffect(() => {
     let paramVal: string = window.location.pathname.split("/").pop();
-    if (!isNaN(parseInt(paramVal))) {
+    if (paramVal) {
       setType("edit");
-      setSelectedID(parseInt(paramVal));
-      FetchData(parseInt(paramVal));
+      setSelectedID(paramVal);
+      FetchData(paramVal);
+    }else{
+      FetchActvityRoles();
     }
-    FetchActvityRoles();
+   
   }, []);
 
   const handleSNChange = (event: SelectChangeEvent) => {
@@ -349,7 +389,6 @@ const ServiceProductPage = () => {
   };
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
-    debugger;
     setUnitsOfSales(event.target.value);
 
     if (unitOfSalesList[0].displayUnit === event.target.value) {
@@ -438,7 +477,6 @@ const ServiceProductPage = () => {
   };
 
   const UpdateData = () => {
-    debugger;
     setButtonLoading(true);
 
     const params = {
@@ -458,18 +496,18 @@ const ServiceProductPage = () => {
       },
     };
 
-    if(type==="edit"){
-      params.data["service_product_refno"] =selectedID;
+    if (type === "edit") {
+      params.data["service_product_refno"] = selectedID;
     }
 
     debugger;
-    Provider.create(type==="edit"?Provider.API_URLS.ServiceProductUpdate:Provider.API_URLS.ServiceProductCreate, params)
+    Provider.create(type === "edit" ? Provider.API_URLS.ServiceProductUpdate : Provider.API_URLS.ServiceProductCreate, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
           //FetchData("updated");
           handleCancelClick();
-          if(type==="edit"){
+          if (type === "edit") {
             navigate("/master/addserviceproduct");
           }
         } else if (response.data.code === 304) {

@@ -176,9 +176,7 @@ const AddServiceProduct = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
             setCategoryListFilter(response.data.data);
           }
         }

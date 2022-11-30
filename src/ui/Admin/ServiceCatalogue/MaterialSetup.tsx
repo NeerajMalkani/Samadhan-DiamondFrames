@@ -207,6 +207,7 @@ const MaterialSetup = () => {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
+            debugger
             arrList.map(function (a: any, index: number) {
               a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
@@ -273,6 +274,7 @@ const MaterialSetup = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger
             response.data.data = APIConverter(response.data.data);
             setCategoryList(response.data.data);
           }
@@ -348,6 +350,7 @@ const MaterialSetup = () => {
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
+    debugger;
     let serviceName: number = parseInt(event.target.value);
     let ac = serviceNameList.find((el) => el.id === serviceName);
     if (ac !== undefined) {

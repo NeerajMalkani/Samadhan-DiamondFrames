@@ -489,6 +489,7 @@ export const serviceProductColumns: GridColDef[] = [
     sortable: false,
     maxWidth: 100,
     renderCell: (e) => {
+      debugger;
       return <Link href={`serviceproduct/edit/${e.row.id}`}>Edit</Link>;
     },
   },
