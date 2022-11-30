@@ -91,7 +91,6 @@ const ProductListPage = () => {
 
  //#region Functions
   useEffect(() => {
-    //FetchShowBrand(cookies.dfc.UserID);
     FetchData("", cookies.dfc.UserID);
     FetchBrands(cookies.dfc.UserID);
     FetchActvityRoles();

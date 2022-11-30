@@ -122,6 +122,18 @@ class Provider {
     DealerBuyerCategoryRefNoCheck: "dealerbuyercategoryrefnocheck/",
     DealerBuyerCategoryCreate: "dealerbuyercategorycreate/",
     DealerBuyerCategoryUpdate: "dealerbuyercategoryupdate/",
+    
+    DesignGalleryRefNoCheck: "designgalleryrefnocheck/",
+    NewDesignCreate: "newdesigncreate/",
+    NewDesignUpdate: "newdesignupdate/",
+    AutoDesignNoNewDesign: "getautodesignnonewdesignform/",
+    ActivityRoleNameNewDesign:"getgroupnamenewdesignform/",
+    ServiceNameNewDesign: "getservicenamenewdesignform/",
+    CategoryNameNewDesign: "getcategorynamenewdesignform/",
+    ProductNameNewDesign: "getproductnamenewdesignform/",
+    ProductDesignTypeNewDesign: "getproductdesigntypenewdesignform/",
+    ProductDataNewDesign: "getproductdatanewdesignform/",
+    WorkLocationNameNewDesign: "getworklocationnamenewdesignform/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

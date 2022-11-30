@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header";
-import { CategoryModel, DesignTypeModel, PostNewDesignModel, ProductModel, ServiceNameModel, WorkLocationNameModel } from "../../../models/Model";
+import { CategoryModel, DesignTypeModel, PostNewDesignModel, ProductDetailsModel, productModel, ProductModel, ServiceNameModel, WorkLocationNameModel } from "../../../models/Model";
 import { postNewDesignColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import { AWSImagePath } from "../../../utils/paths";
@@ -100,7 +100,20 @@ const PostNewDesignPage = () => {
     FetchData("");
     FetchActvityRoles();
     FetchWorkLocation();
+    FetchDesignNumber();
   }, []);
+
+  const FetchDesignNumber = () => {
+    Provider.createDFAdmin(Provider.API_URLS.AutoDesignNoNewDesign)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setDesignNo("DC-" + response.data.data[0].autoincrement_design_no.toString().padStart(4, "0"));
+          }
+        }
+      })
+      .catch((e) => {});
+  };
 
   const FetchData = (type: string) => {
     handleCancelClick();
@@ -115,7 +128,7 @@ const PostNewDesignPage = () => {
         designtype_refno: "all",
       },
     };
-    Provider.createDF(Provider.API_URLS.PostNewDesignRefNoCheck, params)
+    Provider.createDFAdmin(Provider.API_URLS.DesignGalleryRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -146,12 +159,11 @@ const PostNewDesignPage = () => {
   };
 
   const FetchActvityRoles = () => {
-    Provider.createDFAdmin(Provider.API_URLS.ActivityRolesDesignType)
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRoleNameNewDesign)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-
             setArnID(response.data.data[0].id);
             FetchServicesFromActivity(response.data.data[0].id);
           }
@@ -167,12 +179,11 @@ const PostNewDesignPage = () => {
         group_refno: selectedID,
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.ServiceNameDesignType, params)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNameNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-
             setServiceNameList(response.data.data);
             if (callback) {
               callback(response.data.data);
@@ -191,7 +202,7 @@ const PostNewDesignPage = () => {
         service_refno: selectedServiceID,
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.CategoryNameDesignType, params)
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNameNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -214,7 +225,7 @@ const PostNewDesignPage = () => {
         category_refno: selectedCategoryID,
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.ProductNameDesignType, params)
+    Provider.createDFAdmin(Provider.API_URLS.ProductNameNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -229,41 +240,63 @@ const PostNewDesignPage = () => {
       .catch((e) => {});
   };
 
-  const FetchDesignTypeFromProductID = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, selectedProductID: number) => {
+  const FetchProductDataFromProduct = (selectedItem) => {
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
-      ProductID: selectedProductID,
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: selectedItem,
+      },
     };
-
-    Provider.getAll(`servicecatalogue/getdesigntypebyproductidformaterialsetup?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ProductDataNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            setProductDesignTypeList(response.data.data);
+            response.data.data = APIConverter(response.data.data);
+            setLabourCost(response.data.data[0].labourCost);
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchWorkLocation = () => {
+  const FetchDesignTypeFromProductID = (selectedProductID: number,callback = null) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: selectedProductID,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ProductDesignTypeNewDesign, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setProductDesignTypeList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchWorkLocation = (callback=null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
         worklocation_refno: "all",
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.WorkLocationRefNoCheck, params)
+    Provider.createDFAdmin(Provider.API_URLS.WorkLocationNameNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             setWorkLocationList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
@@ -301,12 +334,10 @@ const PostNewDesignPage = () => {
     if (ac !== undefined) {
       setPn(event.target.value as string);
       setPnID(ac.productID);
-      if (ac.rateWithoutMaterials) {
-        setLabourCost(ac.rateWithoutMaterials.toFixed(4));
-      }
+      FetchProductDataFromProduct(ac.productID);
       SetResetProductName(false);
       SetResetProductDesignType(true);
-      FetchDesignTypeFromProductID(arnID, snID, cnID, ac.productID);
+      FetchDesignTypeFromProductID(ac.productID);
     }
   };
 
@@ -449,11 +480,11 @@ const PostNewDesignPage = () => {
 
     if (isValid) {
       setButtonLoading(true);
-      if (uploadFileUpload !== null) {
-        uploadImage();
-      } else {
+      // if (uploadFileUpload !== null) {
+      //   uploadImage();
+      // } else {
         InsertData("Success", uploadedImage);
-      }
+      //}
     }
   };
 
@@ -467,17 +498,24 @@ const PostNewDesignPage = () => {
   const InsertData = (Status: string, fileName: string) => {
     if (Status.toLowerCase() === "success") {
       if (actionStatus === "new") {
-        Provider.create("servicecatalogue/insertpostnewdesigntype", {
-          ServiceID: snID,
-          CategoryID: cnID,
-          ProductID: pnID,
-          DesignTypeID: pdtID,
-          WorkLocationID: wlID,
-          DesignNumber: designNo,
-          DesignImage: AWSImagePath + fileName,
-          LabourCost: labourCost,
-          Display: display === "Yes",
-        })
+        
+        const params = {
+          data: {
+            Sess_UserRefno: "2",
+            group_refno: arnID,
+            service_refno: snID,
+            category_refno: cnID,
+            product_refno:pnID,
+            designtype_refno:pdtID,
+            worklocation_refno: wlID,
+            design_no: parseInt(designNo.split("-")[1]),
+            labour_cost: labourCost,
+            view_status: display === "Yes" ? 1 : 0
+          },
+          design_image: uploadFileUpload
+        }
+
+        Provider.createDFAdmin(Provider.API_URLS.NewDesignCreate, params)
           .then((response) => {
             if (response.data && response.data.code === 200) {
               FetchData("added");
@@ -500,18 +538,23 @@ const PostNewDesignPage = () => {
             setButtonLoading(false);
           });
       } else if (actionStatus === "edit") {
-        Provider.create("servicecatalogue/updatepostnewdesigntype", {
-          ID: selectedID,
-          ServiceID: snID,
-          CategoryID: cnID,
-          ProductID: pnID,
-          DesignTypeID: pdtID,
-          WorkLocationID: wlID,
-          DesignNumber: designNo,
-          DesignImage: AWSImagePath + fileName,
-          LabourCost: labourCost,
-          Display: display === "Yes",
-        })
+         const params = {
+          data: {
+            Sess_UserRefno: "2",
+            designgallery_refno: selectedID,
+            group_refno: arnID,
+            service_refno: snID,
+            category_refno: cnID,
+            product_refno: pnID,
+            designtype_refno: pdtID,
+            worklocation_refno: wlID,
+            design_no: parseInt(designNo.split("-")[1]),
+            labour_cost: labourCost,
+            view_status: display === "Yes" ? 1 : 0
+          },
+          design_image:  uploadFileUpload ? uploadFileUpload : "",
+        }
+        Provider.createDFAdmin(Provider.API_URLS.NewDesignCreate, params)
           .then((response) => {
             if (response.data && response.data.code === 200) {
               FetchData("updated");
@@ -588,25 +631,54 @@ const PostNewDesignPage = () => {
 
       setSelectedID(a.id);
       setSn(a.serviceName);
-      setSnID(a.serviceID);
-      setCnID(a.categoryID);
+      //setSnID(a.serviceID);
+     // setCnID(a.categoryID);
       setCn(a.categoryName);
       setPn(a.productName);
-      setPnID(a.productID);
+     // setPnID(a.productID);
       setPdt(a.designTypeName);
-      setPdtID(a.designTypeID);
+      //setPdtID(a.designTypeID);
       setDesignNo(a.designNumber);
       setLabourCost(a.labourCost);
       setWl(a.workLocationName);
-      setWlID(a.workLocationID);
+     // setWlID(a.workLocationID);
       setUploadedImage(a.designImage.split("/").pop());
       setDIError(false);
       setDIErrorText(a.designImage.split("/").pop());
 
-      FetchCategoriesFromServices(arnID, a.serviceID);
-      FetchProductsFromCategory(arnID, a.categoryID);
-      FetchDesignTypeFromProductID(arnID, a.serviceID, a.categoryID, a.productID);
-      FetchWorkLocation();
+      FetchServicesFromActivity(arnID,(list)=>{
+        let srid = list.find((el: any) => {
+          return el.serviceName === a?.serviceName;
+        }).id;
+        setSnID(srid);
+
+        FetchCategoriesFromServices(arnID, srid, (categoryList: any) => {
+          let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === a?.categoryName);
+          if (ca !== undefined) {
+            setCnID(ca.id);
+            FetchProductsFromCategory(arnID, ca.id, (productList) => {
+              let pa: productModel | undefined = productList.find((el: any) => el.productName === a?.productName);
+              if (pa !== undefined) {setPnID(pa?.id);
+                FetchProductDataFromProduct(pa?.id);
+                FetchDesignTypeFromProductID(pa?.id, ()=>{
+                  let pa1: ProductDetailsModel | undefined = productList.find((el: any) => el.designTypeName === a?.designTypeName);
+                  if (pa1 !== undefined) setPdtID(pa1?.id);
+                })
+              }
+            }); 
+          }
+        });
+      });
+
+      FetchWorkLocation((list:any)=>{
+        let wl: WorkLocationNameModel | undefined = list.find((el: any) => el.workLocationName === a?.workLocationName);
+        if (wl !== undefined) setWlID(wl?.id);
+      })
+
+     // FetchCategoriesFromServices(arnID, a.serviceID);
+     // FetchProductsFromCategory(arnID, a.categoryID);
+     // FetchDesignTypeFromProductID(a.productID);
+    //  FetchWorkLocation();
     }
   };
   //#endregion
@@ -791,9 +863,14 @@ const PostNewDesignPage = () => {
                     //ref={fileInput}
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
-                        setUploadFileUpload(e.currentTarget.files[0]);
-
                         let FileName = e.currentTarget.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                          console.log(evt.target.result);
+                          setUploadFileUpload(evt.target.result);
+                        };
+                        reader.readAsDataURL(e.currentTarget.files[0]);
+                       
                         if (FileName !== undefined) {
                           setDIErrorText(FileName.trim());
                           setImage(FileName);

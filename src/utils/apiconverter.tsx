@@ -55,7 +55,9 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "company_product_price", "price");
     renameKey(obj, "company_brand_refno", "brandID");
     renameKey(obj, "company_brand_name", "brandName");
+    renameKey(obj, "designgallery_refno", "id");
     renameKey(obj, "design_image_url", "designImage");
+    renameKey(obj, "labour_cost", "labourCost");
     renameKey(obj, "design_no", "designNumber");
     
   });
