@@ -23,6 +23,7 @@ const ServiceProductPage = () => {
 
   //#region Variables
   // const [loading, setLoading] = useState(true);
+  const [type, setType] = useState("New");
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const [arn, setArn] = useState("");
@@ -75,7 +76,7 @@ const ServiceProductPage = () => {
   const [unitList, setUnitList] = useState<Array<UnitModel>>([]);
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
   const [productList, setProductList] = useState<Array<ProductModel>>([]);
-  // const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
+  const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
   // const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
   // const [pageSize, setPageSize] = useState<number>(5);
   const [showauos, setShowauos] = useState(false);
@@ -94,52 +95,50 @@ const ServiceProductPage = () => {
   //#endregion
 
   //#region Functions
-  // const FetchData = (type: string) => {
-  //   let params = {
-  //     data: {
-  //       Sess_UserRefno: "2",
-  //       service_refno: "0",
-  //       category_refno: "0",
-  //       product_refno: "0",
-  //     },
-  //   };
-  //   Provider.createDFAdmin(Provider.API_URLS.ServiceProductFilter, params)
-  //     .then((response: any) => {
-  //       if (response.data && response.data.code === 200) {
-  //         if (response.data.data) {
-  //           response.data.data = APIConverter(response.data.data);
-  //           const arrList = [...response.data.data];
-  //           arrList.map(function (a: any, index: number) {
-  //             a.display = a.display == 1 ? "Yes" : "No";
-  //             let sr = { srno: index + 1 };
-  //             let id = { id: index + 1 };
-  //             a = Object.assign(a, sr);
-  //             a = Object.assign(a, id);
-  //             return a;
-  //           });
+  const FetchData = (id: number) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        service_product_refno: id,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ServiceProductrefNoCheck, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              a.display = a.display == 1 ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              // let id = { id: index + 1 };
+              a = Object.assign(a, sr);
+              // a = Object.assign(a, id);
+              return a;
+            });
 
-  //           setServiceProductList(arrList);
-  //           setProductListTemp(arrList);
-  //           if (type !== "") {
-  //             setSnackbarMessage("Service product " + type);
-  //             setIsSnackbarOpen(true);
-  //             setSnackbarType("success");
-  //           }
-  //         }
-  //       } else {
-  //         setSnackbarMessage(communication.NoData);
-  //         setIsSnackbarOpen(true);
-  //         setSnackbarType("info");
-  //       }
-  //       setLoading(false);
-  //     })
-  //     .catch((e) => {
-  //       setLoading(false);
-  //       setSnackbarMessage(e.message);
-  //       setSnackbarType("error");
-  //       setIsSnackbarOpen(true);
-  //     });
-  // };
+            setServiceProductList(arrList);
+            // setProductListTemp(arrList);
+            // if (type !== "") {
+            //   setSnackbarMessage("Service product " + type);
+            //   setIsSnackbarOpen(true);
+            //   setSnackbarType("success");
+            // }
+          }
+        } else {
+          setSnackbarMessage(communication.NoData);
+          setIsSnackbarOpen(true);
+          setSnackbarType("info");
+        }
+        //   setLoading(false);
+      })
+      .catch((e) => {
+        // setLoading(false);
+        setSnackbarMessage(e.message);
+        setSnackbarType("error");
+        setIsSnackbarOpen(true);
+      });
+  };
 
   const FetchActvityRoles = () => {
     Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
@@ -147,9 +146,6 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display == 1 && el.activityRoleName === "Contractor";
-            // });
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
             setArnID(response.data.data[0].id);
@@ -173,9 +169,6 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display==1;
-            // });
             setServiceNameList(response.data.data);
           }
         }
@@ -184,8 +177,6 @@ const ServiceProductPage = () => {
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
-    //, callbackFunction: any = null
-
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -198,9 +189,6 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
             setCategoryList(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
@@ -211,7 +199,7 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
-  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
+  const FetchProductsFromCategory = (selectedActivityID: number, selectedCategoryID: number, callbackFunction: any = null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -224,9 +212,6 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
             setProductList(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
@@ -290,7 +275,11 @@ const ServiceProductPage = () => {
   };
 
   useEffect(() => {
-    //FetchData("");
+    let paramVal: string = window.location.pathname.split("/").pop();
+    if (!isNaN(parseInt(paramVal))) {
+      setType("edit");
+      FetchData(parseInt(paramVal));
+    }
     FetchActvityRoles();
   }, []);
 
@@ -314,7 +303,7 @@ const ServiceProductPage = () => {
       SetResetProductName(true);
       SetResetUnitName(true);
       FetchCategoryDataFromCategory(ac.id);
-      FetchProductsFromCategory(arnID, snID, ac.id);
+      FetchProductsFromCategory(arnID, ac.id);
     }
   };
 

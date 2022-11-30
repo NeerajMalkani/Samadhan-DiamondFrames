@@ -58,12 +58,10 @@ const AddServiceProduct = () => {
     let params = {
       data: {
         Sess_UserRefno: "2",
-        service_refno: "0",
-        category_refno: "0",
-        product_refno: "0",
+        service_product_refno: "all",
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.ServiceProductFilter, params)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceProductrefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -72,9 +70,9 @@ const AddServiceProduct = () => {
             arrList.map(function (a: any, index: number) {
               a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
-              let id = { id: index + 1 };
+              //let id = { id: index + 1 };
               a = Object.assign(a, sr);
-              a = Object.assign(a, id);
+             // a = Object.assign(a, id);
               return a;
             });
 
@@ -102,13 +100,11 @@ const AddServiceProduct = () => {
   };
 
   const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "Contractor";
-            });
+            response.data.data = APIConverter(response.data.data);
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
             setArnID(response.data.data[0].id);
@@ -121,16 +117,17 @@ const AddServiceProduct = () => {
 
   const FetchServicesFromActivity = (selectedID: number) => {
     let params = {
-      ID: selectedID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedID,
+      },
     };
-
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNameServiceProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+          
             setServiceNameList(response.data.data);
           }
         }
@@ -168,12 +165,14 @@ const AddServiceProduct = () => {
   };
 
   const FetchCategoriesFromServicesFilter = (selectedActivityID: number, selectedServiceID: number) => {
-    //, callbackFunction: any = null
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno:selectedActivityID,
+        service_refno: selectedServiceID,
+      },
     };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNameServiceProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -181,39 +180,16 @@ const AddServiceProduct = () => {
               return el.display;
             });
             setCategoryListFilter(response.data.data);
-            // if (callbackFunction !== null) {
-            //   callbackFunction(response.data.data);
-            // }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const GetStringifyJson = (params: any) => {
-    var string_ = JSON.stringify(params);
-
-    string_ = string_.replace(/{/g, "");
-    string_ = string_.replace(/}/g, "");
-    string_ = string_.replace(/:/g, "=");
-    string_ = string_.replace(/,/g, "&");
-    string_ = string_.replace(/"/g, "");
-
-    return string_;
-  };
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     SetFilters(snFilter, cnFilter, query);
-    // if (query === "") {
-    //   setProductListTemp(productList);
-    // } else {
-    //   setProductListTemp(
-    //     productList.filter((el: ProductModel) => {
-    //       return el.productName.toString().toLowerCase().includes(query.toLowerCase());
-    //     })
-    //   );
-    // }
   };
 
   const SetFilters = (snText: string, cnText: string, searcText: string) => {
@@ -259,7 +235,6 @@ const AddServiceProduct = () => {
   };
 
   const handleEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
-    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
