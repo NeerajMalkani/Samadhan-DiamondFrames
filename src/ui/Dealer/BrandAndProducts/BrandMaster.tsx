@@ -97,9 +97,9 @@ const BrandMasterPage = () => {
     
     let params = {
       data: {
-        Sess_UserRefno: "2",
+        Sess_UserRefno: cookies.dfc.UserID,
         brand_master_refno: "all",
-        Sess_CompanyAdmin_UserRefno: "0",
+        Sess_CompanyAdmin_UserRefno: cookies.dfc.Sess_CompanyAdmin_UserRefno,
       },
     };
     Provider.createDF(Provider.API_URLS.DealerBrandMasterRefnoCheck, params)
@@ -181,7 +181,7 @@ const BrandMasterPage = () => {
       Provider.createDFAdmin(Provider.API_URLS.DealerBrandMasterCreate, {
         brand_name: paramBrandName,
         view_status: checked ? 1 : 0,
-        Sess_UserRefno: "2",
+        Sess_UserRefno: cookies.dfc.UserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -209,7 +209,7 @@ const BrandMasterPage = () => {
         brand_master_refno: selectedID,
         brand_name: paramBrandName,
         view_status: checked ? 1 : 0,
-        Sess_UserRefno: "2",
+        Sess_UserRefno: cookies.dfc.UserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {

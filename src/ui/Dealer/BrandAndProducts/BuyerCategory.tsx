@@ -82,7 +82,7 @@ const BuyerCategory = () => {
 
     let params = {
       data: {
-        Sess_UserRefno: "2",
+        Sess_UserRefno: cookies.dfc.UserID,
         buyercategory_refno: "all",
       },
     };
@@ -191,7 +191,7 @@ const BuyerCategory = () => {
     setButtonLoading(true);
     if (actionStatus === "new") {
       Provider.createDFAdmin(Provider.API_URLS.DealerBuyerCategoryCreate, {
-        Sess_UserRefno: "2",
+        Sess_UserRefno: cookies.dfc.UserID,
         buyercategory_name: buyerCategoryName,
         view_status: checked ? 1 : 0,
       })
@@ -217,9 +217,9 @@ const BuyerCategory = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.DealerBuyerCategoryCreate, {
+      Provider.createDFAdmin(Provider.API_URLS.DealerBuyerCategoryUpdate, {
         buyercategory_refno: selectedID,
-        Sess_UserRefno: "2",
+        Sess_UserRefno: cookies.dfc.UserID,
         buyercategory_name: buyerCategoryName,
         view_status: checked ? 1 : 0,
       })
