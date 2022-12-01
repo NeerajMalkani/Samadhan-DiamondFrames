@@ -42,6 +42,8 @@ const ImageGalleryProductDetailsPage = () => {
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [selectedData, setSelectedData] = useState<any>();
 
+  const [productData, SetproductData] = useState<any>();
+
   const [imageOpen, setImageOpen] = useState(false);
   let dummyClient: ClientModel = null;
   const location = useLocation();
@@ -51,9 +53,12 @@ const ImageGalleryProductDetailsPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
     } else {
+      debugger;
       SetCookieUseID(cookies.dfc.UserID);
       setSelectedData(retrunValueFromLocation(location, "", true));
       FetchImageGalleryProductDetail(retrunValueFromLocation(location, "", true));
+
+      SetproductData(retrunValueFromLocation(location, "", true));
 
       let TotalArea = CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
       setTotalSqFt(TotalArea);
@@ -216,6 +221,61 @@ const ImageGalleryProductDetailsPage = () => {
         }
       })
       .catch((e) => { });
+  };
+
+  const AddMoreDesigns = () => {
+    debugger;
+    const params = {
+      data: {
+
+        "Sess_UserRefno": CookieUserID,
+        "Sess_group_refno": cookies.dfc.Sess_group_refno,
+        "clickaddmorecheck": "1",
+        "service_refno": productData.id,
+        "designtype_refno": productData.designTypeID,
+        "product_refno": productData.productID,
+        "designgallery_refno": productData.designgallery_refno,
+        "lengthfoot": lengthFeet,
+        "lengthinches": lengthInches,
+        "widthheightfoot": widthHeightFeet,
+        "widthheightinches": widthHeightInches,
+        "totalfoot": totalSqFt
+      }
+    };
+
+    Provider.createDF(Provider.API_URLS.GetscEstimation, params)
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          debugger;
+          navigate(`/generaluser/imagegallery/category`);
+          // if (fromCount === 2) {
+          //   if (from === "add") {
+          //     if (selectedData.type === "gallery") {
+          //       navigate(`/generaluser/imagegallery/category`);
+          //     } else if (selectedData.type === "contractor") {
+          //       navigate(`/contractor/quotationandestimation/designwise`, { state: { type: "pending" } });
+          //     } else {
+          //       navigate(`/dashboard`);
+          //     }
+          //   } else {
+          //     navigate(`/generaluser/imagegallery/productestimationdetails`, { state: { userDesignEstimationID: response.data.data[0].userDesignEstimationID, type: selectedData.type } });
+          //   }
+          // } else {
+          //   FetchEstimationData(response.data.data[0].userDesignEstimationID, from);
+          // }
+        } else {
+          setSnackMsg(communication.Error);
+          setSnackbarType("error");
+          setOpen(true);
+        }
+      })
+      .catch((e) => {
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+
   };
 
   const InsertDesignEstimationEnquiry = (from: string, fromCount: number, subtotal: number, userDesignEstimationID: number, labourCost) => {
@@ -673,7 +733,8 @@ const ImageGalleryProductDetailsPage = () => {
                             variant="contained"
                             sx={{ backgroundColor: theme.palette.error.main }}
                             onClick={() => {
-                              InsertDesignEstimationEnquiry("add", 1, 0, 0, 0);
+                              AddMoreDesigns();
+                              //InsertDesignEstimationEnquiry("add", 1, 0, 0, 0);
                               // navigate(`/generaluser/imagegallery/category`);
                             }}
                           >
