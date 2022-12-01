@@ -102,9 +102,9 @@ const LoginPage = () => {
             if (response.data && response.data.code === 200) {
               const user = {
                 UserID: user_refno,
-                FullName: response.data.data.Sess_FName,
+                FullName: response.data.data.Sess_FName === "" ? response.data.data.Sess_Username : "",
                 RoleID: response.data.data.Sess_group_refno,
-                RoleName: response.data.data.Sess_Username,
+                RoleName: response.data.data.Sess_group_name,
                 Sess_FName: response.data.data.Sess_FName,
                 Sess_MobileNo: response.data.data.Sess_MobileNo,
                 Sess_Username: response.data.data.Sess_Username,

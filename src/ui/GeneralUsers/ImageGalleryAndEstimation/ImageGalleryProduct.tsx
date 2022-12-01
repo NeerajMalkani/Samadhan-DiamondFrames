@@ -154,6 +154,7 @@ const ImageGalleryProductPage = (route) => {
   };
 
   const FetchImageGalleryData = (id: number) => {
+    debugger;
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,

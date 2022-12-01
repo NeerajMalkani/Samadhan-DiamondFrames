@@ -101,7 +101,7 @@ const DashboardPage = () => {
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
     else {
-      
+      debugger;
       SetCookieRoleID(cookies.dfc.RoleID);
       SetCookieRolName(cookies.dfc.RoleName);
       SetCookieUserName(cookies.dfc.FullName);
@@ -152,6 +152,7 @@ const DashboardPage = () => {
     };
     Provider.createDFDashboard(Provider.API_URLS.GetdashboardServicecatalogue, params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
@@ -309,6 +310,7 @@ const DashboardPage = () => {
   };
 
   const UpdateUserRole = () => {
+    debugger;
     handleClose();
     setButtonLoading(true);
     const params = {
@@ -317,20 +319,11 @@ const DashboardPage = () => {
         switchto_group_refno: roleID
       }
     };
-    Provider.createDFAdmin(Provider.API_URLS.Getdashboard_Userswitchto_Proceed, params)
+    Provider.createDFDashboard(Provider.API_URLS.Getdashboard_Userswitchto_Proceed, params)
       .then((response) => {
+        debugger;
         if (response.data && response.data.code === 200) {
-          removeCookie("dfc");
-          const user = {
-            UserID: CookieUserID,
-            FullName: CookieUserName,
-            RoleID: roleID,
-            RoleName: role,
-          };
-          setCookie("dfc", JSON.stringify(user), { path: "/" });
-          // setRoleName(roleName);
-          // GetUserCount();
-          window.location.reload();
+          GetUserDetails(CookieUserID);
         } else {
           setSnackbarMessage(communication.NoData);
           setIsSnackbarOpen(true);
@@ -341,6 +334,56 @@ const DashboardPage = () => {
         setSnackbarMessage(e.message);
         setIsSnackbarOpen(true);
         setButtonLoading(false);
+      });
+  };
+
+  const GetUserDetails = (user_refno) => {
+    debugger;
+    setIsLoading(true);
+    let params = {
+      data: {
+        user_refno: user_refno,
+      },
+    };
+    Provider.createDF(Provider.API_URLS.UserFromRefNo, params)
+      .then((response: any) => {
+        debugger;
+        removeCookie("dfc");
+        if (response.data && response.data.code === 200) {
+          const user = {
+            UserID: user_refno,
+            FullName: response.data.data.Sess_FName === "" ? response.data.data.Sess_Username : "",
+            RoleID: response.data.data.Sess_group_refno,
+            RoleName: response.data.data.Sess_group_name,
+            Sess_FName: response.data.data.Sess_FName,
+            Sess_MobileNo: response.data.data.Sess_MobileNo,
+            Sess_Username: response.data.data.Sess_Username,
+            Sess_role_refno: response.data.data.Sess_role_refno,
+            Sess_group_refno: response.data.data.Sess_group_refno,
+            Sess_designation_refno: response.data.data.Sess_designation_refno,
+            Sess_locationtype_refno: response.data.data.Sess_locationtype_refno,
+            Sess_group_refno_extra_1: response.data.data.Sess_group_refno_extra_1,
+            Sess_User_All_GroupRefnos: response.data.data.Sess_User_All_GroupRefnos,
+            Sess_branch_refno: response.data.data.Sess_branch_refno,
+            Sess_company_refno: response.data.data.Sess_company_refno,
+            Sess_CompanyAdmin_UserRefno: response.data.data.Sess_CompanyAdmin_UserRefno,
+            Sess_CompanyAdmin_group_refno: response.data.data.Sess_CompanyAdmin_group_refno,
+            Sess_RegionalOffice_Branch_Refno: response.data.data.Sess_RegionalOffice_Branch_Refno,
+            Sess_menu_refno_list: response.data.data.Sess_menu_refno_list,
+          };
+          setCookie("dfc", JSON.stringify(user), { path: "/" });
+          //navigate(`/dashboard`);
+          window.location.reload();
+        } else {
+          setSnackbarMessage(communication.InvalidUserNotExists);
+          setIsSnackbarOpen(true);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+        setIsLoading(false);
       });
   };
 

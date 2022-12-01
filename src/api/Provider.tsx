@@ -136,8 +136,8 @@ class Provider {
     ProductDesignTypeNewDesign: "getproductdesigntypenewdesignform/",
     ProductDataNewDesign: "getproductdatanewdesignform/",
     WorkLocationNameNewDesign: "getworklocationnamenewdesignform/",
-
     AlternativeUnitOfSalesServiceProduct:"getalternativeunitofsalesserviceproductform/",
+    GetscEstimation: "getsc_estimation/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
