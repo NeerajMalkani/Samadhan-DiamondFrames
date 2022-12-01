@@ -19,6 +19,7 @@ import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
 import { APIConverter } from "../../../utils/apiconverter";
+import FormData from "form-data";
 
 const PostNewDesignPage = () => {
   let navigate = useNavigate();
@@ -125,16 +126,17 @@ const PostNewDesignPage = () => {
     let params = {
       data: {
         Sess_UserRefno: "2",
-        designtype_refno: "all",
+        designgallery_refno: "all",
       },
     };
     Provider.createDFAdmin(Provider.API_URLS.DesignGalleryRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            const arrList = [...response.data.data];
+         if (response.data.data) {
+          response.data.data = APIConverter(response.data.data);
+           const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display==="1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
               return a;
@@ -497,10 +499,9 @@ const PostNewDesignPage = () => {
 
   const InsertData = (Status: string, fileName: string) => {
     if (Status.toLowerCase() === "success") {
+      const datas=new FormData();
       if (actionStatus === "new") {
-        
-        const params = {
-          data: {
+           const params = {
             Sess_UserRefno: "2",
             group_refno: arnID,
             service_refno: snID,
@@ -511,11 +512,13 @@ const PostNewDesignPage = () => {
             design_no: parseInt(designNo.split("-")[1]),
             labour_cost: labourCost,
             view_status: display === "Yes" ? 1 : 0
-          },
-          design_image: uploadFileUpload
-        }
+          };
+        //  design_image: uploadFileUpload
+        
+        datas.append("data", JSON.stringify(params));
+        datas.append("designtype_image", uploadFileUpload[0]);
 
-        Provider.createDFAdmin(Provider.API_URLS.NewDesignCreate, params)
+        Provider.createDFAdminWithHeader(Provider.API_URLS.NewDesignCreate, datas)
           .then((response) => {
             if (response.data && response.data.code === 200) {
               FetchData("added");
@@ -539,7 +542,6 @@ const PostNewDesignPage = () => {
           });
       } else if (actionStatus === "edit") {
          const params = {
-          data: {
             Sess_UserRefno: "2",
             designgallery_refno: selectedID,
             group_refno: arnID,
@@ -551,10 +553,12 @@ const PostNewDesignPage = () => {
             design_no: parseInt(designNo.split("-")[1]),
             labour_cost: labourCost,
             view_status: display === "Yes" ? 1 : 0
-          },
-          design_image:  uploadFileUpload ? uploadFileUpload : "",
-        }
-        Provider.createDFAdmin(Provider.API_URLS.NewDesignCreate, params)
+        };
+
+        datas.append("data", JSON.stringify(params));
+        datas.append("designtype_image", uploadFileUpload ? uploadFileUpload[0] : "");
+
+        Provider.createDFAdminWithHeader(Provider.API_URLS.NewDesignUpdate, datas)
           .then((response) => {
             if (response.data && response.data.code === 200) {
               FetchData("updated");
@@ -642,6 +646,7 @@ const PostNewDesignPage = () => {
       setLabourCost(a.labourCost);
       setWl(a.workLocationName);
      // setWlID(a.workLocationID);
+
       setUploadedImage(a.designImage.split("/").pop());
       setDIError(false);
       setDIErrorText(a.designImage.split("/").pop());
@@ -657,10 +662,10 @@ const PostNewDesignPage = () => {
           if (ca !== undefined) {
             setCnID(ca.id);
             FetchProductsFromCategory(arnID, ca.id, (productList) => {
-              let pa: productModel | undefined = productList.find((el: any) => el.productName === a?.productName);
-              if (pa !== undefined) {setPnID(pa?.id);
-                FetchProductDataFromProduct(pa?.id);
-                FetchDesignTypeFromProductID(pa?.id, ()=>{
+              let pa: ProductModel | undefined = productList.find((el: any) => el.productName === a?.productName);
+              if (pa !== undefined) {setPnID(pa?.productID);
+                FetchProductDataFromProduct(pa?.productID);
+                FetchDesignTypeFromProductID(pa?.productID, ()=>{
                   let pa1: ProductDetailsModel | undefined = productList.find((el: any) => el.designTypeName === a?.designTypeName);
                   if (pa1 !== undefined) setPdtID(pa1?.id);
                 });
@@ -674,11 +679,6 @@ const PostNewDesignPage = () => {
         let wl: WorkLocationNameModel | undefined = list.find((el: any) => el.workLocationName === a?.workLocationName);
         if (wl !== undefined) setWlID(wl?.id);
       })
-
-     // FetchCategoriesFromServices(arnID, a.serviceID);
-     // FetchProductsFromCategory(arnID, a.categoryID);
-     // FetchDesignTypeFromProductID(a.productID);
-    //  FetchWorkLocation();
     }
   };
   //#endregion
@@ -864,13 +864,8 @@ const PostNewDesignPage = () => {
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
                         let FileName = e.currentTarget.files[0].name;
-                        const reader = new FileReader();
-                        reader.onload = (evt) => {
-                          console.log(evt.target.result);
-                          setUploadFileUpload(evt.target.result);
-                        };
-                        reader.readAsDataURL(e.currentTarget.files[0]);
                        
+                        setUploadFileUpload(e.currentTarget.files);
                         if (FileName !== undefined) {
                           setDIErrorText(FileName.trim());
                           setImage(FileName);

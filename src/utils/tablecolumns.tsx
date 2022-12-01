@@ -1027,9 +1027,6 @@ export const postNewDesignColumns: GridColDef[] = [
     field: "labourCost",
     headerName: "Labour Cost",
     flex: 1.8,
-    renderCell: (params) => {
-      return params.value.toFixed(2);
-    },
   },
   {
     field: "designImage",

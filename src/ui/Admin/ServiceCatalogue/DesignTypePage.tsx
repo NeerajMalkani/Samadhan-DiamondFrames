@@ -15,6 +15,7 @@ import ListIcon from "@mui/icons-material/List";
 import uuid from "react-uuid";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import { APIConverter } from "../../../utils/apiconverter";
+import FormData from "form-data";
 
 const DesignTypePage = () => {
   let navigate = useNavigate();
@@ -155,9 +156,7 @@ const DesignTypePage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
+           
             setServiceNameList(response.data.data);
             if (callback) {
               callback(response.data.data);
@@ -181,9 +180,7 @@ const DesignTypePage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
+           
             setCategoryList(response.data.data);
             if (callback) {
               callback(response.data.data);
@@ -208,9 +205,7 @@ const DesignTypePage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
+           
             setProductList(response.data.data);
             if (callback) {
               callback(response.data.data);
@@ -318,17 +313,9 @@ const DesignTypePage = () => {
   const UpdateData = (Status: string) => {
     if (Status.toLowerCase() === "success") {
       setButtonLoading(true);
+      const datas=new FormData();
       if (actionStatus === "new") {
-        //   Provider.create("servicecatalogue/insertdesigntype", {
-        //     DesignTypeName: designTypeName,
-        //     ServiceID: snID,
-        //     CategoryID: cnID,
-        //     ProductID: pnID,
-        //     Display: display === "Yes",
-        //     DesignImage: AWSImagePath + fileName,
-        //   })
         const params = {
-          data: {
             Sess_UserRefno: "2",
             designtype_name: designTypeName,
             group_refno: arnID,
@@ -336,10 +323,12 @@ const DesignTypePage = () => {
             category_refno: cnID,
             product_refno: pnID,
             view_status: display === "Yes" ? 1 : 0,
-          },
-          designtype_image: uploadFileUpload,
         };
-        Provider.createDFAdmin(Provider.API_URLS.DesignTypeCreate, params)
+
+        datas.append("data", JSON.stringify(params));
+        datas.append("designtype_image", uploadFileUpload[0]);
+
+        Provider.createDFAdminWithHeader(Provider.API_URLS.DesignTypeCreate, datas)
           .then((response: any) => {
             if (response.data && response.data.code === 200) {
               FetchData("added");
@@ -362,17 +351,7 @@ const DesignTypePage = () => {
             setButtonLoading(false);
           });
       } else if (actionStatus === "edit") {
-        // Provider.create("servicecatalogue/updatedesigntype", {
-        //   ID: dtID,
-        //   DesignTypeName: designTypeName,
-        //   ServiceID: snID,
-        //   CategoryID: cnID,
-        //   ProductID: pnID,
-        //   Display: display === "Yes",
-        //   DesignImage: AWSImagePath + fileName,
-        // })
         const params = {
-          data: {
             Sess_UserRefno: "2",
             designtype_refno: dtID,
             designtype_name: designTypeName,
@@ -381,10 +360,12 @@ const DesignTypePage = () => {
             category_refno: cnID,
             product_refno: pnID,
             view_status: display === "Yes" ? 1 : 0,
-          },
-          designtype_image: uploadFileUpload ? uploadFileUpload : "",
         };
-        Provider.createDFAdmin(Provider.API_URLS.DesignTypeUpdate, params)
+
+        datas.append("data", JSON.stringify(params));
+        datas.append("designtype_image", uploadFileUpload ? uploadFileUpload[0] : "");
+
+        Provider.createDFAdminWithHeader(Provider.API_URLS.DesignTypeUpdate, datas)
           .then((response: any) => {
             if (response.data && response.data.code === 200) {
               FetchData("updated");
@@ -459,8 +440,8 @@ const DesignTypePage = () => {
           if (ca !== undefined) {
             setCnID(ca.id);
             FetchProductsFromCategory(arnID, ca.id, (productList) => {
-              let pa: productModel | undefined = productList.find((el: any) => el.productName === a?.productName);
-              if (pa !== undefined) setPnID(pa?.id);
+              let pa: ProductModel | undefined = productList.find((el: any) => el.productName === a?.productName);
+              if (pa !== undefined) setPnID(pa?.productID);
             });
           }
         });
@@ -639,16 +620,10 @@ const DesignTypePage = () => {
                     type="file"
                     hidden
                     accept="image/*"
-                    //ref={fileInput}
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
                         let FileName = e.currentTarget.files[0].name;
-                        const reader = new FileReader();
-                        reader.onload = (evt) => {
-                          console.log(evt.target.result);
-                          setUploadFileUpload(evt.target.result);
-                        };
-                        reader.readAsDataURL(e.currentTarget.files[0]);
+                           setUploadFileUpload(e.currentTarget.files);
                         if (FileName !== undefined) {
                           setDIErrorText(FileName.trim());
                           setImage(FileName);

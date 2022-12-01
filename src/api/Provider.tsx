@@ -218,6 +218,19 @@ class Provider {
       return axios.post(`${BASE_URL_Dashboard}/${resource}`);
     }
   }
+  createDFAdminWithHeader(resource, params) {
+    if (params) {
+      return axios.post(`${BASE_URL_Admin}/${resource}`, params, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      return axios.post(`${BASE_URL_Admin}/${resource}`, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    }
+  }
 }
+
+
 
 export default new Provider();
