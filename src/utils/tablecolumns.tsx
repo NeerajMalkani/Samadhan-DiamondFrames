@@ -489,7 +489,6 @@ export const serviceProductColumns: GridColDef[] = [
     sortable: false,
     maxWidth: 100,
     renderCell: (e) => {
-      debugger;
       return <Link href={`serviceproduct/edit/${e.row.id}`}>Edit</Link>;
     },
   },
@@ -1312,12 +1311,9 @@ export const materialSetupColumns: GridColDef[] = [
     flex: 1,
   },
   {
-    field: "subtotal",
+    field: "materialCost",
     headerName: "Materials Cost (per Sq.Ft)",
     flex: 1.8,
-    renderCell: (params) => {
-      return (params.row.subtotal / (params.row.length * params.row.width)).toFixed(4);
-    },
   },
   {
     field: "display",

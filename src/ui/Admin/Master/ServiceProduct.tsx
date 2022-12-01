@@ -49,6 +49,7 @@ const ServiceProductPage = () => {
   const [gst, setGst] = useState("");
 
   const [unitsOfSales, setUnitsOfSales] = useState<string>("--Select--");
+  const [unitsOfSalesConverted, setUnitsOfSalesConverted] = useState<string>("");
 
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
@@ -112,65 +113,45 @@ const ServiceProductPage = () => {
             arrList.map(function (a: any, index: number) {
               a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
-              // let id = { id: index + 1 };
               a = Object.assign(a, sr);
-              // a = Object.assign(a, id);
               return a;
             });
 
             setServiceProductList(arrList);
-            FetchActvityRoles((arnData)=>{
-            FetchServicesFromActivity(arnData, (list) => {
-              let srid = list.find((el: any) => {
-                return el.serviceName === arrList[0].serviceName;
-              }).id;
-              setSnID(srid);
-              setSn(arrList[0].serviceName);
+            FetchActvityRoles((arnData) => {
+              FetchServicesFromActivity(arnData, (list) => {
+                let srid = list.find((el: any) => {
+                  return el.serviceName === arrList[0].serviceName;
+                }).id;
+                setSnID(srid);
+                setSn(arrList[0].serviceName);
 
                 FetchCategoriesFromServices(arnData, srid, (categoryList: any) => {
-               let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
-               if (ca !== undefined) {
-                setCnID(ca.id);
-                setCn(ca.categoryName);
-                FetchCategoryDataFromCategory(ca.id);
+                  let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
+                  if (ca !== undefined) {
+                    setCnID(ca.id);
+                    setCn(ca.categoryName);
+                    FetchCategoryDataFromCategory(ca.id);
 
-                 FetchProductsFromCategory(arnData, ca.id, (productList) => {
-                  let pa: ProductModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
-                   if (pa !== undefined) {
-                     setPnID(pa.productID);
-                     setPn(pa.productName);
-
-                      FetchUnitsFromProduct(pa.productID, (unitList)=>{
-                      let unit: UnitModel | undefined = unitList.find((el: any) => el.unitName === arrList[0]?.selectedUnit);
-                      if (unit !== undefined) {
-                        setPnID(unit?.id);
+                    FetchProductsFromCategory(arnData, ca.id, (productList) => {
+                      let pa: ProductModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
+                      if (pa !== undefined) {
+                        setPnID(pa.productID);
+                        setPn(pa.productName);
+                        FetchAlternativeUnitOfSalesFromUnit(arrList[0].unitId);
+                        FetchUnitsFromProduct(pa.productID, (unitList) => {
+                          let unit: UnitModel | undefined = unitList.find((el: any) => el.unitName === arrList[0]?.selectedUnit);
+                          if (unit !== undefined) {
+                            setSelectedUnitID(unit?.unitId);
+                            setSelectedUnit(unit?.unitName);
+                          }
+                        });
                       }
-                    })
-               }
-              })
-            }
-          })
-            })
-           } );
-            // FetchCategoriesFromServices(arnID, srid, (categoryList: any) => {
-            //   let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
-            //   if (ca !== undefined) {
-            //     setCnID(ca.id);
-            //     FetchCategoryDataFromCategory(ca.id);
-            //     FetchProductsFromCategory(arnID, ca.id, (productList) => {
-            //       let pa: productModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
-            //       if (pa !== undefined) {
-            //         setPnID(pa?.id);
-            //         FetchUnitsFromProduct(pa?.id, ()=>{
-            //           let unit: UnitModel | undefined = unitList.find((el: any) => el.displayUnit === arrList[0]?.displayUnit);
-            //           if (unit !== undefined) {
-            //             setPnID(unit?.id);
-            //           }
-            //         });
-            //   }
-            //     });
-            //   }
-            // });
+                    });
+                  }
+                });
+              });
+            });
 
             setRateWithMaterial(arrList[0].rateWithMaterials);
             setRateWithoutMaterial(arrList[0].rateWithoutMaterials);
@@ -193,7 +174,7 @@ const ServiceProductPage = () => {
       });
   };
 
-  const FetchActvityRoles = (callback=null) => {
+  const FetchActvityRoles = (callback = null) => {
     Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -202,12 +183,12 @@ const ServiceProductPage = () => {
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
             setArnID(response.data.data[0].id);
-            
+
             if (type === "New") {
               FetchServicesFromActivity(response.data.data[0].id);
             }
 
-            if(callback){
+            if (callback) {
               callback(response.data.data[0].id);
             }
           }
@@ -274,7 +255,6 @@ const ServiceProductPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
             response.data.data = APIConverter(response.data.data);
             setProductList(response.data.data);
             if (callbackFunction) {
@@ -296,21 +276,19 @@ const ServiceProductPage = () => {
 
     Provider.createDFAdmin(Provider.API_URLS.UnitNameSelectedForProduct, params)
       .then((response: any) => {
-        
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-           
+
             setUnitOfSalesList(response.data.data);
             const units = [];
             response.data.data.forEach((el: any) => {
               units.push({
-                id: el.id,
+                unitId: el.unitId,
                 unitName: el.displayUnit,
               });
             });
             setUnitList(units);
-            debugger;
             if (callbackFunction) {
               callbackFunction(units);
             }
@@ -340,16 +318,36 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
+  const FetchAlternativeUnitOfSalesFromUnit = (unitID) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        unitcategoryrefno_unitrefno: unitID,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.AlternativeUnitOfSalesServiceProduct, params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setUnitsOfSalesConverted(response.data.data[0].actual_unitname.split(" ")[1].split("=")[0]);
+            setSelectedUnit(response.data.data[0].convert_unitname);
+            setAlternateUnit(response.data.data[0].actual_unit_value);
+            setShowauos(true);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   useEffect(() => {
     let paramVal: string = window.location.pathname.split("/").pop();
-    if (paramVal) {
+    if (!isNaN(parseInt(paramVal))) {
       setType("edit");
       setSelectedID(paramVal);
       FetchData(paramVal);
-    }else{
+    } else {
       FetchActvityRoles();
     }
-   
   }, []);
 
   const handleSNChange = (event: SelectChangeEvent) => {
@@ -390,22 +388,23 @@ const ServiceProductPage = () => {
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
     setUnitsOfSales(event.target.value);
-
-    if (unitOfSalesList[0].displayUnit === event.target.value) {
-      setSelectedUnit(unitOfSalesList[1].displayUnit);
-      setSelectedUnitID(unitOfSalesList[1].id);
-      // if (unitOfSalesList[0].conversionRate != null) {
-      //   setAlternateUnit(unitOfSalesList[0].conversionRate.toString());
-      // }
-    } else {
-      setSelectedUnit(unitOfSalesList[0].displayUnit);
-      setSelectedUnitID(unitOfSalesList[0].id);
-      // if (unitOfSalesList[1].conversionRate != null) {
-      //   setAlternateUnit(unitOfSalesList[1].conversionRate.toString());
-      // }
-    }
-
-    setShowauos(true);
+    let unitName: string = event.target.value;
+    let ac = unitList.find((el) => el.unitName === unitName);
+    setSelectedUnitID(ac.unitId);
+    FetchAlternativeUnitOfSalesFromUnit(ac.unitId);
+    // if (unitOfSalesList[0].displayUnit === event.target.value) {
+    //   setSelectedUnit(unitOfSalesList[1].displayUnit);
+    //   setSelectedUnitID(unitOfSalesList[1].id);
+    //   // if (unitOfSalesList[0].conversionRate != null) {
+    //   //   setAlternateUnit(unitOfSalesList[0].conversionRate.toString());
+    //   // }
+    // } else {
+    //   setSelectedUnit(unitOfSalesList[0].displayUnit);
+    //   setSelectedUnitID(unitOfSalesList[0].id);
+    //   // if (unitOfSalesList[1].conversionRate != null) {
+    //   //   setAlternateUnit(unitOfSalesList[1].conversionRate.toString());
+    //   // }
+    // }
     SetResetUnitName(false);
   };
 
@@ -500,15 +499,17 @@ const ServiceProductPage = () => {
       params.data["service_product_refno"] = selectedID;
     }
 
-    debugger;
-    Provider.create(type === "edit" ? Provider.API_URLS.ServiceProductUpdate : Provider.API_URLS.ServiceProductCreate, params)
+    Provider.createDFAdmin(type === "edit" ? Provider.API_URLS.ServiceProductUpdate : Provider.API_URLS.ServiceProductCreate, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           //FetchData("updated");
           handleCancelClick();
           if (type === "edit") {
             navigate("/master/addserviceproduct");
+          }else{
+            setSnackbarMessage("Service product added");
+            setIsSnackbarOpen(true);
+            setSnackbarType("success");
           }
         } else if (response.data.code === 304) {
           setSnackbarMessage(communication.ExistsError);
@@ -833,7 +834,7 @@ const ServiceProductPage = () => {
                   display: showauos ? "block" : "none",
                 }}
               >
-                {unitList.length > 0 && showauos ? "1 " + unitsOfSales + " =" : ""}
+                {unitList.length > 0 && showauos ? "1 " + unitsOfSalesConverted + " =" : ""}
               </Typography>
               <TextField
                 fullWidth

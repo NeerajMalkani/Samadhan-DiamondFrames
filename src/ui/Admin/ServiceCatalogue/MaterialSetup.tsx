@@ -8,7 +8,6 @@ import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
 import { CategoryModel, DesignTypeModel, MaterialSetupModel, ProductModel, ServiceNameModel } from "../../../models/Model";
 import { theme } from "../../../theme/AppTheme";
-import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { materialSetupColumns } from "../../../utils/tablecolumns";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
@@ -183,6 +182,7 @@ const MaterialSetup = () => {
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
+    FetchServices();
     CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
   }, []);
 
@@ -198,16 +198,14 @@ const MaterialSetup = () => {
     let params = {
       data: {
         Sess_UserRefno: "2",
-        materials_setup_refno: "all",
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.MaterialsSetupRefNoCheck, params)
+    Provider.createDFAdmin(Provider.API_URLS.MaterialsSetupList, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
-            debugger
             arrList.map(function (a: any, index: number) {
               a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
@@ -215,6 +213,83 @@ const MaterialSetup = () => {
             });
             setMaterialSetupList(arrList);
             setMaterialSetupListTemp(arrList);
+          }
+        } else {
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+      })
+      .catch((e) => {
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
+
+
+  const FetchDataForProduct = (id: number, a:any) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        materials_setup_refno: id,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.MaterialsSetupRefNoCheck, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            let designID=response.data.data[0].designtype_refno;
+          
+            response.data.data = APIConverter(response.data.data);
+            if (response.data.data[0].productlist_data !== null) {
+              response.data.data[0].productlist_data = APIConverter(response.data.data[0].productlist_data);
+            }
+
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              a.display = a.display === "1" ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+           
+     
+            SetResetServiceName(true);
+            SetResetCategoryName(true);
+            SetResetProductName(true);
+            SetResetProductDesignType(true);
+            setLengthFeet(parseInt(arrList[0].lengthfoot).toString());
+            setLengthInches(parseInt(arrList[0].lengthinches).toString());
+            setWidthHeightFeet(parseInt(arrList[0].widthheightfoot).toString());
+            setWidthHeightInches(parseInt(arrList[0].widthheightinches).toString());
+            setLengthFeetError("");
+            setIsLengthFeetError(false);
+            setWidthHeightFeetError("");
+            setIsWidthHeightFeetError(false);
+            CalculateSqfeet(parseInt(arrList[0].lengthfoot), parseInt(arrList[0].lengthinches), parseInt(arrList[0].widthheightfoot), parseInt(arrList[0].widthheightinches));
+            setSubTotal(arrList[0].totalfoot);
+      
+         
+      
+          setProductItem(arrList[0].productlist_data);
+            setSnID(arrList[0].cont_service_refno);
+             setCnID(arrList[0].cont_category_refno);
+             setPnID(arrList[0].cont_product_refno);
+             setPdtID(designID);
+             FetchProductBrandFromProductID(arrList[0].productlist_data);
+            // setPdtID(a.designTypeID);
+      
+         
+             setSn(a.serviceName);
+             setCn(a.categoryName);
+             setPn(a.productName);
+             setPdt(a.designTypeName);
+
+             FetchServicesFromActivity(arnID);
+             FetchCategoriesFromServices(arnID, arrList[0].cont_service_refno);
+             FetchProductsFromCategory(arnID,  arrList[0].cont_category_refno);
+             FetchDesignTypeFromProduct(arrList[0].cont_product_refno);
+
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -243,7 +318,7 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedItemID: number) => {
+  const FetchServicesFromActivity = (selectedItemID: number, callback=null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -274,7 +349,6 @@ const MaterialSetup = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger
             response.data.data = APIConverter(response.data.data);
             setCategoryList(response.data.data);
           }
@@ -283,8 +357,7 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchProductsFromCategory = (selectedActivitryID: number, selectedServiceID: number, selectedCategoryID: number, type: string) => {
-    debugger;
+  const FetchProductsFromCategory = (selectedActivitryID: number, selectedCategoryID: number) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -294,7 +367,6 @@ const MaterialSetup = () => {
     };
     Provider.createDFAdmin(Provider.API_URLS.ProductNameMaterialSetup, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
@@ -305,7 +377,7 @@ const MaterialSetup = () => {
       .catch((e) => {});
   };
 
-  const FetchDesignTypeFromProduct = (selectedActivitryID: number, selectedServiceID: number, selectedCategoryID: number, selectedItem: number) => {
+  const FetchDesignTypeFromProduct = ( selectedItem: number) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -350,9 +422,8 @@ const MaterialSetup = () => {
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
-    debugger;
     let serviceName: number = parseInt(event.target.value);
-    let ac = serviceNameList.find((el) => el.id === serviceName);
+    let ac = serviceNameList.find((el) => el.id == serviceName);
     if (ac !== undefined) {
       setSn(ac.serviceName);
       setSnID(serviceName);
@@ -367,19 +438,19 @@ const MaterialSetup = () => {
   
   const handleSNDealerChange = (event: SelectChangeEvent) => {
     let serviceName: number = parseInt(event.target.value);
-    let ac = serviceNameDealerList.find((el) => el.id === serviceName);
+    let ac = serviceNameDealerList.find((el) => el.id == serviceName);
     if (ac !== undefined) {
       setDealerSn(ac.serviceName);
       setSnDealerID(serviceName);
       SetResetCategoryDealerName();
       SetResetProductDealerName();
-      FetchCategoriesFromServices(arnDealerID, serviceName);
+      FetchCategoriesFromServicesPopup(serviceName);
     }
   };
 
   const handleCNChange = (event: SelectChangeEvent) => {
     let categoryName: number = parseInt(event.target.value);
-    let ac = categoryList.find((el) => el.id === categoryName);
+    let ac = categoryList.find((el) => el.id == categoryName);
     if (ac !== undefined) {
       setCn(ac.categoryName);
       setCnID(categoryName);
@@ -387,37 +458,37 @@ const MaterialSetup = () => {
       SetResetProductName(true);
       SetResetProductDesignType(true);
 
-      FetchProductsFromCategory(arnID, snID, ac.id, "contractor");
+      FetchProductsFromCategory(arnID,  ac.id);
     }
   };
 
   const handleCNDealerChange = (event: SelectChangeEvent) => {
     let categoryName: number = parseInt(event.target.value);
-    let ac = categoryDealerList.find((el) => el.id === categoryName);
+    let ac = categoryDealerList.find((el) => el.id == categoryName);
     if (ac !== undefined) {
       setDealerCn(ac.categoryName);
       setCnDealerID(categoryName);
       SetResetProductDealerName();
 
-      FetchProductsFromCategory(arnDealerID, snDealerID, ac.id, "dealer");
+      FetchProductsFromCategoryPopup(categoryName);
     }
   };
 
   const handlePNChange = (event: SelectChangeEvent) => {
     let productName: number = parseInt(event.target.value);
-    let ac = productList.find((el) => el.productID === productName);
+    let ac = productList.find((el) => el.productID == productName);
     if (ac !== undefined) {
       setPn(ac.productName);
       setPnID(productName);
       SetResetProductName(false);
       SetResetProductDesignType(true);
-      FetchDesignTypeFromProduct(arnID, snID, cnID, productName);
+      FetchDesignTypeFromProduct(productName);
     }
   };
 
   const handlePDTchange = (event: SelectChangeEvent) => {
     let productName: number = parseInt(event.target.value);
-    let ac = productDesignTypeList.find((el) => el.id === productName);
+    let ac = productDesignTypeList.find((el) => el.id == productName);
     if (ac !== undefined) {
       setPdt(ac.designTypeName);
       setPdtID(productName);
@@ -681,29 +752,111 @@ const MaterialSetup = () => {
     }
   };
 
-  const InsertData = () => {
-    if (actionStatus === "new") {
-      const arrMaterialProducts = [];
-      productItem.map((k) => {
-        arrMaterialProducts.push({
-          ProductID: k.productID,
-          BrandID: k.brandID,
-          Rate: k.rate,
-          Amount: k.amount,
-          Quantity: k.quantity,
-          Formula: k.formula,
-        });
-      });
-      Provider.create("servicecatalogue/insertmaterialsetup", {
-        MaterialSetupMaster: {
-          DesignTypeID: pdtID,
-          Length: parseFloat(lengthFeet + "." + lengthInches),
-          Width: parseFloat(widthHeightFeet + "." + widthHeightInches),
-          Display: display === "Yes",
-          Subtotal: subTotal,
-        },
-        MaterialProductMappings: arrMaterialProducts,
+
+  const FetchServices = () => {
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNamePopupMaterialSetup)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setServiceNameDealerList(response.data.data);
+
+          }
+        }
       })
+      .catch((e) => {});
+  };
+
+  const FetchCategoriesFromServicesPopup = (selectedItem) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        service_refno: selectedItem,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNamePopupMaterialSetup, params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setCategoryDealerList(response.data.data);
+           
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchProductsFromCategoryPopup = (selectedItem) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        category_refno: selectedItem,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ProductListPopupMaterialSetup, params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setProductDealerList( response.data.data );
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+
+  const InsertData = () => {
+    
+    let product_refno = new Object();
+    let product_name = new Object();
+    let brand_name = new Object();
+    let brand_refno = new Object();
+    let qty = new Object();
+    let rate = new Object();
+    let amount = new Object();
+    let formula_parameter1 = new Object();
+
+    productItem.map((k, i) => {
+      product_refno[(i + 1).toString()] = k.productID;
+      product_name[(i + 1).toString()] = k.productName;
+      brand_name[(i + 1).toString()] = k.brandName;
+      brand_refno[(i + 1).toString()] = k.brandID;
+      qty[(i + 1).toString()] = k.quantity;
+      rate[(i + 1).toString()] = k.rate;
+      amount[(i + 1).toString()] = k.amount;
+      formula_parameter1[(i + 1).toString()] = k.formula;
+    });
+
+    const params = {
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: arnID,
+        cont_service_refno: snID,
+        cont_category_refno: cnID,
+        cont_product_refno: pnID,
+        designtype_refno: pdtID,
+        view_status: display==="Yes" ? 1 : 0,
+        lengthfoot: lengthFeet,
+        lengthinches: lengthInches,
+        widthheightfoot: widthHeightFeet,
+        widthheightinches: widthHeightInches,
+        totalfoot: totalSqFt,
+        product_refno: product_refno,
+        product_name: product_name,
+        brand_name: brand_name,
+        brand_refno: brand_refno,
+        qty: qty,
+        rate: rate,
+        amount: amount,
+        formula_parameter1: formula_parameter1,
+        subtotal: subTotal
+      },
+    };
+    if (actionStatus === "new") {
+  
+      Provider.createDFAdmin(Provider.API_URLS.MaterialsSetupCreate, params)
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
@@ -725,29 +878,8 @@ const MaterialSetup = () => {
           handleCancelClick();
         });
     } else if (actionStatus === "edit") {
-      const arrMaterialProducts = [];
-      productItem.map((k) => {
-        arrMaterialProducts.push({
-          ProductID: k.productID,
-          BrandID: k.brandID,
-          Rate: k.rate,
-          Amount: k.amount,
-          Quantity: k.quantity,
-          Formula: k.formula,
-        });
-      });
-
-      Provider.create("servicecatalogue/updatematerialsetup", {
-        MaterialSetupMaster: {
-          ID: selectedID,
-          DesignTypeID: pdtID,
-          Length: parseFloat(lengthFeet + "." + lengthInches),
-          Width: parseFloat(widthHeightFeet + "." + widthHeightInches),
-          Display: display === "Yes",
-          Subtotal: subTotal,
-        },
-        MaterialProductMappings: arrMaterialProducts,
-      })
+      params.data["materials_setup_refno"]=selectedID;
+      Provider.createDFAdmin(Provider.API_URLS.MaterialsSetupUpdate, params)
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
@@ -773,30 +905,17 @@ const MaterialSetup = () => {
   };
 
   const handleBrandChange = (event: SelectChangeEvent) => {
+
     let brandData: number = parseInt(event.target.value);
     if (brandData > 0) {
-      setSelectedBrand(brandData);
-      let ProductData1 = brandProductList.filter((el: BrandProductItemModel) => el.brandID === brandData);
-      let ProductData: Array<ProductItemModel> = [...productItem];
 
-      ProductData.map((value: ProductItemModel, index: number) => {
-        ProductData1.find(function (item: BrandProductItemModel, i: number) {
-          if (item.productID === value.productID) {
-            value.brandName = item.brandName;
-            value.brandID = item.brandID;
-            value.rate = item.price.toFixed(4);
-            if (parseFloat(value.formula) !== 0) {
-              value.quantity = (parseFloat(totalSqFt.toString()) / parseFloat(value.formula)).toFixed(4);
-              value.amount = (parseFloat(value.quantity) * parseFloat(value.rate === "0" ? "1" : value.rate)).toFixed(4);
-            }
-            return i;
-          }
-        });
-      });
-      const newChecked = [...ProductData];
-      const productids = newChecked.map((data) => data.amount);
-      setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
-      setProductItem(ProductData);
+       let brandName: number = parseInt(event.target.value);
+      let ac = brandProductList.find((el) => el.brandID == brandName);
+       if (ac !== undefined) {
+        setSelectedBrand(brandData);
+        const productids = productItem.map((data) => data.productID);
+        GetProductRateFromMaterialSetup(brandData,productids.toString());
+       }
 
       setIsBrandError(false);
       setBrandError("");
@@ -822,11 +941,59 @@ const MaterialSetup = () => {
       newChecked.splice(dataIndex, 1);
       tempProductDealerList[itemIndex] = { ...tempProductDealerList[itemIndex], isChecked: false };
     }
-    const productids = newChecked.map((data) => data.amount);
-    setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
+    //const productids = newChecked.map((data) => data.amount);
+    //setSubTotal(productids.reduce((a, b) => a + parseFloat(b), 0).toFixed(4));
 
     setProductItem(newChecked);
-    setProductDealerList(tempProductDealerList);
+   // setProductDealerList(tempProductDealerList);
+  };
+
+  const GetProductRateFromMaterialSetup = (brandID:number, productIDs:string) => {
+   
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        dealer_brand_refno: brandID,
+        product_refno_Array: productIDs,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ProductRateBrandRefNoMaterialSetup, params)
+      .then((response:any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            const appliedProducts = response.data.data;
+            const newData = [...productItem];
+            newData.map((k) => {
+              const foundProduct = appliedProducts.find((el) => el.productID == k.productID);
+              if (foundProduct) {
+                k.brandID = foundProduct.brandID;
+                k.brandName = foundProduct.brandName;
+                k.rate = parseFloat(foundProduct.price).toFixed(4);
+                if (k.formula!="0") {
+                  const quants = parseFloat(totalSqFt.toString()) / parseFloat(k.formula);
+                  k.quantity = quants.toFixed(4);
+                  if (k.rate) {
+                    k.amount = (parseFloat(k.quantity) * parseFloat(k.rate)).toFixed(4);
+                  } else {
+                    k.amount = "0.0000";
+                  }
+                } else {
+                  k.quantity = "";
+                  k.amount = "0.0000";
+                }
+              }
+            });
+
+            const amounts = appliedProducts.map((data) => data.amount);
+            setSubTotal(amounts.reduce((a, b) => (a ? a : 0 + parseFloat(b ? b : 0)), 0).toFixed(4));
+            setProductItem(newData);
+          }
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   const handelEditAndDelete = (type: string | null, a: MaterialSetupModel | undefined) => {
@@ -839,75 +1006,11 @@ const MaterialSetup = () => {
       setActionStatus("edit");
 
       setSelectedID(a.id);
-      let length = a.length.toString().split(".");
-      let width = a.width.toString().split(".");
-      SetResetServiceName(true);
-      SetResetCategoryName(true);
-      SetResetProductName(true);
-      SetResetProductDesignType(true);
-      setLengthFeet(length[0]);
-      setLengthInches(length[1] === undefined ? "0" : length[1]);
-      setWidthHeightFeet(width[0]);
-      setWidthHeightInches(width[1] === undefined ? "0" : width[1]);
-      setLengthFeetError("");
-      setIsLengthFeetError(false);
-      setWidthHeightFeetError("");
-      setIsWidthHeightFeetError(false);
-      CalculateSqfeet(parseInt(length[0]), parseInt(length[1] === undefined ? "0" : length[1]), parseInt(width[0]), parseInt(width[1] === undefined ? "0" : width[1]));
-      setSubTotal("0");
-
-      FetchCategoriesFromServices(arnID, a.serviceID);
-      FetchProductsFromCategory(arnID, a.serviceID, a.categoryID, "contractor");
-      FetchDesignTypeFromProduct(arnID, a.serviceID, a.categoryID, a.productID);
-      FetchProductsFromMaterialSetup(a.id);
-
-      setSnID(a.serviceID);
-      setCnID(a.categoryID);
-      setPnID(a.productID);
-      setPdtID(a.designTypeID);
-
-      setSn(a.serviceName);
-      setCn(a.categoryName);
-      setPn(a.productName);
-      setPdt(a.designTypeName);
+      FetchDataForProduct(a.id, a);
+     
     }
   };
 
-  const FetchProductsFromMaterialSetup = (id: number) => {
-    let params = {
-      MaterialSetupID: id,
-    };
-    Provider.getAll(`servicecatalogue/getmaterialsetupmapping?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            const tempArr = [];
-
-            let totalTemp = 0;
-            response.data.data.map((k) => {
-              if (k.amount) {
-                totalTemp += parseFloat(k.amount);
-              }
-              tempArr.push({
-                productID: k.productID,
-                productName: k.productName,
-                brandID: k.brandID,
-                brandName: k.brandName,
-                rate: k.rate.toFixed(4),
-                amount: k.amount.toFixed(4),
-                quantity: parseFloat(k.quantity).toFixed(4),
-                formula: k.formula.toFixed(4),
-              });
-            });
-            setSubTotal(totalTemp.toFixed(4));
-            setProductItem(tempArr);
-            setSelectedBrand(tempArr[0].brandID);
-            FetchProductBrandFromProductID(tempArr);
-          }
-        }
-      })
-      .catch((e) => {});
-  };
   //#endregion
 
   return (
@@ -1005,7 +1108,7 @@ const MaterialSetup = () => {
                       </MenuItem>
                       {productDesignTypeList.map((item, index) => {
                         return (
-                          <MenuItem key={index} value={item.id}>
+                          <MenuItem key={index} value={item.id.toString()}>
                             {item.designTypeName}
                           </MenuItem>
                         );

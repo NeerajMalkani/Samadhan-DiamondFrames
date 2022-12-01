@@ -76,6 +76,7 @@ const AddServiceProduct = () => {
               return a;
             });
 
+
             setServiceProductList(arrList);
             setProductListTemp(arrList);
             if (type !== "") {

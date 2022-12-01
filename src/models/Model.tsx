@@ -55,7 +55,7 @@ export interface DFCategoryModel {
 }
 
 export interface UnitModel {
-  id: number;
+  unitId: number;
   unitName: string;
 }
 

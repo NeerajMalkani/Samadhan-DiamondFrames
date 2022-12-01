@@ -103,6 +103,7 @@ class Provider {
     MaterialsSetupRefNoCheck: "materialssetuprefnocheck/",
     MaterialsSetupCreate: "materialsetupcreate/",
     MaterialsSetupUpdate: "materialsetupupdate/",
+    MaterialsSetupList: "materialssetuplist/",
     /******************************Dashboard************************************/
 
     GetdashboardTotaluser: "getdashboard_totaluser/",
@@ -135,6 +136,8 @@ class Provider {
     ProductDesignTypeNewDesign: "getproductdesigntypenewdesignform/",
     ProductDataNewDesign: "getproductdatanewdesignform/",
     WorkLocationNameNewDesign: "getworklocationnamenewdesignform/",
+
+    AlternativeUnitOfSalesServiceProduct:"getalternativeunitofsalesserviceproductform/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
