@@ -73,6 +73,9 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "brand_name", "brandName");
     renameKey(obj, " buyercategory_refno", "id");
     renameKey(obj, " buyercategory_name", "buyerCategoryName");
+
+    renameKey(obj, "department_refno_name", "departmentName");
+    renameKey(obj, "mydepartment_refno", "departmentID");
   });
 
   return response;

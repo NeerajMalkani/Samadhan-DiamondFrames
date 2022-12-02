@@ -39,6 +39,7 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { departmentColumns } from "../../../utils/tablecolumns";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const AddDepartment = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -53,7 +54,7 @@ const AddDepartment = () => {
     }
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
@@ -71,33 +72,38 @@ const AddDepartment = () => {
 
   const [departmentName, setDepartmentName] = useState("--Select--");
   const [departmentID, setDepartmentID] = useState<number>(0);
+  const [myDepartmentID, setMyDepartmentID] = useState<number>(0);
   const [isDepartmentError, isSetDepartmentError] = useState<boolean>(false);
   const [departmentErrorText, setDepartmentErrorText] = useState<string>("");
   const [departmentList, setDepartmentList] = useState<Array<DepartmentNameModel>>([]);
 
   const [gridDepartmentList, setGridDepartmentList] = useState<Array<DepartmentNameModel>>([]);
   const [gridDepartmentListTemp, setGridDepartmentListTemp] = useState<Array<DepartmentNameModel>>([]);
- //#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
     FetchDepartments();
   }, []);
 
   const FetchData = (type: string) => {
-    debugger;
     let params = {
-      AddedByUserID: cookies.dfc.UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        mydepartment_refno: "all"
+      }
     };
-    Provider.getAll(`master/getuserdepartments?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDF(Provider.API_URLS.MyDepartmentRefnocheck, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            // debugger;
+            response.data.data = APIConverter(response.data.data);
+            // debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "Yes" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -126,10 +132,18 @@ const AddDepartment = () => {
   };
 
   const FetchDepartments = () => {
-    Provider.getAll("master/getdepartments")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        department_refno: "all"
+      },
+    };
+
+    Provider.createDFAdmin(Provider.API_URLS.DepartmentRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             response.data.data = response.data.data.filter((el) => {
               return el.display;
             });
@@ -137,10 +151,11 @@ const AddDepartment = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleDropdownChange = (event: SelectChangeEvent) => {
+    // debugger;
     let departmentName: string = event.target.value;
     let ac = departmentList.find((el) => el.departmentName === departmentName);
     if (ac !== undefined) {
@@ -178,8 +193,8 @@ const AddDepartment = () => {
       setGridDepartmentListTemp(
         gridDepartmentList.filter((el: DepartmentNameModel) => {
           return el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
-          el.display.toString().toLowerCase().includes(query.toLowerCase())||
-          el.action.toString().toLowerCase().includes(query.toLowerCase())
+            el.display.toString().toLowerCase().includes(query.toLowerCase()) ||
+            el.action.toString().toLowerCase().includes(query.toLowerCase())
         })
       );
     }
@@ -198,6 +213,8 @@ const AddDepartment = () => {
       setDataGridPointer("none");
       setDisplay(a.display);
       setDepartmentName(a.departmentName);
+      setMyDepartmentID(a.departmentID);
+      debugger;
       setDepartmentID(
         departmentList.find((el) => {
           return el.departmentName === a.departmentName;
@@ -223,15 +240,17 @@ const AddDepartment = () => {
   };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean) => {
-    debugger;
+    // debugger;
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("master/insertuserdepartments", {
-        AddedByUserID: cookies.dfc.UserID,
-        DepartmentID: departmentID,
-        Display: checked,
-        ID: 0
-      })
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          department_refno: departmentID,
+          view_status: checked ? "1" : "0"
+        }
+      }
+      Provider.createDF(Provider.API_URLS.DepartmentCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
@@ -253,14 +272,19 @@ const AddDepartment = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateuserdepartment", {
-        AddedByUserID: cookies.dfc.UserID,
-        DepartmentID: departmentID,
-        Display: checked,
-        ID: selectedID,
-      })
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          mydepartment_refno: myDepartmentID,
+          department_refno: departmentID,
+          view_status: checked ? "1" : "0"
+        }
+      }
+      Provider.createDF(Provider.API_URLS.DepartmentUpdate, params)
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
+            debugger;
             FetchData("updated");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);

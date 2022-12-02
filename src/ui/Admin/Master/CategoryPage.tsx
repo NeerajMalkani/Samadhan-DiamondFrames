@@ -164,7 +164,7 @@ const CategoryPage = () => {
     }
     let params = {
       data: {
-        Sess_UserRefno: "2",
+        Sess_UserRefno: "2",      
         category_refno: "all",
       },
     };

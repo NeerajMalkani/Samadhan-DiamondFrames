@@ -257,7 +257,7 @@ export interface DFUnitOfSalesModel1 {
   unit1ID: number;
   convert_unit_name: string;
   unit2ID: number;
-  unit_category_refno:number
+  unit_category_refno: number
 }
 
 export interface UserCreds {
@@ -308,6 +308,7 @@ export interface RegionalOfficeModel {
 export interface DepartmentNameModel {
   id: number;
   srno: number;
+  departmentID: number;
   departmentName: string;
   display: string;
   action: string;
@@ -801,7 +802,7 @@ export interface DFApprovredModel {
   departmentname: string;
   designation_name: string;
   password: string;
-  approve_status:boolean;
+  approve_status: boolean;
 }
 
 export interface PendingModel {
@@ -818,7 +819,7 @@ export interface DFPendingModel {
   id: number;
   srno: number;
   role: string;
-  user_refno:string;
+  user_refno: string;
   company_name: string;
   firstname: string;
   mobile_no: number;
@@ -842,7 +843,7 @@ export interface DFDeclinedModel {
   id: number;
   userID: number;
   srno: number;
-  user_refno:string,
+  user_refno: string,
   company_name: string;
   activityrole: string;
   departmentname: string;
