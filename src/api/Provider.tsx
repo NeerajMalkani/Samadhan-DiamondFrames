@@ -142,6 +142,7 @@ class Provider {
     MyDepartmentRefnocheck: "mydepartmentrefnocheck/",
     DepartmentCreate: "departmentcreate/",
     DepartmentUpdate	:"departmentupdate/",
+    GetUserApprovelist: "getuserapprovelist/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

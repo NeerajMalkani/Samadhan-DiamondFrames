@@ -223,14 +223,14 @@ const ImageGalleryProductDetailsPage = () => {
       .catch((e) => { });
   };
 
-  const AddMoreDesigns = () => {
+  const AddMoreDesigns = (addMore) => {
     debugger;
     const params = {
       data: {
 
         "Sess_UserRefno": CookieUserID,
         "Sess_group_refno": cookies.dfc.Sess_group_refno,
-        "clickaddmorecheck": "1",
+        "clickaddmorecheck": addMore,
         "service_refno": productData.id,
         "designtype_refno": productData.designTypeID,
         "product_refno": productData.productID,
@@ -733,7 +733,7 @@ const ImageGalleryProductDetailsPage = () => {
                             variant="contained"
                             sx={{ backgroundColor: theme.palette.error.main }}
                             onClick={() => {
-                              AddMoreDesigns();
+                              AddMoreDesigns("1");
                               //InsertDesignEstimationEnquiry("add", 1, 0, 0, 0);
                               // navigate(`/generaluser/imagegallery/category`);
                             }}
@@ -752,7 +752,8 @@ const ImageGalleryProductDetailsPage = () => {
                       variant="contained"
                       sx={{ mt: 1 }}
                       onClick={() => {
-                        InsertDesignEstimationEnquiry("", 1, 0, 0, 0);
+                        AddMoreDesigns("0");
+                        //InsertDesignEstimationEnquiry("", 1, 0, 0, 0);
                       }}
                     >
                       {selectedData.type !== "contractor" ? "Submit" : "Create Quote"}
