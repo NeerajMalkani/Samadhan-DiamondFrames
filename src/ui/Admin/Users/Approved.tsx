@@ -110,7 +110,7 @@
 //       UserID: selectedID,
 //       Status: 2,
 //     };
-//     Provider.createDF("master/updateuserstatus", params)
+//     Provider.createDFCommon("master/updateuserstatus", params)
 //       .then((response) => {
 //         if (response.data && response.data.code === 200) {
 //           FetchData();
@@ -136,7 +136,7 @@
 //       },
 //     };
 //     ResetFields();
-//     Provider.createDF("apiappadmin/spawu7S4urax/tYjD/getuserapprovelist/", params)
+//     Provider.createDFCommon("apiappadmin/spawu7S4urax/tYjD/getuserapprovelist/", params)
 //       .then((response: any) => {
 //         if (response.data && response.data.code === 200) {
 //           if (response.data.data) {

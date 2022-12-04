@@ -176,7 +176,7 @@ const SignupPage = () => {
         EntryFrom: "Browser",
       },
     };
-    Provider.createDF(Provider.API_URLS.NewUserProfile, params)
+    Provider.createDFCommon(Provider.API_URLS.NewUserProfile, params)
       .then((response) => {
         if (response.data && response.data.code === 200) {
           navigate(`/login`);
@@ -204,7 +204,7 @@ const SignupPage = () => {
       },
     };
     debugger;
-    Provider.createDF(Provider.API_URLS.MobileCheck, params)
+    Provider.createDFCommon(Provider.API_URLS.MobileCheck, params)
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {

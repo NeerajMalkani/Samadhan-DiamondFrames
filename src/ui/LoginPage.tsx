@@ -55,7 +55,7 @@ const LoginPage = () => {
             auth: password,
           },
         };
-        Provider.createDF(Provider.API_URLS.LoginCheck, params)
+        Provider.createDFCommon(Provider.API_URLS.LoginCheck, params)
           .then((response: any) => {
             debugger;
             if (response.data && response.data.code === 200) {
@@ -96,7 +96,7 @@ const LoginPage = () => {
             user_refno: user_refno,
           },
         };
-        Provider.createDF(Provider.API_URLS.UserFromRefNo, params)
+        Provider.createDFCommon(Provider.API_URLS.UserFromRefNo, params)
           .then((response: any) => {
             debugger;
             if (response.data && response.data.code === 200) {

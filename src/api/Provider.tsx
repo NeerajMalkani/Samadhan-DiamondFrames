@@ -196,7 +196,7 @@ class Provider {
       },
     });
   }
-  createDF(resource: string, params: any) {
+  createDFCommon(resource: string, params: any) {
     return axios.post<any>(`${BASE_URL}/${resource}`, params);
   }
   update(resource: string, params: any, id: any) {

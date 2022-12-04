@@ -162,7 +162,7 @@ const ImageGalleryProductPage = (route) => {
         service_refno: id
       },
     };
-    Provider.createDF(Provider.API_URLS.GetserviceimagegalleryByServicerefno, params)
+    Provider.createDFCommon(Provider.API_URLS.GetserviceimagegalleryByServicerefno, params)
       //Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;

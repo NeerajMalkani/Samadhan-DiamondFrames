@@ -102,7 +102,7 @@ const BrandMasterPage = () => {
         Sess_CompanyAdmin_UserRefno: cookies.dfc.Sess_CompanyAdmin_UserRefno,
       },
     };
-    Provider.createDF(Provider.API_URLS.DealerBrandMasterRefnoCheck, params)
+    Provider.createDFCommon(Provider.API_URLS.DealerBrandMasterRefnoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {

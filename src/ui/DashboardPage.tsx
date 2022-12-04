@@ -345,7 +345,7 @@ const DashboardPage = () => {
         user_refno: user_refno,
       },
     };
-    Provider.createDF(Provider.API_URLS.UserFromRefNo, params)
+    Provider.createDFCommon(Provider.API_URLS.UserFromRefNo, params)
       .then((response: any) => {
         debugger;
         removeCookie("dfc");

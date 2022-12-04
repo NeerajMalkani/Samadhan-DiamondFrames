@@ -94,7 +94,7 @@ const AddDepartment = () => {
         mydepartment_refno: "all"
       }
     };
-    Provider.createDF(Provider.API_URLS.MyDepartmentRefnocheck, params)
+    Provider.createDFCommon(Provider.API_URLS.MyDepartmentRefnocheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -250,7 +250,7 @@ const AddDepartment = () => {
           view_status: checked ? "1" : "0"
         }
       }
-      Provider.createDF(Provider.API_URLS.DepartmentCreate, params)
+      Provider.createDFCommon(Provider.API_URLS.DepartmentCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
@@ -280,7 +280,7 @@ const AddDepartment = () => {
           view_status: checked ? "1" : "0"
         }
       }
-      Provider.createDF(Provider.API_URLS.DepartmentUpdate, params)
+      Provider.createDFCommon(Provider.API_URLS.DepartmentUpdate, params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {

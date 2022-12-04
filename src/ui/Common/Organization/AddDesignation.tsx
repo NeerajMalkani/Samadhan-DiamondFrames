@@ -96,7 +96,7 @@ const AddDesignation = () => {
         mydesignation_refno: "all"
       }
     };
-    Provider.createDF(Provider.API_URLS.MyDesignationRefnocheck, params)
+    Provider.createDFCommon(Provider.API_URLS.MyDesignationRefnocheck, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -267,7 +267,7 @@ const AddDesignation = () => {
         }
       }
       debugger;
-      Provider.createDF(Provider.API_URLS.DesignationCreate, params)
+      Provider.createDFCommon(Provider.API_URLS.DesignationCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
@@ -298,7 +298,7 @@ const AddDesignation = () => {
           view_status: checked ? "1" : "0"
         }
       }
-      Provider.createDF(Provider.API_URLS.DesignationUpdate, params)
+      Provider.createDFCommon(Provider.API_URLS.DesignationUpdate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");

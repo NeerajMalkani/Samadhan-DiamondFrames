@@ -158,7 +158,7 @@ const ImageGalleryProductDetailsPage = () => {
         designgallery_refno: data.designgallery_refno
       },
     };
-    Provider.createDF(Provider.API_URLS.Getgotoestimation, params)
+    Provider.createDFCommon(Provider.API_URLS.Getgotoestimation, params)
       //Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
         debugger;
@@ -243,7 +243,7 @@ const ImageGalleryProductDetailsPage = () => {
       }
     };
 
-    Provider.createDF(Provider.API_URLS.GetscEstimation, params)
+    Provider.createDFCommon(Provider.API_URLS.GetscEstimation, params)
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {
