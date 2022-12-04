@@ -697,13 +697,13 @@ export const designationColumns: GridColDef[] = [
     flex: 1.8,
     minWidth: 140,
   },
-  // {
-  //   field: 'reportingAuthority',
-  //   headerName: 'Reporting Authority',
-  //   flex: 1.8,
-  //   sortable: false,
-  //   minWidth: 140,
-  // },
+  {
+    field: 'reportingAuthority',
+    headerName: 'Reporting Authority',
+    flex: 1.8,
+    sortable: false,
+    minWidth: 140,
+  },
   {
     field: "display",
     headerName: "Display",

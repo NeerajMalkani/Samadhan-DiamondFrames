@@ -98,12 +98,12 @@ const AddDepartment = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            // debugger;
+             debugger;
             response.data.data = APIConverter(response.data.data);
             // debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display === "Yes" ? "Yes" : "No";
+              a.display = a.display == "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });

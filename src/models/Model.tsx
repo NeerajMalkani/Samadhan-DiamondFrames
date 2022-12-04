@@ -326,6 +326,7 @@ export interface DFDepartmentNameModel {
 export interface DesignationNameModel {
   id: number;
   srno: number;
+  designationID: number;
   designationName: string;
   display: string;
   reportingAuthority: string;

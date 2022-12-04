@@ -40,6 +40,7 @@ import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { designationColumns } from "../../../utils/tablecolumns";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const AddDesignation = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -54,7 +55,7 @@ const AddDesignation = () => {
     }
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
@@ -79,22 +80,29 @@ const AddDesignation = () => {
 
   const [gridDesignationList, setGridDesignationList] = useState<Array<DesignationNameModel>>([]);
   const [gridDesignationtListTemp, setGridDesignationListTemp] = useState<Array<DesignationNameModel>>([]);
- //#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
     FetchDesignation();
   }, []);
 
   const FetchData = (type: string) => {
+    debugger;
     let params = {
-      AddedByUserID: cookies.dfc.UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        mydesignation_refno: "all"
+      }
     };
-    Provider.getAll(`master/getuserdesignation?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDF(Provider.API_URLS.MyDesignationRefnocheck, params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
@@ -127,10 +135,17 @@ const AddDesignation = () => {
   };
 
   const FetchDesignation = () => {
-    Provider.getAll("master/getdesignations")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        designation_refno: "all"
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.DesignationRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             response.data.data = response.data.data.filter((el) => {
               return el.display;
             });
@@ -138,10 +153,22 @@ const AddDesignation = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
+  // const handleDropdownChange = (event: SelectChangeEvent) => {
+  //   debugger;
+  //   let designationName: string = event.target.value;
+  //   let ac = designationList.find((el) => el.designationName === designationName);
+  //   if (ac !== undefined) {
+  //     setDesignationName(designationName);
+  //     setDesignationID(ac?.id);
+  //     isSetDesignationError(false);
+  //     setDesignationErrorText("");
+  //   }
+  // };
   const handleDropdownChange = (event: SelectChangeEvent) => {
+    debugger;
     let designationName: string = event.target.value;
     let ac = designationList.find((el) => el.designationName === designationName);
     if (ac !== undefined) {
@@ -228,15 +255,19 @@ const AddDesignation = () => {
   };
 
   const InsertUpdateData = (paramServiceName: string, checked: boolean, reportingAuthority: boolean) => {
+
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.create("master/insertuserdesignation", {
-        ID: 0,
-        AddedByUserID: cookies.dfc.UserID,
-        DesignationID: designationID,
-        ReportingAuthority: reportingAuthority,
-        Display: checked,
-      })
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_company_refno: cookies.dfc.Sess_company_refno,
+          designation_refno: designationID,
+          view_status: checked ? "1" : "0"
+        }
+      }
+      debugger;
+      Provider.createDF(Provider.API_URLS.DesignationCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("added");
@@ -258,13 +289,16 @@ const AddDesignation = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("master/updateuserdesignation", {
-        AddedByUserID: cookies.dfc.UserID,
-        DesignationID: designationID,
-        ReportingAuthority: reportingAuthority,
-        Display: checked,
-        ID: selectedID,
-      })
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_company_refno: cookies.dfc.Sess_company_refno,
+          mydesignation_refno: "0",
+          designation_refno: designationID,
+          view_status: checked ? "1" : "0"
+        }
+      }
+      Provider.createDF(Provider.API_URLS.DesignationUpdate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
@@ -287,7 +321,7 @@ const AddDesignation = () => {
         });
     }
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -366,10 +400,10 @@ const AddDesignation = () => {
               ) : (
                 <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                   {gridDesignationList.length === 0 ? (
-                     <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                    <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                   ) : (
                     <>
-                      <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1,paddingTop:1, display: "flex", mr: 1 }}>
+                      <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, paddingTop: 1, display: "flex", mr: 1 }}>
                         <TextField
                           placeholder="Search"
                           variant="outlined"

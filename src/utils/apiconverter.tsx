@@ -76,6 +76,12 @@ export const APIConverter = (response: any) => {
 
     renameKey(obj, "department_refno_name", "departmentName");
     renameKey(obj, "mydepartment_refno", "departmentID");
+
+    renameKey(obj, "designation_refno_name", "designationName");
+    renameKey(obj, "mydesignation_refno", "designationID");
+    renameKey(obj, "reporting_status", "reportingAuthority");
+
+
   });
 
   return response;
