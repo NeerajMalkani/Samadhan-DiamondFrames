@@ -1,4 +1,26 @@
-import { Alert, AlertColor, Box, Button, Chip, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Container,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  InputAdornment,
+  MenuItem,
+  OutlinedInput,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectChangeEvent,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
@@ -188,7 +210,7 @@ const CategoryPage = () => {
     }
     let params = {
       data: {
-        Sess_UserRefno: "2",      
+        Sess_UserRefno: "2",
         category_refno: "all",
       },
     };
@@ -476,13 +498,10 @@ const CategoryPage = () => {
       setCn(a.categoryName);
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
-<<<<<<< HEAD
       debugger;
-=======
->>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
       if (a.unitName !== null) {
-        let arrUnits = a.unitName;//.split("<br>");
-        const results = arrUnits.map((element:string) => {
+        let arrUnits = a.unitName; //.split("<br>");
+        const results = arrUnits.map((element: string) => {
           return element.trim();
         });
         setUnitsOfSales(results);
@@ -495,7 +514,6 @@ const CategoryPage = () => {
         const unitName = a1.map((data: any) => data.displayUnit);
         setUnitId(unitID);
 
-<<<<<<< HEAD
         // setPersonName(
         //   // On autofill we get a stringified value.
         //   typeof value === "string" ? value.split(",") : value
@@ -508,9 +526,7 @@ const CategoryPage = () => {
         //   a.push(data.unit_id);
         // });
         // setUnitId(a);
-=======
         setPersonName(unitName);
->>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
       }
       setSelectedID(a.id);
       setButtonDisplay("unset");
@@ -851,20 +867,22 @@ const CategoryPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-<<<<<<< HEAD
+              <RadioGroup
+                row
+                name="row-radio-buttons-group"
+                value={display}
+                onChange={handleDisplayChange}
+              />
+              <FormControlLabel value={0} control={<Radio />} label="Yes" />
+              <FormControlLabel value={1} control={<Radio />} label="No" />
               <RadioGroup
                 row
                 name="row-radio-buttons-group"
                 value={display}
                 onChange={handleDisplayChange}
               >
-                <FormControlLabel value={0} control={<Radio />} label="Yes" />
-                <FormControlLabel value={1} control={<Radio />} label="No" />
-=======
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
->>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
               </RadioGroup>
             </FormControl>
           </Grid>
