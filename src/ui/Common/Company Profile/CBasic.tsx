@@ -213,7 +213,7 @@ const CBasic = () => {
         Sess_UserRefno: cookies.dfc.UserID,
       },
     };
-    Provider.createDF(Provider.API_URLS.DealerCompanyDetail, params)
+    Provider.createDFCommon(Provider.API_URLS.DealerCompanyDetail, params)
       // Provider.createDF(
       //   `master/getuserprofile?${new URLSearchParams(GetStringifyJson(params))}`
       // )
@@ -392,7 +392,7 @@ const CBasic = () => {
         state_refno: stateID,
       },
     };
-    Provider.createDF(Provider.API_URLS.DistrictDetails, params)
+    Provider.createDFCommon(Provider.API_URLS.DistrictDetails, params)
       .then((response: any) => {
         response.data.data = APIConverter(response.data.data);
         if (response.data && response.data.code === 200) {
@@ -465,7 +465,10 @@ const CBasic = () => {
         company_logo: "",
       };
       // params = APIConverter(params.data);
-      Provider.createDF(Provider.API_URLS.DealerCompanyDetailUpdate, params)
+      Provider.createDFCommon(
+        Provider.API_URLS.DealerCompanyDetailUpdate,
+        params
+      )
         // Provider.create("master/insertuserprofile", params)
         .then((response) => {
           debugger;

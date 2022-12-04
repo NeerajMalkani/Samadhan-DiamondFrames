@@ -3,13 +3,10 @@ import axios from "axios";
 const BASE_URL_OLD = "https://api.starselector.com/api";
 // const BASE_URL_OLD = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD/";
 const BASE_URL = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD";
-<<<<<<< HEAD
 const BASE_URL_Admin =
   "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
-=======
-const BASE_URL_Admin = "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
-const BASE_URL_Dashboard = "https://dfsolutions.in/api/apidashboard/spawu7S4urax/tYjD";
->>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
+const BASE_URL_Dashboard =
+  "https://dfsolutions.in/api/apidashboard/spawu7S4urax/tYjD";
 
 class Provider {
   API_URLS = {
@@ -80,13 +77,12 @@ class Provider {
     ProductServiceProduct: "getproductnameserviceproductform/",
     ServiceProductCreate: "serviceproductcreate/",
     ServiceProductUpdate: "serviceproductupdate/",
-<<<<<<< HEAD
     //
     DealerCompanyDetail: "getdealercompanybasicdetails/",
     StateDetails: "getstatedetails/",
     DistrictDetails: "	getdistrictdetails_by_state_refno/",
     DealerCompanyDetailUpdate: "dealercompanybasicdetailsupdate/",
-=======
+
     WorkFloorRefNoCheck: "workfloorrefnocheck/",
     WorkFloorCreate: "workfloornamecreate/",
     WorkFloorUpdate: "workfloornameupdate/",
@@ -111,8 +107,10 @@ class Provider {
     ServiceNamePopupMaterialSetup: "getservicename_popup_materialsetupform/",
     CategoryNamePopupMaterialSetup: "getcategoryname_popup_materialsetupform/",
     ProductListPopupMaterialSetup: "getproductlist_popup_materialsetupform/",
-    BrandNamelistPopupMaterialSetup: "getbrandnamelist_popup_materialsetupform/",
-    ProductRateBrandRefNoMaterialSetup: "getproductrate_by_brandrefno_materialsetupform/",
+    BrandNamelistPopupMaterialSetup:
+      "getbrandnamelist_popup_materialsetupform/",
+    ProductRateBrandRefNoMaterialSetup:
+      "getproductrate_by_brandrefno_materialsetupform/",
     MaterialsSetupRefNoCheck: "materialssetuprefnocheck/",
     MaterialsSetupCreate: "materialsetupcreate/",
     MaterialsSetupUpdate: "materialsetupupdate/",
@@ -123,7 +121,8 @@ class Provider {
     GetdashboardUserswitchto: "getdashboard_userswitchto/",
     Getdashboard_Userswitchto_Proceed: "getdashboard_userswitchto_proceed/",
     GetdashboardServicecatalogue: "getdashboard_servicecatalogue/",
-    GetserviceimagegalleryByServicerefno: "getserviceimagegallery_by_servicerefno/",
+    GetserviceimagegalleryByServicerefno:
+      "getserviceimagegallery_by_servicerefno/",
     Getgotoestimation: "getgotoestimation/",
 
     PostNewDesignRefNoCheck: "postnewdesignrefnocheck/",
@@ -149,17 +148,18 @@ class Provider {
     ProductDesignTypeNewDesign: "getproductdesigntypenewdesignform/",
     ProductDataNewDesign: "getproductdatanewdesignform/",
     WorkLocationNameNewDesign: "getworklocationnamenewdesignform/",
-    AlternativeUnitOfSalesServiceProduct: "getalternativeunitofsalesserviceproductform/",
+    AlternativeUnitOfSalesServiceProduct:
+      "getalternativeunitofsalesserviceproductform/",
     GetscEstimation: "getsc_estimation/",
 
     MyDepartmentRefnocheck: "mydepartmentrefnocheck/",
     DepartmentCreate: "departmentcreate/",
-    DepartmentUpdate	:"departmentupdate/",
+    DepartmentUpdate: "departmentupdate/",
     GetUserApprovelist: "getuserapprovelist/",
 
     MyDesignationRefnocheck: "mydesignationrefnocheck/",
-    DesignationCreate:"designationcreate/",
-    DesignationUpdate	:"designationupdate/",
+    DesignationCreate: "designationcreate/",
+    DesignationUpdate: "designationupdate/",
 
     AadharnoAutocomplete: "aadharnoautocomplete/",
     MobilenoAutocomplete: "mobilenoautocomplete/",
@@ -181,10 +181,6 @@ class Provider {
     GetWagesTypeNameEmployeeWorkForm: "getwagestypenameemployeeworkform/",
     GetEmployeePaydata: "getemployeepaydata/",
     EmployeePaydataUpdate: "employeepaydataupdate/",
-
-
-
->>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
@@ -282,7 +278,5 @@ class Provider {
     }
   }
 }
-
-
 
 export default new Provider();
