@@ -147,6 +147,30 @@ class Provider {
     MyDesignationRefnocheck: "mydesignationrefnocheck/",
     DesignationCreate:"designationcreate/",
     DesignationUpdate	:"designationupdate/",
+
+    aadharnoautocomplete: "aadharnoautocomplete",
+    mobilenoautocomplete: "mobilenoautocomplete",
+    employeesearch: "employeesearch",
+    employeeadd: "employeeadd",
+    employeecreate: "employeecreate",
+    sendotptoemployee: "sendotptoemployee",
+    employeeotpverify: "employeeotpverify",
+    myemployeelist: "myemployeelist",
+    getemployeebasicdata: "getemployeebasicdata",
+    employeebasicdataupdate: "employeebasicdataupdate",
+    getbranchnameemployeeworkform: "getbranchnameemployeeworkform",
+    getdepartmentnameemployeeworkform: "getdepartmentnameemployeeworkform",
+    getdesignationnameemployeeworkform: "getdesignationnameemployeeworkform",
+    getreportingtoemployeeworkform: "getreportingtoemployeeworkform",
+    getemptypenameemployeeworkform: "getemptypenameemployeeworkform",
+    getemployeeworkdata: "getemployeeworkdata",
+    employeeworkdataupdate: "employeeworkdataupdate",
+    getwagestypenameemployeeworkform: "getwagestypenameemployeeworkform",
+    getemployeepaydata: "getemployeepaydata",
+    employeepaydataupdate: "employeepaydataupdate",
+
+
+
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
