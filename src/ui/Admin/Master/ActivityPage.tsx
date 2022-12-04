@@ -43,23 +43,31 @@ const ActivityPage = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
   const [activityName, setActivityName] = React.useState("");
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]); //React.useContext(DataContext).activityNamesList;
+  const [activityNamesList, setActivityNamesList] = useState<
+    Array<ActivityRoleNameModel>
+  >([]); //React.useContext(DataContext).activityNamesList;
 
-  const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
+  const [activityNamesListTemp, setActivityNamesListTemp] = React.useState<
+    Array<any>
+  >([]);
 
   const [activitynameError, setactivitynameError] = useState("");
   const [isActivitynameError, setIsActivitynameError] = useState(false);
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">("auto");
+  const [dataGridPointer, setDataGridPointer] = React.useState<"auto" | "none">(
+    "auto"
+  );
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [selectedID, setSelectedID] = React.useState<number>(0);
   const [open, setOpen] = React.useState(false);
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>(
+    "error"
+  );
   //#endregion
 
   //#region Functions
@@ -83,6 +91,7 @@ const ActivityPage = () => {
         group_refno: "all",
       },
     };
+    ///
     Provider.createDFAdmin(Provider.API_URLS.GroupFromRefNo, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -90,7 +99,7 @@ const ActivityPage = () => {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-             // a.id = a.group_refno;
+              // a.id = a.group_refno;
               a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
@@ -125,7 +134,9 @@ const ActivityPage = () => {
 
   const handleSubmitClick = () => {
     const IsTextFiledError = activityName.trim() === "";
-    setactivitynameError(IsTextFiledError ? communication.BlankActivityName : "");
+    setactivitynameError(
+      IsTextFiledError ? communication.BlankActivityName : ""
+    );
     setIsActivitynameError(IsTextFiledError);
     if (!IsTextFiledError) {
       setButtonLoading(true);
@@ -148,7 +159,10 @@ const ActivityPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
+  const handelEditAndDelete = (
+    type: string | null,
+    a: ActivityRoleNameModel | undefined
+  ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -230,7 +244,10 @@ const ActivityPage = () => {
     }
   };
 
-  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -244,7 +261,10 @@ const ActivityPage = () => {
     } else {
       setActivityNamesListTemp(
         activityNamesList.filter((el: ActivityRoleNameModel) => {
-          return el.activityRoleName.toString().toLowerCase().includes(query.toLowerCase());
+          return el.activityRoleName
+            .toString()
+            .toLowerCase()
+            .includes(query.toLowerCase());
         })
       );
     }
@@ -255,7 +275,11 @@ const ActivityPage = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid
+          container
+          spacing={{ xs: 1, md: 2 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Activity</Typography>
           </Grid>
@@ -297,17 +321,32 @@ const ActivityPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+              <RadioGroup
+                row
+                name="row-radio-buttons-group"
+                value={display}
+                onChange={handleDisplayChange}
+              >
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
+            <Button
+              variant="contained"
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+              style={{ display: buttonDisplay }}
+              onClick={handleCancelClick}
+            >
               Cancel
             </Button>
-            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+            <LoadingButton
+              loading={buttonLoading}
+              variant="contained"
+              sx={{ mt: 1 }}
+              onClick={handleSubmitClick}
+            >
               Submit
             </LoadingButton>
           </Grid>
@@ -326,13 +365,25 @@ const ActivityPage = () => {
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+              <Box
+                height="300px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ m: 2 }}
+              >
                 <CircularProgress />
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {activityNamesList.length === 0 ? (
-                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                  <NoData
+                    Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />}
+                    height="auto"
+                    text="No data found"
+                    secondaryText=""
+                    isButton={false}
+                  />
                 ) : (
                   <>
                     <Grid
@@ -375,11 +426,17 @@ const ActivityPage = () => {
                       columns={activityColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      onPageSizeChange={(newPageSize) =>
+                        setPageSize(newPageSize)
+                      }
                       disableSelectionOnClick
-                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                      onCellClick={(
+                        param,
+                        e: React.MouseEvent<HTMLElement>
+                      ) => {
                         const arrActivity = [...activityNamesList];
-                        let a: ActivityRoleNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: ActivityRoleNameModel | undefined =
+                          arrActivity.find((el) => el.id === param.row.id);
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -397,7 +454,11 @@ const ActivityPage = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>

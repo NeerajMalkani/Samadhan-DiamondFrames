@@ -28,7 +28,13 @@ import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import { categoryColumns } from "../../../utils/tablecolumns";
 import Provider from "../../../api/Provider";
-import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, DFUnitOfSalesModel1 } from "../../../models/Model";
+import {
+  ActivityRoleNameModel,
+  CategoryModel,
+  ServiceNameModel,
+  UnitOfSalesModel,
+  DFUnitOfSalesModel1,
+} from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { communication } from "../../../utils/communication";
 import { LoadingButton } from "@mui/lab";
@@ -47,7 +53,10 @@ const MenuProps = {
 
 function getStyles(name: string, unitSales: readonly string[], theme: Theme) {
   return {
-    fontWeight: unitSales.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+    fontWeight:
+      unitSales.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
   };
 }
 
@@ -78,18 +87,28 @@ const CategoryPage = () => {
   const [personName, setPersonName] = React.useState<string[]>([]);
 
   const [display, setDisplay] = useState("Yes");
-  const [activityNamesList, setActivityNamesList] = useState<Array<ActivityRoleNameModel>>([]);
-  const [serviceNameList, setServiceNameList] = useState<Array<ServiceNameModel>>([]);
-  const [unitOfSalesList, setUnitOfSalesList] = useState<Array<UnitOfSalesModel>>([]);
+  const [activityNamesList, setActivityNamesList] = useState<
+    Array<ActivityRoleNameModel>
+  >([]);
+  const [serviceNameList, setServiceNameList] = useState<
+    Array<ServiceNameModel>
+  >([]);
+  const [unitOfSalesList, setUnitOfSalesList] = useState<
+    Array<UnitOfSalesModel>
+  >([]);
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
 
   const [SalesName, SetSalesName] = useState<Array<DFUnitOfSalesModel1>>([]);
 
-  const [categoryListTemp, setCategoryListTemp] = useState<Array<CategoryModel>>([]);
+  const [categoryListTemp, setCategoryListTemp] = useState<
+    Array<CategoryModel>
+  >([]);
   const [pageSize, setPageSize] = useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
-  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
+  const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">(
+    "auto"
+  );
   const [actionRoleError, setActionRoleError] = useState<boolean>(false);
   const [actionRoleErrorText, setActionRoleErrorText] = useState<string>("");
 
@@ -97,7 +116,8 @@ const CategoryPage = () => {
   const [serviceNameErrorText, setServiceNameErrorText] = useState<string>("");
 
   const [categoryNameError, setCategoryNameError] = useState<boolean>(false);
-  const [categoryNameErrorText, setCategoryNameErrorText] = useState<string>("");
+  const [categoryNameErrorText, setCategoryNameErrorText] =
+    useState<string>("");
 
   const [hsnError, setHSNError] = useState<boolean>(false);
   const [hsnErrorText, setHSNErrorText] = useState<string>("");
@@ -112,7 +132,9 @@ const CategoryPage = () => {
 
   const [selectedID, setSelectedID] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>(
+    "error"
+  );
 
   const [UnitId, setUnitId] = useState([]);
 
@@ -132,7 +154,9 @@ const CategoryPage = () => {
       typeof value === "string" ? value.split(",") : value
     );
 
-    const intersection = SalesName.filter((element) => event.target.value.includes(element.unit_name));
+    const intersection = SalesName.filter((element) =>
+      event.target.value.includes(element.unit_name)
+    );
     let a = [];
 
     intersection.map((data) => {
@@ -278,7 +302,10 @@ const CategoryPage = () => {
       });
 
     if (unitOfSalesList.length === 0) {
-      Provider.createDFAdmin(Provider.API_URLS.UnitCategoryFromRefNo, unitParams)
+      Provider.createDFAdmin(
+        Provider.API_URLS.UnitCategoryFromRefNo,
+        unitParams
+      )
         .then((response: any) => {
           if (response.data && response.data.code === 200) {
             if (response.data.data) {
@@ -299,10 +326,12 @@ const CategoryPage = () => {
         });
     }
   };
-
+  //
   const handleARNChange = (event: SelectChangeEvent) => {
     let activityName: string = event.target.value;
-    let ac = activityNamesList.find((el) => el.activityRoleName === activityName);
+    let ac = activityNamesList.find(
+      (el) => el.activityRoleName === activityName
+    );
     if (ac !== undefined) {
       setArnID(ac.id);
       setArn(activityName);
@@ -443,7 +472,10 @@ const CategoryPage = () => {
     setActionStatus("new");
   };
 
-  const handelEditAndDelete = (type: string | null, a: CategoryModel | undefined) => {
+  const handelEditAndDelete = (
+    type: string | null,
+    a: CategoryModel | undefined
+  ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -455,7 +487,7 @@ const CategoryPage = () => {
       setCn(a.categoryName);
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
-debugger
+      debugger;
       if (a.unitName !== null) {
         let arrUnits = a.unitName.split("<br>");
         const results = arrUnits.map((element) => {
@@ -471,15 +503,14 @@ debugger
         setUnitsOfSalesID(unitID.join(","));
         setUnitId(unitID);
 
-
         // setPersonName(
         //   // On autofill we get a stringified value.
         //   typeof value === "string" ? value.split(",") : value
         // );
-    
+
         // const intersection = SalesName.filter((element) => event.target.value.includes(element.unit_name));
         // let a = [];
-    
+
         // intersection.map((data) => {
         //   a.push(data.unit_id);
         // });
@@ -563,7 +594,10 @@ debugger
     }
   };
 
-  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
@@ -577,7 +611,10 @@ debugger
     } else {
       setCategoryListTemp(
         categoryList.filter((el: CategoryModel) => {
-          return el.categoryName.toString().toLowerCase().includes(query.toLowerCase());
+          return el.categoryName
+            .toString()
+            .toLowerCase()
+            .includes(query.toLowerCase());
         })
       );
     }
@@ -587,7 +624,11 @@ debugger
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid
+          container
+          spacing={{ xs: 1, md: 2 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Category Name</Typography>
           </Grid>
@@ -713,7 +754,12 @@ debugger
             />
           </Grid>
           <Grid item xs={4} sm={5} md={8} sx={{ mt: 1 }}>
-            <FormControl fullWidth size="small" sx={{ paddingRight: { xs: 0, sm: 4 } }} error={unitError}>
+            <FormControl
+              fullWidth
+              size="small"
+              sx={{ paddingRight: { xs: 0, sm: 4 } }}
+              error={unitError}
+            >
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b>Unit of Sales</b>
                 <label style={{ color: "#ff0000" }}>*</label>
@@ -787,7 +833,11 @@ debugger
               >
                 {SalesName.map((name) => {
                   return (
-                    <MenuItem key={name.unit_id} value={name.unit_name} style={getStyles(name.unit_name, personName, theme)}>
+                    <MenuItem
+                      key={name.unit_id}
+                      value={name.unit_name}
+                      style={getStyles(name.unit_name, personName, theme)}
+                    >
                       {name.unit_name}
                     </MenuItem>
                   );
@@ -802,17 +852,32 @@ debugger
               <b>Display</b>
             </Typography>
             <FormControl>
-              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+              <RadioGroup
+                row
+                name="row-radio-buttons-group"
+                value={display}
+                onChange={handleDisplayChange}
+              >
                 <FormControlLabel value={0} control={<Radio />} label="Yes" />
                 <FormControlLabel value={1} control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
-            <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} onClick={handleCancelClick}>
+            <Button
+              variant="contained"
+              sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+              style={{ display: buttonDisplay }}
+              onClick={handleCancelClick}
+            >
               Cancel
             </Button>
-            <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+            <LoadingButton
+              loading={buttonLoading}
+              variant="contained"
+              sx={{ mt: 1 }}
+              onClick={handleSubmitClick}
+            >
               Submit
             </LoadingButton>
           </Grid>
@@ -831,13 +896,25 @@ debugger
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+              <Box
+                height="300px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ m: 2 }}
+              >
                 <CircularProgress />
               </Box>
             ) : (
               <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                 {categoryList.length === 0 ? (
-                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                  <NoData
+                    Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />}
+                    height="auto"
+                    text="No data found"
+                    secondaryText=""
+                    isButton={false}
+                  />
                 ) : (
                   <>
                     <Grid
@@ -880,11 +957,18 @@ debugger
                       autoHeight={true}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      onPageSizeChange={(newPageSize) =>
+                        setPageSize(newPageSize)
+                      }
                       disableSelectionOnClick
-                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                      onCellClick={(
+                        param,
+                        e: React.MouseEvent<HTMLElement>
+                      ) => {
                         const arrActivity = [...categoryList];
-                        let a: CategoryModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: CategoryModel | undefined = arrActivity.find(
+                          (el) => el.id === param.row.id
+                        );
                         handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
@@ -901,7 +985,11 @@ debugger
           </Grid>
         </Grid>
       </Container>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>

@@ -43,6 +43,33 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "designation_name", "designationName");
     renameKey(obj, "designation_refno", "id");
     renameKey(obj, "ewaybill_refno", "id");
+    //
+    renameKey(obj, "Sess_UserRefno", "UserID");
+    renameKey(obj, "company_name", "companyName");
+    renameKey(obj, "address", "addressLine");
+    renameKey(obj, "mobile_no", "contactPersonNumber");
+    renameKey(obj, "bank_account_no", "accountNumber");
+    renameKey(obj, "bank_branch_name", "branchName");
+    renameKey(obj, "bank_name", "bankName");
+    renameKey(obj, "company_logo_url", "companyLogo");
+    renameKey(obj, "company_name_prefix", "companyNamePrefix");
+    renameKey(obj, "employee_code_prefix", "employeeCodePrefix");
+    renameKey(obj, "firstname", "contactPersonName");
+
+    renameKey(obj, "gst_no", "gstNumber");
+    renameKey(obj, "pan_no", "pan");
+    renameKey(obj, "location_name", "locationName");
+    renameKey(obj, "ifsc_code", "ifscCode");
+    renameKey(obj, "state_refno", "stateID");
+    renameKey(obj, "state_name", "stateName");
+    renameKey(obj, "quotation_no_prefix", "quotationBudgetPrefix");
+    renameKey(obj, "district_name", "cityName");
+    renameKey(obj, "district_refno", "cityID");
+    renameKey(obj, "so_prefix", "salesOrderPrefix");
+    renameKey(obj, "po_prefix", "purchaseOrderPrefix");
+    renameKey(obj, "if_create_brand", "showBrand");
+
+    // renameKey(obj, "company_refno", "branchName");
   });
 
   return response;

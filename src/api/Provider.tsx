@@ -1,8 +1,10 @@
 import axios from "axios";
 
 const BASE_URL_OLD = "https://api.starselector.com/api";
+// const BASE_URL_OLD = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD/";
 const BASE_URL = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD";
-const BASE_URL_Admin = "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
+const BASE_URL_Admin =
+  "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
 
 class Provider {
   API_URLS = {
@@ -71,6 +73,11 @@ class Provider {
     ProductServiceProduct: "getproductnameserviceproductform/",
     ServiceProductCreate: "serviceproductcreate/",
     ServiceProductUpdate: "serviceproductupdate/",
+    //
+    DealerCompanyDetail: "getdealercompanybasicdetails/",
+    StateDetails: "getstatedetails/",
+    DistrictDetails: "	getdistrictdetails_by_state_refno/",
+    DealerCompanyDetailUpdate: "dealercompanybasicdetailsupdate/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
@@ -99,6 +106,11 @@ class Provider {
   createDF(resource: string, params: any) {
     return axios.post<any>(`${BASE_URL}/${resource}`, params);
   }
+
+  createDFF(resource: string) {
+    return axios.post<any>(`${BASE_URL}/${resource}`);
+  }
+
   update(resource: string, params: any, id: any) {
     return axios.put<any>(
       `${BASE_URL_OLD}/${resource}/${id}`,

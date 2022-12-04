@@ -37,7 +37,14 @@ import { AWSImagePath } from "../../../utils/paths";
 import { communication } from "../../../utils/communication";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import uuid from "react-uuid";
-import { CityModel, CompanyModel, StateModel, UserModel, UserProfile } from "../../../models/Model";
+import {
+  CityModel,
+  CompanyModel,
+  StateModel,
+  UserModel,
+  UserProfile,
+} from "../../../models/Model";
+import { APIConverter } from "../../../utils/apiconverter";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -49,7 +56,13 @@ function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
       {value === index && (
         <Box sx={{ p: 3 }}>
           <Box>{children}</Box>
@@ -82,7 +95,7 @@ const CBasic = () => {
     }
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [companyName, setCompanyName] = useState("");
   const [companyNameError, setCompanyNameError] = useState("");
   const [isCompanyNameError, setIsCompanyNameError] = useState(false);
@@ -172,14 +185,16 @@ const CBasic = () => {
   const [uploadedImage, setUploadedImage] = useState("");
   const [uploadFileUpload, setUploadFileUpload] = useState<any>();
 
-  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
+  const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>(
+    "error"
+  );
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
 
   const [buttonLoading, setButtonLoading] = useState(false);
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -192,41 +207,145 @@ const CBasic = () => {
 
   const FetchBasicDetails = () => {
     let params = {
-      UserID: cookies.dfc.UserID,
+      // UserID: cookies.dfc.UserID,
+      //Sess_UserRefno: "2",
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+      },
     };
-    Provider.getAll(`master/getuserprofile?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDF(Provider.API_URLS.DealerCompanyDetail, params)
+      // Provider.createDF(
+      //   `master/getuserprofile?${new URLSearchParams(GetStringifyJson(params))}`
+      // )
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            
+            response.data.data = APIConverter(response.data.data);
             if (response.data.data[0] != null) {
-
-              setCompanyName(!NullOrEmpty(response.data.data[0].companyName) ? response.data.data[0].companyName : "");
-              setContact(!NullOrEmpty(response.data.data[0].contactPersonName) ? response.data.data[0].contactPersonName : "");
-              setContactNo(!NullOrEmpty(response.data.data[0].contactPersonNumber) ? response.data.data[0].contactPersonNumber : "");
-              setGSTNo(!NullOrEmpty(response.data.data[0].gstNumber) ? response.data.data[0].gstNumber : "");
-              setPanNo(!NullOrEmpty(response.data.data[0].pan) ? response.data.data[0].pan : "");
-              setLocationName(!NullOrEmpty(response.data.data[0].locationName) ? response.data.data[0].locationName : "");
-              setAddress(!NullOrEmpty(response.data.data[0].addressLine) ? response.data.data[0].addressLine : "");
-              setSelectedStateName(NullOrEmpty(response.data.data[0].stateName) ? "" : response.data.data[0].stateName);
-              setSelectedStateID(NullOrEmpty(response.data.data[0].stateID) ? 0 : response.data.data[0].stateID);
-              setSelectedCityName(NullOrEmpty(response.data.data[0].cityName) ? "" : response.data.data[0].cityName);
-              setSelectedCityID(NullOrEmpty(response.data.data[0].cityID) ? 0 : response.data.data[0].cityID);
-              setPincode(NullOrEmpty(response.data.data[0].pincode) ? "" : response.data.data[0].pincode.toString());
-              setAccountNo(NullOrEmpty(response.data.data[0].accountNumber) ? "" : response.data.data[0].accountNumber.toString());
-              setBankName(!NullOrEmpty(response.data.data[0].bankName) ? response.data.data[0].bankName : "");
-              setBankBranchName(!NullOrEmpty(response.data.data[0].branchName) ? response.data.data[0].branchName : "");
-              setIFSCCode(!NullOrEmpty(response.data.data[0].ifscCode) ? response.data.data[0].ifscCode : "");
-              setCNP(!NullOrEmpty(response.data.data[0].companyNamePrefix) ? response.data.data[0].companyNamePrefix : "");
-              setQBNP(!NullOrEmpty(response.data.data[0].quotationBudgetPrefix) ? response.data.data[0].quotationBudgetPrefix : "");
-              setECP(!NullOrEmpty(response.data.data[0].employeeCodePrefix) ? response.data.data[0].employeeCodePrefix : "");
-              setPOP(!NullOrEmpty(response.data.data[0].purchaseOrderPrefix) ? response.data.data[0].purchaseOrderPrefix : "");
-              setSOP(!NullOrEmpty(response.data.data[0].salesOrderPrefix) ? response.data.data[0].salesOrderPrefix : "");
-              setDisplay(NullOrEmpty(response.data.data[0].showBrand) ? "No" : response.data.data[0].showBrand ? "Yes" : "No");
+              setCompanyName(
+                !NullOrEmpty(response.data.data[0].companyName)
+                  ? response.data.data[0].companyName
+                  : ""
+              );
+              setContact(
+                !NullOrEmpty(response.data.data[0].contactPersonName)
+                  ? response.data.data[0].contactPersonName
+                  : ""
+              );
+              setContactNo(
+                !NullOrEmpty(response.data.data[0].contactPersonNumber)
+                  ? response.data.data[0].contactPersonNumber
+                  : ""
+              );
+              setGSTNo(
+                !NullOrEmpty(response.data.data[0].gstNumber)
+                  ? response.data.data[0].gstNumber
+                  : ""
+              );
+              setPanNo(
+                !NullOrEmpty(response.data.data[0].pan)
+                  ? response.data.data[0].pan
+                  : ""
+              );
+              setLocationName(
+                !NullOrEmpty(response.data.data[0].locationName)
+                  ? response.data.data[0].locationName
+                  : ""
+              );
+              setAddress(
+                !NullOrEmpty(response.data.data[0].addressLine)
+                  ? response.data.data[0].addressLine
+                  : ""
+              );
+              setSelectedStateName(
+                NullOrEmpty(response.data.data[0].stateName)
+                  ? ""
+                  : response.data.data[0].stateName
+              );
+              setSelectedStateID(
+                NullOrEmpty(response.data.data[0].stateID)
+                  ? 0
+                  : response.data.data[0].stateID
+              );
+              setSelectedCityName(
+                NullOrEmpty(response.data.data[0].cityName)
+                  ? ""
+                  : response.data.data[0].cityName
+              );
+              setSelectedCityID(
+                NullOrEmpty(response.data.data[0].cityID)
+                  ? 0
+                  : response.data.data[0].cityID
+              );
+              setPincode(
+                NullOrEmpty(response.data.data[0].pincode)
+                  ? ""
+                  : response.data.data[0].pincode.toString()
+              );
+              setAccountNo(
+                NullOrEmpty(response.data.data[0].accountNumber)
+                  ? ""
+                  : response.data.data[0].accountNumber.toString()
+              );
+              setBankName(
+                !NullOrEmpty(response.data.data[0].bankName)
+                  ? response.data.data[0].bankName
+                  : ""
+              );
+              setBankBranchName(
+                !NullOrEmpty(response.data.data[0].branchName)
+                  ? response.data.data[0].branchName
+                  : ""
+              );
+              setIFSCCode(
+                !NullOrEmpty(response.data.data[0].ifscCode)
+                  ? response.data.data[0].ifscCode
+                  : ""
+              );
+              setCNP(
+                !NullOrEmpty(response.data.data[0].companyNamePrefix)
+                  ? response.data.data[0].companyNamePrefix
+                  : ""
+              );
+              setQBNP(
+                !NullOrEmpty(response.data.data[0].quotationBudgetPrefix)
+                  ? response.data.data[0].quotationBudgetPrefix
+                  : ""
+              );
+              setECP(
+                !NullOrEmpty(response.data.data[0].employeeCodePrefix)
+                  ? response.data.data[0].employeeCodePrefix
+                  : ""
+              );
+              setPOP(
+                !NullOrEmpty(response.data.data[0].purchaseOrderPrefix)
+                  ? response.data.data[0].purchaseOrderPrefix
+                  : ""
+              );
+              setSOP(
+                !NullOrEmpty(response.data.data[0].salesOrderPrefix)
+                  ? response.data.data[0].salesOrderPrefix
+                  : ""
+              );
+              setDisplay(
+                NullOrEmpty(response.data.data[0].showBrand)
+                  ? "No"
+                  : response.data.data[0].showBrand
+                  ? "Yes"
+                  : "No"
+              );
               setUploadedImage(response.data.data[0].companyLogo);
-              setImage(!NullOrEmpty(response.data.data[0].companyLogo) ? response.data.data[0].companyLogo : AWSImagePath + "placeholder-image.png");
+              setImage(
+                !NullOrEmpty(response.data.data[0].companyLogo)
+                  ? response.data.data[0].companyLogo
+                  : AWSImagePath + "placeholder-image.png"
+              );
               // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
-              if (!NullOrEmpty(response.data.data[0].stateID) && response.data.data[0].stateID != 0) {
+              if (
+                !NullOrEmpty(response.data.data[0].stateID) &&
+                response.data.data[0].stateID != 0
+              ) {
                 FetchCities(response.data.data[0].stateID);
               }
             }
@@ -240,35 +359,44 @@ const CBasic = () => {
   };
 
   const FetchStates = () => {
-
-    Provider.getAll("master/getstates")
+    // let params = {};
+    Provider.createDFF(Provider.API_URLS.StateDetails)
+      // Provider.getAll("master/getstates")
       .then((response: any) => {
-
+        response.data.data = APIConverter(response.data.data);
         if (response.data && response.data.code === 200) {
+          debugger;
           if (response.data.data) {
             const stateData: any = [];
             response.data.data.map((data: any, i: number) => {
               stateData.push({
-                id: data.id,
+                id: data.stateID,
                 label: data.stateName,
                 // setStateNameList(response.data.data);
               });
             });
+
             setStatesFullData(stateData);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
+
+  // let state_refno: string = event.target.value;
 
   const FetchCities = (stateID: number) => {
     let params = {
-      ID: stateID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        state_refno: stateID,
+      },
     };
-    Provider.getAll(`master/getcitiesbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDF(Provider.API_URLS.DistrictDetails, params)
       .then((response: any) => {
-
+        response.data.data = APIConverter(response.data.data);
         if (response.data && response.data.code === 200) {
+          debugger;
           if (response.data.data) {
             const cityData: any = [];
             response.data.data.map((data: any, i: number) => {
@@ -277,11 +405,12 @@ const CBasic = () => {
                 label: data.cityName,
               });
             });
+
             setCityFullData(cityData);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const handleSubmitClick = () => {
@@ -298,41 +427,50 @@ const CBasic = () => {
     let imageName: string = uuid();
     let fileExtension = uploadedImage.split(".").pop();
     setUploadedImage(imageName + "." + fileExtension);
-    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertData);
+    UploadImageToS3WithNativeSdk(
+      uploadFileUpload,
+      imageName + "." + fileExtension,
+      InsertData
+    );
   };
 
   const InsertData = (status: string, fileName: string) => {
-
     if (status.toLowerCase() === "success") {
       debugger;
-      const params = {
-        UserID: CookieUserID,
-        CompanyName: companyName,
-        CompanyLogo: fileName ? AWSImagePath + fileName : "",
-        ContactPersonName: contact,
-        ContactPersonNumber: contactNo,
-        AddressLine: address,
-        LocationName: locationName,
-        StateID: selectedStateID,
-        CityID: selectedCityID,
-        Pincode: pincode ? pincode : 0,
-        GSTNumber: gstNo,
-        PAN: panNo,
-        AccountNumber: accountNo ? accountNo : 0,
-        BankName: bankName,
-        BranchName: bankBranchName,
-        IFSCCode: IFSCCode,
-        CompanyNamePrefix: cnp,
-        QuotationBudgetPrefix:qbnp,
-        EmployeeCodePrefix: ecp,
-        PurchaseOrderPrefix: pop,
-        SalesOrderPrefix: sop,
-        ShowBrand: display === "Yes",
+      let params = {
+        data: {
+          Sess_UserRefno: CookieUserID,
+          company_name: companyName,
+          // company_logo_url: fileName ? AWSImagePath + fileName : "",
+          firstname: contact,
+          mobile_no: contactNo,
+          address: address,
+          location_name: locationName,
+          state_refno: selectedStateID,
+          district_refno: selectedCityID,
+          pincode: pincode ? pincode : 0,
+          gst_no: gstNo,
+          pan_no: panNo,
+          bank_account_no: accountNo ? accountNo : 0,
+          bank_name: bankName,
+          bank_branch_name: bankBranchName,
+          ifsc_code: IFSCCode,
+          company_name_prefix: cnp,
+          quotation_no_prefix: qbnp,
+          employee_code_prefix: ecp,
+          po_prefix: pop,
+          so_prefix: sop,
+          if_create_brand: display === "Yes",
+        },
+        company_logo: "",
       };
-      Provider.create("master/insertuserprofile", params)
+      // params = APIConverter(params.data);
+      Provider.createDF(Provider.API_URLS.DealerCompanyDetailUpdate, params)
+        // Provider.create("master/insertuserprofile", params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
+            // response.data.data = APIConverter(response.data.data);
             if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
               setImage(fileName ? AWSImagePath + fileName : "");
               setUploadFileUpload(undefined);
@@ -368,25 +506,48 @@ const CBasic = () => {
   //   setDisplay((event.target as HTMLInputElement).value);
   // };
 
-  const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === "clickaway") {
       return;
     }
     setOpen(false);
   };
- //#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-        <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+        <Grid
+          container
+          spacing={{ xs: 1, md: 2 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          <Grid
+            item
+            xs={4}
+            sm={8}
+            md={12}
+            sx={{
+              borderBottom: 1,
+              paddingBottom: "8px",
+              borderColor: "rgba(0,0,0,0.12)",
+            }}
+          >
             <Typography variant="h4">Basic details</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ mt: 1 }}>
             {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
+              <Box
+                height="300px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ m: 2 }}
+              >
                 <CircularProgress />
               </Box>
             ) : (
@@ -401,7 +562,13 @@ const CBasic = () => {
                 </Box>
                 <Grid item xs={4} sm={8} md={12}>
                   <TabPanel value={value} index={0}>
-                    <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
+                    <Grid
+                      container
+                      xs={4}
+                      sm={8}
+                      md={12}
+                      spacing={{ xs: 1, md: 2 }}
+                    >
                       <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Company / Frim Name</b>
@@ -411,7 +578,9 @@ const CBasic = () => {
                           variant="outlined"
                           size="small"
                           onChange={(e) => {
-                            setCompanyName((e.target as HTMLInputElement).value);
+                            setCompanyName(
+                              (e.target as HTMLInputElement).value
+                            );
                             setIsCompanyNameError(false);
                             setCompanyNameError("");
                           }}
@@ -506,7 +675,9 @@ const CBasic = () => {
                           variant="outlined"
                           size="small"
                           onChange={(e) => {
-                            setLocationName((e.target as HTMLInputElement).value);
+                            setLocationName(
+                              (e.target as HTMLInputElement).value
+                            );
                             setIsLocationNameError(false);
                             setLocationNameError("");
                           }}
@@ -544,7 +715,10 @@ const CBasic = () => {
                           fullWidth
                           options={statesFullData}
                           //sx={{ width: 300 }}
-                          onChange={(event: React.SyntheticEvent, value: any) => {
+                          onChange={(
+                            event: React.SyntheticEvent,
+                            value: any
+                          ) => {
                             setIsStateError(false);
                             setStateError("");
                             if (value !== null) {
@@ -557,7 +731,16 @@ const CBasic = () => {
                             }
                           }}
                           value={selectedStateName}
-                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isStateError} helperText={stateError} />}
+                          renderInput={(params) => (
+                            <TextField
+                              variant="outlined"
+                              {...params}
+                              label=""
+                              size="small"
+                              error={isStateError}
+                              helperText={stateError}
+                            />
+                          )}
                         />
                       </Grid>
 
@@ -570,7 +753,10 @@ const CBasic = () => {
                           fullWidth
                           options={cityFullData}
                           // sx={{ width: 300 }}
-                          onChange={(event: React.SyntheticEvent, value: any) => {
+                          onChange={(
+                            event: React.SyntheticEvent,
+                            value: any
+                          ) => {
                             setIsCityError(false);
                             setCityError("");
                             if (value !== null) {
@@ -579,7 +765,16 @@ const CBasic = () => {
                             }
                           }}
                           value={selectedCityName}
-                          renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isCityError} helperText={cityError} />}
+                          renderInput={(params) => (
+                            <TextField
+                              variant="outlined"
+                              {...params}
+                              label=""
+                              size="small"
+                              error={isCityError}
+                              helperText={cityError}
+                            />
+                          )}
                         />
                       </Grid>
 
@@ -604,7 +799,13 @@ const CBasic = () => {
                     </Grid>
                   </TabPanel>
                   <TabPanel value={value} index={1}>
-                    <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
+                    <Grid
+                      container
+                      xs={4}
+                      sm={8}
+                      md={12}
+                      spacing={{ xs: 1, md: 2 }}
+                    >
                       <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Account Number</b>
@@ -652,7 +853,9 @@ const CBasic = () => {
                           variant="outlined"
                           size="small"
                           onChange={(e) => {
-                            setBankBranchName((e.target as HTMLInputElement).value);
+                            setBankBranchName(
+                              (e.target as HTMLInputElement).value
+                            );
                             setIsBankBranchNameError(false);
                             setBankBranchNameError("");
                           }}
@@ -694,7 +897,13 @@ const CBasic = () => {
                         </RadioGroup>
                       </FormControl>
                     </Grid> */}
-                    <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
+                    <Grid
+                      container
+                      xs={4}
+                      sm={8}
+                      md={12}
+                      spacing={{ xs: 1, md: 2 }}
+                    >
                       <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Company Name Prefix</b>
@@ -792,8 +1001,18 @@ const CBasic = () => {
                     </Grid>
                   </TabPanel>
                   <TabPanel value={value} index={3}>
-                    <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
-                      <img src={image} alt="" style={{ width: "48px", height: "48px" }} />
+                    <Grid
+                      container
+                      xs={4}
+                      sm={8}
+                      md={12}
+                      spacing={{ xs: 1, md: 2 }}
+                    >
+                      <img
+                        src={image}
+                        alt=""
+                        style={{ width: "48px", height: "48px" }}
+                      />
                       <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b> Logo</b>
@@ -801,16 +1020,27 @@ const CBasic = () => {
                         </Typography>
                         <FormControl fullWidth size="small">
                           <Grid style={{ display: "flex" }}>
-                            <Button size="small" variant="contained" component="label" sx={{ mr: 2 }}>
+                            <Button
+                              size="small"
+                              variant="contained"
+                              component="label"
+                              sx={{ mr: 2 }}
+                            >
                               {designButtonText}
                               <input
                                 type="file"
                                 hidden
                                 accept="image/*"
                                 onChange={(e) => {
-                                  if (e.currentTarget !== null && e.currentTarget.files !== null) {
-                                    setUploadFileUpload(e.currentTarget.files[0]);
-                                    let FileName = e.currentTarget.files[0].name;
+                                  if (
+                                    e.currentTarget !== null &&
+                                    e.currentTarget.files !== null
+                                  ) {
+                                    setUploadFileUpload(
+                                      e.currentTarget.files[0]
+                                    );
+                                    let FileName =
+                                      e.currentTarget.files[0].name;
                                     if (FileName !== undefined) {
                                       setDIErrorText(FileName.trim());
                                       setUploadedImage(FileName);
@@ -828,7 +1058,12 @@ const CBasic = () => {
                   </TabPanel>
 
                   <Grid item xs={4} sm={8} md={12}>
-                    <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+                    <LoadingButton
+                      loading={buttonLoading}
+                      variant="contained"
+                      sx={{ mt: 1 }}
+                      onClick={handleSubmitClick}
+                    >
                       Submit
                     </LoadingButton>
                   </Grid>
@@ -838,7 +1073,11 @@ const CBasic = () => {
           </Grid>
         </Grid>
       </Container>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <Alert severity={snackbarType} sx={{ width: "100%" }}>
           {snackMsg}
         </Alert>
