@@ -61,7 +61,7 @@ export const CreateImageGalleryEstimation = ({ props, buttonSettings, cardCallba
 
         <CardContent data-id={props.id}>
           <Typography variant="h6" color="text.primary" noWrap={true}>
-            {type !== "product" ? props.serviceName : props.productName}
+            {type === "product" ? props.productName : type === "subcategory" ? props.workLocationName : props.serviceName }
           </Typography>
           <Typography variant="h6" color="text.secondary" noWrap={true}>
             {props.designTypeName}

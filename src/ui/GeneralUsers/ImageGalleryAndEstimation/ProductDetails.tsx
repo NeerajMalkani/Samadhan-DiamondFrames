@@ -35,11 +35,14 @@ import { restrictNumericMobile } from "../../../utils/validations";
 import { DataGrid } from "@mui/x-data-grid";
 import { materialSetupColumns, searchClientColumns } from "../../../utils/tablecolumns";
 import CreateClient from "../../../components/Client";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ImageGalleryProductDetailsPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [selectedData, setSelectedData] = useState<any>();
+
+  const [productData, SetproductData] = useState<any>();
 
   const [imageOpen, setImageOpen] = useState(false);
   let dummyClient: ClientModel = null;
@@ -50,9 +53,13 @@ const ImageGalleryProductDetailsPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
     } else {
+      debugger;
       SetCookieUseID(cookies.dfc.UserID);
       setSelectedData(retrunValueFromLocation(location, "", true));
-      setLoading(false);
+      FetchImageGalleryProductDetail(retrunValueFromLocation(location, "", true));
+
+      SetproductData(retrunValueFromLocation(location, "", true));
+
       let TotalArea = CalculateSqfeet(parseInt(lengthFeet), parseInt(lengthInches), parseInt(widthHeightFeet), parseInt(widthHeightInches));
       setTotalSqFt(TotalArea);
 
@@ -62,7 +69,7 @@ const ImageGalleryProductDetailsPage = () => {
       }
     }
   }, []);
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   //Snackbar
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -96,9 +103,9 @@ const ImageGalleryProductDetailsPage = () => {
 
   const [userClientError, setUserClientError] = useState("");
   const [isUserClientError, setIsUserClientError] = useState(false);
- //#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   const CreateLengthFeet = (count: number) => {
     let menuItems = [];
     for (let i = 0; i < count; i++) {
@@ -139,6 +146,43 @@ const ImageGalleryProductDetailsPage = () => {
     setOpen(false);
   };
 
+  const FetchImageGalleryProductDetail = (data: any) => {
+    debugger;
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+        service_refno: data.id,
+        designtype_refno: data.designTypeID,
+        "product_refno": data.productID,
+        designgallery_refno: data.designgallery_refno
+      },
+    };
+    Provider.createDFCommon(Provider.API_URLS.Getgotoestimation, params)
+      //Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+      .then((response: any) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setSelectedData(response.data.data[0]);
+            setLoading(false);
+          }
+        } else {
+          setSnackMsg(communication.NoData);
+          setSnackbarType("info");
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+  };
+
   const FetchEstimationMaterialSetupData = (materialSetupID, from, userDesignEstimationID, labourCost) => {
     let params = {
       MaterialSetupID: materialSetupID,
@@ -161,7 +205,7 @@ const ImageGalleryProductDetailsPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchEstimationData = (userDesignEstimationID, from) => {
@@ -176,7 +220,62 @@ const ImageGalleryProductDetailsPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
+  };
+
+  const AddMoreDesigns = (addMore) => {
+    debugger;
+    const params = {
+      data: {
+
+        "Sess_UserRefno": CookieUserID,
+        "Sess_group_refno": cookies.dfc.Sess_group_refno,
+        "clickaddmorecheck": addMore,
+        "service_refno": productData.id,
+        "designtype_refno": productData.designTypeID,
+        "product_refno": productData.productID,
+        "designgallery_refno": productData.designgallery_refno,
+        "lengthfoot": lengthFeet,
+        "lengthinches": lengthInches,
+        "widthheightfoot": widthHeightFeet,
+        "widthheightinches": widthHeightInches,
+        "totalfoot": totalSqFt
+      }
+    };
+
+    Provider.createDFCommon(Provider.API_URLS.GetscEstimation, params)
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+          debugger;
+          navigate(`/generaluser/imagegallery/category`);
+          // if (fromCount === 2) {
+          //   if (from === "add") {
+          //     if (selectedData.type === "gallery") {
+          //       navigate(`/generaluser/imagegallery/category`);
+          //     } else if (selectedData.type === "contractor") {
+          //       navigate(`/contractor/quotationandestimation/designwise`, { state: { type: "pending" } });
+          //     } else {
+          //       navigate(`/dashboard`);
+          //     }
+          //   } else {
+          //     navigate(`/generaluser/imagegallery/productestimationdetails`, { state: { userDesignEstimationID: response.data.data[0].userDesignEstimationID, type: selectedData.type } });
+          //   }
+          // } else {
+          //   FetchEstimationData(response.data.data[0].userDesignEstimationID, from);
+          // }
+        } else {
+          setSnackMsg(communication.Error);
+          setSnackbarType("error");
+          setOpen(true);
+        }
+      })
+      .catch((e) => {
+        setSnackMsg(communication.NetworkError);
+        setSnackbarType("error");
+        setOpen(true);
+      });
+
   };
 
   const InsertDesignEstimationEnquiry = (from: string, fromCount: number, subtotal: number, userDesignEstimationID: number, labourCost) => {
@@ -195,7 +294,7 @@ const ImageGalleryProductDetailsPage = () => {
     if (fromCount === 2) {
       params["ID"] = userDesignEstimationID;
     }
- 
+
     if (selectedData.type === "contractor") {
       params["ClientID"] = selectedUserNameID;
       params["ApprovalStatus"] = 0;
@@ -344,7 +443,7 @@ const ImageGalleryProductDetailsPage = () => {
         setOpen(true);
       });
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -634,7 +733,8 @@ const ImageGalleryProductDetailsPage = () => {
                             variant="contained"
                             sx={{ backgroundColor: theme.palette.error.main }}
                             onClick={() => {
-                              InsertDesignEstimationEnquiry("add", 1, 0, 0, 0);
+                              AddMoreDesigns("1");
+                              //InsertDesignEstimationEnquiry("add", 1, 0, 0, 0);
                               // navigate(`/generaluser/imagegallery/category`);
                             }}
                           >
@@ -652,7 +752,8 @@ const ImageGalleryProductDetailsPage = () => {
                       variant="contained"
                       sx={{ mt: 1 }}
                       onClick={() => {
-                        InsertDesignEstimationEnquiry("", 1, 0, 0, 0);
+                        AddMoreDesigns("0");
+                        //InsertDesignEstimationEnquiry("", 1, 0, 0, 0);
                       }}
                     >
                       {selectedData.type !== "contractor" ? "Submit" : "Create Quote"}

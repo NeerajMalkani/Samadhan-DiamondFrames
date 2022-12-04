@@ -157,7 +157,7 @@ const ForgotPasswordPage = () => {
         otpno: parseInt(otp1 + otp2 + otp3 + otp4),
       },
     };
-    Provider.createDF(Provider.API_URLS.ForgotPasswordCheck, params)
+    Provider.createDFCommon(Provider.API_URLS.ForgotPasswordCheck, params)
       .then((response) => {
         if (response.data && response.data.code === 200) {
           UpdateUser(response.data.data.user_refno);
@@ -184,7 +184,7 @@ const ForgotPasswordPage = () => {
         confirm_password: password1,
       },
     };
-    Provider.createDF(Provider.API_URLS.AlterPasswordCheck, params)
+    Provider.createDFCommon(Provider.API_URLS.AlterPasswordCheck, params)
       .then((response) => {
         if (response.data && response.data.code === 200) {
           navigate(`/login`);

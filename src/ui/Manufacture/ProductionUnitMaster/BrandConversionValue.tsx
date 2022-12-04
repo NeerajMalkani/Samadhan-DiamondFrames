@@ -91,7 +91,7 @@ import {
           group_refno: 'all',
         },
       };
-      Provider.createDF('apiappadmin/spawu7S4urax/tYjD/grouprefnocheck/', params)
+      Provider.createDFCommon('apiappadmin/spawu7S4urax/tYjD/grouprefnocheck/', params)
         .then((response: any) => {
           debugger;
           if (response.data && response.data.code === 200) {
@@ -194,7 +194,7 @@ import {
   
     const InsertUpdateData = (paramActivityName: string, checked: boolean) => {
       if (actionStatus === 'new') {
-        Provider.createDF('apiappadmin/spawu7S4urax/tYjD/groupnamecreate/', {
+        Provider.createDFCommon('apiappadmin/spawu7S4urax/tYjD/groupnamecreate/', {
           //Provider.create("master/insertactivityroles", {
           //ActivityRoleName: paramActivityName,
           //Display: checked,
@@ -228,7 +228,7 @@ import {
           });
       } else if (actionStatus === 'edit') {
         debugger;
-        Provider.createDF('apiappadmin/spawu7S4urax/tYjD/groupnameupdate/', {
+        Provider.createDFCommon('apiappadmin/spawu7S4urax/tYjD/groupnameupdate/', {
           // id: selectedID,
           // ActivityRoleName: paramActivityName,
           // Display: checked,

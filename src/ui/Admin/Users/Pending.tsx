@@ -166,7 +166,7 @@ const Pending = () => {
     };
     debugger;
 
-    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/userapprovestatus/", params)
+    Provider.createDFAdmin("userapprovestatus/", params)
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -197,7 +197,7 @@ const Pending = () => {
       user_refno: selectedID
       }
     };
-    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/userdeclinestatus/", params)
+    Provider.createDFAdmin("userdeclinestatus/", params)
       .then((response) => {
         if (response.data && response.data.code === 200) {
           FetchData();
@@ -232,7 +232,7 @@ const Pending = () => {
     
     ResetFields();
     debugger;
-    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/getuserpendinglist/", params)
+    Provider.createDFAdmin("getuserpendinglist/", params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {

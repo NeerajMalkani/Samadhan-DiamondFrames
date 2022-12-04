@@ -1,27 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Theme,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, Chip, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Theme, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -106,6 +83,11 @@ const LocationTypePage = () => {
 
   const FetchLocationType = (type: string) => {
     handleCancelClick();
+    if (type !== "") {
+      setSnackMsg("Location type " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -123,14 +105,8 @@ const LocationTypePage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            debugger
             setLocationTypeList(arrList);
             setLocationTypeListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Location type " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -161,7 +137,7 @@ const LocationTypePage = () => {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
-          
+
             arrList.map(function (a: any, index: number) {
               return a.display;
             });
@@ -283,10 +259,7 @@ const LocationTypePage = () => {
 
   const handelEditAndDelete = (type: string | null, a: LocationTypeModel | undefined) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
-      let arrAct = a.activityRoleName.split(",");
-      const results = arrAct.map((element) => {
-        return element.trim();
-      });
+      const results: string[] = a.activityRoleName;
       setActivityList(results);
       let aID: any = activityNamesList.filter((el: ActivityRoleNameModel) => {
         return results.indexOf(el.activityRoleName) !== -1;
@@ -298,18 +271,15 @@ const LocationTypePage = () => {
       setActivityError(false);
       setActivityErrorText("");
 
-      let arrSer = a.serviceName.split(",");
-      const resultsSer = arrSer.map((element) => {
-        return element.trim();
-      });
+      const resultsSer: string[] = a.serviceName;
 
       setServiceList(resultsSer);
 
       let aID1: any = serviceNamesList.filter((el: ServiceNameModel) => {
-        return resultsSer.indexOf(el.service_name) !== -1;
+        return resultsSer.indexOf(el.serviceName) !== -1;
       });
 
-      const unitID1 = aID1.map((data: any) => data.service_refno);
+      const unitID1 = aID1.map((data: any) => data.id);
       setServiceListID(unitID1.join(","));
 
       setServiceError(false);
@@ -334,8 +304,8 @@ const LocationTypePage = () => {
       Provider.createDFAdmin(Provider.API_URLS.LocationTypeCreate, {
         Sess_UserRefno: "2",
         locationtype_name: location,
-        group_refno: activityListID.toString(),
-        service_refno: serviceListID.toString(),
+        group_refno: activityListID,
+        service_refno: serviceListID,
         view_status: display === "Yes" ? 1 : 0,
       })
         .then((response) => {
@@ -436,14 +406,14 @@ const LocationTypePage = () => {
     if (un.indexOf("Select All") !== -1) {
       let arrAct: any = [];
       serviceNamesList.map(function (a: ServiceNameModel) {
-        arrAct.push(a.service_name);
+        arrAct.push(a.serviceName);
       });
       setServiceList(arrAct);
       let aID1: any = serviceNamesList.filter((el: ServiceNameModel) => {
-        return arrAct.indexOf(el.service_name) !== -1;
+        return arrAct.indexOf(el.serviceName) !== -1;
       });
 
-      const unitID1 = aID1.map((data: any) => data.service_refno);
+      const unitID1 = aID1.map((data: any) => data.id);
       setServiceListID(unitID1.join(","));
 
       setServiceSelectAll("Unselect All");
@@ -453,10 +423,10 @@ const LocationTypePage = () => {
       setServiceSelectAll("Select All");
     } else {
       let a: any = serviceNamesList.filter((el: ServiceNameModel) => {
-        return un.indexOf(el.service_name) !== -1;
+        return un.indexOf(el.serviceName) !== -1;
       });
 
-      const unitID = a.map((data: any) => data.service_refno);
+      const unitID = a.map((data: any) => data.id);
       setServiceList(typeof value === "string" ? value.split(",") : value);
       setServiceListID(unitID.join(","));
 
@@ -566,8 +536,8 @@ const LocationTypePage = () => {
                   <b>{serviceSelectAll}</b>
                 </MenuItem>
                 {serviceNamesList.map((units: ServiceNameModel) => (
-                  <MenuItem selected={true} key={units.service_refno} value={units.service_name} style={getStyles(units.service_name, serviceList, theme)}>
-                    {units.service_name}
+                  <MenuItem selected={true} key={units.id} value={units.serviceName} style={getStyles(units.serviceName, serviceList, theme)}>
+                    {units.serviceName}
                   </MenuItem>
                 ))}
               </Select>

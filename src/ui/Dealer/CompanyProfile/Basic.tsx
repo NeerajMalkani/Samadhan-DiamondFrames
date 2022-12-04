@@ -1,26 +1,4 @@
-import {
-  Box,
-  TextField,
-  Button,
-  Container,
-  FormControl,
-  FormControlLabel,
-  Typography,
-  Select,
-  Grid,
-  Menu,
-  Snackbar,
-  MenuItem,
-  Tabs,
-  Tab,
-  Autocomplete,
-  RadioGroup,
-  Radio,
-  FormHelperText,
-  Alert,
-  AlertColor,
-  CircularProgress,
-} from "@mui/material";
+import { Box, TextField, Button, Container, FormControl, FormControlLabel, Typography, Select, Grid, Menu, Snackbar, MenuItem, Tabs, Tab, Autocomplete, RadioGroup, Radio, FormHelperText, Alert, AlertColor, CircularProgress } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -37,7 +15,6 @@ import { AWSImagePath } from "../../../utils/paths";
 import { communication } from "../../../utils/communication";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import uuid from "react-uuid";
-
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -82,7 +59,7 @@ const Basic = () => {
     }
   }, []);
 
- //#region Variables
+  //#region Variables
   const [companyName, setCompanyName] = useState("");
   const [companyNameError, setCompanyNameError] = useState("");
   const [isCompanyNameError, setIsCompanyNameError] = useState(false);
@@ -172,9 +149,9 @@ const Basic = () => {
   const [snackMsg, setSnackMsg] = useState("");
 
   const [buttonLoading, setButtonLoading] = useState(false);
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -191,13 +168,13 @@ const Basic = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-          debugger;
+            debugger;
             if (response.data.data[0] != null) {
               setCompanyName(!NullOrEmpty(response.data.data[0].companyName) ? response.data.data[0].companyName : "");
               setContact(!NullOrEmpty(response.data.data[0].contactPersonName) ? response.data.data[0].contactPersonName : "");
               setContactNo(!NullOrEmpty(response.data.data[0].contactPersonNumber) ? response.data.data[0].contactPersonNumber : "");
               setGSTNo(!NullOrEmpty(response.data.data[0].gstNumber) ? response.data.data[0].gstNumber : "");
-              setPanNo(!NullOrEmpty(response.data.data[0].pan)? response.data.data[0].pan : "");
+              setPanNo(!NullOrEmpty(response.data.data[0].pan) ? response.data.data[0].pan : "");
               setLocationName(!NullOrEmpty(response.data.data[0].locationName) ? response.data.data[0].locationName : "");
               setAddress(!NullOrEmpty(response.data.data[0].addressLine) ? response.data.data[0].addressLine : "");
               setSelectedStateName(NullOrEmpty(response.data.data[0].stateName) ? "" : response.data.data[0].stateName);
@@ -219,10 +196,8 @@ const Basic = () => {
               // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
               debugger;
               if (!NullOrEmpty(response.data.data[0].stateID) && response.data.data[0].stateID != 0) {
-
                 FetchCities(response.data.data[0].stateID);
               }
-
             }
           }
           FetchStates();
@@ -235,7 +210,6 @@ const Basic = () => {
   };
 
   const FetchStates = () => {
-
     Provider.getAll("master/getstates")
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
@@ -251,7 +225,7 @@ const Basic = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchCities = (stateID: number) => {
@@ -273,7 +247,7 @@ const Basic = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const handleSubmitClick = () => {
@@ -314,7 +288,7 @@ const Basic = () => {
         BranchName: bankBranchName,
         IFSCCode: IFSCCode,
         CompanyNamePrefix: cnp,
-        QuotationBudgetPrefix:"",
+        QuotationBudgetPrefix: "",
         EmployeeCodePrefix: ecp,
         PurchaseOrderPrefix: pop,
         SalesOrderPrefix: sop,
@@ -366,7 +340,7 @@ const Basic = () => {
     }
     setOpen(false);
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>

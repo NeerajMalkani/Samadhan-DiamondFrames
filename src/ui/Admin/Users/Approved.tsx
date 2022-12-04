@@ -110,7 +110,7 @@
 //       UserID: selectedID,
 //       Status: 2,
 //     };
-//     Provider.createDF("master/updateuserstatus", params)
+//     Provider.createDFCommon("master/updateuserstatus", params)
 //       .then((response) => {
 //         if (response.data && response.data.code === 200) {
 //           FetchData();
@@ -136,7 +136,7 @@
 //       },
 //     };
 //     ResetFields();
-//     Provider.createDF("apiappadmin/spawu7S4urax/tYjD/getuserapprovelist/", params)
+//     Provider.createDFCommon("apiappadmin/spawu7S4urax/tYjD/getuserapprovelist/", params)
 //       .then((response: any) => {
 //         if (response.data && response.data.code === 200) {
 //           if (response.data.data) {
@@ -247,7 +247,7 @@
 
 //                         }
 //                       }
-                      
+
 //                       //   
 //                       // }}
 //                       sx={{
@@ -334,7 +334,7 @@ const Approved = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID)
       navigate(`/login`);
   }, []);
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [approvedName, setApprovedName] = React.useState("");
@@ -356,9 +356,9 @@ const Approved = () => {
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-//#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   const onChangeSearch = (query: string) => {
     debugger;
     setSearchQuery(query);
@@ -406,10 +406,10 @@ const Approved = () => {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
         user_refno: selectedID
-    }
+      }
     };
     debugger;
-    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/userdeclinestatus/", params)
+    Provider.createDFAdmin("userdeclinestatus/", params)
       .then((response) => {
         if (response.data && response.data.code === 200) {
           FetchData();
@@ -442,15 +442,15 @@ const Approved = () => {
     };
     // debugger;
     ResetFields();
-    Provider.createDF("apiappadmin/spawu7S4urax/tYjD/getuserapprovelist/",params)
+    Provider.createDFAdmin("getuserapprovelist/", params)
       .then((response: any) => {
         // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-               a.id = a.user_refno;
-            //  a.display = a.display ? "Yes" : "No";
+              a.id = a.user_refno;
+              //  a.display = a.display ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -470,134 +470,133 @@ const Approved = () => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
-//#endregion 
-      return (
-        <Box sx={{ mt: 11 }}>
-              <Header />
-              <Container maxWidth="lg">
-                 <Grid
-                  container
-                  spacing={{ xs: 1, md: 2 }}
-                  columns={{ xs: 4, sm: 8, md: 12 }}
-                >
-                  <Grid item xs={4} sm={8} md={12}>
-                    <Typography variant="h4"> USERS </Typography>
-                  </Grid>
-                  <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-                    <Typography variant="h6">User Approved List</Typography>
-                  </Grid>
-        
-                  <Grid item xs={4} sm={8} md={12}>
-                    {loading ? (
-                      <Box
-                        height="300px"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{ m: 2 }}
-                      >
-                        <CircularProgress />
-                      </Box>
-                    ) : (
-                      <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                        {approvedNamesList.length === 0 ? (
-                          <></>
-                        ) : (
-                          <>
-                            <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                              <TextField
-                                placeholder="Search"
-                                variant="outlined"
-                                size="small"
-                                //sx={{justifySelf:"flex-end"}}
-                                onChange={(e) => {
-                                  onChangeSearch((e.target as HTMLInputElement).value);
-                                }}
-                                InputProps={{
-                                  startAdornment: (
-                                    <InputAdornment position="start">
-                                      < SearchIcon />
-                                    </InputAdornment>
-                                  ),
-                                }}
-                              />
-                            </Grid>
-                            <DataGrid
-                              style={{
-                                opacity: dataGridOpacity,
-                                pointerEvents: dataGridPointer,
-                              }}
-                              rowHeight={80}
-                              rows={approvedNamesListTemp}
-                                //  getRowId={(row: any) =>  row.user_refno + row.company_name+row.firstname+row.mobile_no+row.group_name+row.approve_status+row.departmentname+row.designationname+row.user_name+row.password}
-                              // getRowId={(row) => row.userID}
-                              columns={approvedColumns}
-                              pageSize={pageSize}
-                              rowsPerPageOptions={[5, 10, 20]}
-                              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                              disableSelectionOnClick={true}
-                              onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                                debugger;
-                                if (param.field === 'action') {
-                                  debugger;
-                                  const arrActivity = [...approvedNamesList];
-                                    let a: DFApprovredModel | undefined =
-                                      arrActivity.find((el) => el.user_refno === param.row.user_refno);
-                                     debugger;
-                                     handelDecline((e.target as any).textContent, a);
-                                    setOpen(true);
-                                    setSelectedID(a.id);                                    
-                                }
-                                // else if (param.field === ' ') {
-                                //   const arrActivity = [...approvedNamesList];
-                                //   let a: DFApprovredModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-        
-        
-                                }
-                              }
-                              
-                              //   
-                              // }}
-                              sx={{
-                                "& .MuiDataGrid-columnHeaders": {
-                                  backgroundColor: theme.palette.primary.main,
-                                  color: theme.palette.primary.contrastText,
-                                },
-                                mb: 1
-                              }}
-                            />
-        
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </Grid>
-                </Grid>
-              </Container>
-              <div>
-                <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-                  <DialogTitle>Confirmation</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText>Confirm to Decline?</DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button
-                      onClick={() => {
-                        ApproveUserStatus();
+  //#endregion 
+  return (
+    <Box sx={{ mt: 11 }}>
+      <Header />
+      <Container maxWidth="lg">
+        <Grid
+          container
+          spacing={{ xs: 1, md: 2 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          <Grid item xs={4} sm={8} md={12}>
+            <Typography variant="h4"> USERS </Typography>
+          </Grid>
+          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+            <Typography variant="h6">User Approved List</Typography>
+          </Grid>
+
+          <Grid item xs={4} sm={8} md={12}>
+            {loading ? (
+              <Box
+                height="300px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ m: 2 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
+                {approvedNamesList.length === 0 ? (
+                  <></>
+                ) : (
+                  <>
+                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
+                      <TextField
+                        placeholder="Search"
+                        variant="outlined"
+                        size="small"
+                        //sx={{justifySelf:"flex-end"}}
+                        onChange={(e) => {
+                          onChangeSearch((e.target as HTMLInputElement).value);
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              < SearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <DataGrid
+                      style={{
+                        opacity: dataGridOpacity,
+                        pointerEvents: dataGridPointer,
                       }}
-                      autoFocus
-                    >
-                      OK
-                    </Button>
-                    {/* <Button onClick={()=> approveUserStatus(currentUserId)} autoFocus>OK</Button> */}
-                  </DialogActions>
-                </Dialog>
+                      rowHeight={80}
+                      rows={approvedNamesListTemp}
+                      //  getRowId={(row: any) =>  row.user_refno + row.company_name+row.firstname+row.mobile_no+row.group_name+row.approve_status+row.departmentname+row.designationname+row.user_name+row.password}
+                      // getRowId={(row) => row.userID}
+                      columns={approvedColumns}
+                      pageSize={pageSize}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                      disableSelectionOnClick={true}
+                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
+                        debugger;
+                        if (param.field === 'action') {
+                          debugger;
+                          const arrActivity = [...approvedNamesList];
+                          let a: DFApprovredModel | undefined =
+                            arrActivity.find((el) => el.user_refno === param.row.user_refno);
+                          debugger;
+                          handelDecline((e.target as any).textContent, a);
+                          setOpen(true);
+                          setSelectedID(a.id);
+                        }
+                        // else if (param.field === ' ') {
+                        //   const arrActivity = [...approvedNamesList];
+                        //   let a: DFApprovredModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+
+
+                      }
+                      }
+
+                      //   
+                      // }}
+                      sx={{
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        },
+                        mb: 1
+                      }}
+                    />
+
+                  </>
+                )}
               </div>
-            </Box>
-  
-      );
-  };
-  
-  export default Approved;
-  
+            )}
+          </Grid>
+        </Grid>
+      </Container>
+      <div>
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+          <DialogTitle>Confirmation</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Confirm to Decline?</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button
+              onClick={() => {
+                ApproveUserStatus();
+              }}
+              autoFocus
+            >
+              OK
+            </Button>
+            {/* <Button onClick={()=> approveUserStatus(currentUserId)} autoFocus>OK</Button> */}
+          </DialogActions>
+        </Dialog>
+      </div>
+    </Box>
+
+  );
+};
+
+export default Approved;

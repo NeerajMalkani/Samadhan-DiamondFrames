@@ -29,7 +29,6 @@ const DrawerItems = ({ open }: OpenObj) => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   useEffect(() => {
-    debugger;
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
     else {
       SetCookieRoleID(cookies.dfc.RoleID);
@@ -1376,7 +1375,7 @@ const DrawerItems = ({ open }: OpenObj) => {
   ];
 
   let MenuArr: Array<any> = [];
-  debugger;
+
   switch (CookieRoleID.toString()) {
     case '2':
       MenuArr = [...MenuItemsAdmin];

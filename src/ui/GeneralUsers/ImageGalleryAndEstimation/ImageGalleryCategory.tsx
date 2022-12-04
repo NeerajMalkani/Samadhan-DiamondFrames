@@ -9,6 +9,7 @@ import NoData from "../../../components/NoData";
 import { ButtonSettings, ImageGalleryEstimation } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ImageGalleryCategoryPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -45,7 +46,8 @@ const ImageGalleryCategoryPage = () => {
   };
 
   const handleCardClick = (data: ImageGalleryEstimation) => {
-    navigate(`/generaluser/imagegallery/product`, { state: { id: data.serviceID, name: data.serviceName, type: "gallery" } });
+    debugger;
+    navigate(`/generaluser/imagegallery/product`, { state: { id: data.id, name: data.serviceName, type: "gallery" } });
   };
 
   useEffect(() => {
@@ -53,10 +55,19 @@ const ImageGalleryCategoryPage = () => {
   }, []);
 
   const FetchImageGalleryData = () => {
-    Provider.getAll("generaluserenquiryestimations/getimagegallery")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno
+      },
+    };
+    Provider.createDFDashboard(Provider.API_URLS.GetdashboardServicecatalogue, params)
+    //Provider.getAll("generaluserenquiryestimations/getimagegallery")
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setImageGalleryData(response.data.data);
           }
         } else {

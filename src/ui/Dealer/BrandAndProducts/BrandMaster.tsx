@@ -15,6 +15,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const BrandMasterPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -29,7 +30,7 @@ const BrandMasterPage = () => {
     }
   }, []);
 
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
   const [brandName, setBrandName] = useState("");
@@ -51,9 +52,9 @@ const BrandMasterPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchShowBrand(cookies.dfc.UserID);
   }, []);
@@ -87,26 +88,34 @@ const BrandMasterPage = () => {
 
   const FetchData = (type: string, UserID: number) => {
     ResetFields();
+
+    if (type !== "") {
+      setSnackMsg("Brand " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
+    
     let params = {
-      DealerID: UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        brand_master_refno: "all",
+        Sess_CompanyAdmin_UserRefno: cookies.dfc.Sess_CompanyAdmin_UserRefno,
+      },
     };
-    Provider.getAll(`dealerbrand/getbrand?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.DealerBrandMasterRefnoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
             setBrandNamesList(arrList);
             setBrandNamesListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Brand " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackbarType("info");
@@ -169,10 +178,10 @@ const BrandMasterPage = () => {
 
   const InsertUpdateData = (paramBrandName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.create("dealerbrand/insertbrand", {
-        BrandName: paramBrandName,
-        Display: checked,
-        DealerID: CookieUserID,
+      Provider.createDFAdmin(Provider.API_URLS.DealerBrandMasterCreate, {
+        brand_name: paramBrandName,
+        view_status: checked ? 1 : 0,
+        Sess_UserRefno: cookies.dfc.UserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -196,11 +205,11 @@ const BrandMasterPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.create("dealerbrand/updatebrand", {
-        id: selectedID,
-        BrandName: paramBrandName,
-        Display: checked,
-        DealerID: CookieUserID,
+      Provider.createDFAdmin(Provider.API_URLS.DealerbrandMasterUpdate, {
+        brand_master_refno: selectedID,
+        brand_name: paramBrandName,
+        view_status: checked ? 1 : 0,
+        Sess_UserRefno: cookies.dfc.UserID,
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -245,7 +254,7 @@ const BrandMasterPage = () => {
       );
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -309,7 +318,7 @@ const BrandMasterPage = () => {
               ) : (
                 <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
                   {brandNamesList.length === 0 ? (
-                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+                    <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                   ) : (
                     <>
                       <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>

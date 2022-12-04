@@ -1,26 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, Chip, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, OutlinedInput, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
@@ -175,7 +153,7 @@ const CategoryPage = () => {
     };
 
     setLoading(true);
-    await Provider.createDFAdmin(Provider.API_URLS.GroupFromRefNo, params)
+    await Provider.createDFAdmin(Provider.API_URLS.ActivityRoleCategory, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -203,9 +181,14 @@ const CategoryPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
+    if (type !== "") {
+      setSnackMsg("Category " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
-        Sess_UserRefno: "2",
+        Sess_UserRefno: "2",      
         category_refno: "all",
       },
     };
@@ -225,12 +208,6 @@ const CategoryPage = () => {
             });
             setCategoryList(arrList);
             setCategoryListTemp(arrList);
-
-            if (type !== "") {
-              setSnackMsg("Category " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setSnackMsg(communication.NoData);
@@ -345,7 +322,7 @@ const CategoryPage = () => {
     let ac = serviceNameList.find((el) => el.serviceName === serviceName);
     if (ac !== undefined) {
       setSn(serviceName);
-      setSnID(ac?.serviceID);
+      setSnID(ac?.id);
       setServiceNameError(false);
       setServiceNameErrorText("");
     }
@@ -452,6 +429,8 @@ const CategoryPage = () => {
       setGst("");
       setUnitsOfSales([]);
       setUnitsOfSalesID([]);
+      setPersonName([]);
+      setUnitId([]);
     }
   };
 
@@ -466,6 +445,8 @@ const CategoryPage = () => {
     setGst("");
     setUnitsOfSales([]);
     setUnitsOfSalesID([]);
+    setPersonName([]);
+    setUnitId([]);
     setButtonDisplay("none");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
@@ -477,20 +458,31 @@ const CategoryPage = () => {
     a: CategoryModel | undefined
   ) => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
+      let a1: any = activityNamesList.filter((el) => {
+        return el.activityRoleName === a.activityRoleName;
+      });
+
+      let a2: any = serviceNameList.filter((el) => {
+        return el.serviceName === a.serviceName;
+      });
+
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
       setSn(a.serviceName);
-      setSnID(a.serviceID);
+      setSnID(a2[0].id);
       setArn(a.activityRoleName);
-      setArnID(a.roleID);
+      setArnID(a1[0].id);
       setCn(a.categoryName);
       setHsn(a.hsnsacCode);
       setGst(a.gstRate);
+<<<<<<< HEAD
       debugger;
+=======
+>>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
       if (a.unitName !== null) {
-        let arrUnits = a.unitName.split("<br>");
-        const results = arrUnits.map((element) => {
+        let arrUnits = a.unitName;//.split("<br>");
+        const results = arrUnits.map((element:string) => {
           return element.trim();
         });
         setUnitsOfSales(results);
@@ -500,9 +492,10 @@ const CategoryPage = () => {
         });
 
         const unitID = a1.map((data: any) => data.id);
-        setUnitsOfSalesID(unitID.join(","));
+        const unitName = a1.map((data: any) => data.displayUnit);
         setUnitId(unitID);
 
+<<<<<<< HEAD
         // setPersonName(
         //   // On autofill we get a stringified value.
         //   typeof value === "string" ? value.split(",") : value
@@ -515,6 +508,9 @@ const CategoryPage = () => {
         //   a.push(data.unit_id);
         // });
         // setUnitId(a);
+=======
+        setPersonName(unitName);
+>>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
       }
       setSelectedID(a.id);
       setButtonDisplay("unset");
@@ -523,19 +519,19 @@ const CategoryPage = () => {
   };
 
   const InsertUpdateData = () => {
-    let params = {
-      data: {
-        Sess_UserRefno: "2",
-        category_name: cn,
-        hsn_sac_code: hsn,
-        group_refno: arnID,
-        service_refno: snID,
-        gst_rate: parseFloat(gst),
-        view_status: display,
-        unit_category_refno: UnitId,
-      },
-    };
     if (actionStatus === "new") {
+      let params = {
+        data: {
+          Sess_UserRefno: "2",
+          category_name: cn,
+          hsn_sac_code: hsn,
+          group_refno: arnID,
+          service_refno: snID,
+          gst_rate: parseFloat(gst),
+          view_status: display === "Yes" ? 1 : 0,
+          unit_category_refno: UnitId,
+        },
+      };
       Provider.createDFAdmin(Provider.API_URLS.CategoryNameCreate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -559,17 +555,20 @@ const CategoryPage = () => {
           setSnackbarType("error");
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.CategoryNameUpdate, {
-        Sess_UserRefno: "2",
-        category_refno: selectedID,
-        category_name: cn,
-        group_refno: arnID,
-        service_refno: snID,
-        hsn_sac_code: hsn,
-        gst_rate: parseFloat(gst),
-        unit_category_refno: unitsOfSalesID.toString(),
-        view_status: display === "Yes" ? 1 : 0,
-      })
+      let params = {
+        data: {
+          Sess_UserRefno: "2",
+          category_refno: selectedID,
+          category_name: cn,
+          group_refno: arnID,
+          service_refno: snID,
+          hsn_sac_code: hsn,
+          gst_rate: parseFloat(gst),
+          unit_category_refno: UnitId,
+          view_status: display === "Yes" ? 1 : 0,
+        },
+      };
+      Provider.createDFAdmin(Provider.API_URLS.CategoryNameUpdate, params)
         .then((response) => {
           if (response.data && response.data.code === 200) {
             FetchData("updated");
@@ -852,6 +851,7 @@ const CategoryPage = () => {
               <b>Display</b>
             </Typography>
             <FormControl>
+<<<<<<< HEAD
               <RadioGroup
                 row
                 name="row-radio-buttons-group"
@@ -860,6 +860,11 @@ const CategoryPage = () => {
               >
                 <FormControlLabel value={0} control={<Radio />} label="Yes" />
                 <FormControlLabel value={1} control={<Radio />} label="No" />
+=======
+              <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="No" control={<Radio />} label="No" />
+>>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
               </RadioGroup>
             </FormControl>
           </Grid>

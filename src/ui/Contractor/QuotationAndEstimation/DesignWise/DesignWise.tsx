@@ -1,32 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  IconButton,
-  InputAdornment,
-  MenuItem,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputAdornment, MenuItem, Paper, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -83,7 +55,7 @@ const buttonSetting: ButtonSettings = {
 };
 
 const DesignWisePage = () => {
-   //#region Variables
+  //#region Variables
   const [value, setValue] = useState(0);
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
@@ -134,9 +106,9 @@ const DesignWisePage = () => {
   const [errorDI, setDIError] = useState(false);
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Proof");
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
 
   let navigate = useNavigate();
   const location = useLocation();
@@ -303,15 +275,7 @@ const DesignWisePage = () => {
 
   const CreateGallery = (props) => {
     if (props.screenType === "first") {
-      return (
-        <div>
-          {imageGalleryData.length === 0 ? (
-            <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
-          ) : (
-            <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClickFirst} type="category" />
-          )}
-        </div>
-      );
+      return <div>{imageGalleryData.length === 0 ? <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} /> : <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClickFirst} type="category" />}</div>;
     } else if (props.screenType === "second") {
       return (
         <div>
@@ -493,8 +457,7 @@ const DesignWisePage = () => {
 
     selectedItem[1](null);
   };
-//#endregion 
-
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>

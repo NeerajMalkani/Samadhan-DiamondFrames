@@ -1,25 +1,4 @@
-
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, InputAdornment, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -32,7 +11,7 @@ import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, U
 import { communication } from "../../../utils/communication";
 import { serviceProductColumns } from "../../../utils/tablecolumns";
 import ListIcon from "@mui/icons-material/List";
-
+import { APIConverter } from "../../../utils/apiconverter";
 
 const AddServiceProduct = () => {
   let navigate = useNavigate();
@@ -68,7 +47,6 @@ const AddServiceProduct = () => {
 
   //#endredgion
 
-
   //#region Functions
 
   useEffect(() => {
@@ -77,19 +55,27 @@ const AddServiceProduct = () => {
   }, []);
 
   const FetchData = (type: string) => {
-    Provider.getAll("master/getserviceproductsv1")
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        service_product_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ServiceProductrefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display==1 ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
-              let id = { id: index + 1 };
+              //let id = { id: index + 1 };
               a = Object.assign(a, sr);
-              a = Object.assign(a, id);
+             // a = Object.assign(a, id);
               return a;
             });
+
 
             setServiceProductList(arrList);
             setProductListTemp(arrList);
@@ -115,13 +101,11 @@ const AddServiceProduct = () => {
   };
 
   const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "Contractor";
-            });
+            response.data.data = APIConverter(response.data.data);
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
             setArnID(response.data.data[0].id);
@@ -129,26 +113,27 @@ const AddServiceProduct = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchServicesFromActivity = (selectedID: number) => {
     let params = {
-      ID: selectedID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedID,
+      },
     };
-
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNameServiceProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+          
             setServiceNameList(response.data.data);
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const handleSNChangeFilter = (event: SelectChangeEvent) => {
@@ -181,52 +166,29 @@ const AddServiceProduct = () => {
   };
 
   const FetchCategoriesFromServicesFilter = (selectedActivityID: number, selectedServiceID: number) => {
-    //, callbackFunction: any = null
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno:selectedActivityID,
+        service_refno: selectedServiceID,
+      },
     };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNameServiceProduct, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
             setCategoryListFilter(response.data.data);
-            // if (callbackFunction !== null) {
-            //   callbackFunction(response.data.data);
-            // }
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
-  const GetStringifyJson = (params: any) => {
-    var string_ = JSON.stringify(params);
-
-    string_ = string_.replace(/{/g, "");
-    string_ = string_.replace(/}/g, "");
-    string_ = string_.replace(/:/g, "=");
-    string_ = string_.replace(/,/g, "&");
-    string_ = string_.replace(/"/g, "");
-
-    return string_;
-  };
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     SetFilters(snFilter, cnFilter, query);
-    // if (query === "") {
-    //   setProductListTemp(productList);
-    // } else {
-    //   setProductListTemp(
-    //     productList.filter((el: ProductModel) => {
-    //       return el.productName.toString().toLowerCase().includes(query.toLowerCase());
-    //     })
-    //   );
-    // }
   };
 
   const SetFilters = (snText: string, cnText: string, searcText: string) => {
@@ -271,14 +233,11 @@ const AddServiceProduct = () => {
     setIsSnackbarOpen(false);
   };
 
-
   const handleEditAndDelete = (type: string | null, a: ProductModel | undefined) => {
-    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-
-          }
+    }
   };
 
   const handleClose = () => {
@@ -290,7 +249,6 @@ const AddServiceProduct = () => {
     <Box sx={{ mt: 11 }}>
       <Header />
       <Container maxWidth="lg">
-
         <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
           <Typography variant="h6" sx={{ mt: 2 }}>
             Service Product List

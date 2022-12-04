@@ -6,7 +6,7 @@ export const APIConverter = (response: any) => {
     }
   }
 
-  response.forEach((obj: any) => {
+  response.forEach((obj) => {
     renameKey(obj, "product_refno", "productID");
     renameKey(obj, "product_name", "productName");
     renameKey(obj, "product_refno", "id");
@@ -22,13 +22,15 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "unit_category_name", "unitName");
     renameKey(obj, "unit_category_refno", "id");
     renameKey(obj, "unit_name_text", "displayUnit");
+    renameKey(obj, "convert_unit_name", "convertUnitName");
     renameKey(obj, "hsn_sac_code", "hsnsacCode");
     renameKey(obj, "gst_rate", "gstRate");
     renameKey(obj, "view_status", "display");
     renameKey(obj, "product_code", "productCode");
     renameKey(obj, "unit_display_name", "displayUnit");
+    renameKey(obj, "unit_name_convert_unit_name", "displayUnitFull");
     renameKey(obj, "unit_name", "displayUnit");
-    renameKey(obj, "unitcategoryrefno_unitrefno", "id");
+    renameKey(obj, "unitcategoryrefno_unitrefno", "unitId");
     renameKey(obj, "with_material_rate", "rateWithMaterials");
     renameKey(obj, "without_material_rate", "rateWithoutMaterials");
     renameKey(obj, "short_desc", "shortSpecification");
@@ -38,10 +40,31 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "locationtype_refno", "id");
     renameKey(obj, "service_refno_name", "serviceName");
     renameKey(obj, "locationtype_name", "branchType");
-    renameKey(obj, "department_name", "departmentName");
+    renameKey(obj, "workfloor_refno", "id");
+    renameKey(obj, "workfloor_name", "workFloorName");
+    renameKey(obj, "worklocation_refno", "id");
+    renameKey(obj, "worklocation_name", "workLocationName");
+    renameKey(obj, "designtype_refno", "id");
+    renameKey(obj, "designtype_name", "designTypeName");
+    renameKey(obj, "designtype_image_url", "designImage");
+    renameKey(obj, "materials_setup_refno", "id");
+    renameKey(obj, "service_product_name", "productName");
+    renameKey(obj, "matrails_cost", "materialCost");
+    renameKey(obj, "dealer_product_refno", "productID");
+    renameKey(obj, "brand_refno", "brandID");
+    renameKey(obj, "brand_name", "brandName");
+    renameKey(obj, "company_product_refno", "productID");
+    renameKey(obj, "company_product_price", "price");
+    renameKey(obj, "company_brand_refno", "brandID");
+    renameKey(obj, "company_brand_name", "brandName");
+    renameKey(obj, "designgallery_refno", "id");
+    renameKey(obj, "design_image_url", "designImage");
+    renameKey(obj, "labour_cost", "labourCost");
+    renameKey(obj, "design_no", "designNumber");
     renameKey(obj, "department_refno", "id");
-    renameKey(obj, "designation_name", "designationName");
+    renameKey(obj, "department_name", "departmentName");
     renameKey(obj, "designation_refno", "id");
+<<<<<<< HEAD
     renameKey(obj, "ewaybill_refno", "id");
     //
     renameKey(obj, "Sess_UserRefno", "UserID");
@@ -70,6 +93,26 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "if_create_brand", "showBrand");
 
     // renameKey(obj, "company_refno", "branchName");
+=======
+    renameKey(obj, "designation_name", "designationName");
+    renameKey(obj, "formula_parameter1", "formula");
+    renameKey(obj, "qty", "quantity");
+    renameKey(obj, "rate", "price");
+
+    renameKey(obj, "brand_master_refno", "id");   
+    renameKey(obj, "brand_name", "brandName");
+    renameKey(obj, " buyercategory_refno", "id");
+    renameKey(obj, " buyercategory_name", "buyerCategoryName");
+
+    renameKey(obj, "department_refno_name", "departmentName");
+    renameKey(obj, "mydepartment_refno", "departmentID");
+
+    renameKey(obj, "designation_refno_name", "designationName");
+    renameKey(obj, "mydesignation_refno", "designationID");
+    renameKey(obj, "reporting_status", "reportingAuthority");
+
+
+>>>>>>> adac0a202187704c59c7c3f840b4f360f09f430b
   });
 
   return response;

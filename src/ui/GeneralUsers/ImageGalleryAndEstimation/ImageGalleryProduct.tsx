@@ -13,6 +13,7 @@ import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { retrunValueFromLocation } from "../../../utils/JSCommonFunction";
+//import { APIConverter } from "../../../utils/apiconverter";
 
 const ImageGalleryProductPage = (route) => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -32,7 +33,7 @@ const ImageGalleryProductPage = (route) => {
       FetchImageGalleryData(parseInt(retrunValueFromLocation(location, "id")));
     }
   }, []);
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [imageGalleryData, setImageGalleryData] = useState<Array<ImageGalleryEstimation>>([]);
   const [selectedData, setSelectedData] = useState<ImageGalleryEstimation>();
@@ -44,9 +45,9 @@ const ImageGalleryProductPage = (route) => {
 
   const [selectedImage, setSelectedImage] = useState("");
   const [imageOpen, setImageOpen] = useState(false);
-//#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   const buttonSetting: ButtonSettings = {
     isActionButton: false,
     actionButtons: [
@@ -62,7 +63,8 @@ const ImageGalleryProductPage = (route) => {
         title: "Go to Estimation",
         type: "text",
         callBack: (data: ImageGalleryEstimation) => {
-          data["type"]=type;
+          debugger;
+          data["type"] = type;
           navigate(`/generaluser/imagegallery/productdetails`, { state: data });
         },
       },
@@ -81,20 +83,92 @@ const ImageGalleryProductPage = (route) => {
   };
 
   const handleCardClick = (data: ImageGalleryEstimation) => {
+    debugger;
     setSelectedData(data);
     setSelectedImage(data.designImage);
     setImageOpen(true);
   };
 
-  const FetchImageGalleryData = (id: number) => {
-    let params = {
-      CategoryID: id,
-    };
+  const APIConverter = (response: any) => {
+    function renameKey(obj: any, oldKey: string, newKey: string) {
+      if (obj.hasOwnProperty(oldKey)) {
+        obj[newKey] = obj[oldKey];
+        delete obj[oldKey];
+      }
+    }
+  
+    response.forEach((obj: any) => {
+      renameKey(obj, "product_refno", "productID");
+      renameKey(obj, "product_name", "productName");
+      renameKey(obj, "product_refno", "id");
+      renameKey(obj, "category_refno", "id");
+      renameKey(obj, "category_name", "categoryName");
+      renameKey(obj, "group_refno_name", "activityRoleName");
+      renameKey(obj, "group_refno", "id");
+      renameKey(obj, "group_name", "activityRoleName");
+      renameKey(obj, "service_refno_name", "serviceName");
+      renameKey(obj, "service_refno", "id");
+      renameKey(obj, "service_name", "serviceName");
+      renameKey(obj, "unit_category_names", "unitName");
+      renameKey(obj, "unit_category_name", "unitName");
+      renameKey(obj, "unit_category_refno", "id");
+      renameKey(obj, "unit_name_text", "displayUnit");
+      renameKey(obj, "hsn_sac_code", "hsnsacCode");
+      renameKey(obj, "gst_rate", "gstRate");
+      renameKey(obj, "view_status", "display");
+      renameKey(obj, "product_code", "productCode");
+      renameKey(obj, "unit_display_name", "displayUnit");
+      renameKey(obj, "unit_name", "displayUnit");
+      renameKey(obj, "unitcategoryrefno_unitrefno", "id");
+      renameKey(obj, "with_material_rate", "rateWithMaterials");
+      renameKey(obj, "without_material_rate", "rateWithoutMaterials");
+      renameKey(obj, "short_desc", "shortSpecification");
+      renameKey(obj, "actual_unitname", "selectedUnit");
+      renameKey(obj, "convert_unitname", "convertedUnit");
+      renameKey(obj, "service_product_refno", "productID");
+      renameKey(obj, "locationtype_refno", "id");
+      renameKey(obj, "service_refno_name", "serviceName");
+      renameKey(obj, "locationtype_name", "branchType");
+      renameKey(obj, "workfloor_refno", "id");
+      renameKey(obj, "workfloor_name", "workFloorName");
+      renameKey(obj, "worklocation_refno", "id");
+      renameKey(obj, "worklocation_name", "workLocationName");
+      renameKey(obj, "designtype_refno", "designTypeID");
+      renameKey(obj, "designtype_name", "designTypeName");
+      renameKey(obj, "designtype_image_url", "designImage");
+      renameKey(obj, "materials_setup_refno", "id");
+      renameKey(obj, "service_product_name", "productName");
+      renameKey(obj, "matrails_cost", "materialCost");
+      renameKey(obj, "dealer_product_refno", "productID");
+      renameKey(obj, "brand_refno", "brandID");
+      renameKey(obj, "brand_name", "brandName");
+      renameKey(obj, "company_product_refno", "productID");
+      renameKey(obj, "company_product_price", "price");
+      renameKey(obj, "company_brand_refno", "brandID");
+      renameKey(obj, "company_brand_name", "brandName");
+      renameKey(obj, "design_image_url", "designImage");
+      
+    });
+  
+    return response;
+  };
 
-    Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+  const FetchImageGalleryData = (id: number) => {
+    debugger;
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+        service_refno: id
+      },
+    };
+    Provider.createDFCommon(Provider.API_URLS.GetserviceimagegalleryByServicerefno, params)
+      //Provider.getAll(`generaluserenquiryestimations/getimagegallerybycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setImageGalleryData(response.data.data);
           }
         } else {
@@ -112,7 +186,7 @@ const ImageGalleryProductPage = (route) => {
         setOpen(true);
       });
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -144,7 +218,7 @@ const ImageGalleryProductPage = (route) => {
                 {imageGalleryData.length === 0 ? (
                   <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
                 ) : (
-                  <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClick} type="product" />
+                  <ShowsGrid shows={imageGalleryData} buttonSettings={buttonSetting} cardCallback={handleCardClick} type="subcategory" />
                 )}
               </div>
             )}
@@ -168,6 +242,7 @@ const ImageGalleryProductPage = (route) => {
           <Button onClick={handleImageClose}>Cancel</Button>
           <Button
             onClick={() => {
+              debugger;
               console.log(JSON.stringify(selectedData));
               navigate(`/generaluser/imagegallery/productdetails`, { state: selectedData });
             }}

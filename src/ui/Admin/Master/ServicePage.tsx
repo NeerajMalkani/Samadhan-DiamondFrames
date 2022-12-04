@@ -60,6 +60,11 @@ const ServicePage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
+    if (type !== "") {
+      setSnackMsg("Service " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -81,11 +86,7 @@ const ServicePage = () => {
 
             setServiceNamesList(arrList);
             setServiceNamesListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Service " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
+         
           }
         } else {
           setSnackMsg(communication.NoData);

@@ -1,31 +1,12 @@
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, Container, FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography, Stack } from "@mui/material";
 import { Theme, useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Provider from "../../../api/Provider";
 import Header from "../../../components/Header";
-import { ActivityRoleNameModel, CategoryModel, ProductModel, ServiceNameModel, UnitModel, UnitWithConversionModel } from "../../../models/Model";
+import { ActivityRoleNameModel, CategoryModel, productModel, ProductModel, ServiceNameModel, UnitModel, UnitWithConversionModel } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
 import { ValidateGSTRate } from "../../../utils/validations";
 import AddIcon from "@mui/icons-material/Add";
@@ -41,7 +22,9 @@ const ServiceProductPage = () => {
   }, []);
 
   //#region Variables
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
+  const [type, setType] = useState("New");
+  const [selectedID, setSelectedID] = useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const [arn, setArn] = useState("");
@@ -66,6 +49,7 @@ const ServiceProductPage = () => {
   const [gst, setGst] = useState("");
 
   const [unitsOfSales, setUnitsOfSales] = useState<string>("--Select--");
+  const [unitsOfSalesConverted, setUnitsOfSalesConverted] = useState<string>("");
 
   const [unitError, setUnitError] = useState<boolean>(false);
   const [unitErrorText, setUnitErrorText] = useState<string>("");
@@ -95,8 +79,8 @@ const ServiceProductPage = () => {
   const [categoryList, setCategoryList] = useState<Array<CategoryModel>>([]);
   const [productList, setProductList] = useState<Array<ProductModel>>([]);
   const [serviceProductList, setServiceProductList] = useState<Array<ProductModel>>([]);
-  const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
-  const [pageSize, setPageSize] = useState<number>(5);
+  // const [productListTemp, setProductListTemp] = useState<Array<ProductModel>>([]);
+  // const [pageSize, setPageSize] = useState<number>(5);
   const [showauos, setShowauos] = useState(false);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
 
@@ -113,73 +97,107 @@ const ServiceProductPage = () => {
   //#endregion
 
   //#region Functions
-  const FetchData = (type: string) => {
+  const FetchData = (id: string) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
-        service_refno: "0",
-        category_refno: "0",
-        product_refno: "0",
+        service_product_refno: id,
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.ServiceProductFilter, params)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceProductrefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display == 1 ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
-              let id = { id: index + 1 };
               a = Object.assign(a, sr);
-              a = Object.assign(a, id);
               return a;
             });
 
             setServiceProductList(arrList);
-            setProductListTemp(arrList);
-            if (type !== "") {
-              setSnackbarMessage("Service product " + type);
-              setIsSnackbarOpen(true);
-              setSnackbarType("success");
-            }
+            FetchActvityRoles((arnData) => {
+              FetchServicesFromActivity(arnData, (list) => {
+                let srid = list.find((el: any) => {
+                  return el.serviceName === arrList[0].serviceName;
+                }).id;
+                setSnID(srid);
+                setSn(arrList[0].serviceName);
+
+                FetchCategoriesFromServices(arnData, srid, (categoryList: any) => {
+                  let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === arrList[0]?.categoryName);
+                  if (ca !== undefined) {
+                    setCnID(ca.id);
+                    setCn(ca.categoryName);
+                    FetchCategoryDataFromCategory(ca.id);
+
+                    FetchProductsFromCategory(arnData, ca.id, (productList) => {
+                      let pa: ProductModel | undefined = productList.find((el: any) => el.productName === arrList[0]?.productName);
+                      if (pa !== undefined) {
+                        setPnID(pa.productID);
+                        setPn(pa.productName);
+                        FetchAlternativeUnitOfSalesFromUnit(arrList[0].unitId);
+                        FetchUnitsFromProduct(pa.productID, (unitList) => {
+                          let unit: UnitModel | undefined = unitList.find((el: any) => el.unitName === arrList[0]?.selectedUnit);
+                          if (unit !== undefined) {
+                            setSelectedUnitID(unit?.unitId);
+                            setSelectedUnit(unit?.unitName);
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              });
+            });
+
+            setRateWithMaterial(arrList[0].rateWithMaterials);
+            setRateWithoutMaterial(arrList[0].rateWithoutMaterials);
+            setAlternateUnit(arrList[0].conversionRate);
+            setShortSpecification(arrList[0].shortSpecification);
+            setSpecification(arrList[0].specification);
           }
         } else {
           setSnackbarMessage(communication.NoData);
           setIsSnackbarOpen(true);
           setSnackbarType("info");
         }
-        setLoading(false);
+        //   setLoading(false);
       })
       .catch((e) => {
-        setLoading(false);
+        // setLoading(false);
         setSnackbarMessage(e.message);
         setSnackbarType("error");
         setIsSnackbarOpen(true);
       });
   };
 
-  const FetchActvityRoles = () => {
+  const FetchActvityRoles = (callback = null) => {
     Provider.createDFAdmin(Provider.API_URLS.ActivityRoleServiceProduct)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display == 1 && el.activityRoleName === "Contractor";
-            });
             setActivityNamesList(response.data.data);
             setArn(response.data.data[0].activityRoleName);
             setArnID(response.data.data[0].id);
-            FetchServicesFromActivity(response.data.data[0].id);
+
+            if (type === "New") {
+              FetchServicesFromActivity(response.data.data[0].id);
+            }
+
+            if (callback) {
+              callback(response.data.data[0].id);
+            }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedID: number) => {
+  const FetchServicesFromActivity = (selectedID: number, callback = null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -192,10 +210,10 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display==1;
-            // });
             setServiceNameList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
@@ -203,8 +221,6 @@ const ServiceProductPage = () => {
   };
 
   const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callbackFunction: any = null) => {
-    //, callbackFunction: any = null
-
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -217,9 +233,6 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
             setCategoryList(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
@@ -230,7 +243,7 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
-  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
+  const FetchProductsFromCategory = (selectedActivityID: number, selectedCategoryID: number, callbackFunction: any = null) => {
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -243,11 +256,8 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
-            // response.data.data = response.data.data.filter((el: any) => {
-            //   return el.display;
-            // });
             setProductList(response.data.data);
-            if (callbackFunction !== null) {
+            if (callbackFunction) {
               callbackFunction(response.data.data);
             }
           }
@@ -269,17 +279,18 @@ const ServiceProductPage = () => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
+
             setUnitOfSalesList(response.data.data);
             const units = [];
-            response.data.data.filter((el: any) => {
+            response.data.data.forEach((el: any) => {
               units.push({
-                id: el.unitID,
-                unitName: el.unitName,
+                unitId: el.unitId,
+                unitName: el.displayUnit,
               });
             });
             setUnitList(units);
-            if (callbackFunction !== null) {
-              callbackFunction(response.data.data);
+            if (callbackFunction) {
+              callbackFunction(units);
             }
           }
         }
@@ -287,9 +298,56 @@ const ServiceProductPage = () => {
       .catch((e) => {});
   };
 
+  const FetchCategoryDataFromCategory = (selectedItem) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        category_refno: selectedItem,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.CategoryDataForProduct, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setHsn(response.data.data[0].hsnsacCode);
+            setGst(response.data.data[0].gstRate + "%");
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchAlternativeUnitOfSalesFromUnit = (unitID) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        unitcategoryrefno_unitrefno: unitID,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.AlternativeUnitOfSalesServiceProduct, params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            setUnitsOfSalesConverted(response.data.data[0].actual_unitname.split(" ")[1].split("=")[0]);
+            setSelectedUnit(response.data.data[0].convert_unitname);
+            setAlternateUnit(response.data.data[0].actual_unit_value);
+            setShowauos(true);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   useEffect(() => {
-    FetchData("");
-    FetchActvityRoles();
+    let paramVal: string = window.location.pathname.split("/").pop();
+    if (!isNaN(parseInt(paramVal))) {
+      setType("edit");
+      setSelectedID(paramVal);
+      FetchData(paramVal);
+    } else {
+      FetchActvityRoles();
+    }
   }, []);
 
   const handleSNChange = (event: SelectChangeEvent) => {
@@ -311,9 +369,8 @@ const ServiceProductPage = () => {
       SetResetCategoryName(false);
       SetResetProductName(true);
       SetResetUnitName(true);
-      setGst(parseFloat(ac.gstRate).toFixed(2) + "%");
-      setHsn(ac.hsnsacCode);
-      FetchProductsFromCategory(arnID, snID, ac.id);
+      FetchCategoryDataFromCategory(ac.id);
+      FetchProductsFromCategory(arnID, ac.id);
     }
   };
 
@@ -330,24 +387,24 @@ const ServiceProductPage = () => {
   };
 
   const handleUnitChange = (event: SelectChangeEvent<typeof unitsOfSales>) => {
-    debugger;
     setUnitsOfSales(event.target.value);
-
-    if (unitOfSalesList[0].unitName === event.target.value) {
-      setSelectedUnit(unitOfSalesList[1].unitName);
-      setSelectedUnitID(unitOfSalesList[0].unitID);
-      if (unitOfSalesList[0].conversionRate != null) {
-        setAlternateUnit(unitOfSalesList[0].conversionRate.toString());
-      }
-    } else {
-      setSelectedUnit(unitOfSalesList[0].unitName);
-      setSelectedUnitID(unitOfSalesList[1].unitID);
-      if (unitOfSalesList[1].conversionRate != null) {
-        setAlternateUnit(unitOfSalesList[1].conversionRate.toString());
-      }
-    }
-
-    setShowauos(true);
+    let unitName: string = event.target.value;
+    let ac = unitList.find((el) => el.unitName === unitName);
+    setSelectedUnitID(ac.unitId);
+    FetchAlternativeUnitOfSalesFromUnit(ac.unitId);
+    // if (unitOfSalesList[0].displayUnit === event.target.value) {
+    //   setSelectedUnit(unitOfSalesList[1].displayUnit);
+    //   setSelectedUnitID(unitOfSalesList[1].id);
+    //   // if (unitOfSalesList[0].conversionRate != null) {
+    //   //   setAlternateUnit(unitOfSalesList[0].conversionRate.toString());
+    //   // }
+    // } else {
+    //   setSelectedUnit(unitOfSalesList[0].displayUnit);
+    //   setSelectedUnitID(unitOfSalesList[0].id);
+    //   // if (unitOfSalesList[1].conversionRate != null) {
+    //   //   setAlternateUnit(unitOfSalesList[1].conversionRate.toString());
+    //   // }
+    // }
     SetResetUnitName(false);
   };
 
@@ -419,7 +476,6 @@ const ServiceProductPage = () => {
   };
 
   const UpdateData = () => {
-    debugger;
     setButtonLoading(true);
 
     const params = {
@@ -439,11 +495,22 @@ const ServiceProductPage = () => {
       },
     };
 
-    Provider.create(Provider.API_URLS.ServiceProductUpdate, params)
+    if (type === "edit") {
+      params.data["service_product_refno"] = selectedID;
+    }
+
+    Provider.createDFAdmin(type === "edit" ? Provider.API_URLS.ServiceProductUpdate : Provider.API_URLS.ServiceProductCreate, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
-          FetchData("updated");
+          //FetchData("updated");
           handleCancelClick();
+          if (type === "edit") {
+            navigate("/master/addserviceproduct");
+          }else{
+            setSnackbarMessage("Service product added");
+            setIsSnackbarOpen(true);
+            setSnackbarType("success");
+          }
         } else if (response.data.code === 304) {
           setSnackbarMessage(communication.ExistsError);
           setIsSnackbarOpen(true);
@@ -456,6 +523,7 @@ const ServiceProductPage = () => {
         setButtonLoading(false);
       })
       .catch((e) => {
+        debugger;
         setSnackbarMessage(communication.NetworkError);
         setSnackbarType("error");
         setIsSnackbarOpen(true);
@@ -766,7 +834,7 @@ const ServiceProductPage = () => {
                   display: showauos ? "block" : "none",
                 }}
               >
-                {unitList.length > 0 && showauos ? "1 " + unitsOfSales + " =" : ""}
+                {unitList.length > 0 && showauos ? "1 " + unitsOfSalesConverted + " =" : ""}
               </Typography>
               <TextField
                 fullWidth

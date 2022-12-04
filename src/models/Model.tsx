@@ -30,7 +30,7 @@ export interface CategoryModel {
   hsnsacCode: string;
   gstRate: string;
   unitID: string;
-  unitName: string;
+  unitName: [];
   display: string;
   action: string;
   serviceID: number;
@@ -55,7 +55,7 @@ export interface DFCategoryModel {
 }
 
 export interface UnitModel {
-  id: number;
+  unitId: number;
   unitName: string;
 }
 
@@ -63,6 +63,7 @@ export interface UnitWithConversionModel {
   id: number;
   unitID: number;
   unitName: string;
+  displayUnit: string;
   conversionRate: number;
 }
 
@@ -256,7 +257,7 @@ export interface DFUnitOfSalesModel1 {
   unit1ID: number;
   convert_unit_name: string;
   unit2ID: number;
-  unit_category_refno:number
+  unit_category_refno: number
 }
 
 export interface UserCreds {
@@ -307,6 +308,7 @@ export interface RegionalOfficeModel {
 export interface DepartmentNameModel {
   id: number;
   srno: number;
+  departmentID: number;
   departmentName: string;
   display: string;
   action: string;
@@ -324,6 +326,7 @@ export interface DFDepartmentNameModel {
 export interface DesignationNameModel {
   id: number;
   srno: number;
+  designationID: number;
   designationName: string;
   display: string;
   reportingAuthority: string;
@@ -353,8 +356,8 @@ export interface EWayBillModel {
 export interface LocationTypeModel {
   id: number;
   srno: number;
-  serviceName: string;
-  activityRoleName: string;
+  serviceName: [];
+  activityRoleName: [];
   branchType: string;
   display: string;
   action: string;
@@ -800,7 +803,7 @@ export interface DFApprovredModel {
   departmentname: string;
   designation_name: string;
   password: string;
-  approve_status:boolean;
+  approve_status: boolean;
 }
 
 export interface PendingModel {
@@ -817,7 +820,7 @@ export interface DFPendingModel {
   id: number;
   srno: number;
   role: string;
-  user_refno:string;
+  user_refno: string;
   company_name: string;
   firstname: string;
   mobile_no: number;
@@ -841,7 +844,7 @@ export interface DFDeclinedModel {
   id: number;
   userID: number;
   srno: number;
-  user_refno:string,
+  user_refno: string,
   company_name: string;
   activityrole: string;
   departmentname: string;

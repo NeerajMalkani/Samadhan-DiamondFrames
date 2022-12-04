@@ -1,24 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { Theme, useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
@@ -198,6 +178,11 @@ const ProductPage = () => {
 
   const GetProductData = (type: string) => {
     handleCancelClick();
+    if (type !== "") {
+      setSnackbarMessage("Product " + type);
+      setIsSnackbarOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -220,11 +205,6 @@ const ProductPage = () => {
             });
             setProductList(arrList);
             setProductListTemp(arrList);
-            if (type !== "") {
-              setSnackbarMessage("Product " + type);
-              setIsSnackbarOpen(true);
-              setSnackbarType("success");
-            }
           }
         } else {
           setIsSnackbarOpen(true);
@@ -502,7 +482,7 @@ const ProductPage = () => {
       // setCnID(a?.categoryID);
 
       SetResetCategoryName(false);
- 
+
       setProductName(a?.productName);
       SetResetProductName(false);
 

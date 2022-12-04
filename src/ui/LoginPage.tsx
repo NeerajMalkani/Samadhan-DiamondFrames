@@ -45,6 +45,7 @@ const LoginPage = () => {
   /* #region  Handle event and click listeners */
   //#region Functions
   const loginClick = () => {
+    debugger;
     setIsLoading(true);
     if (username && password) {
       if (password.length > 2) {
@@ -54,8 +55,9 @@ const LoginPage = () => {
             auth: password,
           },
         };
-        Provider.createDF(Provider.API_URLS.LoginCheck, params)
+        Provider.createDFCommon(Provider.API_URLS.LoginCheck, params)
           .then((response: any) => {
+            debugger;
             if (response.data && response.data.code === 200) {
               GetUserDetails(response.data.data.user_refno);
             } else {
@@ -65,6 +67,7 @@ const LoginPage = () => {
             setIsLoading(false);
           })
           .catch((e) => {
+            debugger;
             setSnackbarMessage(e.message);
             setIsSnackbarOpen(true);
             setIsLoading(false);
@@ -84,6 +87,7 @@ const LoginPage = () => {
   };
 
   const GetUserDetails = (user_refno) => {
+    debugger;
     setIsLoading(true);
     if (username && password) {
       if (password.length > 2) {
@@ -92,14 +96,15 @@ const LoginPage = () => {
             user_refno: user_refno,
           },
         };
-        Provider.createDF(Provider.API_URLS.UserFromRefNo, params)
+        Provider.createDFCommon(Provider.API_URLS.UserFromRefNo, params)
           .then((response: any) => {
+            debugger;
             if (response.data && response.data.code === 200) {
               const user = {
                 UserID: user_refno,
-                FullName: response.data.data.Sess_FName,
+                FullName: response.data.data.Sess_FName === "" ? response.data.data.Sess_Username : "",
                 RoleID: response.data.data.Sess_group_refno,
-                RoleName: response.data.data.Sess_Username,
+                RoleName: response.data.data.Sess_group_name,
                 Sess_FName: response.data.data.Sess_FName,
                 Sess_MobileNo: response.data.data.Sess_MobileNo,
                 Sess_Username: response.data.data.Sess_Username,

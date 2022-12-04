@@ -1,32 +1,13 @@
 import { useTheme } from "@mui/material/styles";
 import { LoadingButton } from "@mui/lab";
-import {
-  Alert,
-  AlertColor,
-  Button,
-  CircularProgress,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Button, CircularProgress, Container, FormControl, FormControlLabel, FormHelperText, Grid, InputAdornment, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { DataGrid, GridSearchIcon } from "@mui/x-data-grid";
 import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header";
-import { CategoryModel, DesignTypeModel, PostNewDesignModel, ProductModel, ServiceNameModel, WorkLocationNameModel } from "../../../models/Model";
+import { CategoryModel, DesignTypeModel, PostNewDesignModel, ProductDetailsModel, productModel, ProductModel, ServiceNameModel, WorkLocationNameModel } from "../../../models/Model";
 import { postNewDesignColumns } from "../../../utils/tablecolumns";
 import { communication } from "../../../utils/communication";
 import { AWSImagePath } from "../../../utils/paths";
@@ -37,6 +18,8 @@ import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
+import FormData from "form-data";
 
 const PostNewDesignPage = () => {
   let navigate = useNavigate();
@@ -47,7 +30,7 @@ const PostNewDesignPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [arnID, setArnID] = useState<number>(0);
@@ -111,37 +94,56 @@ const PostNewDesignPage = () => {
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Design");
   const [selectedID, setSelectedID] = useState<number>(0);
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("");
     FetchActvityRoles();
     FetchWorkLocation();
+    FetchDesignNumber();
   }, []);
 
-  const FetchData = (type: string) => {
-    handleCancelClick();
-    Provider.getAll("servicecatalogue/getpostnewdesigntypes")
+  const FetchDesignNumber = () => {
+    Provider.createDFAdmin(Provider.API_URLS.AutoDesignNoNewDesign)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            const arrList = [...response.data.data];
+            setDesignNo("DS-" + response.data.data[0].autoincrement_design_no.toString().padStart(4, "0"));
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchData = (type: string) => {
+    handleCancelClick();
+    if (type !== "") {
+      setSnackbarMessage("Design Type " + type);
+      setIsSnackbarOpen(true);
+      setSnackbarType("success");
+    }
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        designgallery_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.DesignGalleryRefNoCheck, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+         if (response.data.data) {
+          response.data.data = APIConverter(response.data.data);
+           const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display==="1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
               return a;
             });
             setPostNewDesign(arrList);
             setPostNewDesignTemp(arrList);
-            setDesignNo("DS-" + (arrList.length + 1).toString());
-
-            if (type !== "") {
-              setSnackbarMessage("Design Type " + type);
-              setIsSnackbarOpen(true);
-              setSnackbarType("success");
-            }
+           // setDesignNo("DS-" + (arrList.length + 1).toString());
           }
         } else {
           setSnackbarMessage(communication.NoData);
@@ -159,13 +161,11 @@ const PostNewDesignPage = () => {
   };
 
   const FetchActvityRoles = () => {
-    Provider.getAll("master/getmainactivities")
+    Provider.createDFAdmin(Provider.API_URLS.ActivityRoleNameNewDesign)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "Contractor";
-            });
+            response.data.data = APIConverter(response.data.data);
             setArnID(response.data.data[0].id);
             FetchServicesFromActivity(response.data.data[0].id);
           }
@@ -174,95 +174,131 @@ const PostNewDesignPage = () => {
       .catch((e) => {});
   };
 
-  const FetchServicesFromActivity = (selectedID: number) => {
+  const FetchServicesFromActivity = (selectedID: number, callback = null) => {
     let params = {
-      ID: selectedID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedID,
+      },
     };
-
-    Provider.getAll(`master/getservicesbyroleid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNameNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
             setServiceNameList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number) => {
+  const FetchCategoriesFromServices = (selectedActivityID: number, selectedServiceID: number, callback = null) => {
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivityID,
+        service_refno: selectedServiceID,
+      },
     };
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNameNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
             setCategoryList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number) => {
+  const FetchProductsFromCategory = (selectedActivityID: number, selectedCategoryID: number, callback = null) => {
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
+      data: {
+        Sess_UserRefno: "2",
+        group_refno: selectedActivityID,
+        category_refno: selectedCategoryID,
+      },
     };
-    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ProductNameNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
             setProductList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchDesignTypeFromProductID = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, selectedProductID: number) => {
+  const FetchProductDataFromProduct = (selectedItem) => {
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
-      ProductID: selectedProductID,
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: selectedItem,
+      },
     };
-
-    Provider.getAll(`servicecatalogue/getdesigntypebyproductidformaterialsetup?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ProductDataNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            setProductDesignTypeList(response.data.data);
+            response.data.data = APIConverter(response.data.data);
+            setLabourCost(response.data.data[0].labourCost);
           }
         }
       })
       .catch((e) => {});
   };
 
-  const FetchWorkLocation = () => {
-    Provider.getAll("servicecatalogue/getworklocations")
+  const FetchDesignTypeFromProductID = (selectedProductID: number,callback = null) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        product_refno: selectedProductID,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.ProductDesignTypeNewDesign, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            setProductDesignTypeList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
+  const FetchWorkLocation = (callback=null) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        worklocation_refno: "all",
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.WorkLocationNameNewDesign, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setWorkLocationList(response.data.data);
+            if (callback) {
+              callback(response.data.data);
+            }
           }
         }
       })
@@ -290,7 +326,7 @@ const PostNewDesignPage = () => {
       setCnID(ac.id);
       SetResetCategoryName(false);
       SetResetProductName(true);
-      FetchProductsFromCategory(arnID, snID, ac.id);
+      FetchProductsFromCategory(arnID, ac.id);
     }
   };
 
@@ -300,12 +336,10 @@ const PostNewDesignPage = () => {
     if (ac !== undefined) {
       setPn(event.target.value as string);
       setPnID(ac.productID);
-      if (ac.rateWithoutMaterials) {
-        setLabourCost(ac.rateWithoutMaterials.toFixed(4));
-      }
+      FetchProductDataFromProduct(ac.productID);
       SetResetProductName(false);
       SetResetProductDesignType(true);
-      FetchDesignTypeFromProductID(arnID, snID, cnID, ac.productID);
+      FetchDesignTypeFromProductID(ac.productID);
     }
   };
 
@@ -448,11 +482,11 @@ const PostNewDesignPage = () => {
 
     if (isValid) {
       setButtonLoading(true);
-      if (uploadFileUpload !== null) {
-        uploadImage();
-      } else {
+      // if (uploadFileUpload !== null) {
+      //   uploadImage();
+      // } else {
         InsertData("Success", uploadedImage);
-      }
+      //}
     }
   };
 
@@ -465,18 +499,26 @@ const PostNewDesignPage = () => {
 
   const InsertData = (Status: string, fileName: string) => {
     if (Status.toLowerCase() === "success") {
+      const datas=new FormData();
       if (actionStatus === "new") {
-        Provider.create("servicecatalogue/insertpostnewdesigntype", {
-          ServiceID: snID,
-          CategoryID: cnID,
-          ProductID: pnID,
-          DesignTypeID: pdtID,
-          WorkLocationID: wlID,
-          DesignNumber: designNo,
-          DesignImage: AWSImagePath + fileName,
-          LabourCost: labourCost,
-          Display: display === "Yes",
-        })
+           const params = {
+            Sess_UserRefno: "2",
+            group_refno: arnID,
+            service_refno: snID,
+            category_refno: cnID,
+            product_refno:pnID,
+            designtype_refno:pdtID,
+            worklocation_refno: wlID,
+            design_no: parseInt(designNo.split("-")[1]),
+            labour_cost: labourCost,
+            view_status: display === "Yes" ? 1 : 0
+          };
+        //  design_image: uploadFileUpload
+        
+        datas.append("data", JSON.stringify(params));
+        datas.append("designtype_image", uploadFileUpload[0]);
+
+        Provider.createDFAdminWithHeader(Provider.API_URLS.NewDesignCreate, datas)
           .then((response) => {
             if (response.data && response.data.code === 200) {
               FetchData("added");
@@ -499,18 +541,24 @@ const PostNewDesignPage = () => {
             setButtonLoading(false);
           });
       } else if (actionStatus === "edit") {
-        Provider.create("servicecatalogue/updatepostnewdesigntype", {
-          ID: selectedID,
-          ServiceID: snID,
-          CategoryID: cnID,
-          ProductID: pnID,
-          DesignTypeID: pdtID,
-          WorkLocationID: wlID,
-          DesignNumber: designNo,
-          DesignImage: AWSImagePath + fileName,
-          LabourCost: labourCost,
-          Display: display === "Yes",
-        })
+         const params = {
+            Sess_UserRefno: "2",
+            designgallery_refno: selectedID,
+            group_refno: arnID,
+            service_refno: snID,
+            category_refno: cnID,
+            product_refno: pnID,
+            designtype_refno: pdtID,
+            worklocation_refno: wlID,
+            design_no: parseInt(designNo.split("-")[1]),
+            labour_cost: labourCost,
+            view_status: display === "Yes" ? 1 : 0
+        };
+
+        datas.append("data", JSON.stringify(params));
+        datas.append("designtype_image", uploadFileUpload ? uploadFileUpload[0] : "");
+
+        Provider.createDFAdminWithHeader(Provider.API_URLS.NewDesignUpdate, datas)
           .then((response) => {
             if (response.data && response.data.code === 200) {
               FetchData("updated");
@@ -587,28 +635,53 @@ const PostNewDesignPage = () => {
 
       setSelectedID(a.id);
       setSn(a.serviceName);
-      setSnID(a.serviceID);
-      setCnID(a.categoryID);
+      //setSnID(a.serviceID);
+     // setCnID(a.categoryID);
       setCn(a.categoryName);
       setPn(a.productName);
-      setPnID(a.productID);
+     // setPnID(a.productID);
       setPdt(a.designTypeName);
-      setPdtID(a.designTypeID);
+      //setPdtID(a.designTypeID);
       setDesignNo(a.designNumber);
       setLabourCost(a.labourCost);
       setWl(a.workLocationName);
-      setWlID(a.workLocationID);
+     // setWlID(a.workLocationID);
+
       setUploadedImage(a.designImage.split("/").pop());
       setDIError(false);
       setDIErrorText(a.designImage.split("/").pop());
 
-      FetchCategoriesFromServices(arnID, a.serviceID);
-      FetchProductsFromCategory(arnID, a.serviceID, a.categoryID);
-      FetchDesignTypeFromProductID(arnID, a.serviceID, a.categoryID, a.productID);
-      FetchWorkLocation();
+      FetchServicesFromActivity(arnID,(list)=>{
+        let srid = list.find((el: any) => {
+          return el.serviceName === a?.serviceName;
+        }).id;
+        setSnID(srid);
+
+        FetchCategoriesFromServices(arnID, srid, (categoryList: any) => {
+          let ca: CategoryModel | undefined = categoryList.find((el: any) => el.categoryName === a?.categoryName);
+          if (ca !== undefined) {
+            setCnID(ca.id);
+            FetchProductsFromCategory(arnID, ca.id, (productList) => {
+              let pa: ProductModel | undefined = productList.find((el: any) => el.productName === a?.productName);
+              if (pa !== undefined) {setPnID(pa?.productID);
+                FetchProductDataFromProduct(pa?.productID);
+                FetchDesignTypeFromProductID(pa?.productID, ()=>{
+                  let pa1: ProductDetailsModel | undefined = productList.find((el: any) => el.designTypeName === a?.designTypeName);
+                  if (pa1 !== undefined) setPdtID(pa1?.id);
+                });
+              }
+            }); 
+          }
+        });
+      });
+
+      FetchWorkLocation((list:any)=>{
+        let wl: WorkLocationNameModel | undefined = list.find((el: any) => el.workLocationName === a?.workLocationName);
+        if (wl !== undefined) setWlID(wl?.id);
+      })
     }
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -790,9 +863,9 @@ const PostNewDesignPage = () => {
                     //ref={fileInput}
                     onChange={(e) => {
                       if (e.currentTarget !== null && e.currentTarget.files !== null) {
-                        setUploadFileUpload(e.currentTarget.files[0]);
-
                         let FileName = e.currentTarget.files[0].name;
+                       
+                        setUploadFileUpload(e.currentTarget.files);
                         if (FileName !== undefined) {
                           setDIErrorText(FileName.trim());
                           setImage(FileName);

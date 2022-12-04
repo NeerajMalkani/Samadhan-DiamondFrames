@@ -78,6 +78,11 @@ const DesignationPage = () => {
 
   const FetchData = (type: string) => {
     ResetFields();
+    if (type !== "") {
+      setSnackMsg("Designation " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
     let params = {
       data: {
         Sess_UserRefno: "2",
@@ -96,13 +101,8 @@ const DesignationPage = () => {
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
-            setDesignationNameList(response.data.data);
-            setDesignationNameListTemp(response.data.data);
-            if (type !== "") {
-              setSnackMsg("Designation " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
+            setDesignationNameList(arrList);
+            setDesignationNameListTemp(arrList);
           }
         } else {
           setSnackMsg(communication.NoData);

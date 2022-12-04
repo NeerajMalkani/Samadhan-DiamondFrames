@@ -35,6 +35,8 @@ import CalculateIcon from "@mui/icons-material/Calculate";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import PrismaZoom from "react-prismazoom";
 import ShowsGrid from "../components/GridStructure";
+import { APIConverter } from "../utils/apiconverter";
+import { debug } from "console";
 
 function useWindowSize(callback: Function) {
   useLayoutEffect(() => {
@@ -53,7 +55,7 @@ const DashboardPage = () => {
   let navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(["dfc"]);
 
-   //#region Variables
+  //#region Variables
   const [role, setRole] = useState("--Select--");
   const [roleID, setRoleID] = useState<number>(0);
   const [roleError, setRoleError] = useState<boolean>(false);
@@ -61,6 +63,7 @@ const DashboardPage = () => {
 
   const [userName, setUserName] = useState("");
   const [userCountData, setUserCountData] = useState<RoleDetails[]>([]);
+  const [userRoles, setUserRoles] = useState<RoleDetails[]>([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [roleName, setRoleName] = useState("");
@@ -83,13 +86,13 @@ const DashboardPage = () => {
   const [galleryHeight, setGalleryHeight] = useState(504);
   const [arnID, setArnID] = useState<number>(2);
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-   //#endregion 
+  //#endregion 
 
   // const arrQuickLinks = [
   //   { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
   //   { title: "Feedbacks", icon: "AnnouncementIcon", backgroundColor: "" },
   // ];
- //#region Functions
+  //#region Functions
   const buttonSetting: ButtonSettings = {
     isActionButton: false,
     actionButtons: [],
@@ -98,10 +101,14 @@ const DashboardPage = () => {
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
     else {
+      debugger;
       SetCookieRoleID(cookies.dfc.RoleID);
       SetCookieRolName(cookies.dfc.RoleName);
       SetCookieUserName(cookies.dfc.FullName);
       SetCookieUseID(cookies.dfc.UserID);
+      if (cookies.dfc.RoleID === "3") {
+        FillUserRoles();
+      }
     }
   }, []);
 
@@ -137,10 +144,18 @@ const DashboardPage = () => {
   // };
 
   const FetchImageGalleryData = () => {
-    Provider.getAll("generaluserenquiryestimations/getimagegallery")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno
+      },
+    };
+    Provider.createDFDashboard(Provider.API_URLS.GetdashboardServicecatalogue, params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setCatalogueCategoryImages(response.data.data);
           }
         } else {
@@ -158,17 +173,69 @@ const DashboardPage = () => {
   };
 
   const GetUserCount = () => {
-
-    Provider.getAll("registration/getusers")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno
+      },
+    };
+    Provider.createDFDashboard(Provider.API_URLS.GetdashboardTotaluser, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           let UserCount = 0;
-          response.data.data.map((item: RoleDetails, index: number) => {
-            UserCount += item.roleCount;
-          });
+          setTotalUsers(response.data.data[0].TotalUsers);
+          let usr_data = [
+            {
+              roleID: 0,
+              roleName: 'Dealer',
+              roleCount: response.data.data[0].TotalDealer
+            },
+            {
+              roleID: 1,
+              roleName: 'Contractor',
+              roleCount: response.data.data[0].TotalContractor
+            },
+            {
+              roleID: 2,
+              roleName: 'General User',
+              roleCount: response.data.data[0].TotalGeneralUser
+            },
+            {
+              roleID: 3,
+              roleName: 'Client',
+              roleCount: response.data.data[0].TotalClient
+            },
+          ]
 
-          setTotalUsers(UserCount);
-          setUserCountData(response.data.data);
+          setUserCountData(usr_data);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setIsLoading(false);
+      });
+  };
+
+  const FillUserRoles = () => {
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno
+      },
+    };
+    Provider.createDFDashboard(Provider.API_URLS.GetdashboardUserswitchto, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          let d = [];
+          for (var key in response.data.data[0]) {
+            if (response.data.data[0].hasOwnProperty(key)) {
+              d.push({
+                roleID: key,
+                roleName: response.data.data[0][key],
+              });
+            }
+          }
+          setUserRoles(d);
         }
         setIsLoading(false);
       })
@@ -178,10 +245,17 @@ const DashboardPage = () => {
   };
 
   const GetServiceCatalogue = () => {
-    Provider.getAll("servicecatalogue/getpostnewdesigntypes")
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno
+      },
+    };
+    Provider.createDFDashboard(Provider.API_URLS.GetdashboardServicecatalogue, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setCatalogueFullData(response.data.data);
             //const categoryImageData = [];
             const sliderImageData = [];
@@ -203,6 +277,7 @@ const DashboardPage = () => {
           setIsSnackbarOpen(true);
         }
         GetUserCount();
+
       })
       .catch((e) => {
         setIsLoading(false);
@@ -213,7 +288,7 @@ const DashboardPage = () => {
 
   const handleRoleChange = (event: SelectChangeEvent) => {
     let roleNameOnClick: string = event.target.value;
-    let ac = userCountData.find((el) => el.roleName.toLowerCase() === roleNameOnClick.toLowerCase());
+    let ac = userRoles.find((el) => el.roleName.toLowerCase() === roleNameOnClick.toLowerCase());
     if (ac !== undefined) {
       setRole(ac?.roleName);
       setRoleID(ac?.roleID);
@@ -235,28 +310,20 @@ const DashboardPage = () => {
   };
 
   const UpdateUserRole = () => {
-
+    debugger;
     handleClose();
     setButtonLoading(true);
     const params = {
-      UserID: CookieUserID,
-      RoleID: roleID,
+      data: {
+        Sess_UserRefno: CookieUserID,
+        switchto_group_refno: roleID
+      }
     };
-    Provider.create("registration/updateuserrole", params)
+    Provider.createDFDashboard(Provider.API_URLS.Getdashboard_Userswitchto_Proceed, params)
       .then((response) => {
-
+        debugger;
         if (response.data && response.data.code === 200) {
-          removeCookie("dfc");
-          const user = {
-            UserID: CookieUserID,
-            FullName: CookieUserName,
-            RoleID: roleID,
-            RoleName: role,
-          };
-          setCookie("dfc", JSON.stringify(user), { path: "/" });
-          // setRoleName(roleName);
-          // GetUserCount();
-          window.location.reload();
+          GetUserDetails(CookieUserID);
         } else {
           setSnackbarMessage(communication.NoData);
           setIsSnackbarOpen(true);
@@ -267,6 +334,56 @@ const DashboardPage = () => {
         setSnackbarMessage(e.message);
         setIsSnackbarOpen(true);
         setButtonLoading(false);
+      });
+  };
+
+  const GetUserDetails = (user_refno) => {
+    debugger;
+    setIsLoading(true);
+    let params = {
+      data: {
+        user_refno: user_refno,
+      },
+    };
+    Provider.createDFCommon(Provider.API_URLS.UserFromRefNo, params)
+      .then((response: any) => {
+        debugger;
+        removeCookie("dfc");
+        if (response.data && response.data.code === 200) {
+          const user = {
+            UserID: user_refno,
+            FullName: response.data.data.Sess_FName === "" ? response.data.data.Sess_Username : "",
+            RoleID: response.data.data.Sess_group_refno,
+            RoleName: response.data.data.Sess_group_name,
+            Sess_FName: response.data.data.Sess_FName,
+            Sess_MobileNo: response.data.data.Sess_MobileNo,
+            Sess_Username: response.data.data.Sess_Username,
+            Sess_role_refno: response.data.data.Sess_role_refno,
+            Sess_group_refno: response.data.data.Sess_group_refno,
+            Sess_designation_refno: response.data.data.Sess_designation_refno,
+            Sess_locationtype_refno: response.data.data.Sess_locationtype_refno,
+            Sess_group_refno_extra_1: response.data.data.Sess_group_refno_extra_1,
+            Sess_User_All_GroupRefnos: response.data.data.Sess_User_All_GroupRefnos,
+            Sess_branch_refno: response.data.data.Sess_branch_refno,
+            Sess_company_refno: response.data.data.Sess_company_refno,
+            Sess_CompanyAdmin_UserRefno: response.data.data.Sess_CompanyAdmin_UserRefno,
+            Sess_CompanyAdmin_group_refno: response.data.data.Sess_CompanyAdmin_group_refno,
+            Sess_RegionalOffice_Branch_Refno: response.data.data.Sess_RegionalOffice_Branch_Refno,
+            Sess_menu_refno_list: response.data.data.Sess_menu_refno_list,
+          };
+          setCookie("dfc", JSON.stringify(user), { path: "/" });
+          //navigate(`/dashboard`);
+          window.location.reload();
+        } else {
+          setSnackbarMessage(communication.InvalidUserNotExists);
+          setIsSnackbarOpen(true);
+        }
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setSnackbarMessage(e.message);
+        setIsSnackbarOpen(true);
+        setIsLoading(false);
       });
   };
 
@@ -284,7 +401,8 @@ const DashboardPage = () => {
     setIsSnackbarOpen(false);
   };
   const handleCardClick = (data: ImageGalleryEstimation) => {
-    navigate(`/generaluser/imagegallery/product`, { state: { id: data.serviceID, name: data.serviceName, type: "dashboard" } });
+    //debugger;
+    navigate(`/generaluser/imagegallery/product`, { state: { id: data.id, name: data.serviceName, type: "dashboard" } });
   };
 
   // const captionStyle = {
@@ -295,7 +413,7 @@ const DashboardPage = () => {
   //   fontSize: "16px",
   //   fontWeight: "bold",
   // };
- //#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 7 }}>
@@ -327,7 +445,7 @@ const DashboardPage = () => {
               </Grid>
             </Grid>
 
-            {CookieRoleID === 3 ? (
+            {parseInt(CookieRoleID.toString()) == 3 ? (
               <Grid item xs={4} sm={6} md={6} sx={{ mt: 1 }}>
                 <FormControl fullWidth size="small" error={roleError}>
                   <Typography sx={{ mb: 1 }}>Switch Role</Typography>
@@ -335,7 +453,7 @@ const DashboardPage = () => {
                     <MenuItem disabled={true} value="--Select--">
                       --Select--
                     </MenuItem>
-                    {userCountData.map((item) => {
+                    {userRoles.map((item) => {
                       if (item.roleID !== 2) {
                         return (
                           <MenuItem key={item.roleID} value={item.roleName}>
@@ -366,7 +484,7 @@ const DashboardPage = () => {
                     console.log(index);
                   }}
                 /> */}
-                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID === 3 || CookieRoleID === 4) ? handleCardClick : () => { }} type="category" />
+                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID == 3 || CookieRoleID == 4) ? handleCardClick : () => { }} type="category" />
               </Grid>
             </Grid>
             <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>
