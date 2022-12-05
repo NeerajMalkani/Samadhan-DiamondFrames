@@ -80,6 +80,7 @@ const AddDesignation = () => {
 
   const [gridDesignationList, setGridDesignationList] = useState<Array<DesignationNameModel>>([]);
   const [gridDesignationtListTemp, setGridDesignationListTemp] = useState<Array<DesignationNameModel>>([]);
+  const [myDesignationtID, setMyDesignationID] = useState<number>(0);
   //#endregion 
 
   //#region Functions
@@ -199,8 +200,10 @@ const AddDesignation = () => {
   };
 
   const handleReportingAuthorityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    debugger;
     setReportingAuthority((event.target as HTMLInputElement).value);
   };
+  
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
@@ -228,7 +231,9 @@ const AddDesignation = () => {
       setDataGridPointer("none");
       setDisplay(a.display);
       setReportingAuthority(a.reportingAuthority);
+      debugger;
       setDesignationName(a.designationName);
+      setMyDesignationID(a.designationID);
       setDesignationID(
         designationList.find((el) => {
           return el.designationName === a.designationName;
@@ -263,13 +268,16 @@ const AddDesignation = () => {
           Sess_UserRefno: cookies.dfc.UserID,
           Sess_company_refno: cookies.dfc.Sess_company_refno,
           designation_refno: designationID,
-          view_status: checked ? "1" : "0"
+          view_status: checked ? "1" : "0",
+          reporting_status:reportingAuthority ? "1":"0"
         }
       }
       debugger;
       Provider.createDFCommon(Provider.API_URLS.DesignationCreate, params)
         .then((response) => {
+          debugger;
           if (response.data && response.data.code === 200) {
+            debugger;
             FetchData("added");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
@@ -293,9 +301,10 @@ const AddDesignation = () => {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           Sess_company_refno: cookies.dfc.Sess_company_refno,
-          mydesignation_refno: "0",
+          mydesignation_refno: myDesignationtID,
           designation_refno: designationID,
-          view_status: checked ? "1" : "0"
+          view_status: checked ? "1" : "0",
+          reporting_status:reportingAuthority ? "1":"0"
         }
       }
       Provider.createDFCommon(Provider.API_URLS.DesignationUpdate, params)

@@ -36,6 +36,7 @@ import { CityModel, BranchTypeModel, StateModel, EmployeeModel } from "../../../
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { SelectChangeEvent } from "@mui/material";
 import { ForkRight } from "@mui/icons-material";
+import { APIConverter } from "../../../utils/apiconverter";
 // import id from "date-fns/esm/locale/id";
 
 const AddBranch = () => {
@@ -313,12 +314,16 @@ const AddBranch = () => {
 
   const FetchData = (type: string) => {
     let params = {
-      AddedByUserID: cookies.dfc.UserID
-    };
-    Provider.getAll(`master/getuserbranches?${new URLSearchParams(GetStringifyJson(params))}`)
+        data:{
+          Sess_UserRefno:cookies.dfc.UserID,
+          branch_refno: "all"
+        }
+    }
+    Provider.createDFCommon(Provider.API_URLS.MyBranchRefnocheck,params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               let sr = { srno: index + 1 };

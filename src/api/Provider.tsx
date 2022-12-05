@@ -160,6 +160,8 @@ class Provider {
     MyDesignationRefnocheck: "mydesignationrefnocheck/",
     DesignationCreate: "designationcreate/",
     DesignationUpdate: "designationupdate/",
+     
+    MyBranchRefnocheck: "mydesignationrefnocheck/",
 
     AadharnoAutocomplete: "aadharnoautocomplete/",
     MobilenoAutocomplete: "mobilenoautocomplete/",
