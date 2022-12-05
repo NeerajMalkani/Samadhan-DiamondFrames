@@ -652,11 +652,12 @@ export interface EmployeeModel {
   id: number;
   srno: number;
   employeeName: string;
+  employeeCode: string;
   mobileNo: string;
   branchName: string;
   departmentName: string;
   designationName: string;
-  profileStatus: boolean;
+  profileStatus: string;
   loginStatus: boolean;
   verifyStatus: boolean;
   otp: number;

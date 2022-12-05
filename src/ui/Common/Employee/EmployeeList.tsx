@@ -18,6 +18,7 @@ import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { NullOrEmpty } from "../../../utils/CommonFunctions";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const EmployeeListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -28,7 +29,7 @@ const EmployeeListPage = () => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) navigate(`/login`);
   }, []);
 
-   //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
 
@@ -88,9 +89,9 @@ const EmployeeListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [acitvityNameListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
- //#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
 
   useEffect(() => {
     FetchData("");
@@ -110,19 +111,28 @@ const EmployeeListPage = () => {
   };
 
   const FetchData = (type: string) => {
+    debugger;
     let params = {
-      AddedByUserID: cookies.dfc.UserID,
+      //AddedByUserID: cookies.dfc.UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_company_refno: cookies.dfc.Sess_company_refno,
+        Sess_branch_refno: cookies.dfc.Sess_branch_refno,
+        Sess_designation_refno: cookies.dfc.Sess_designation_refno
+      }
     };
     ResetFields();
-    Provider.getAll(`master/getuseremployeelist?${new URLSearchParams(GetStringifyJson(params))}`)
-
+    Provider.createDFCommon(Provider.API_URLS.MyemployeeList, params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.profileStatus = a.profileStatus ? "complete" : "Incomplete";
-              a.loginStatus = a.loginStatus ? "Yes" : "No";
+              a.profileStatus = a.profileStatus == 1 ? "complete" : "Incomplete";
+              a.loginStatus = a.loginStatus == 1 ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -153,16 +163,22 @@ const EmployeeListPage = () => {
   const FetchSearchData = () => {
     debugger;
     let params = {
-      AddedByUserID: cookies.dfc.UserID,
-      AadharNo: aadharNo,
-      MobileNo: mobileNo
+      // AddedByUserID: cookies.dfc.UserID,
+      // AadharNo: aadharNo,
+      // MobileNo: mobileNo
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        aadhar_no_s: aadharNo,
+        mobile_no_s: mobileNo
+      }
     };
     ResetFields();
-    Provider.getAll(`master/getemployeesearchlist?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.EmployeeSearch, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               let sr = { srno: index + 1 };
@@ -264,11 +280,15 @@ const EmployeeListPage = () => {
 
   const InsertExistingEmployee = (employeeID: number) => {
     debugger;
-    Provider.create("master/insertnewemployee", {
-      AddedByUserID: cookies.dfc.UserID,
-      EmployeeID: employeeID,
-
-    })
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        employee_user_refno: employeeID,
+        Sess_company_refno: cookies.dfc.Sess_company_refno,
+        Sess_branch_refno: cookies.dfc.Sess_branch_refno
+      }
+    }
+    Provider.createDFCommon(Provider.API_URLS.EmployeeAdd, params)
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -290,10 +310,53 @@ const EmployeeListPage = () => {
       });
   };
 
+  const SendOTP = () => {
+    if (actionStatus === "new") {
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          employee_user_refno: employeeID,
+          Sess_company_refno: cookies.dfc.Sess_company_refno,
+          Sess_branch_refno: cookies.dfc.Sess_branch_refno
+        }
+      }
+      Provider.createDFCommon(Provider.API_URLS.SendotptoEmployee, params)
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            FetchData("updated");
+          } else if (response.data.code === 304) {
+            setSnackMsg(response.data.message);
+            setSnackbarType("error");
+            ResetFields();
+          } else {
+            ResetFields();
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+          }
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+        });
+    }
+  };
+
 
   const SubmitVerify = () => {
     if (actionStatus === "new") {
-      Provider.create("master/updateemployeeverification", {
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          employee_otp_no: otp,
+          employee_mobile_no: 0,
+          myemployee_refno: 0,
+          Sess_company_refno: 0,
+          Sess_branch_refno: 0
+        }
+      }
+      Provider.createDFCommon(Provider.API_URLS.EmployeeotpVerify, {
         EmployeeID: employeeID,
         OTP: otp,
       })
@@ -352,20 +415,20 @@ const EmployeeListPage = () => {
     setSearchQuery(query);
     if (query === "") {
       setEmployeeListTemp(employeeList);
-      } else {
-        setEmployeeListTemp(
-          employeeList.filter((el: EmployeeModel) => {
-            return el.employeeName.toString().toLowerCase().includes(query.toLowerCase()) ||
-            el.mobileNo.toString().toLowerCase().includes(query.toLowerCase()) 
-            // ||
-            // el.branchName.toString().toLowerCase().includes(query.toLowerCase()) ||
-            // el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
-            // el.designationName.toString().toLowerCase().includes(query.toLowerCase())
-            
-          })
-        );
-      }
-};
+    } else {
+      setEmployeeListTemp(
+        employeeList.filter((el: EmployeeModel) => {
+          return el.employeeName.toString().toLowerCase().includes(query.toLowerCase()) ||
+            el.mobileNo.toString().toLowerCase().includes(query.toLowerCase())
+          // ||
+          // el.branchName.toString().toLowerCase().includes(query.toLowerCase()) ||
+          // el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
+          // el.designationName.toString().toLowerCase().includes(query.toLowerCase())
+
+        })
+      );
+    }
+  };
 
 
   const setOTPDialog = () => {
@@ -395,7 +458,7 @@ const EmployeeListPage = () => {
   //     }
   //   }
   /*end search toggle coding*/
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -680,7 +743,7 @@ const EmployeeListPage = () => {
                       onChange={(e) => {
                         onChangeSearch((e.target as HTMLInputElement).value);
                       }}
-                      
+
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">

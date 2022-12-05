@@ -108,6 +108,17 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "designation_refno_name", "designationName");
     renameKey(obj, "mydesignation_refno", "designationID");
     renameKey(obj, "reporting_status", "reportingAuthority");
+
+    renameKey(obj, "employee_name", "employeeName");
+    renameKey(obj, "branchname", "branchName");
+    renameKey(obj, "common_employee_code", "employeeCode");
+    renameKey(obj, "departmentname", "departmentName");
+    renameKey(obj, "designationname", "designationName");
+    renameKey(obj, "employee_active_status", "loginStatus");
+    renameKey(obj, "employee_mobile_no", "mobileNo");
+    renameKey(obj, "mobile_OTP_verify_status", "verifyStatus");
+    renameKey(obj, "profie_update_status", "profileStatus");
+    renameKey(obj, "myemployee_refno", "id");
   });
 
   return response;

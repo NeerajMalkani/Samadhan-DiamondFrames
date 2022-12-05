@@ -1384,10 +1384,10 @@ const DrawerItems = ({ open }: OpenObj) => {
       MenuArr = [...MenuItemsGeneralUser];
       break;
     case '4':
-      MenuArr = [...MenuItemsContractor];
+      MenuArr = [...MenuItemsDealer];
       break;
     case '5':
-      MenuArr = [...MenuItemsDealer];
+      MenuArr = [...MenuItemsContractor];
       break;
     case '6':
       MenuArr = [...MenuItemsArchitect];

@@ -54,7 +54,7 @@ export const categoryColumns: GridColDef[] = [
     sortable: false,
     renderCell: (params) => {
       if (params.value !== null && params.value !== undefined) {
-       // const a =  params.value.split("<br>");
+        // const a =  params.value.split("<br>");
         return (
           <div>
             {params.value.map((k: string) => {
@@ -442,7 +442,7 @@ export const serviceProductColumns: GridColDef[] = [
     renderCell: (params) => {
       return params.value + " / " + params.row.selectedUnit;
       // if (params.row.selectedUnitID === params.row.unit1ID) {
-        
+
       // } else {
       //   return params.value + " / " + params.row.selectedUnit;
       // }
@@ -455,7 +455,7 @@ export const serviceProductColumns: GridColDef[] = [
     renderCell: (params) => {
       return params.value + " / " + params.row.selectedUnit;
       // if (params.row.selectedUnitID === params.row.unit1ID) {
-        
+
       // } else {
       //   return params.value + " / " + params.row.unit2Name;
       // }
@@ -797,7 +797,7 @@ export const locationTypeColumns: GridColDef[] = [
     minWidth: 140,
     renderCell: (params) => {
       if (params.value !== null && params.value !== undefined) {
-      //  const a = params.value.split(",");
+        //  const a = params.value.split(",");
         return (
           <div>
             {params.value.map((k: string) => {
@@ -1348,6 +1348,14 @@ export const employeeColumns: GridColDef[] = [
     headerName: "Employee Name / Code",
     flex: 1.8,
     minWidth: 140,
+    renderCell: (params) => {
+      return (
+        <Grid>
+          <Typography>{params.row.employeeName}</Typography>
+          <Typography>{params.row.employeeCode}</Typography>
+        </Grid>
+      );
+    }
   },
   {
     field: "mobileNo",
@@ -1357,7 +1365,7 @@ export const employeeColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "locationName",
+    field: "branchName",
     headerName: "Branch",
     flex: 1.8,
     minWidth: 120,
@@ -1398,7 +1406,7 @@ export const employeeColumns: GridColDef[] = [
     minWidth: 120,
     sortable: false,
     renderCell: (params) => {
-      if (params.row.verifyStatus === false) {
+      if (params.row.verifyStatus == 0) {
         return (
           <Button variant="contained" size="small" sx={{ mr: 1 }}>
             Send OTP
