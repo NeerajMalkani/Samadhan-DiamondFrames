@@ -115,6 +115,7 @@ const LoginPage = () => {
                 Sess_group_refno_extra_1: response.data.data.Sess_group_refno_extra_1,
                 Sess_User_All_GroupRefnos: response.data.data.Sess_User_All_GroupRefnos,
                 Sess_branch_refno: response.data.data.Sess_branch_refno,
+                Sess_if_create_brand: response.data.data.Sess_if_create_brand,
                 Sess_company_refno: response.data.data.Sess_company_refno,
                 Sess_CompanyAdmin_UserRefno: response.data.data.Sess_CompanyAdmin_UserRefno,
                 Sess_CompanyAdmin_group_refno: response.data.data.Sess_CompanyAdmin_group_refno,

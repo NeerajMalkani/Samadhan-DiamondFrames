@@ -21,15 +21,6 @@ const BrandMasterPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   let navigate = useNavigate();
-
-  useEffect(() => {
-    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
-      navigate(`/login`);
-    } else {
-      SetCookieUseID(cookies.dfc.UserID);
-    }
-  }, []);
-
   //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
@@ -55,27 +46,7 @@ const BrandMasterPage = () => {
   //#endregion
 
   //#region Functions
-  useEffect(() => {
-    FetchShowBrand(cookies.dfc.UserID);
-  }, []);
 
-  const FetchShowBrand = (UserID) => {
-    let params = {
-      DealerID: UserID,
-    };
-    Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            setIsBrandApproved(response.data.data[0].showBrand);
-            if (response.data.data[0].showBrand) {
-              FetchData("", UserID);
-            }
-          }
-        }
-      })
-      .catch((e) => {});
-  };
 
   const ResetFields = () => {
     setSelectedID(0);
@@ -102,7 +73,8 @@ const BrandMasterPage = () => {
         Sess_CompanyAdmin_UserRefno: cookies.dfc.Sess_CompanyAdmin_UserRefno,
       },
     };
-    Provider.createDFCommon(Provider.API_URLS.DealerBrandMasterRefnoCheck, params)
+
+    Provider.createDFCommon(Provider.API_URLS.DealerBrandMasterRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -132,6 +104,18 @@ const BrandMasterPage = () => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
+
+  useEffect(() => {
+    if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
+      navigate(`/login`);
+    } else {
+      SetCookieUseID(cookies.dfc.UserID);
+      if(cookies.dfc.Sess_if_create_brand==1){
+        setIsBrandApproved(true);
+        FetchData("", cookies.dfc.UserID);
+      }
+    }
+  }, []);
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -205,7 +189,7 @@ const BrandMasterPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.DealerbrandMasterUpdate, {
+      Provider.createDFAdmin(Provider.API_URLS.DealerBrandMasterUpdate, {
         brand_master_refno: selectedID,
         brand_name: paramBrandName,
         view_status: checked ? 1 : 0,

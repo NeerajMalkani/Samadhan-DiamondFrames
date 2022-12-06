@@ -107,10 +107,8 @@ class Provider {
     ServiceNamePopupMaterialSetup: "getservicename_popup_materialsetupform/",
     CategoryNamePopupMaterialSetup: "getcategoryname_popup_materialsetupform/",
     ProductListPopupMaterialSetup: "getproductlist_popup_materialsetupform/",
-    BrandNamelistPopupMaterialSetup:
-      "getbrandnamelist_popup_materialsetupform/",
-    ProductRateBrandRefNoMaterialSetup:
-      "getproductrate_by_brandrefno_materialsetupform/",
+    BrandNamelistPopupMaterialSetup: "getbrandnamelist_popup_materialsetupform/",
+    ProductRateBrandRefNoMaterialSetup: "getproductrate_by_brandrefno_materialsetupform/",
     MaterialsSetupRefNoCheck: "materialssetuprefnocheck/",
     MaterialsSetupCreate: "materialsetupcreate/",
     MaterialsSetupUpdate: "materialsetupupdate/",
@@ -121,17 +119,16 @@ class Provider {
     GetdashboardUserswitchto: "getdashboard_userswitchto/",
     Getdashboard_Userswitchto_Proceed: "getdashboard_userswitchto_proceed/",
     GetdashboardServicecatalogue: "getdashboard_servicecatalogue/",
-    GetserviceimagegalleryByServicerefno:
-      "getserviceimagegallery_by_servicerefno/",
+    GetserviceimagegalleryByServicerefno: "getserviceimagegallery_by_servicerefno/",
     Getgotoestimation: "getgotoestimation/",
 
     PostNewDesignRefNoCheck: "postnewdesignrefnocheck/",
     PostNewDesignCreate: "postnewdesigncreate/",
     PostNewDesignUpdate: "postnewdesignupdate/",
 
-    DealerBrandMasterRefnoCheck: "dealerbrandmasterrefnocheck/",
+    DealerBrandMasterRefNoCheck: "dealerbrandmasterrefnocheck/",
     DealerBrandMasterCreate: "dealerbrandmastercreate/",
-    DealerbrandMasterUpdate: "dealerbrandmasterupdate/",
+    DealerBrandMasterUpdate: "dealerbrandmasterupdate/",
 
     DealerBuyerCategoryRefNoCheck: "dealerbuyercategoryrefnocheck/",
     DealerBuyerCategoryCreate: "dealerbuyercategorycreate/",
@@ -148,8 +145,7 @@ class Provider {
     ProductDesignTypeNewDesign: "getproductdesigntypenewdesignform/",
     ProductDataNewDesign: "getproductdatanewdesignform/",
     WorkLocationNameNewDesign: "getworklocationnamenewdesignform/",
-    AlternativeUnitOfSalesServiceProduct:
-      "getalternativeunitofsalesserviceproductform/",
+    AlternativeUnitOfSalesServiceProduct: "getalternativeunitofsalesserviceproductform/",
     GetscEstimation: "getsc_estimation/",
 
     MyDepartmentRefnocheck: "mydepartmentrefnocheck/",
