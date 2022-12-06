@@ -157,7 +157,13 @@ class Provider {
     DesignationCreate: "designationcreate/",
     DesignationUpdate: "designationupdate/",
      
-    MyBranchRefnocheck: "mydesignationrefnocheck/",
+    MyBranchRefnocheck: "branchrefnocheck/",
+    MyFetchBranchtype:"getbranchtypebranchform/",
+    MyFetchBranchAssign:"getassignbranchadminbranchform/",
+    AddBranch:"branchcreate/",
+    EditBranch:"branchupdate/",
+    MyFetchRegionalOffice:"getparentbranchrefnobranchform/",
+    CompanyBranchForm:"getcompanynamebranchform/",
 
     AadharnoAutocomplete: "aadharnoautocomplete/",
     MobilenoAutocomplete: "mobilenoautocomplete/",

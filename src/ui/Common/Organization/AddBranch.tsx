@@ -100,7 +100,7 @@ const AddBranch = () => {
   const [assignBranchAdminFullData, setAssignBranchAdminFullData] = useState([]);
 
   const [companyName, setCompanyName] = useState("");
-  const [companyNameID, setCompanyNameID] = useState<number>(0);
+  const [companyNameID, setCompanyNameID] = useState("")
   const [companyError, setCompanyError] = useState("");
   const [isCompanyError, setIsCompanyError] = useState(false);
 
@@ -159,7 +159,7 @@ const AddBranch = () => {
 
   useEffect(() => {
 
-    FetchCompanyName();
+    GetCompanyName();
     FetchData("");
     FetchActvityRoles();
     FetchStates();
@@ -167,11 +167,15 @@ const AddBranch = () => {
   }, []);
 
   const FetchStates = () => {
-    Provider.getAll("master/getstates")
+
+    Provider.createDFF(Provider.API_URLS.StateDetails)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setStateNameList(response.data.data);
+
+            
           }
         }
       })
@@ -186,14 +190,20 @@ const AddBranch = () => {
   };
 
   const FetchCity = (stateID, cid) => {
+    debugger;
     let params = {
-      ID: stateID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        state_refno: stateID
+      }
     };
-    Provider.getAll(`master/getcitiesbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.DistrictDetails, params)
       .then((response: any) => {
-
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
+            response.data.data = APIConverter(response.data.data);
             setCityNameList(response.data.data);
             if (cid != "") {
               let c = response.data.data.filter((el: any) => {
@@ -201,7 +211,7 @@ const AddBranch = () => {
               });
 
               if (c != null) {
-                
+
                 setCity(c[0].cityName);
                 setCityID(c[0].id);
               }
@@ -230,12 +240,18 @@ const AddBranch = () => {
 
   const FetchBranchType = (arnID) => {
     let params = {
-      ActivityID: arnID,
+      // ActivityID: arnID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_company_refno: cookies.dfc.Sess_company_refno,
+        Sess_group_refno: cookies.dfc.Sess_group_refno
+      }
     };
-    Provider.getAll(`master/getuserbranchtypes?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.MyFetchBranchtype, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             setBranchTypeList(response.data.data);
           }
         }
@@ -243,20 +259,29 @@ const AddBranch = () => {
       .catch((e) => { });
   };
 
-  const FetchRegionalOffice = (roID) => {
+  const FetchRegionalOffice = (branchTypeID) => {
+    debugger;
     let params = {
-      AddedByUserID: cookies.dfc.UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_company_refno: cookies.dfc.Sess_company_refno,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+        locationtype_refno: branchTypeID
+
+      }
     };
-    Provider.getAll(`master/getbranchregionalofficelists?${new URLSearchParams(GetStringifyJson(params))}`)
+    debugger;
+    Provider.createDFCommon(Provider.API_URLS.MyFetchRegionalOffice, params)
       .then((response: any) => {
-        
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-
+            debugger;
+            response.data.data = APIConverter(response.data.data);
             setRegionalOfficeList(response.data.data);
-            if (roID != "") {
+            if (branchTypeID != "") {
               let ro = response.data.data.filter((el: any) => {
-                return el.id === roID;
+                return el.id === branchTypeID;
               });
 
               if (ro != null) {
@@ -291,13 +316,20 @@ const AddBranch = () => {
 
   const FetchAssignBranchAdmin = () => {
     let params = {
-      AddedByUserID: cookies.dfc.UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_company_refno: cookies.dfc.Sess_company_refno,
+      }
     };
-    Provider.getAll(`master/getbranchadmins?${new URLSearchParams(GetStringifyJson(params))}`)
+    debugger;
+    Provider.createDFCommon(Provider.API_URLS.MyFetchBranchAssign, params)
       .then((response: any) => {
         const admindata: any = [];
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
+            response.data.data = APIConverter(response.data.data);
             setAssignBranchAdminFullData(response.data.data);
             response.data.data.map((data: any, i: number) => {
               admindata.push({
@@ -314,18 +346,24 @@ const AddBranch = () => {
 
   const FetchData = (type: string) => {
     let params = {
-        data:{
-          Sess_UserRefno:cookies.dfc.UserID,
-          branch_refno: "all"
-        }
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        branch_refno: "all",
+        Sess_company_refno: cookies.dfc.Sess_company_refno,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+      }
     }
-    Provider.createDFCommon(Provider.API_URLS.MyBranchRefnocheck,params)
+
+    Provider.createDFCommon(Provider.API_URLS.MyBranchRefnocheck, params)
       .then((response: any) => {
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
+              a.display = a.display ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -364,7 +402,7 @@ const AddBranch = () => {
   const handleSubmitClick = () => {
 
     let isValid: Boolean = true;
-    
+
     if (companyName.trim() === "") {
       isValid = false;
       setIsCompanyError(true);
@@ -403,37 +441,82 @@ const AddBranch = () => {
     }
 
     if (isValid) {
-      
+
       InsertUpdateData();
     }
   };
 
+
+  const GetCompanyName = () => {
+
+
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_company_refno: cookies.dfc.Sess_company_refno
+      }
+    }
+    Provider.createDFCommon(Provider.API_URLS.CompanyBranchForm, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setCompanyName(response.data.data[0].companyName);
+            setCompanyNameID(response.data.data[0].companyID);
+          }
+        }
+      })
+      .catch((e) => { });
+
+  }
   const InsertUpdateData = () => {
     setButtonLoading(true);
-    
+
     if (actionStatus === "new") {
-      Provider.create("master/insertuserbranch", {
-        CompanyID: companyNameID,
-        BranchTypeID: branchTypeID,
-        BranchAdminID: assignBranchAdminID,
-        ContactPersonNo: contactPerson,
-        GSTNo: gst,
-        PANNo: pan,
-        Display: display == "Yes",
-        LocationName: branchName,
-        Address: address,
-        StateID: stateID,
-        CityID: cityID,
-        Pincode: pincode == "" ? 0 : pincode,
-        AccountNo: accountNo,
-        BankName: bankName,
-        BankBranchName: bankBranchName,
-        IFSCCode: ifsc,
-        AddedByUserID: cookies.dfc.UserID,
-        RegionalOfficeID: regionalOfficeID,
-      })
+      // Provider.createDFCommon("master/insertuserbranch", {
+      //   CompanyID: companyNameID,
+      //   BranchTypeID: branchTypeID,
+      //   BranchAdminID: assignBranchAdminID,
+      //   ContactPersonNo: contactPerson,
+      //   GSTNo: gst,
+      //   PANNo: pan,
+      //   Display: display == "Yes",
+      //   LocationName: branchName,
+      //   Address: address,
+      //   StateID: stateID,
+      //   CityID: cityID,
+      //   Pincode: pincode == "" ? 0 : pincode,
+      //   AccountNo: accountNo,
+      //   BankName: bankName,
+      //   BankBranchName: bankBranchName,
+      //   IFSCCode: ifsc,
+      //   AddedByUserID: cookies.dfc.UserID,
+      //   RegionalOfficeID: regionalOfficeID,
+      // })
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          company_refno: companyNameID,
+          parent_branch_refno: "0",
+          incharge_user_refno: "0",
+          locationtype_refno: "0",
+          location_name: "0",
+          address: "0",
+          pincode: "0",
+          district_refno: "0",
+          state_refno: "0",
+          gst_no: "0",
+          pan_no: "0",
+          bank_account_no: "0",
+          bank_name: "0",
+          bank_branch_name: "0",
+          ifsc_code: "0",
+          view_status: "1"
+        }
+      }
+      Provider.createDFCommon(Provider.API_URLS.AddBranch, params)
         .then((response) => {
-          
+
           if (response.data && response.data.code === 200) {
             ResetFields();
             FetchData("insert");
@@ -455,31 +538,34 @@ const AddBranch = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      
-      Provider.create("master/updateuserbranch", {
-        ID: selectedID,
-        CompanyID: companyNameID,
-        BranchTypeID: branchTypeID,
-        BranchAdminID: assignBranchAdminID,
-        ContactPersonNo: contactPerson,
-        GSTNo: gst,
-        PANNo: pan,
-        Display: display == "Yes",
-        LocationName: branchName,
-        Address: address,
-        StateID: stateID,
-        CityID: cityID,
-        Pincode: pincode == "" ? "0" : pincode,
-        AccountNo: accountNo,
-        BankName: bankName,
-        BankBranchName: bankBranchName,
-        IFSCCode: ifsc,
-        AddedByUserID: cookies.dfc.UserID,
-        RegionalOfficeID: regionalOfficeID,
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          branch_refno: "0",
+          company_refno: "0",
+          parent_branch_refno: "0",
+          incharge_user_refno: "0",
+          locationtype_refno: "0",
+          location_name: "0",
+          address: "0",
+          pincode: "0",
+          district_refno: "0",
+          state_refno: "0",
+          gst_no: "0",
+          pan_no: "0",
+          bank_account_no: "0",
+          bank_name: "0",
+          bank_branch_name: "0",
+          ifsc_code: "0",
+          view_status: "1"
+          // Display: display == "Yes",
+          // Pincode: pincode == "" ? "0" : pincode,
+        }
+      }
 
-      })
+      Provider.createDFCommon(Provider.API_URLS.EditBranch, params)
         .then((response) => {
-          
+
           if (response.data && response.data.code === 200) {
             FetchData("update");
           } else if (response.data.code === 304) {
@@ -503,7 +589,7 @@ const AddBranch = () => {
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
-
+    debugger;
     let stateName: string = event.target.value;
     let ac = stateNameList.find((el) => el.stateName === stateName);
     if (ac !== undefined) {
@@ -540,7 +626,7 @@ const AddBranch = () => {
       setRegionalOfficeError("");
       if (ac?.id == 3) {
         setShowRO(true);
-        FetchRegionalOffice("");
+        FetchRegionalOffice(ac?.id);
       }
       else {
         setShowRO(false);
@@ -564,7 +650,7 @@ const AddBranch = () => {
   };
 
   const handleROChange = (event: SelectChangeEvent) => {
-    
+
     let regionaloffice: string = event.target.value;
     let ac = regionalOfficeList.find((el) => el.locationName === regionaloffice);
     if (ac !== undefined) {
@@ -640,7 +726,7 @@ const AddBranch = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: BranchModel | undefined) => {
-    
+
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -648,7 +734,7 @@ const AddBranch = () => {
       setSelectedID(a.id);
       setButtonDisplay("unset");
       setActionStatus("edit");
-      
+
       setBranchType(a.branchType);
       setBranchTypeID(a?.branchTypeID);
       if (a.branchTypeID == 3) {
@@ -656,7 +742,7 @@ const AddBranch = () => {
         FetchRegionalOffice(a?.regionalOfficeID);
       }
 
-     
+
       let e = assignBranchAdminFullData.find((el) => el.id === a.branchAdminID);
 
       setAssignBranchAdmin(e.employeeName);
@@ -715,6 +801,7 @@ const AddBranch = () => {
           <Grid item xs={4}>
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
               <Grid item sm={6}>
+
                 <label style={{ float: 'right', }}><label style={{ color: "#ff0000" }}>*</label> Company/Firm Name</label>
               </Grid>
               <Grid item sm={6}>
