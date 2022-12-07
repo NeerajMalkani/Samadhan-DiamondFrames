@@ -162,7 +162,7 @@ const BrandMasterPage = () => {
 
   const InsertUpdateData = (paramBrandName: string, checked: boolean) => {
     if (actionStatus === "new") {
-      Provider.createDFAdmin(Provider.API_URLS.DealerBrandMasterCreate, {
+      Provider.createDFCommon(Provider.API_URLS.DealerBrandMasterCreate, {
         brand_name: paramBrandName,
         view_status: checked ? 1 : 0,
         Sess_UserRefno: cookies.dfc.UserID,
@@ -189,7 +189,7 @@ const BrandMasterPage = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.DealerBrandMasterUpdate, {
+      Provider.createDFCommon(Provider.API_URLS.DealerBrandMasterUpdate, {
         brand_master_refno: selectedID,
         brand_name: paramBrandName,
         view_status: checked ? 1 : 0,

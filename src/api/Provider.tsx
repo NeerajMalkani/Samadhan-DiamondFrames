@@ -165,6 +165,16 @@ class Provider {
     MyFetchRegionalOffice:"getparentbranchrefnobranchform/",
     CompanyBranchForm:"getcompanynamebranchform/",
 
+    ServiceNameDealerBrandSetup: "getservicenamedealerbrandsetupform/",
+    CategoryNameDealerBrandSetup: "getcategorynamedealerbrandsetupform/",
+    CategoryDataDealerBrandSetup: "getcategorydatadealerbrandsetupform/",
+    UnitOfSaleDealerBrandSetup: "getunitofsaledealerbrandsetupform/",
+    BrandNameDealerBrandSetup: "getbrandnamedealerbrandsetupform/",
+    BuyerCategoryDiscountDealerBrandSetup: "getbuyercategorydiscountdealerbrandsetupform/",
+    DealerBrandRefNoCheck: "dealerbrandrefnocheck/",
+    DealerBrandSetupCreate: "dealerbrandsetupcreate/",
+    DealerBrandSetupUpdate: "dealerbrandsetupupdate/",
+
     AadharnoAutocomplete: "aadharnoautocomplete/",
     MobilenoAutocomplete: "mobilenoautocomplete/",
     EmployeeSearch: "employeesearch/",

@@ -15,6 +15,7 @@ import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const BrandPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -27,6 +28,13 @@ const BrandPage = () => {
       navigate(`/login`);
     } else {
       SetCookieUseID(cookies.dfc.UserID);
+      if(cookies.dfc.Sess_if_create_brand==1){
+        setIsBrandApproved(true);
+        FetchData("", cookies.dfc.UserID);
+        FetchBrands(cookies.dfc.UserID);
+        FetchServicesFromActivity(cookies.dfc.UserID);
+        FetchBuyerCategories(cookies.dfc.UserID);
+        }
     }
   }, []);
 
@@ -105,48 +113,7 @@ const BrandPage = () => {
  //#endregion 
 
  //#region Functions
-  useEffect(() => {
-    FetchShowBrand(cookies.dfc.UserID);
-  }, []);
-
-  const FetchShowBrand = (UserID) => {
-    let params = {
-      DealerID: UserID,
-    };
-    Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            setIsBrandApproved(response.data.data[0].showBrand);
-            if (response.data.data[0].showBrand) {
-              if (isBrandApproved) {
-                FetchData("", UserID);
-                FetchActvityRoles(UserID);
-                FetchBrands(UserID);
-                FetchBuyerCategories(UserID);
-              }
-            }
-          }
-        }
-      })
-      .catch((e) => { });
-  };
-
-  const FetchActvityRoles = (UserID: number) => {
-    Provider.getAll("master/getmainactivities")
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display && el.activityRoleName === "Dealer";
-            });
-            setArnID(response.data.data[0].id);
-            FetchServicesFromActivity(UserID);
-          }
-        }
-      })
-      .catch((e) => { });
-  };
+ 
 
   const FetchBuyerCategories = (UserID: number) => {
     let params = {
@@ -172,15 +139,18 @@ const BrandPage = () => {
 
   const FetchServicesFromActivity = (UserID: number) => {
     let params = {
-      DealerID: UserID,
+      data: {
+        Sess_UserRefno: UserID,
+      },
     };
-    Provider.getAll(`dealercompanyprofile/getmyservices?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFAdmin(Provider.API_URLS.ServiceNamePopupMaterialSetup, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setServiceNameList(response.data.data);
           }
         }
@@ -191,17 +161,19 @@ const BrandPage = () => {
   const FetchCategoriesFromServices = (selectedServiceID: number, callbackFunction: any = null) => {
     //, callbackFunction: any = null
     let params = {
-      ActivityID: arnID,
-      ServiceID: selectedServiceID,
+      data: {
+        Sess_UserRefno: CookieUserID,
+        service_refno: selectedServiceID,
+      }
     };
-
-    Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response: any) => {
+    Provider.createDFAdmin(Provider.API_URLS.CategoryNamePopupMaterialSetup, params)
+    .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            response.data.data = APIConverter(response.data.data);
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setCategoryList(response.data.data);
             if (callbackFunction !== null) {
               callbackFunction(response.data.data);
@@ -212,17 +184,41 @@ const BrandPage = () => {
       .catch((e) => { });
   };
 
+  const FetchCategoryDataFromCategory = (selectedItem:number) => {
+    let params = {
+      data: {
+        Sess_UserRefno: "2",
+        category_refno: selectedItem,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.CategoryDataServiceProduct, params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            setHsn(response.data.data[0].hsnsacCode);
+            setGst(response.data.data[0].gstRate);
+          }
+        }
+      })
+      .catch((e) => {});
+  };
+
   const FetchUnitsFromCategory = (selectedItem: number) => {
     let params = {
-      ID: selectedItem,
+      data: {
+        Sess_UserRefno: CookieUserID,
+        category_refno: selectedItem,
+      },
     };
-    Provider.getAll(`master/getunitbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.UnitOfSaleDealerBrandSetup, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
+            response.data.data = APIConverter(response.data.data);
             setUnitOfSalesList(response.data.data);
             const units = [];
             response.data.data.map((data: any) => {
@@ -245,16 +241,18 @@ const BrandPage = () => {
 
   const FetchBrands = (UserID: number) => {
     let params = {
-      DealerID: UserID,
+      data: {
+        Sess_UserRefno: UserID,
+      },
     };
-
-    Provider.getAll(`dealerbrand/getbrand?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.BrandNameDealerBrandSetup, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -268,27 +266,32 @@ const BrandPage = () => {
 
   const FetchData = (type: string, UserID: number) => {
     handleCancelClick();
-    let params = {
-      DealerID: UserID,
-    };
+    if (type !== "") {
+      setSnackMsg("Brand " + type);
+      setOpen(true);
+      setSnackbarType("success");
+    }
 
-    Provider.getAll(`dealerbrand/GetBrandSetup?${new URLSearchParams(GetStringifyJson(params))}`)
+    let params = {
+      data: {
+        Sess_UserRefno: UserID,
+        brand_refno: "all",
+      },
+    };
+    Provider.createDFCommon(Provider.API_URLS.DealerBrandRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.display = a.display ? "Yes" : "No";
+              a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
             setBrandList(arrList);
             setBrandListTemp(arrList);
-            if (type !== "") {
-              setSnackMsg("Brand " + type);
-              setOpen(true);
-              setSnackbarType("success");
-            }
+            
           }
         } else {
           setSnackbarType("info");
@@ -306,39 +309,39 @@ const BrandPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
-  const FetchBuyerCategoriesDiscounts = (selectSNID: number) => {
-    let params = {
-      DealerID: CookieUserID,
-      DealerBrandID: selectSNID,
-    };
-    Provider.getAll(`dealerbrand/getbrandbuyermapping?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            response.data.data.map((el) => {
-              let buyerData = buyerCategoryFullData.find((a) => {
-                return el.buyerCategoryID === a.id;
-              });
-              buyerData.BuyerCategoryDiscount = el.buyerCategoryDiscount;
-            });
+  // const FetchBuyerCategoriesDiscounts = (selectSNID: number) => {
+  //   let params = {
+  //     DealerID: CookieUserID,
+  //     DealerBrandID: selectSNID,
+  //   };
+  //   Provider.getAll(`dealerbrand/getbrandbuyermapping?${new URLSearchParams(GetStringifyJson(params))}`)
+  //     .then((response: any) => {
+  //       if (response.data && response.data.code === 200) {
+  //         if (response.data.data) {
+  //           response.data.data.map((el) => {
+  //             let buyerData = buyerCategoryFullData.find((a) => {
+  //               return el.buyerCategoryID === a.id;
+  //             });
+  //             buyerData.BuyerCategoryDiscount = el.buyerCategoryDiscount;
+  //           });
 
-            const arrBuyerDiscountData = [];
-            //const arrSelectedBuyerDiscountData = [];
-            buyerCategoryFullData.map((el) => {
-              const matchingData = response.data.data.find((a) => {
-                return a.buyerCategoryID === el.id;
-              });
-              if (matchingData) {
-                el.BuyerCategoryDiscount = matchingData.buyerCategoryDiscount;
-              }
-              arrBuyerDiscountData.push(el);
-            });
-            setBuyerCategoryFullData(arrBuyerDiscountData);
-          }
-        }
-      })
-      .catch((e) => { });
-  };
+  //           const arrBuyerDiscountData = [];
+  //           //const arrSelectedBuyerDiscountData = [];
+  //           buyerCategoryFullData.map((el) => {
+  //             const matchingData = response.data.data.find((a) => {
+  //               return a.buyerCategoryID === el.id;
+  //             });
+  //             if (matchingData) {
+  //               el.BuyerCategoryDiscount = matchingData.buyerCategoryDiscount;
+  //             }
+  //             arrBuyerDiscountData.push(el);
+  //           });
+  //           setBuyerCategoryFullData(arrBuyerDiscountData);
+  //         }
+  //       }
+  //     })
+  //     .catch((e) => { });
+  // };
 
   const handleSNChange = (event: SelectChangeEvent) => {
     let serviceName: string = event.target.value;
@@ -714,7 +717,7 @@ const BrandPage = () => {
       setCDError("");
       setIsCDError(false);
 
-      FetchBuyerCategoriesDiscounts(a.brandID);
+      //FetchBuyerCategoriesDiscounts(a.brandID);
     }
   };
 

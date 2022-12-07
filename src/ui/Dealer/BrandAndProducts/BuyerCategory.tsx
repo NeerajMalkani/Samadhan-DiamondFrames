@@ -25,6 +25,10 @@ const BuyerCategory = () => {
       navigate(`/login`);
     } else {
       SetCookieUseID(cookies.dfc.UserID);
+      if(cookies.dfc.Sess_if_create_brand==1){
+      setIsBrandApproved(true);
+      FetchData("", cookies.dfc.UserID);
+      }
     }
   }, []);
 
@@ -55,27 +59,6 @@ const BuyerCategory = () => {
   //#endregion
 
   //#region Functions
-  useEffect(() => {
-    FetchShowBrand(cookies.dfc.UserID);
-  }, []);
-
-  const FetchShowBrand = (UserID) => {
-    let params = {
-      DealerID: UserID,
-    };
-    Provider.getAll(`dealerbrand/getshowbrand?${new URLSearchParams(GetStringifyJson(params))}`)
-      .then((response: any) => {
-        if (response.data && response.data.code === 200) {
-          if (response.data.data) {
-            setIsBrandApproved(response.data.data[0].showBrand);
-            if (response.data.data[0].showBrand) {
-              FetchData("", UserID);
-            }
-          }
-        }
-      })
-      .catch((e) => {});
-  };
 
   const FetchData = (type: string, UserID: number) => {
     handleCancelClick();
@@ -86,11 +69,10 @@ const BuyerCategory = () => {
         buyercategory_refno: "all",
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.DealerBuyerCategoryRefNoCheck, params)
+    Provider.createDFCommon(Provider.API_URLS.DealerBuyerCategoryRefNoCheck, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
@@ -190,7 +172,7 @@ const BuyerCategory = () => {
   const InsertUpdateData = (buyerCategoryName: string, checked: boolean) => {
     setButtonLoading(true);
     if (actionStatus === "new") {
-      Provider.createDFAdmin(Provider.API_URLS.DealerBuyerCategoryCreate, {
+      Provider.createDFCommon(Provider.API_URLS.DealerBuyerCategoryCreate, {
         Sess_UserRefno: cookies.dfc.UserID,
         buyercategory_name: buyerCategoryName,
         view_status: checked ? 1 : 0,
@@ -217,7 +199,7 @@ const BuyerCategory = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.DealerBuyerCategoryUpdate, {
+      Provider.createDFCommon(Provider.API_URLS.DealerBuyerCategoryUpdate, {
         buyercategory_refno: selectedID,
         Sess_UserRefno: cookies.dfc.UserID,
         buyercategory_name: buyerCategoryName,
