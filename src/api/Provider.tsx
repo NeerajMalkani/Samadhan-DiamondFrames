@@ -164,6 +164,7 @@ class Provider {
     EditBranch:"branchupdate/",
     MyFetchRegionalOffice:"getparentbranchrefnobranchform/",
     CompanyBranchForm:"getcompanynamebranchform/",
+    FetchBranchAssignContactNo:"getassignbranchadmin_contactno_branchform/",
 
     ServiceNameDealerBrandSetup: "getservicenamedealerbrandsetupform/",
     CategoryNameDealerBrandSetup: "getcategorynamedealerbrandsetupform/",

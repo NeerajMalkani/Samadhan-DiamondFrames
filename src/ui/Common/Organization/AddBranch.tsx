@@ -30,9 +30,9 @@ import Header from "../../../components/Header";
 import DataContexts from "../../../contexts/DataContexts"
 import Provider from "../../../api/Provider";
 import { branchColumns } from "../../../utils/tablecolumns";
-import { BranchModel, RegionalOfficeModel } from "../../../models/Model";
+import { BranchModel, RegionalOfficeModel, } from "../../../models/Model";
 import { communication } from "../../../utils/communication";
-import { CityModel, BranchTypeModel, StateModel, EmployeeModel } from "../../../models/Model";
+import { CityModel, BranchTypeModel, StateModel, EmployeeModel, ContactModel } from "../../../models/Model";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { SelectChangeEvent } from "@mui/material";
 import { ForkRight } from "@mui/icons-material";
@@ -68,13 +68,13 @@ const AddBranch = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [state, setState] = useState("--Select--");
-  const [stateID, setStateID] = useState<number>(0);
+  const [stateID, setStateID] = useState("");
   const [stateError, setStateError] = useState("");
   const [isStateError, setIsStateError] = useState(false);
   const [stateNameList, setStateNameList] = useState<Array<StateModel>>([]);
 
   const [city, setCity] = useState("--Select--");
-  const [cityID, setCityID] = useState<number>(0);
+  const [cityID, setCityID] = useState("");
   const [cityError, setCityError] = useState("");
   const [isCityError, setIsCityError] = useState(false);
   const [cityNameList, setCityNameList] = useState<Array<CityModel>>([]);
@@ -84,6 +84,12 @@ const AddBranch = () => {
   const [branchTypeError, setBranchTypeError] = useState("");
   const [isbranchTypeError, setIsBranchTypeError] = useState(false);
   const [branchTypeList, setBranchTypeList] = useState<Array<BranchTypeModel>>([]);
+
+  // const [id, setId] = useState("--Select--");
+  // const [locationId, setLocationId] = useState<number>(0);
+  // const [locationTypeError, setLocationTypeError] = useState("");
+  // const [isLocationTypeError, setisLocationTypeError] = useState(false);
+  // const [locationTypeList, setlocationTypeList] = useState<Array<BranchTypeModel>>([]);
 
   const [regionalOffice, setRegionalOffice] = useState("--Select--");
   const [regionalOfficeID, setRegionalOfficeID] = useState<number>(0);
@@ -124,9 +130,11 @@ const AddBranch = () => {
   const [bankBranchNameError, setBankBranchNameError] = useState("");
   const [isBankBranchNameError, setIsBankBranchNameError] = useState(false);
 
-  const [contactPerson, setContactPerson] = useState("");
+  const [contactFullList, setContactPerson] = useState("");
+  const [contactPersonNo, setContactPersonNo] = useState<number>(0);
   const [contactPersonError, setContactPersonError] = useState("");
   const [isContactPersonError, setIsContactPersonError] = useState(false);
+
 
   const [pincode, setPincode] = useState("");
   const [pincodeError, setPincodeError] = useState("");
@@ -175,7 +183,7 @@ const AddBranch = () => {
             response.data.data = APIConverter(response.data.data);
             setStateNameList(response.data.data);
 
-            
+
           }
         }
       })
@@ -190,7 +198,7 @@ const AddBranch = () => {
   };
 
   const FetchCity = (stateID, cid) => {
-    debugger;
+
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
@@ -199,21 +207,22 @@ const AddBranch = () => {
     };
     Provider.createDFCommon(Provider.API_URLS.DistrictDetails, params)
       .then((response: any) => {
-        debugger;
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
+
             response.data.data = APIConverter(response.data.data);
             setCityNameList(response.data.data);
+
             if (cid != "") {
               let c = response.data.data.filter((el: any) => {
-                return el.id === cid;
+                return el.cityID === cid;
               });
 
               if (c != null) {
 
                 setCity(c[0].cityName);
-                setCityID(c[0].id);
+                setCityID(c[0].cityID);
               }
             }
           }
@@ -221,7 +230,40 @@ const AddBranch = () => {
       })
       .catch((e) => { });
   };
+  const FetchBranchInchargeContactNo = (assignBranchAdminID) => {
 
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_company_refno: cookies.dfc.Sess_company_refno,
+        incharge_user_refno: assignBranchAdminID,
+      }
+    };
+    Provider.createDFCommon(Provider.API_URLS.FetchBranchAssignContactNo, params)
+      .then((response: any) => {
+
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+
+            //response.data.data = APIConverter(response.data.data);
+            setContactPersonNo(response.data.data[0].incharge_mobile_no);
+
+            // if (cid != "") {
+            //   let c = response.data.data.filter((el: any) => {
+            //     return el.cityID === cid;
+            //   });
+
+            //   if (c != null) {
+
+            //     setCity(c[0].cityName);
+            //     setCityID(c[0].cityID);
+            //   }
+            // }
+          }
+        }
+      })
+      .catch((e) => { });
+  };
   const FetchActvityRoles = () => {
     Provider.getAll("master/getmainactivities")
       .then((response: any) => {
@@ -260,7 +302,7 @@ const AddBranch = () => {
   };
 
   const FetchRegionalOffice = (branchTypeID) => {
-    debugger;
+
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
@@ -270,13 +312,13 @@ const AddBranch = () => {
 
       }
     };
-    debugger;
+
     Provider.createDFCommon(Provider.API_URLS.MyFetchRegionalOffice, params)
       .then((response: any) => {
-        debugger;
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
+            // debugger;
             response.data.data = APIConverter(response.data.data);
             setRegionalOfficeList(response.data.data);
             if (branchTypeID != "") {
@@ -315,21 +357,23 @@ const AddBranch = () => {
   };
 
   const FetchAssignBranchAdmin = () => {
+
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
         Sess_company_refno: cookies.dfc.Sess_company_refno,
       }
     };
-    debugger;
+    // debugger;
     Provider.createDFCommon(Provider.API_URLS.MyFetchBranchAssign, params)
       .then((response: any) => {
         const admindata: any = [];
-        debugger;
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
+
             response.data.data = APIConverter(response.data.data);
+
             setAssignBranchAdminFullData(response.data.data);
             response.data.data.map((data: any, i: number) => {
               admindata.push({
@@ -359,8 +403,9 @@ const AddBranch = () => {
 
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-
+            debugger;
             response.data.data = APIConverter(response.data.data);
+            debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
@@ -401,7 +446,7 @@ const AddBranch = () => {
 
   const handleSubmitClick = () => {
 
-    let isValid: Boolean = true;
+    let isValid: boolean = true;
 
     if (companyName.trim() === "") {
       isValid = false;
@@ -446,7 +491,6 @@ const AddBranch = () => {
     }
   };
 
-
   const GetCompanyName = () => {
 
 
@@ -470,54 +514,48 @@ const AddBranch = () => {
 
   }
   const InsertUpdateData = () => {
+
     setButtonLoading(true);
 
     if (actionStatus === "new") {
-      // Provider.createDFCommon("master/insertuserbranch", {
-      //   CompanyID: companyNameID,
-      //   BranchTypeID: branchTypeID,
-      //   BranchAdminID: assignBranchAdminID,
-      //   ContactPersonNo: contactPerson,
-      //   GSTNo: gst,
-      //   PANNo: pan,
-      //   Display: display == "Yes",
-      //   LocationName: branchName,
-      //   Address: address,
-      //   StateID: stateID,
-      //   CityID: cityID,
-      //   Pincode: pincode == "" ? 0 : pincode,
-      //   AccountNo: accountNo,
-      //   BankName: bankName,
-      //   BankBranchName: bankBranchName,
-      //   IFSCCode: ifsc,
-      //   AddedByUserID: cookies.dfc.UserID,
-      //   RegionalOfficeID: regionalOfficeID,
-      // })
+
       let params = {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           company_refno: companyNameID,
-          parent_branch_refno: "0",
-          incharge_user_refno: "0",
-          locationtype_refno: "0",
-          location_name: "0",
-          address: "0",
-          pincode: "0",
-          district_refno: "0",
-          state_refno: "0",
-          gst_no: "0",
-          pan_no: "0",
-          bank_account_no: "0",
-          bank_name: "0",
-          bank_branch_name: "0",
-          ifsc_code: "0",
-          view_status: "1"
+
+          parent_branch_refno: regionalOffice == "" ? "0" : regionalOffice,
+          incharge_user_refno: assignBranchAdminID,
+
+          locationtype_refno: branchTypeID,
+
+          location_name: branchName,
+          address: address,
+          pincode: pincode == "" ? 0 : pincode,
+          district_refno: cityID,
+          state_refno: stateID,
+
+          gst_no: gst,
+          pan_no: pan,
+
+          bank_account_no: accountNo,
+          bank_name: bankName,
+          bank_branch_name: bankBranchName,
+          ifsc_code: ifsc,
+          view_status: display == "Yes" ? "1" : "0",
         }
       }
+      debugger;
       Provider.createDFCommon(Provider.API_URLS.AddBranch, params)
         .then((response) => {
+          debugger;
 
+          // console.log(response)
           if (response.data && response.data.code === 200) {
+            // console.log(response.data)
+            debugger;
+            response.data.data = APIConverter(response.data.data);
+            debugger;
             ResetFields();
             FetchData("insert");
           } else if (response.data.code === 304) {
@@ -532,6 +570,7 @@ const AddBranch = () => {
           // handleCancelClick();
         })
         .catch((e) => {
+
           // handleCancelClick();
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
@@ -541,32 +580,32 @@ const AddBranch = () => {
       let params = {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
-          branch_refno: "0",
-          company_refno: "0",
-          parent_branch_refno: "0",
-          incharge_user_refno: "0",
-          locationtype_refno: "0",
-          location_name: "0",
-          address: "0",
-          pincode: "0",
-          district_refno: "0",
-          state_refno: "0",
-          gst_no: "0",
-          pan_no: "0",
-          bank_account_no: "0",
-          bank_name: "0",
-          bank_branch_name: "0",
-          ifsc_code: "0",
-          view_status: "1"
-          // Display: display == "Yes",
-          // Pincode: pincode == "" ? "0" : pincode,
+          branch_refno: selectedID,
+          company_refno: companyNameID,
+          parent_branch_refno: regionalOffice == "" ? "0" : regionalOffice,
+          incharge_user_refno: assignBranchAdminID,
+          locationtype_refno: branchTypeID,
+          location_name: branchName,
+          address: address,
+          pincode: pincode == "" ? 0 : pincode,
+          district_refno: cityID,
+          state_refno: stateID,
+          gst_no: gst,
+          pan_no: pan,
+          bank_account_no: accountNo,
+          bank_name: bankName,
+          bank_branch_name: bankBranchName,
+          ifsc_code: ifsc,
+          view_status: display == "Yes" ? "1" : "0",
+
         }
       }
 
       Provider.createDFCommon(Provider.API_URLS.EditBranch, params)
         .then((response) => {
-
+          debugger;
           if (response.data && response.data.code === 200) {
+            response.data.data = APIConverter(response.data.data);
             FetchData("update");
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
@@ -589,15 +628,15 @@ const AddBranch = () => {
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
-    debugger;
+
     let stateName: string = event.target.value;
     let ac = stateNameList.find((el) => el.stateName === stateName);
     if (ac !== undefined) {
       setState(stateName);
-      setStateID(ac?.id);
+      setStateID(ac?.stateID);
       setIsStateError(false);
       setStateError("");
-      FetchCity(ac.id, "");
+      FetchCity(ac.stateID, "");
     }
   };
 
@@ -607,7 +646,7 @@ const AddBranch = () => {
     let ac = cityNameList.find((el) => el.cityName === cityName);
     if (ac !== undefined) {
       setCity(cityName);
-      setCityID(ac?.id);
+      setCityID(ac?.cityID);
       setIsCityError(false);
       setCityError("");
     }
@@ -640,12 +679,13 @@ const AddBranch = () => {
 
     let assignBranchAdmin: string = event.target.value;
     let ac = assignBranchAdminFullData.find((el) => el.employeeName === assignBranchAdmin);
+    console.log(ac)
     if (ac !== undefined) {
       setAssignBranchAdmin(assignBranchAdmin);
       setAssignBranchAdminID(ac?.id);
       setIsAssignBranchAdminError(false);
       setAssignBranchAdminError("");
-      setContactPerson(ac?.mobileNo);
+      FetchBranchInchargeContactNo(ac?.id);
     }
   };
 
@@ -706,9 +746,9 @@ const AddBranch = () => {
     setIfsc("");
 
     setState("");
-    setStateID(0);
+    setStateID("");
     setCity("");
-    setCityID(0);
+    setCityID("");
   };
 
 
@@ -726,7 +766,7 @@ const AddBranch = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: BranchModel | undefined) => {
-
+    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -754,11 +794,11 @@ const AddBranch = () => {
       setGst(a.gstNo);
       setBranchName(a.locationName);
       setAddress(a.address);
-      let s = stateNameList.find((el) => el.id === a.stateID);
+      let s = stateNameList.find((el) => el.stateID === a.stateID);
       if (s != null) {
         setState(s.stateName);
-        setStateID(s.id);
-        FetchCity(s.id, a.cityID);
+        setStateID(s.stateID);
+        FetchCity(s.stateID, a.cityID);
       }
       setPincode(a.pincode.toString() == "0" ? "" : a.pincode.toString());
       setAccountNo(a.accountNo);
@@ -891,7 +931,7 @@ const AddBranch = () => {
                 <label style={{ float: 'right', }}> Contact Person No</label>
               </Grid>
               <Grid item sm={6}>
-                <TextField value={contactPerson} error={isContactPersonError} helperText={contactPersonError}
+                <TextField value={contactPersonNo} error={isContactPersonError} helperText={contactPersonError}
                   disabled={true} sx={{ background: "#e5e5e5" }}
                   variant="outlined" size="small"></TextField>
               </Grid>

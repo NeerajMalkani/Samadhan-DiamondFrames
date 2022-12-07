@@ -278,8 +278,8 @@ export interface BranchModel {
   branchAdminID: number;
   contactPersonNo: string;
   locationName: string;
-  stateID: number;
-  cityID: number;
+  stateID: string;
+  cityID: string;
   branchAdmin: string;
   pincode: number;
   accountNo: string;
@@ -485,6 +485,7 @@ export interface BuyerCategoryModel {
 
 export interface StateModel {
   id: number;
+  stateID: string;
   stateName: string;
   isUT: string;
   isActive: string;
@@ -492,6 +493,7 @@ export interface StateModel {
 
 export interface CityModel {
   id: number;
+  cityID:string;
   cityName: string;
   stateID: number;
   isActive: string;
@@ -1086,4 +1088,7 @@ export interface summaryMaterialModel {
   totalProducts: string;
   weightPerPiece: string;
   action: string;
+}
+export interface ContactModel {
+   contactNo:number;
 }
