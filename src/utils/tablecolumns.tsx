@@ -636,26 +636,26 @@ export const branchColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "branchAdmin",
+    field: "branch_incharge_contact_person",
     headerName: "Branch Admin",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "address",
+    field: "addressLine",
     headerName: "Address",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "gstNo",
+    field: "gstNumber",
     headerName: "GST No",
     flex: 1.8,
     minWidth: 140,
   },
 
   {
-    field: "panNo",
+    field: "pan",
     headerName: "PAN No",
     flex: 1.8,
     minWidth: 140,

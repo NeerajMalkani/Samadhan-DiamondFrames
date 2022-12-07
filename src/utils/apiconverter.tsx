@@ -121,6 +121,12 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "myemployee_refno", "id");
 
     renameKey(obj, "company_refno", "companyID");
+    renameKey(obj, "parent_branch_refno", "branchTypeID");
+    renameKey(obj, "incharge_user_refno", "assignBranchAdminID");
+    renameKey(obj, "pincode", "pincode");
+    renameKey(obj, "employee_user_refno", "id");
+    renameKey(obj, "branch_refno", "id");
+
   });
 
   return response;
