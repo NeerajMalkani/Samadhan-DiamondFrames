@@ -196,6 +196,11 @@ class Provider {
     GetWagesTypeNameEmployeeWorkForm: "getwagestypenameemployeeworkform/",
     GetEmployeePaydata: "getemployeepaydata/",
     EmployeePaydataUpdate: "employeepaydataupdate/",
+
+    getservicenamedealermyserviceform: "getservicenamedealermyserviceform/",
+    dealermyservicecreate: "dealermyservicecreate/",
+    dealermyserviceupdate: "dealermyserviceupdate/",
+    dealermyservicerefnocheck: "dealermyservicerefnocheck/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
@@ -225,7 +230,7 @@ class Provider {
     return axios.post<any>(`${BASE_URL}/${resource}`, params);
   }
 
-  createDFF(resource: string) {
+  createDFCommonWithouParam(resource: string) {
     return axios.post<any>(`${BASE_URL}/${resource}`);
   }
 

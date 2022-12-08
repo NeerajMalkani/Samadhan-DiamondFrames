@@ -178,6 +178,7 @@ const CBasic = () => {
   const [sop, setSOP] = useState("");
   const [sopError, setSOPError] = useState("");
   const [isSOPError, setIsSOPError] = useState(false);
+  const [showQuotation, setShowQuotation] = useState(false);
 
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Upload Logo");
@@ -202,23 +203,20 @@ const CBasic = () => {
 
   useEffect(() => {
     FetchBasicDetails();
-    FetchStates();
+    //FetchStates();
+    if (cookies.dfc.RoleID == 5) {
+      setShowQuotation(true);
+    }
   }, []);
 
   const FetchBasicDetails = () => {
     let params = {
-      // UserID: cookies.dfc.UserID,
-      //Sess_UserRefno: "2",
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
       },
     };
     Provider.createDFCommon(Provider.API_URLS.DealerCompanyDetail, params)
-      // Provider.createDF(
-      //   `master/getuserprofile?${new URLSearchParams(GetStringifyJson(params))}`
-      // )
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             response.data.data = APIConverter(response.data.data);
@@ -263,6 +261,10 @@ const CBasic = () => {
                   ? ""
                   : response.data.data[0].stateName
               );
+              tempStateID = NullOrEmpty(response.data.data[0].stateID)
+                ? ""
+                : response.data.data[0].stateID
+
               setSelectedStateID(
                 NullOrEmpty(response.data.data[0].stateID)
                   ? 0
@@ -332,8 +334,8 @@ const CBasic = () => {
                 NullOrEmpty(response.data.data[0].showBrand)
                   ? "No"
                   : response.data.data[0].showBrand
-                  ? "Yes"
-                  : "No"
+                    ? "Yes"
+                    : "No"
               );
               setUploadedImage(response.data.data[0].companyLogo);
               setImage(
@@ -342,12 +344,13 @@ const CBasic = () => {
                   : AWSImagePath + "placeholder-image.png"
               );
               // setFilePath(response.data.data[0].companyLogo ? response.data.data[0].companyLogo : null);
-              if (
-                !NullOrEmpty(response.data.data[0].stateID) &&
-                response.data.data[0].stateID != 0
-              ) {
-                FetchCities(response.data.data[0].stateID);
-              }
+              // if (
+              //   !NullOrEmpty(response.data.data[0].stateID) &&
+              //   response.data.data[0].stateID != 0
+              // ) {
+              //   FetchCities(response.data.data[0].stateID);
+              // }
+              FetchStates(response.data.data[0].stateID);
             }
           }
           setLoading(false);
@@ -358,34 +361,44 @@ const CBasic = () => {
       });
   };
 
-  const FetchStates = () => {
-    // let params = {};
-    Provider.createDFF(Provider.API_URLS.StateDetails)
-      // Provider.getAll("master/getstates")
+  let tempStateID = "";
+  const FetchStates = (stateID) => {
+    Provider.createDFCommonWithouParam(Provider.API_URLS.StateDetails)
       .then((response: any) => {
-        response.data.data = APIConverter(response.data.data);
         if (response.data && response.data.code === 200) {
-          debugger;
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const stateData: any = [];
             response.data.data.map((data: any, i: number) => {
               stateData.push({
                 id: data.stateID,
                 label: data.stateName,
-                // setStateNameList(response.data.data);
               });
             });
 
             setStatesFullData(stateData);
+
+            if (stateID != "") {
+
+              setSelectedStateName(response.data.data.find((el) => {
+                return el.stateID == stateID;
+              }).stateName);
+
+            }
+
+            if (tempStateID !== "") {
+              FetchCities(tempStateID, response.data.data);
+            }
+
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   // let state_refno: string = event.target.value;
 
-  const FetchCities = (stateID: number) => {
+  const FetchCities = (stateID, stateData) => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
@@ -394,10 +407,9 @@ const CBasic = () => {
     };
     Provider.createDFCommon(Provider.API_URLS.DistrictDetails, params)
       .then((response: any) => {
-        response.data.data = APIConverter(response.data.data);
         if (response.data && response.data.code === 200) {
-          debugger;
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const cityData: any = [];
             response.data.data.map((data: any, i: number) => {
               cityData.push({
@@ -407,10 +419,17 @@ const CBasic = () => {
             });
 
             setCityFullData(cityData);
+
+            if (stateData != null) {
+              setSelectedCityName(response.data.data.find((el) => {
+                return el.cityID == selectedCityID;
+              }).cityName);
+            }
+
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleSubmitClick = () => {
@@ -419,7 +438,7 @@ const CBasic = () => {
     if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
       uploadImage();
     } else {
-      InsertData("Success", uploadedImage);
+      UpdateData("Success", uploadedImage);
     }
   };
 
@@ -430,11 +449,11 @@ const CBasic = () => {
     UploadImageToS3WithNativeSdk(
       uploadFileUpload,
       imageName + "." + fileExtension,
-      InsertData
+      UpdateData
     );
   };
 
-  const InsertData = (status: string, fileName: string) => {
+  const UpdateData = (status: string, fileName: string) => {
     if (status.toLowerCase() === "success") {
       debugger;
       let params = {
@@ -730,7 +749,7 @@ const CBasic = () => {
                               setCityFullData([]);
                               setSelectedCityName("");
                               setSelectedCityID(0);
-                              FetchCities(value.id);
+                              FetchCities(value.id, null);
                             }
                           }}
                           value={selectedStateName}
@@ -925,25 +944,29 @@ const CBasic = () => {
                           value={cnp}
                         />
                       </Grid>
-
-                      <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          <b>Quotation / Budget No Prefix</b>
-                        </Typography>
-                        <TextField
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                          onChange={(e) => {
-                            setQBNP((e.target as HTMLInputElement).value);
-                            setIsQBNPError(false);
-                            setQBNPError("");
-                          }}
-                          error={isqbnpError}
-                          helperText={qbnpError}
-                          value={qbnp}
-                        />
-                      </Grid>
+                      {
+                        showQuotation &&
+                        <>
+                          <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
+                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                              <b>Quotation / Budget No Prefix</b>
+                            </Typography>
+                            <TextField
+                              fullWidth
+                              variant="outlined"
+                              size="small"
+                              onChange={(e) => {
+                                setQBNP((e.target as HTMLInputElement).value);
+                                setIsQBNPError(false);
+                                setQBNPError("");
+                              }}
+                              error={isqbnpError}
+                              helperText={qbnpError}
+                              value={qbnp}
+                            />
+                          </Grid>
+                        </>
+                      }
 
                       <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>

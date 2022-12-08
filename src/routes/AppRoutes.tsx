@@ -26,13 +26,14 @@ import PostNewDesignPage from "../ui/Admin/ServiceCatalogue/PostNewDesignPage";
 import BrandMasterPage from "../ui/Dealer/BrandAndProducts/BrandMaster";
 import BrandPage from "../ui/Dealer/BrandAndProducts/Brand";
 import ProductListPage from "../ui/Dealer/Product/Product";
-import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
+//import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
 import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
 import Basic from "../ui/Dealer/CompanyProfile/Basic";
 import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
 import EmployeeList from "../ui/Common/Employee/EmployeeList";
-import CBasic from "../ui/Common/Company Profile/CBasic";
-import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
+import CBasic from "../ui/Common/CompanyProfile/CBasic";
+import MyServices from "../ui/Common/CompanyProfile/MyServices";
+//import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
 import AddDepartment from "../ui/Common/Organization/AddDepartment";
 import AddDesignation from "../ui/Common/Organization/AddDesignation";
 import ImageGalleryCategoryPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryCategory";
@@ -128,7 +129,7 @@ const AppRoutes = () => {
               <Route path="dealer/buyercategory" element={<BuyerCategory />} />
               <Route path="dealer/basicdetails" element={<Basic />} />
               <Route path="common/companyprofile/cbasic" element={<CBasic />} />
-              <Route path="contractor/companyprofile/cmyservice" element={<CMyService />} />
+              <Route path="contractor/myservice" element={<MyServices />} />
               <Route path="common/organization/department" element={<AddDepartment />} />
               <Route path="common/organization/designation" element={<AddDesignation />} />
               <Route path="common/organization/branch" element={<AddBranch />} />

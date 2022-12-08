@@ -176,7 +176,7 @@ const AddBranch = () => {
 
   const FetchStates = () => {
 
-    Provider.createDFF(Provider.API_URLS.StateDetails)
+    Provider.createDFCommonWithouParam(Provider.API_URLS.StateDetails)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {

@@ -204,7 +204,6 @@ export interface QuotationWiseProductModel {
 
 export interface ServiceNameModel {
   id: number;
-  service_refno: number;
   srno: number;
   serviceID: number;
   serviceName: string;

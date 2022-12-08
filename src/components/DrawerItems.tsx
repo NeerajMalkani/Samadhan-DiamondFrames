@@ -403,7 +403,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/dealer/basicdetails`);
+              navigate(`/common/companyprofile/cbasic`);
             }, 300);
           },
         },
@@ -605,7 +605,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/contractor/companyprofile/cmyservice`);
+              navigate(`/contractor/myservice`);
             }, 300);
           },
         },
