@@ -403,9 +403,9 @@ const AddBranch = () => {
 
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
+            // debugger;
             response.data.data = APIConverter(response.data.data);
-            debugger;
+            // debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
@@ -545,17 +545,17 @@ const AddBranch = () => {
           view_status: display == "Yes" ? "1" : "0",
         }
       }
-      debugger;
+      // debugger;
       Provider.createDFCommon(Provider.API_URLS.AddBranch, params)
         .then((response) => {
-          debugger;
+          // debugger;
 
           // console.log(response)
           if (response.data && response.data.code === 200) {
             // console.log(response.data)
-            debugger;
+            // debugger;
             response.data.data = APIConverter(response.data.data);
-            debugger;
+            // debugger;
             ResetFields();
             FetchData("insert");
           } else if (response.data.code === 304) {
@@ -600,6 +600,7 @@ const AddBranch = () => {
 
         }
       }
+      debugger;
 
       Provider.createDFCommon(Provider.API_URLS.EditBranch, params)
         .then((response) => {

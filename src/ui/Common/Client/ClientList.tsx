@@ -23,6 +23,10 @@ import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { NullOrEmpty } from "../../../utils/CommonFunctions";
 import { retrunSumID } from "../../../utils/JSCommonFunction";
 import { SelectChangeEvent } from "@mui/material";
+// import {
+    
+//     GridToolbarFilterButton,
+//   } from '@mui/x-data-grid';
 
 let st_ID = 0, ct_ID = 0;
 
@@ -1041,6 +1045,9 @@ const ClientList = () => {
                                 <></>
                             ) : (
                                 <>
+                                {/* <div>
+                                <GridToolbarFilterButton />
+                                </div> */}
                                     <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
                                     <TextField
                                         placeholder="Search"
@@ -1099,6 +1106,7 @@ const ClientList = () => {
                             )}
                         </div>
                     )}
+                  
                 </Grid>
 
             </Container>
