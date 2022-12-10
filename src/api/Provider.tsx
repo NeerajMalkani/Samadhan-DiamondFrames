@@ -201,6 +201,11 @@ class Provider {
     dealermyservicecreate: "dealermyservicecreate/",
     dealermyserviceupdate: "dealermyserviceupdate/",
     dealermyservicerefnocheck: "dealermyservicerefnocheck/",
+    DealerCompanyProductRefNo:"dealercompanyproductrefnocheck/",
+    GetBrandnameDealerProductform:"getbrandnamedealerproductform/",
+    GetProductDealerProductform:"getproductnamedealerproductform/",
+    GetProductDataDealerProductform:"getproductdatadealerproductform/",
+    DealerProductSetUpCreate:"dealerproductsetupcreate/"	
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

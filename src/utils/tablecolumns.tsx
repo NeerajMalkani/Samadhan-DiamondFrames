@@ -1194,8 +1194,7 @@ export const productSetupColumns: GridColDef[] = [
     flex: 1.5,
     renderCell: (param) => (
       <Grid>
-        <Typography>{param.value}</Typography>
-        <Typography color="textSecondary">{param.row.brandName}</Typography>
+        <Typography>{`${param.row.brandPrefix}${param.row.productName} >> ${param.row.brandName}`}</Typography>
       </Grid>
     ),
   },
@@ -1215,12 +1214,26 @@ export const productSetupColumns: GridColDef[] = [
   {
     field: "price",
     headerName: "Price",
-    flex: 1.8,
+    flex: 1,
   },
   {
-    field: "unitValue",
+    field: "convertedUnitValue",
     headerName: "Converted Unit",
     flex: 1,
+  },
+  {
+    field: "isApprove",
+    headerName: "Announce Status",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
+  },
+  {
+    field: "isPublish",
+    headerName: "Approved",
+    flex: 1.8,
+    sortable: false,
+    maxWidth: 100,
   },
   {
     field: "display",
@@ -1229,6 +1242,7 @@ export const productSetupColumns: GridColDef[] = [
     sortable: false,
     maxWidth: 100,
   },
+ 
   {
     field: "action",
     headerName: "Action",

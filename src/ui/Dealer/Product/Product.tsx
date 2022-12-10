@@ -18,6 +18,7 @@ import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import SearchIcon from "@mui/icons-material/Search";
 import NoData from "../../../components/NoData";
 import ListIcon from "@mui/icons-material/List";
+import { APIConverter } from "../../../utils/apiconverter";
 
 const ProductListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -33,9 +34,11 @@ const ProductListPage = () => {
   }, []);
 
   const theme = useTheme();
- //#region Variables
+  //#region Variables
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = useState("Yes");
+  const [isApprove, setisApprove] = useState("Yes");
+  const [isPublish, setisPublish] = useState("Approved");
   const [pageSize, setPageSize] = useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = useState<string>("none");
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
@@ -77,6 +80,15 @@ const ProductListPage = () => {
   const [conversionValue, setConversionValue] = useState<string>("");
   const [isConversionValueError, setIsConversionValueError] = useState<boolean>(false);
   const [conversionValueErrorText, setConversionValueErrorText] = useState<string>("");
+  const [unitID,setUnitID]=useState<string>("")
+  const [convertedUnitID,setConvertedUnitID]=useState<string>("")
+   
+  // const [actualName, setActualName] = useState<string>("");
+  // const [isActualNameValueError, setIsActualNameValueError] = useState<boolean>(false);
+  // const [ActualNameValueErrorText, setisActualNameErrorText] = useState<string>("");
+
+
+
 
   const [description, setDescription] = useState<string>("");
   const [isDescriptionError, setIsDescriptionError] = useState<boolean>(false);
@@ -87,9 +99,9 @@ const ProductListPage = () => {
   const [otherSaleUnit, setOtherSaleUnit] = useState<string>("");
   const [arnID, setArnID] = useState<number>(0);
   //const [isBrandApproved, setIsBrandApproved] = useState<Boolean>(true);
- //#endregion 
+  //#endregion 
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchData("", cookies.dfc.UserID);
     FetchBrands(cookies.dfc.UserID);
@@ -104,6 +116,7 @@ const ProductListPage = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+
             //  setIsBrandApproved(response.data.data[0].showBrand);
             if (response.data.data[0].showBrand) {
               FetchData("", UserID);
@@ -113,7 +126,7 @@ const ProductListPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchActvityRoles = () => {
@@ -128,22 +141,33 @@ const ProductListPage = () => {
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const FetchData = (type: string, UserID: number) => {
     handleCancelClick();
     let params = {
-      DealerID: UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        company_product_refno: "all",
+        Sess_if_create_brand: cookies.dfc.Sess_if_create_brand,
+      }
     };
-
-    Provider.getAll(`dealerproduct/getproducts?${new URLSearchParams(GetStringifyJson(params))}`)
+    // debugger;
+    Provider.createDFCommon(Provider.API_URLS.DealerCompanyProductRefNo, params)
       .then((response: any) => {
+        // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            // debugger;
+            response.data.data = APIConverter(response.data.data);
+            // debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
+              a.id = index + 1;
               a.display = a.display ? "Yes" : "No";
+              a.isApprove = a.isApprove ? "Yes" : "No";
+              a.isPublish = a.isPublish ? "Approved" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -173,25 +197,40 @@ const ProductListPage = () => {
 
   const FetchBrands = (UserID: number) => {
     let params = {
-      DealerID: UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID
+      }
     };
-
-    Provider.getAll(`dealerbrand/GetBrandSetup?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.GetBrandnameDealerProductform, params)
       .then((response: any) => {
+
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
+            // debugger;
+            response.data.data = APIConverter(response.data.data);
+            // debugger;
+            const brandData: any = [];
+
+            response.data.data.map((data: any, i: number) => {
+
+              brandData.push({
+                brandID: data.brandID,
+                brandName: data.brandName,
+                brandNameDisplay: `${data.brandName} (${data.categoryName})`
+              });
             });
-            setBrandList(response.data.data);
+
+
+            setBrandList(brandData);
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   const handleBNChange = (event: SelectChangeEvent) => {
+    // debugger
     let bName: string = event.target.value;
     let ac = brandList.find((el) => el.brandName === bName);
     if (ac !== undefined) {
@@ -209,32 +248,38 @@ const ProductListPage = () => {
       setOtherSaleUnit("");
       setIsProductError(false);
       setProductError("");
-      FetchProductsFromCategory(arnID, ac.serviceID, ac.categoryID);
+      FetchProductsFromCategory(ac.brandID);
+      FetchUnitsFromProduct(ac.brandID);
     }
   };
 
-  const FetchProductsFromCategory = (selectedActivityID: number, selectedServiceID: number, selectedCategoryID: number, callbackFunction: any = null) => {
+  const FetchProductsFromCategory = (brandID) => {
     let params = {
-      ActivityID: selectedActivityID,
-      ServiceID: selectedServiceID,
-      CategoryID: selectedCategoryID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+        brand_refno: brandID
+      }
     };
 
-    Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.GetProductDealerProductform, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
+            // debugger;
+            response.data.data = APIConverter(response.data.data);
+            // debugger;
+            // response.data.data = response.data.data.filter((el: any) => {
+            //   return el.display;
+            // });
             setProductList(response.data.data);
-            if (callbackFunction !== null) {
-              callbackFunction(response.data.data);
-            }
+            // if (callbackFunction !== null) {
+            //   callbackFunction(response.data.data);
+            // }
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handlePNChnage = (event: SelectChangeEvent) => {
@@ -245,39 +290,43 @@ const ProductListPage = () => {
       setPnID(ac.productID);
       setIsProductError(false);
       setProductError("");
-      setSaleUnit("");
-      setSaleUnitwith1("");
-      setOtherSaleUnit("");
-      FetchUnitsFromProduct(ac.productID);
+      
     }
   };
 
-  const FetchUnitsFromProduct = (selectedID: number) => {
+  const FetchUnitsFromProduct = (brandID) => {
     let params = {
-      ProductID: selectedID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+        brand_refno: brandID
+      }
     };
 
-    Provider.getAll(`master/getunitbyproductid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.GetProductDataDealerProductform, params)
       .then((response: any) => {
+        // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            response.data.data = response.data.data.filter((el: any) => {
-              return el.display;
-            });
-            const units = response.data.data.map((data: any) => data.displayUnit);
-            const unitValue = units[0].split(" / ");
 
-            setSaleUnit(unitValue[0]);
-            setSaleUnitwith1("1 " + unitValue[0]);
-            setOtherSaleUnit(unitValue[1]);
+            // debugger;
+            response.data.data = APIConverter(response.data.data);
+            //  debugger;
+
+            setSaleUnit(response.data.data[0].unitOfSale);
+            setSaleUnitwith1(response.data.data[0].selectedUnit);
+            setOtherSaleUnit(response.data.data[0].convertedUnit);
           }
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
+    setisApprove((event.target as HTMLInputElement).value);
+    setisPublish((event.target as HTMLInputElement).value);
+
   };
 
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
@@ -288,6 +337,7 @@ const ProductListPage = () => {
   };
 
   const handleSubmitClick = () => {
+    debugger;
     let isValid: Boolean = true;
 
     if (bn.trim() === "--Select--") {
@@ -343,21 +393,39 @@ const ProductListPage = () => {
   };
 
   const InsertUpdateData = (Status: string, fileName: string) => {
+    debugger;
     if (Status.toLowerCase() === "success") {
       if (actionStatus === "new") {
-        const params = {
-          DealerID: CookieUserID,
-          BrandID: bnID,
-          ProductID: pnID,
-          Image: AWSImagePath + fileName,
-          Price: price,
-          UnitValue: conversionValue,
-          Description: description,
-          Display: display === "Yes",
+        let params = {
+          // DealerID: CookieUserID,
+          // BrandID: bnID,
+          // ProductID: pnID,
+          // Image: AWSImagePath + fileName,
+          // Price: price,
+          // UnitValue: conversionValue,
+          // Description: description,
+          // Display: display === "Yes",
+          data:{
+            Sess_UserRefno: cookies.dfc.UserID,
+            brand_refno: bnID,
+            product_refno: pnID,
+            price: price,
+            sales_unit: saleUnit,
+            converted_unit_value: conversionValue,
+            actual_unit_refno: unitID,
+            convert_unit_refno: convertedUnitID,
+            description: description,
+            view_status:display == "Yes" ? "1" : "0",
+          }
         };
-        Provider.create("dealerproduct/insertproduct", params)
+        debugger;
+        Provider.createDFCommon(Provider.API_URLS.DealerProductSetUpCreate, params)
           .then((response: any) => {
+            debugger;
             if (response.data && response.data.code === 200) {
+        
+              response.data.data = APIConverter(response.data.data);
+              debugger;
               FetchData("added", CookieUserID);
             } else if (response.data.code === 304) {
               setSnackMsg(communication.AlreadyExists);
@@ -371,6 +439,7 @@ const ProductListPage = () => {
             handleCancelClick();
           })
           .catch((e) => {
+            debugger;
             setSnackMsg(communication.NetworkError);
             setSnackbarType("error");
             setOpen(true);
@@ -426,6 +495,8 @@ const ProductListPage = () => {
       setActionStatus("edit");
 
       setDisplay(a.display);
+      setisApprove(a.isApprove)
+      setisPublish(a.isPublish)
       setBn(a.brandName);
       setBnID(a.brandID);
       setPn(a.productName);
@@ -433,6 +504,8 @@ const ProductListPage = () => {
       setUploadedImage(a.image.split("/").pop());
       setPrice(a.price);
       setConversionValue(a.unitValue);
+      setUnitID(a.unitID)
+      setConvertedUnitID(a.convertedUnitID)
       setSaleUnit(a.unitOfSale);
       setDescription(a.description);
       setSelectedID(a.id);
@@ -452,7 +525,7 @@ const ProductListPage = () => {
 
       let brandData = brandList.find((el) => el.brandID === a.brandID);
       if (brandData !== undefined) {
-        FetchProductsFromCategory(arnID, brandData.serviceID, brandData.categoryID);
+        FetchProductsFromCategory(a.brandID);
         FetchUnitsFromProduct(a.productID);
       }
     }
@@ -474,6 +547,8 @@ const ProductListPage = () => {
 
   const handleCancelClick = () => {
     setDisplay("Yes");
+    setisApprove("Yes");
+    setisPublish("Approved");
     setButtonLoading(false);
     setImage("");
     setUploadedImage("");
@@ -488,6 +563,8 @@ const ProductListPage = () => {
     setPrice("");
     setSaleUnit("");
     setConversionValue("");
+    setUnitID("");
+    setConvertedUnitID("");
     setDescription("");
     setButtonDisplay("none");
     setDataGridOpacity(1);
@@ -507,7 +584,7 @@ const ProductListPage = () => {
     setDescriptionErrorText("");
     setIsDescriptionError(false);
   };
-//#endregion 
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -533,7 +610,7 @@ const ProductListPage = () => {
                 {brandList.map((item, index) => {
                   return (
                     <MenuItem key={index} value={item.brandName}>
-                      {item.brandName}
+                      {item.brandNameDisplay}
                     </MenuItem>
                   );
                 })}
@@ -628,9 +705,9 @@ const ProductListPage = () => {
               size="small"
               value={saleUnit}
               onChange={(e) => {
-                // setSaleUnit(e.currentTarget.value);
-                // setSaleUnitwith1("1 nos");
-                // setOtherSaleUnit("kg");
+                setSaleUnit(e.currentTarget.value);
+                setSaleUnitwith1("1 nos");
+                setOtherSaleUnit("kg");
               }}
             />
           </Grid>
