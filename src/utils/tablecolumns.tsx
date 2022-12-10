@@ -628,6 +628,12 @@ export const branchColumns: GridColDef[] = [
     headerName: "Location Type",
     flex: 2.5,
     minWidth: 140,
+    renderCell: (param) => (
+      <Grid>
+        <Typography>{param.value}</Typography>
+        <Typography style={{ color: "#0000FF" }}>{param.row.underBy}</Typography>
+      </Grid>
+    ),
   },
   {
     field: "locationName",
@@ -636,10 +642,16 @@ export const branchColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "branch_incharge_contact_person",
+    field: "branchInchargeName",
     headerName: "Branch Admin",
     flex: 1.8,
     minWidth: 140,
+    renderCell: (param) => (
+      <Grid>
+        <Typography>{param.value}</Typography>
+        <Typography color="textSecondary">{param.row.branchInchargeContactNo}</Typography>
+      </Grid>
+    ),
   },
   {
     field: "addressLine",

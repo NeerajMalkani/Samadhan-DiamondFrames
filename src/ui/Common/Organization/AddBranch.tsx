@@ -403,9 +403,9 @@ const AddBranch = () => {
 
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            // debugger;
-            response.data.data = APIConverter(response.data.data);
-            // debugger;
+            debugger;
+            response.data.data = APIConverter(response.data.data, "addbranch");
+            debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
@@ -514,7 +514,7 @@ const AddBranch = () => {
 
   }
   const InsertUpdateData = () => {
-
+    debugger;
     setButtonLoading(true);
 
     if (actionStatus === "new") {
@@ -523,21 +523,16 @@ const AddBranch = () => {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           company_refno: companyNameID,
-
           parent_branch_refno: regionalOffice == "" ? "0" : regionalOffice,
           incharge_user_refno: assignBranchAdminID,
-
           locationtype_refno: branchTypeID,
-
           location_name: branchName,
           address: address,
           pincode: pincode == "" ? 0 : pincode,
           district_refno: cityID,
           state_refno: stateID,
-
           gst_no: gst,
           pan_no: pan,
-
           bank_account_no: accountNo,
           bank_name: bankName,
           bank_branch_name: bankBranchName,
@@ -545,19 +540,23 @@ const AddBranch = () => {
           view_status: display == "Yes" ? "1" : "0",
         }
       }
-      // debugger;
+      debugger;
       Provider.createDFCommon(Provider.API_URLS.AddBranch, params)
         .then((response) => {
-          // debugger;
+          debugger;
 
-          // console.log(response)
           if (response.data && response.data.code === 200) {
-            // console.log(response.data)
             // debugger;
-            response.data.data = APIConverter(response.data.data);
-            // debugger;
-            ResetFields();
-            FetchData("insert");
+            if (response.data.data.Created == 1) {
+              // debugger;
+              ResetFields();
+              FetchData("insert");
+            }
+            else {
+              setSnackMsg(response.data.message);
+              setOpen(true);
+              setSnackbarType("error");
+            }
           } else if (response.data.code === 304) {
             setSnackMsg(communication.ExistsError);
             setOpen(true);
@@ -771,36 +770,34 @@ const AddBranch = () => {
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
-
       setSelectedID(a.id);
       setButtonDisplay("unset");
       setActionStatus("edit");
-
       setBranchType(a.branchType);
       setBranchTypeID(a?.branchTypeID);
+
       if (a.branchTypeID == 3) {
         setShowRO(true);
         FetchRegionalOffice(a?.regionalOfficeID);
       }
 
-
-      let e = assignBranchAdminFullData.find((el) => el.id === a.branchAdminID);
-
-      setAssignBranchAdmin(e.employeeName);
+      //let e = assignBranchAdminFullData.find((el) => el.id === a.branchAdminID);
+      setAssignBranchAdmin(a.branchInchargeName);
       setAssignBranchAdminID(a?.branchAdminID);
-      setContactPerson(e?.mobileNo);
-
+      setContactPerson(a?.branchInchargeContactNo);
       setGst(a.gstNo);
       setPan(a.panNo);
-      setGst(a.gstNo);
       setBranchName(a.locationName);
       setAddress(a.address);
-      let s = stateNameList.find((el) => el.stateID === a.stateID);
-      if (s != null) {
-        setState(s.stateName);
-        setStateID(s.stateID);
-        FetchCity(s.stateID, a.cityID);
+
+      //let s = stateNameList.find((el) => el.stateID === a.stateID);
+      //if (s != null) {
+      setState(a?.stateName);
+      setStateID(a?.stateID);
+      if (a?.cityID != "") {
+        FetchCity(a.stateID, a.cityID);
       }
+      //}
       setPincode(a.pincode.toString() == "0" ? "" : a.pincode.toString());
       setAccountNo(a.accountNo);
       setBankName(a.bankName);
@@ -1181,6 +1178,7 @@ const AddBranch = () => {
                     rows={gridBranchListTemp}
                     columns={branchColumns}
                     pageSize={pageSize}
+                    rowHeight={90}
                     rowsPerPageOptions={[5, 10, 20]}
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     disableSelectionOnClick

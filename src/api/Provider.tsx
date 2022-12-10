@@ -156,15 +156,15 @@ class Provider {
     MyDesignationRefnocheck: "mydesignationrefnocheck/",
     DesignationCreate: "designationcreate/",
     DesignationUpdate: "designationupdate/",
-     
+
     MyBranchRefnocheck: "branchrefnocheck/",
-    MyFetchBranchtype:"getbranchtypebranchform/",
-    MyFetchBranchAssign:"getassignbranchadminbranchform/",
-    AddBranch:"branchcreate/",
-    EditBranch:"branchupdate/",
-    MyFetchRegionalOffice:"getparentbranchrefnobranchform/",
-    CompanyBranchForm:"getcompanynamebranchform/",
-    FetchBranchAssignContactNo:"getassignbranchadmin_contactno_branchform/",
+    MyFetchBranchtype: "getbranchtypebranchform/",
+    MyFetchBranchAssign: "getassignbranchadminbranchform/",
+    AddBranch: "branchcreate/",
+    EditBranch: "branchupdate/",
+    MyFetchRegionalOffice: "getparentbranchrefnobranchform/",
+    CompanyBranchForm: "getcompanynamebranchform/",
+    FetchBranchAssignContactNo: "getassignbranchadmin_contactno_branchform/",
 
     ServiceNameDealerBrandSetup: "getservicenamedealerbrandsetupform/",
     CategoryNameDealerBrandSetup: "getcategorynamedealerbrandsetupform/",

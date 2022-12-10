@@ -289,6 +289,10 @@ export interface BranchModel {
   gstNo: string;
   panNo: string;
   display: string;
+  branchInchargeName: string;
+  branchInchargeContactNo: string;
+  stateName: string;
+  cityName: string;
 }
 
 export interface BranchTypeModel {
@@ -492,7 +496,7 @@ export interface StateModel {
 
 export interface CityModel {
   id: number;
-  cityID:string;
+  cityID: string;
   cityName: string;
   stateID: number;
   isActive: string;
@@ -1089,5 +1093,5 @@ export interface summaryMaterialModel {
   action: string;
 }
 export interface ContactModel {
-   contactNo:number;
+  contactNo: number;
 }

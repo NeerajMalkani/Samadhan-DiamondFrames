@@ -1,4 +1,4 @@
-export const APIConverter = (response: any) => {
+export const APIConverter = (response: any, type?: string) => {
   function renameKey(obj: any, oldKey: string, newKey: string) {
     if (obj.hasOwnProperty(oldKey)) {
       obj[newKey] = obj[oldKey];
@@ -7,6 +7,12 @@ export const APIConverter = (response: any) => {
   }
 
   response.forEach((obj) => {
+    if (type == "addbranch") {
+      renameKey(obj, "locationtype_refno", "branchTypeID");
+      renameKey(obj, "gst_no", "gstNo");
+      renameKey(obj, "pan_no", "panNo");
+    }
+
     renameKey(obj, "product_refno", "productID");
     renameKey(obj, "product_name", "productName");
     renameKey(obj, "product_refno", "id");
@@ -121,13 +127,17 @@ export const APIConverter = (response: any) => {
     renameKey(obj, "myemployee_refno", "id");
 
     renameKey(obj, "company_refno", "companyID");
-    renameKey(obj, "parent_branch_refno", "branchTypeID");
-    renameKey(obj, "incharge_user_refno", "assignBranchAdminID");
+    renameKey(obj, "parent_branch_refno", "regionalOfficeID");
+    renameKey(obj, "incharge_user_refno", "branchAdminID");
     renameKey(obj, "pincode", "pincode");
     renameKey(obj, "employee_user_refno", "id");
     renameKey(obj, "branch_refno", "id");
     renameKey(obj, "myservice_refno", "serviceID");
-    
+
+    renameKey(obj, "branch_incharge_contact_person", "branchInchargeName");
+    renameKey(obj, "branch_incharge_contact_person_mobile_no", "branchInchargeContactNo");
+    renameKey(obj, "underby", "underBy");
+
 
   });
 
