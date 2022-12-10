@@ -98,6 +98,9 @@ export interface ProductModel {
   unit2Name: string;
   selectedUnitID: number;
   isChecked: boolean;
+  unitOfSale: string;
+  selectedUnit:string;
+  convertedUnit:string;
 }
 
 export interface RateCardProductModel {
@@ -453,6 +456,7 @@ export interface BrandModel {
   contractorDiscount: string;
   display: string;
   action: string;
+  brandNameDisplay:string;
 }
 
 export interface ImageDataModel {
@@ -471,11 +475,20 @@ export interface ProductSetupModel {
   image: string;
   description: string;
   unitOfSale: string;
-  unitID: number;
+  unitID: string;
   price: string;
   unitValue: string;
   display: string;
   action: string;
+  actualUnitName: string;
+  unitOfSaleText: string;
+  brandPrefix: string;
+  convertedUnitID: string;
+  convertedUnitValue: string;
+  isApprove: string;
+  isPublish: string;
+  SaleUnit:string;
+  
 }
 
 export interface BuyerCategoryModel {

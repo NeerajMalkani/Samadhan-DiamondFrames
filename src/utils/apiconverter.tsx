@@ -137,7 +137,18 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "branch_incharge_contact_person", "branchInchargeName");
     renameKey(obj, "branch_incharge_contact_person_mobile_no", "branchInchargeContactNo");
     renameKey(obj, "underby", "underBy");
-
+    
+    renameKey(obj, "actual_unit_name", "unitOfSale");
+    renameKey(obj, "actual_unit_name_txt", "unitOfSaleText");
+    renameKey(obj, "actual_unit_refno", "unitID");
+    renameKey(obj, "brand_prefixname", "brandPrefix");
+    renameKey(obj, "convert_unit_refno", "convertedUnitID");
+    renameKey(obj, "converted_unit_value", "convertedUnitValue");
+    renameKey(obj, "isapprove", "isApprove");
+    renameKey(obj, "ispublish", "isPublish");
+    renameKey(obj, "product_image_url", "image");
+    renameKey(obj, "sales_unit", "unitOfSale");
+    
 
   });
 
