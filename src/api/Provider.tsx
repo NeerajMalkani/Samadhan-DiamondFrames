@@ -205,7 +205,8 @@ class Provider {
     GetBrandnameDealerProductform:"getbrandnamedealerproductform/",
     GetProductDealerProductform:"getproductnamedealerproductform/",
     GetProductDataDealerProductform:"getproductdatadealerproductform/",
-    DealerProductSetUpCreate:"dealerproductsetupcreate/"	
+    DealerProductSetUpCreate:"dealerproductsetupcreate/",	
+    dealerproductsetupupdate:"dealerproductsetupupdate/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {
@@ -237,6 +238,17 @@ class Provider {
 
   createDFCommonWithouParam(resource: string) {
     return axios.post<any>(`${BASE_URL}/${resource}`);
+  }
+  createDFCommonWithHeader(resource, params) {
+    if (params) {
+      return axios.post(`${BASE_URL}/${resource}`, params, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      return axios.post(`${BASE_URL}/${resource}`, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    }
   }
 
   update(resource: string, params: any, id: any) {
@@ -291,6 +303,7 @@ class Provider {
       return axios.post(`${BASE_URL_Dashboard}/${resource}`);
     }
   }
+
   createDFAdminWithHeader(resource, params) {
     if (params) {
       return axios.post(`${BASE_URL_Admin}/${resource}`, params, {

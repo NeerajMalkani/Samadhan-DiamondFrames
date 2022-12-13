@@ -80,9 +80,9 @@ const ProductListPage = () => {
   const [conversionValue, setConversionValue] = useState<string>("");
   const [isConversionValueError, setIsConversionValueError] = useState<boolean>(false);
   const [conversionValueErrorText, setConversionValueErrorText] = useState<string>("");
-  const [unitID,setUnitID]=useState<string>("")
-  const [convertedUnitID,setConvertedUnitID]=useState<string>("")
-   
+  const [unitID, setUnitID] = useState<string>("")
+  const [convertedUnitID, setConvertedUnitID] = useState<string>("")
+
   // const [actualName, setActualName] = useState<string>("");
   // const [isActualNameValueError, setIsActualNameValueError] = useState<boolean>(false);
   // const [ActualNameValueErrorText, setisActualNameErrorText] = useState<string>("");
@@ -144,6 +144,44 @@ const ProductListPage = () => {
       .catch((e) => { });
   };
 
+  const APIConverterProductScreen = (response) => {
+    function renameKey(obj, oldKey, newKey) {
+      if (obj.hasOwnProperty(oldKey)) {
+        obj[newKey] = obj[oldKey];
+        if (newKey === "display") {
+          obj[newKey] = obj[newKey] == "1" ? true : false;
+        }
+        delete obj[oldKey];
+      }
+    }
+  
+    response.forEach((obj) => {
+  
+      renameKey(obj, "actual_unit_name", "unitOfSale");
+      renameKey(obj, "actual_unit_name_txt", "unitOfSaleText");
+      renameKey(obj, "actual_unit_refno", "unitID");
+      renameKey(obj, "brand_name", "brandName");
+      renameKey(obj, "brand_refno", "brandID");
+      renameKey(obj, "company_product_refno", "id");
+      renameKey(obj, "convert_unit_name", "convertUnitName");
+      renameKey(obj, "product_refno", "productID");
+      renameKey(obj, "product_name", "productName");
+
+      renameKey(obj, "brand_prefixname", "brandPrefix");
+      renameKey(obj, "convert_unit_refno", "convertedUnitID");
+      renameKey(obj, "converted_unit_value", "convertedUnitValue");
+      renameKey(obj, "isapprove", "isApprove");
+      renameKey(obj, "ispublish", "isPublish");
+      renameKey(obj, "product_image_url", "image");
+      renameKey(obj, "sales_unit", "unitOfSale");
+      renameKey(obj, "view_status", "display");
+
+      
+    });
+  
+    return response;
+  };
+
   const FetchData = (type: string, UserID: number) => {
     handleCancelClick();
     let params = {
@@ -159,12 +197,11 @@ const ProductListPage = () => {
         // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            // debugger;
-            response.data.data = APIConverter(response.data.data);
-            // debugger;
+            debugger;
+            response.data.data = APIConverterProductScreen(response.data.data);
+            debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-              a.id = index + 1;
               a.display = a.display ? "Yes" : "No";
               a.isApprove = a.isApprove ? "Yes" : "No";
               a.isPublish = a.isPublish ? "Approved" : "No";
@@ -290,7 +327,7 @@ const ProductListPage = () => {
       setPnID(ac.productID);
       setIsProductError(false);
       setProductError("");
-      
+
     }
   };
 
@@ -305,14 +342,14 @@ const ProductListPage = () => {
 
     Provider.createDFCommon(Provider.API_URLS.GetProductDataDealerProductform, params)
       .then((response: any) => {
-        // debugger;
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-
             // debugger;
             response.data.data = APIConverter(response.data.data);
             //  debugger;
-
+            setUnitID(response.data.data[0].unitID);
+            setConvertedUnitID(response.data.data[0].convertedUnitID);
             setSaleUnit(response.data.data[0].unitOfSale);
             setSaleUnitwith1(response.data.data[0].selectedUnit);
             setOtherSaleUnit(response.data.data[0].convertedUnit);
@@ -394,37 +431,31 @@ const ProductListPage = () => {
 
   const InsertUpdateData = (Status: string, fileName: string) => {
     debugger;
+    const datas = new FormData();
     if (Status.toLowerCase() === "success") {
       if (actionStatus === "new") {
+
         let params = {
-          // DealerID: CookieUserID,
-          // BrandID: bnID,
-          // ProductID: pnID,
-          // Image: AWSImagePath + fileName,
-          // Price: price,
-          // UnitValue: conversionValue,
-          // Description: description,
-          // Display: display === "Yes",
-          data:{
-            Sess_UserRefno: cookies.dfc.UserID,
-            brand_refno: bnID,
-            product_refno: pnID,
-            price: price,
-            sales_unit: saleUnit,
-            converted_unit_value: conversionValue,
-            actual_unit_refno: unitID,
-            convert_unit_refno: convertedUnitID,
-            description: description,
-            view_status:display == "Yes" ? "1" : "0",
-          }
+          Sess_UserRefno: cookies.dfc.UserID,
+          brand_refno: bnID,
+          product_refno: pnID,
+          price: price,
+          sales_unit: saleUnit,
+          converted_unit_value: conversionValue,
+          actual_unit_refno: unitID,
+          convert_unit_refno: convertedUnitID,
+          description: description,
+          view_status: display == "Yes" ? "1" : "0",
         };
         debugger;
-        Provider.createDFCommon(Provider.API_URLS.DealerProductSetUpCreate, params)
+        datas.append("data", JSON.stringify(params));
+        datas.append("product_image", uploadFileUpload ? uploadFileUpload : "");
+        debugger;
+        console.log(datas);
+        Provider.createDFCommonWithHeader(Provider.API_URLS.DealerProductSetUpCreate, datas)
           .then((response: any) => {
             debugger;
             if (response.data && response.data.code === 200) {
-        
-              response.data.data = APIConverter(response.data.data);
               debugger;
               FetchData("added", CookieUserID);
             } else if (response.data.code === 304) {
@@ -447,17 +478,33 @@ const ProductListPage = () => {
           });
       } else if (actionStatus === "edit") {
         const params = {
-          ID: selectedID,
-          DealerID: CookieUserID,
-          BrandID: bnID,
-          ProductID: pnID,
-          Image: AWSImagePath + fileName,
-          Price: price,
-          UnitValue: conversionValue,
-          Description: description,
-          Display: display === "Yes",
+          // ID: selectedID,
+          // DealerID: CookieUserID,
+          // BrandID: bnID,
+          // ProductID: pnID,
+          // Image: AWSImagePath + fileName,
+          // Price: price,
+          // UnitValue: conversionValue,
+          // Description: description,
+          // Display: display === "Yes",
+
+          Sess_UserRefno: cookies.dfc.UserID,
+          company_product_refno: selectedID,
+          brand_refno: bnID,
+          product_refno: pnID,
+          price: price,
+          sales_unit: saleUnit,
+          converted_unit_value: conversionValue,
+          actual_unit_refno: unitID,
+          convert_unit_refno: convertedUnitID,
+          description: description,
+          view_status: display ? "1" : "0",
         };
-        Provider.create("dealerproduct/updateproduct", params)
+
+        datas.append("data", JSON.stringify(params));
+        datas.append("product_image", uploadFileUpload ? uploadFileUpload[0] : "");
+        debugger;
+        Provider.createDFCommonWithHeader(Provider.API_URLS.dealerproductsetupupdate, datas)
           .then((response: any) => {
             if (response.data && response.data.code === 200) {
               FetchData("updated", CookieUserID);
@@ -488,6 +535,7 @@ const ProductListPage = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: ProductSetupModel | undefined) => {
+    debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
@@ -495,15 +543,17 @@ const ProductListPage = () => {
       setActionStatus("edit");
 
       setDisplay(a.display);
-      setisApprove(a.isApprove)
-      setisPublish(a.isPublish)
+      setisApprove(a.isApprove);
+      setisPublish(a.isPublish);
+
       setBn(a.brandName);
       setBnID(a.brandID);
       setPn(a.productName);
       setPnID(a.productID);
       setUploadedImage(a.image.split("/").pop());
       setPrice(a.price);
-      setConversionValue(a.unitValue);
+
+      setConversionValue(a.convertedUnitValue);
       setUnitID(a.unitID)
       setConvertedUnitID(a.convertedUnitID)
       setSaleUnit(a.unitOfSale);
