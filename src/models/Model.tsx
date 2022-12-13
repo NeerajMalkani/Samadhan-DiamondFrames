@@ -444,6 +444,7 @@ export interface BrandModel {
   gst: string;
   brandPrefixName: string;
   brandID: number;
+  productID:number;
   unitOfSale: string;
   unitID: number;
   unitName: string;
@@ -671,6 +672,7 @@ export interface EmployeeModel {
   srno: number;
   employeeName: string;
   employeeCode: string;
+  employeeID:string;
   mobileNo: string;
   branchName: string;
   departmentName: string;
@@ -683,6 +685,8 @@ export interface EmployeeModel {
   rateUnit: string;
   altRateUnit: string;
   material: string;
+  companyName:string;
+  aadharNo:string;
 }
 
 export interface RateCardModel {

@@ -504,7 +504,7 @@ const ProductListPage = () => {
         datas.append("data", JSON.stringify(params));
         datas.append("product_image", uploadFileUpload ? uploadFileUpload[0] : "");
         debugger;
-        Provider.createDFCommonWithHeader(Provider.API_URLS.dealerproductsetupupdate, datas)
+        Provider.createDFCommonWithHeader(Provider.API_URLS.DealerProductSetUpCreate, datas)
           .then((response: any) => {
             if (response.data && response.data.code === 200) {
               FetchData("updated", CookieUserID);

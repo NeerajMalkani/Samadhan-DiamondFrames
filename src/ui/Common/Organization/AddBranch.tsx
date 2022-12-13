@@ -403,9 +403,9 @@ const AddBranch = () => {
 
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
+            // debugger;
             response.data.data = APIConverter(response.data.data, "addbranch");
-            debugger;
+            // debugger;
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.display = a.display ? "Yes" : "No";
@@ -514,7 +514,7 @@ const AddBranch = () => {
 
   }
   const InsertUpdateData = () => {
-    debugger;
+    // debugger;
     setButtonLoading(true);
 
     if (actionStatus === "new") {
@@ -540,10 +540,10 @@ const AddBranch = () => {
           view_status: display == "Yes" ? "1" : "0",
         }
       }
-      debugger;
+      // debugger;
       Provider.createDFCommon(Provider.API_URLS.AddBranch, params)
         .then((response) => {
-          debugger;
+          // debugger;
 
           if (response.data && response.data.code === 200) {
             // debugger;
@@ -599,11 +599,11 @@ const AddBranch = () => {
 
         }
       }
-      debugger;
+      // debugger;
 
       Provider.createDFCommon(Provider.API_URLS.EditBranch, params)
         .then((response) => {
-          debugger;
+          // debugger;
           if (response.data && response.data.code === 200) {
             response.data.data = APIConverter(response.data.data);
             FetchData("update");
@@ -766,7 +766,7 @@ const AddBranch = () => {
   };
 
   const handelEditAndDelete = (type: string | null, a: BranchModel | undefined) => {
-    debugger;
+    // debugger;
     if (type?.toLowerCase() === "edit" && a !== undefined) {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");

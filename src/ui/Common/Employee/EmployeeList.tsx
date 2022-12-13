@@ -111,7 +111,7 @@ const EmployeeListPage = () => {
   };
 
   const FetchData = (type: string) => {
-    debugger;
+    // debugger;
     let params = {
       //AddedByUserID: cookies.dfc.UserID,
       data: {
@@ -124,10 +124,10 @@ const EmployeeListPage = () => {
     ResetFields();
     Provider.createDFCommon(Provider.API_URLS.MyemployeeList, params)
       .then((response: any) => {
-        debugger;
+        // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
+            // debugger;
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
@@ -161,7 +161,7 @@ const EmployeeListPage = () => {
   };
 
   const FetchSearchData = () => {
-    debugger;
+    // debugger;
     let params = {
       // AddedByUserID: cookies.dfc.UserID,
       // AadharNo: aadharNo,
@@ -172,15 +172,19 @@ const EmployeeListPage = () => {
         mobile_no_s: mobileNo
       }
     };
+    // debugger;
     ResetFields();
     Provider.createDFCommon(Provider.API_URLS.EmployeeSearch, params)
       .then((response: any) => {
-        debugger;
+        // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger
             response.data.data = APIConverter(response.data.data);
+            
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
+            
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -204,7 +208,7 @@ const EmployeeListPage = () => {
   };
 
   const handleSearchClick = () => {
-    debugger;
+    // debugger;
     let isValid: boolean = true;
 
     if (aadharNo.trim() === "" && mobileNo.trim() === "") {
@@ -249,16 +253,26 @@ const EmployeeListPage = () => {
 
   const InsertUpdateData = (employeeName: string, mobileNo: string, aadharNo: string) => {
     if (actionStatus === "new") {
-      Provider.create("master/insertuseremployees", {
-        AddedByUserID: cookies.dfc.UserID,
-        EmployeeName: employeeName,
-        MobileNo: mobileNo,
-        AadharNo: aadharNo,
-
-      })
+      let params={
+        data:{
+          // AddedByUserID: cookies.dfc.UserID,
+          // EmployeeName: employeeName,
+          // MobileNo: mobileNo,
+          // AadharNo: aadharNo,
+          Sess_UserRefno:  cookies.dfc.UserID,
+          aadhar_no: aadharNo,
+          employee_mobile_no: mobileNo,
+          Sess_company_refno:  cookies.dfc.Sess_company_refno,
+          Sess_branch_refno: cookies.dfc.Sess_branch_refno
+        }
+      }
+      Provider.createDFCommon(Provider.API_URLS.EmployeeCreate,params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
+            debugger;
+            response.data.data = APIConverter(response.data.data);
+            debugger;
             FetchData("added");
           } else if (response.data.code === 304) {
             setSnackMsg(response.data.message);
@@ -288,10 +302,12 @@ const EmployeeListPage = () => {
         Sess_branch_refno: cookies.dfc.Sess_branch_refno
       }
     }
+    debugger;
     Provider.createDFCommon(Provider.API_URLS.EmployeeAdd, params)
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {
+          response.data.data = APIConverter(response.data.data);
           FetchData("added");
         } else if (response.data.code === 304) {
           setSnackMsg(response.data.message);
@@ -598,7 +614,7 @@ const EmployeeListPage = () => {
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        debugger;
+                         debugger;
                         const arrActivity = [...gridEmployeeSearchList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         InsertExistingEmployee(a.id);

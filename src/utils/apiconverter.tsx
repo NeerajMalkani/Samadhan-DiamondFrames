@@ -148,6 +148,16 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "ispublish", "isPublish");
     renameKey(obj, "product_image_url", "image");
     renameKey(obj, "sales_unit", "unitOfSale");
+    renameKey(obj, "aadhar_no_s", "aadharNo");
+    renameKey(obj, "mobile_no_s", "mobileNo");
+    renameKey(obj, "Search_employee_refno", "id");
+    renameKey(obj, "Search_employee_company_name", "companyName");
+    renameKey(obj, "Search_employee_name", "employeeName");
+    renameKey(obj, "Search_Employee_designationname", "designationName");
+    renameKey(obj, "Search_employee_aadhar_no", "aadharNo");
+    renameKey(obj, "Search_employee_mobile_no", "mobileNo");
+    renameKey(obj, "employee_user_refno", "employeeID");
+
     
 
   });

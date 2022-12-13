@@ -30,7 +30,7 @@ import ProductListPage from "../ui/Dealer/Product/Product";
 import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
 import Basic from "../ui/Dealer/CompanyProfile/Basic";
 import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
-import EmployeeList from "../ui/Common/Employee/EmployeeList";
+import EmployeeListPage from "../ui/Common/Employee/EmployeeList";
 import CBasic from "../ui/Common/CompanyProfile/CBasic";
 import MyServices from "../ui/Common/CompanyProfile/MyServices";
 //import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
@@ -141,7 +141,7 @@ const AppRoutes = () => {
               <Route path="generaluser/imagegallery/product" element={<ImageGalleryProductPage />} />
               <Route path="contractor/clientlist" element={<ContractorClientPage />} />
               <Route path="contractor/quotationandestimation/designwise" element={<DesignWisePage />} />
-              <Route path="Common/employee/employeelist" element={<EmployeeList />} />
+              <Route path="Common/employee/employeelist" element={<EmployeeListPage />} />
               <Route path="users/approved" element={<Approved />} />
               <Route path="users/pending" element={<Pending />} />
               <Route path="users/declined" element={<Declined />} />

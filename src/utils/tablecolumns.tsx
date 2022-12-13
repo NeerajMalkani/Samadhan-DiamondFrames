@@ -2193,11 +2193,18 @@ export const employeeSearchResult: GridColDef[] = [
     sortable: false,
   },
   {
+    field: "companyName",
+    headerName: "Company Name",
+    flex: 1.3,
+    minWidth: 120,
+  },
+  {
     field: "employeeName",
     headerName: "Employee Name / Code",
     flex: 1.3,
     minWidth: 120,
   },
+
   {
     field: "aadharNo",
     headerName: "Aadhar No",
