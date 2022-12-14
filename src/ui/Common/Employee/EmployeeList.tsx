@@ -169,7 +169,8 @@ const EmployeeListPage = () => {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
         aadhar_no_s: aadharNo,
-        mobile_no_s: mobileNo
+        mobile_no_s: mobileNo,
+        Sess_company_refno:cookies.dfc.Sess_company_refno
       }
     };
     // debugger;
@@ -179,7 +180,7 @@ const EmployeeListPage = () => {
         // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger
+             debugger
             response.data.data = APIConverter(response.data.data);
             
             const arrList = [...response.data.data];
@@ -255,10 +256,6 @@ const EmployeeListPage = () => {
     if (actionStatus === "new") {
       let params={
         data:{
-          // AddedByUserID: cookies.dfc.UserID,
-          // EmployeeName: employeeName,
-          // MobileNo: mobileNo,
-          // AadharNo: aadharNo,
           Sess_UserRefno:  cookies.dfc.UserID,
           aadhar_no: aadharNo,
           employee_mobile_no: mobileNo,
@@ -266,6 +263,7 @@ const EmployeeListPage = () => {
           Sess_branch_refno: cookies.dfc.Sess_branch_refno
         }
       }
+      debugger
       Provider.createDFCommon(Provider.API_URLS.EmployeeCreate,params)
         .then((response) => {
           debugger;
@@ -307,7 +305,8 @@ const EmployeeListPage = () => {
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {
-          response.data.data = APIConverter(response.data.data);
+         // response.data.data = APIConverter(response.data.data);
+          debugger;
           FetchData("added");
         } else if (response.data.code === 304) {
           setSnackMsg(response.data.message);
@@ -373,7 +372,7 @@ const EmployeeListPage = () => {
         }
       }
       Provider.createDFCommon(Provider.API_URLS.EmployeeotpVerify, {
-        EmployeeID: employeeID,
+        EmployeeID: employeeID,  
         OTP: otp,
       })
         .then((response) => {
@@ -554,6 +553,7 @@ const EmployeeListPage = () => {
                     helperText={mobileErrorText}
                     value={mobileNo}
                   />
+                  
                 </Grid>
               </Grid>
             </Grid>
@@ -561,8 +561,14 @@ const EmployeeListPage = () => {
             <Grid item xs={4} direction="row" justifyContent="center" alignItems="center" >
               <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
                 <Grid item sm={5}>
-                  <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={() => { handleSearchClick() }}>
-                    Search
+                  <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} 
+                 onClick={() => { handleSearchClick() }}
+                  >
+                     {/* onChange={(event)=> searchMobileNo(event.target.value)} */}
+                  
+                    {/* {data.map((item)=>(
+                      
+                    ))} */}
                   </Button>
                 </Grid>
                 <Grid item sm={2}>
