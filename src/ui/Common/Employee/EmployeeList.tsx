@@ -1,6 +1,6 @@
 import {
   Alert, AlertColor, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack
+  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Autocomplete
 } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
@@ -8,9 +8,9 @@ import React, { useEffect, useState } from "react";
 import Provider from "../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
-import { activityColumns, employeeColumns, employeeSearchResult } from "../../../utils/tablecolumns";
+import { activityColumns, employeeColumns, employeeSearchResult, mobileSearchList } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
-import { ActivityRoleNameModel, EmployeeModel } from "../../../models/Model";
+import { ActivityRoleNameModel, EmployeeModel, MobileNoModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
@@ -19,6 +19,7 @@ import ListIcon from "@mui/icons-material/List";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { NullOrEmpty } from "../../../utils/CommonFunctions";
 import { APIConverter } from "../../../utils/apiconverter";
+import { type } from "os";
 
 const EmployeeListPage = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -45,6 +46,8 @@ const EmployeeListPage = () => {
 
   const [gridEmployeeSearchList, setGridEmployeeSearchList] = useState<Array<EmployeeModel>>([]);
   const [gridEmployeeSearchListTemp, setGridEmployeeSearchListTemp] = useState<Array<EmployeeModel>>([]);
+
+  const [mobileSearchList, setMobileSearchList] = useState<Array<MobileNoModel>>([])
 
   const [mobileNo, setMobileNo] = React.useState("");
   const [mobileErrorText, setMobileErrorText] = useState("");
@@ -89,6 +92,13 @@ const EmployeeListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [acitvityNameListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
+  const [mobileNumber, setMobileNumber] = useState("")
+  const [suggestion, setSuggestion] = useState([]);
+  const [mobileNoFullData, setMobileNoFullData] = useState([]);
+  const editValues = useState(false);
+  const [selectedMobileNumber, setSelectedMobileNumber] = useState("");
+
+  // const [searchMobileNo,setSearchMobileNo]=useState("")
   //#endregion 
 
   //#region Functions
@@ -170,7 +180,7 @@ const EmployeeListPage = () => {
         Sess_UserRefno: cookies.dfc.UserID,
         aadhar_no_s: aadharNo,
         mobile_no_s: mobileNo,
-        Sess_company_refno:cookies.dfc.Sess_company_refno
+        Sess_company_refno: cookies.dfc.Sess_company_refno
       }
     };
     // debugger;
@@ -180,12 +190,12 @@ const EmployeeListPage = () => {
         // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-             debugger
+            debugger
             response.data.data = APIConverter(response.data.data);
-            
+
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
-            
+
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -254,17 +264,17 @@ const EmployeeListPage = () => {
 
   const InsertUpdateData = (employeeName: string, mobileNo: string, aadharNo: string) => {
     if (actionStatus === "new") {
-      let params={
-        data:{
-          Sess_UserRefno:  cookies.dfc.UserID,
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
           aadhar_no: aadharNo,
           employee_mobile_no: mobileNo,
-          Sess_company_refno:  cookies.dfc.Sess_company_refno,
+          Sess_company_refno: cookies.dfc.Sess_company_refno,
           Sess_branch_refno: cookies.dfc.Sess_branch_refno
         }
       }
       debugger
-      Provider.createDFCommon(Provider.API_URLS.EmployeeCreate,params)
+      Provider.createDFCommon(Provider.API_URLS.EmployeeCreate, params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
@@ -305,7 +315,7 @@ const EmployeeListPage = () => {
       .then((response) => {
         debugger;
         if (response.data && response.data.code === 200) {
-         // response.data.data = APIConverter(response.data.data);
+          // response.data.data = APIConverter(response.data.data);
           debugger;
           FetchData("added");
         } else if (response.data.code === 304) {
@@ -372,7 +382,7 @@ const EmployeeListPage = () => {
         }
       }
       Provider.createDFCommon(Provider.API_URLS.EmployeeotpVerify, {
-        EmployeeID: employeeID,  
+        EmployeeID: employeeID,
         OTP: otp,
       })
         .then((response) => {
@@ -473,6 +483,119 @@ const EmployeeListPage = () => {
   //     }
   //   }
   /*end search toggle coding*/
+
+  //HanldeSearchforMobile
+  // const handleMobileSearch =(query:string)=>{
+  //   let params = {
+  //     data: {
+  //       Sess_UserRefno: cookies.dfc.UserID,
+  //       mobile_no:mobileNo
+  //     }
+  //   };
+  //   debugger
+  //   Provider.createDFCommon(Provider.API_URLS.MobilenoAutocomplete, params)
+  //   .then((response) => {
+  //     debugger;
+  //     if (response.data && response.data.code === 200) {
+  //       setMobileNo(response.data)
+  //      // response.data.data = APIConverter(response.data.data);
+  //       debugger;
+  //       FetchData("inserted");
+  //     } else if (response.data.code === 304) {
+  //       setSnackMsg(response.data.message);
+  //       setSnackbarType("error");
+  //       ResetFields();
+  //     } else {
+  //       ResetFields();
+  //       setSnackMsg(communication.Error);
+  //       setSnackbarType("error");
+  //     }
+  //   })
+  //   setSearchQuery(query);
+  //   if (query === "") {
+  //     setEmployeeListTemp(employeeList);
+  //   } else {
+  //     setEmployeeListTemp(
+  //       employeeList.filter((el: EmployeeModel) => {
+  //         return el.employeeName.toString().toLowerCase().includes(query.toLowerCase()) ||
+  //           el.mobileNo.toString().toLowerCase().includes(query.toLowerCase())
+  //         // ||
+  //         // el.branchName.toString().toLowerCase().includes(query.toLowerCase()) ||
+  //         // el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
+  //         // el.designationName.toString().toLowerCase().includes(query.toLowerCase())
+
+  //       })
+  //     );
+  //   }
+  // }
+  //endHandleSearchforMobile
+
+  //2nd try for HanldeSearchforMobile
+  const onChangeHandler = (mobileNumber: string) => {
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        mobile_no: mobileNumber
+      }
+    };
+    debugger
+    Provider.createDFCommon(Provider.API_URLS.MobilenoAutocomplete, params)
+      .then((response) => {
+        debugger;
+        if (response.data && response.data.code === 200) {
+
+          // let matches = [];
+          // if(mobileNumber.length>0){
+          //   matches=mobileNumber.filter(usr=>{
+          //     const regex =new RegExp(`${mobileNumber}`,"hi");
+          //     return mobileNumber.match(regex)
+          //   })
+          // }
+          // setMobileNumber(mobileNumber)
+          response.data.data = APIConverter(response.data.data);
+          // response.data.data = APIConverter(response.data.data);
+          // onChangeHandler("inserted")
+          //setMobileNumber(response.data);
+          const mobileNoData: any = [];
+          response.data.data.map((data: any, i: number) => {
+            mobileNoData.push({
+              id: i+ 1,
+              label: data.mobileNo,
+            });
+          });
+          setMobileNoFullData(mobileNoData);
+
+          //setMobileNoFullData(response.data.data);
+          debugger;
+          //  FetchData("inserted");
+        } else if (response.data.code === 304) {
+          setSnackMsg(response.data.message);
+          setSnackbarType("error");
+          ResetFields();
+        } else {
+          ResetFields();
+          setSnackMsg(communication.Error);
+          setSnackbarType("error");
+        }
+      })
+    //  setSearchQuery(query);
+    //  if (query === "") {
+    //    setEmployeeListTemp(employeeList);
+    //  } else {
+    //    setEmployeeListTemp(
+    //      employeeList.filter((el: EmployeeModel) => {
+    //        return el.employeeName.toString().toLowerCase().includes(query.toLowerCase()) ||
+    //          el.mobileNo.toString().toLowerCase().includes(query.toLowerCase())
+    //         ||
+    //         el.branchName.toString().toLowerCase().includes(query.toLowerCase()) ||
+    //         el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
+    //         el.designationName.toString().toLowerCase().includes(query.toLowerCase())
+
+    //      })
+    //    );
+    //  }
+  }
+  //end for HanldeSearchforMobile
   //#endregion 
 
   return (
@@ -536,7 +659,8 @@ const EmployeeListPage = () => {
                   </Typography>
                 </Grid>
                 <Grid item sm={6}>
-                  <TextField
+                  {/* <TextField
+                 
                     fullWidth
                     inputProps={{
                       maxLength: 10,
@@ -544,16 +668,52 @@ const EmployeeListPage = () => {
                     variant="outlined"
                     size="small"
                     type="number"
-                    onChange={(e) => {
-                      setMobileNo((e.target as HTMLInputElement).value);
-                      isSetMobileNoError(false);
-                      setMobileErrorText("");
-                    }}
+                    // onChange={(e) => {
+                    //   setMobileNo((e.target as HTMLInputElement).value);
+                    //   isSetMobileNoError(false);
+                    //   setMobileErrorText("");
+                    // }}
+                    // onChange={(e)=>
+                    //   handleMobileSearch((e.target as HTMLInputElement).value)
+                    // }
+                    
+                     onChange={(e)=>
+                      onChangeHandler((e.target as HTMLInputElement).value)
+                    }
                     error={isMobileNoError}
                     helperText={mobileErrorText}
-                    value={mobileNo}
+                    value={mobileNumber}
                   />
-                  
+                  {suggestion && suggestion.map((suggestion,i)=>
+                  <div>{suggestion.mobileNumber}</div>
+                  )} */}
+                  <Autocomplete
+                    disabled={editValues[0]}
+                    disablePortal
+                    fullWidth
+                    options={mobileNoFullData}
+                    onInputChange={(event: React.SyntheticEvent, value: any) => {
+                      debugger;
+                      isSetMobileNoError(false);
+                      setMobileErrorText("");
+                      setMobileNumber(value);
+                      onChangeHandler(value.toString());
+                      // if (value !== null) {
+
+                      // }
+                    }}
+                    // onChange={(event: React.SyntheticEvent, value: any) => {
+                    //   debugger;
+                    //   isSetMobileNoError(false);
+                    //   setMobileErrorText("");
+                    //   if (value !== null) {
+
+                    //   }
+                    // }}
+                    value={mobileNumber}
+                    renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isMobileNoError} helperText={mobileErrorText} />}
+                  />
+
                 </Grid>
               </Grid>
             </Grid>
@@ -561,14 +721,15 @@ const EmployeeListPage = () => {
             <Grid item xs={4} direction="row" justifyContent="center" alignItems="center" >
               <Grid container direction="row" justifyContent="center" alignItems="center" spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} >
                 <Grid item sm={5}>
-                  <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} 
-                 onClick={() => { handleSearchClick() }}
+                  <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }}
+                    onClick={() => { handleSearchClick() }}
                   >
-                     {/* onChange={(event)=> searchMobileNo(event.target.value)} */}
-                  
+                    {/* onChange={(event)=> searchMobileNo(event.target.value)} */}
+
                     {/* {data.map((item)=>(
                       
                     ))} */}
+                    Search
                   </Button>
                 </Grid>
                 <Grid item sm={2}>
@@ -620,7 +781,7 @@ const EmployeeListPage = () => {
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                         debugger;
+                        debugger;
                         const arrActivity = [...gridEmployeeSearchList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         InsertExistingEmployee(a.id);

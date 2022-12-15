@@ -688,6 +688,9 @@ export interface EmployeeModel {
   companyName:string;
   aadharNo:string;
 }
+export interface MobileNoModel{
+  mobile_no_Result:string;
+}
 
 export interface RateCardModel {
   id: number;

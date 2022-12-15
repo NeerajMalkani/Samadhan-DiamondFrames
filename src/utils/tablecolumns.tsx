@@ -1460,6 +1460,16 @@ export const employeeColumns: GridColDef[] = [
   },
 ];
 
+export const mobileSearchList:GridColDef[]=[
+  {
+    field: "mobile_no_Result",
+    // headerName: "Mobile No",
+    flex: 1.8,
+    minWidth: 120,
+    sortable: false,
+  },
+]
+
 export const clientListColumns: GridColDef[] = [
   {
     field: "srno",

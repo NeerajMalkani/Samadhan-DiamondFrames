@@ -122,6 +122,7 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "designationname", "designationName");
     renameKey(obj, "employee_active_status", "loginStatus");
     renameKey(obj, "employee_mobile_no", "mobileNo");
+    renameKey(obj, "mobile_no_Result", "mobileNo");
     renameKey(obj, "mobile_OTP_verify_status", "verifyStatus");
     renameKey(obj, "profie_update_status", "profileStatus");
     renameKey(obj, "myemployee_refno", "id");
