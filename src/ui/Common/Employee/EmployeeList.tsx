@@ -262,6 +262,7 @@ const EmployeeListPage = () => {
     if (isValid) {
       setButtonLoading(true);
       InsertUpdateData(addEmployeeName, addMobileNo, addAadharNo);
+
       setButtonLoading(false);
     }
   };
@@ -1124,7 +1125,7 @@ const EmployeeListPage = () => {
             <br></br>
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
 
-              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleSubmitVerify}>
+              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleSubmitVerify} onSubmit={SendOTP}>
                 Submit & Verify
               </Button>
 
