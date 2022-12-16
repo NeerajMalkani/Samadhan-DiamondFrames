@@ -206,7 +206,8 @@ class Provider {
     GetProductDealerProductform:"getproductnamedealerproductform/",
     GetProductDataDealerProductform:"getproductdatadealerproductform/",
     DealerProductSetUpCreate:"dealerproductsetupcreate/",
-    DealerProductSetupUpdate:"dealerproductsetupupdate/"	
+    DealerProductSetupUpdate:"dealerproductsetupupdate/",	
+    getassignbranchadminedit_branchform:"getassignbranchadminedit_branchform/",
    
   };
   getAll(resource: string) {

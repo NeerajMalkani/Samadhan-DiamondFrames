@@ -654,20 +654,20 @@ export const branchColumns: GridColDef[] = [
     ),
   },
   {
-    field: "addressLine",
+    field: "address",
     headerName: "Address",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "gstNumber",
+    field: "gstNo",
     headerName: "GST No",
     flex: 1.8,
     minWidth: 140,
   },
 
   {
-    field: "pan",
+    field: "panNo",
     headerName: "PAN No",
     flex: 1.8,
     minWidth: 140,
