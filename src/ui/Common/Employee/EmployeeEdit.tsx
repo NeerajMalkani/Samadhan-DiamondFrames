@@ -495,13 +495,19 @@ const EmployeeEdit = () => {
   const FetchEmployeeDetails = (id: number) => {
     debugger;
     let params = {
-      ID: id,
-      AddedByUserID: cookies.dfc.UserID
+      // ID: id,
+      // AddedByUserID: cookies.dfc.UserID
+      data:{
+        Sess_UserRefno: cookies.dfc.UserID,
+        myemployee_refno:id
+      }
     };
-    Provider.getAll(`master/getemployeedetailsbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+    debugger;
+    Provider.createDFCommon(Provider.API_URLS.GetEmployeeBasicData,params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
             var employee_data = response.data.data[0].employee[0];
             var bankDetails_data = response.data.data[0].bankDetails[0];
             var reporting_data = response.data.data[0].employeeReportingAuthority[0];

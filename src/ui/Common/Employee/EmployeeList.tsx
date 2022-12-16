@@ -68,6 +68,7 @@ const EmployeeListPage = () => {
   const [addAadharNo, setAddAadharNo] = React.useState("");
   const [addAadharNoErrorText, setAddAadharNoErrorText] = useState("");
   const [isAddAadharNoError, isSetAddAadharNoError] = useState(false);
+  // const [adhaarInputNo,setAdhaarInputNo]=useState("")
 
   const [addMobileNo, setAddMobileNo] = React.useState("");
   const [addMobileErrorText, setAddMobileErrorText] = useState("");
@@ -92,11 +93,12 @@ const EmployeeListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [acitvityNameListTemp, setActivityNamesListTemp] = React.useState<Array<any>>([]);
-  const [mobileNumber, setMobileNumber] = useState("")
-  const [suggestion, setSuggestion] = useState([]);
+  // const [mobileNumber, setMobileNumber] = useState("")
+  // const [suggestion, setSuggestion] = useState([]);
   const [mobileNoFullData, setMobileNoFullData] = useState([]);
+  const [adhaarNoFullData, setAdhaarNoFullData] = useState([]);
   const editValues = useState(false);
-  const [selectedMobileNumber, setSelectedMobileNumber] = useState("");
+
 
   // const [searchMobileNo,setSearchMobileNo]=useState("")
   //#endregion 
@@ -219,7 +221,7 @@ const EmployeeListPage = () => {
   };
 
   const handleSearchClick = () => {
-    // debugger;
+    debugger;
     let isValid: boolean = true;
 
     if (aadharNo.trim() === "" && mobileNo.trim() === "") {
@@ -241,8 +243,9 @@ const EmployeeListPage = () => {
   };
 
   const handleValidateClick = () => {
+    debugger;
     let isValid: boolean = true;
-
+    debugger;
     if (addEmployeeName.trim() === "" && addMobileNo.trim() === "" && addAadharNo.trim() === "") {
       isValid = false;
       isSetAddEmployeeNameError(true);
@@ -257,10 +260,11 @@ const EmployeeListPage = () => {
       setAddAadharNoErrorText("please Enter Aadhar No");
     }
     if (isValid) {
+      setButtonLoading(true);
       InsertUpdateData(addEmployeeName, addMobileNo, addAadharNo);
+      setButtonLoading(false);
     }
   };
-
 
   const InsertUpdateData = (employeeName: string, mobileNo: string, aadharNo: string) => {
     if (actionStatus === "new") {
@@ -335,20 +339,53 @@ const EmployeeListPage = () => {
       });
   };
 
+  // const SendOTP = () => {
+  //   if (actionStatus === "new") {
+  //     let params = {
+  //       data: {
+  //         Sess_UserRefno: cookies.dfc.UserID,
+  //         employee_user_refno: employeeID,
+  //         Sess_company_refno: cookies.dfc.Sess_company_refno,
+  //         Sess_branch_refno: cookies.dfc.Sess_branch_refno
+  //       }
+  //     }
+  //     Provider.createDFCommon(Provider.API_URLS.SendotptoEmployee, params)
+  //       .then((response) => {
+  //         debugger;
+  //         if (response.data && response.data.code === 200) {
+  //           FetchData("updated");
+  //         } else if (response.data.code === 304) {
+  //           setSnackMsg(response.data.message);
+  //           setSnackbarType("error");
+  //           ResetFields();
+  //         } else {
+  //           ResetFields();
+  //           setSnackMsg(communication.Error);
+  //           setSnackbarType("error");
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         ResetFields();
+  //         setSnackMsg(communication.NetworkError);
+  //         setSnackbarType("error");
+  //       });
+  //   }
+  // };
   const SendOTP = () => {
     if (actionStatus === "new") {
       let params = {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
-          employee_user_refno: employeeID,
-          Sess_company_refno: cookies.dfc.Sess_company_refno,
-          Sess_branch_refno: cookies.dfc.Sess_branch_refno
+          myemployee_refno: employeeID,
+          employee_mobile_no: mobileNo
         }
       }
+      debugger;
       Provider.createDFCommon(Provider.API_URLS.SendotptoEmployee, params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
+            debugger;
             FetchData("updated");
           } else if (response.data.code === 304) {
             setSnackMsg(response.data.message);
@@ -367,7 +404,6 @@ const EmployeeListPage = () => {
         });
     }
   };
-
 
   const SubmitVerify = () => {
     if (actionStatus === "new") {
@@ -538,10 +574,8 @@ const EmployeeListPage = () => {
         mobile_no: mobileNumber
       }
     };
-    debugger
     Provider.createDFCommon(Provider.API_URLS.MobilenoAutocomplete, params)
       .then((response) => {
-        debugger;
         if (response.data && response.data.code === 200) {
 
           // let matches = [];
@@ -559,14 +593,74 @@ const EmployeeListPage = () => {
           const mobileNoData: any = [];
           response.data.data.map((data: any, i: number) => {
             mobileNoData.push({
-              id: i+ 1,
+              id: i + 1,
               label: data.mobileNo,
             });
           });
           setMobileNoFullData(mobileNoData);
 
           //setMobileNoFullData(response.data.data);
-          debugger;
+          //  FetchData("inserted");
+        } else if (response.data.code === 304) {
+          setSnackMsg(response.data.message);
+          setSnackbarType("error");
+          ResetFields();
+        } else {
+          ResetFields();
+          setSnackMsg(communication.Error);
+          setSnackbarType("error");
+        }
+      })
+    //  setSearchQuery(query);
+    //  if (query === "") {
+    //    setEmployeeListTemp(employeeList);
+    //  } else {
+    //    setEmployeeListTemp(
+    //      employeeList.filter((el: EmployeeModel) => {
+    //        return el.employeeName.toString().toLowerCase().includes(query.toLowerCase()) ||
+    //          el.mobileNo.toString().toLowerCase().includes(query.toLowerCase())
+    //         ||
+    //         el.branchName.toString().toLowerCase().includes(query.toLowerCase()) ||
+    //         el.departmentName.toString().toLowerCase().includes(query.toLowerCase()) ||
+    //         el.designationName.toString().toLowerCase().includes(query.toLowerCase())
+
+    //      })
+    //    );
+    //  }
+  }
+  const onSearchAdhaar = (adhaarNumber: string) => {
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        aadhar_no: adhaarNumber
+      }
+    };
+    Provider.createDFCommon(Provider.API_URLS.AadharnoAutocomplete, params)
+      .then((response) => {
+        if (response.data && response.data.code === 200) {
+
+          // let matches = [];
+          // if(adhaarNumber.length>0){
+          //   matches=mobileNumber.filter(usr=>{
+          //     const regex =new RegExp(`${mobileNumber}`,"hi");
+          //     return mobileNumber.match(regex)
+          //   })
+          // }
+          // setMobileNumber(mobileNumber)
+          response.data.data = APIConverter(response.data.data);
+          // response.data.data = APIConverter(response.data.data);
+          // onChangeHandler("inserted")
+          //setMobileNumber(response.data);
+          const adhaarNumber: any = [];
+          response.data.data.map((data: any, i: number) => {
+            adhaarNumber.push({
+              id: i + 1,
+              label: data.adhaarNo,
+            });
+          });
+          setAdhaarNoFullData(adhaarNumber);
+
+          //setMobileNoFullData(response.data.data);
           //  FetchData("inserted");
         } else if (response.data.code === 304) {
           setSnackMsg(response.data.message);
@@ -628,7 +722,7 @@ const EmployeeListPage = () => {
 
                 </Grid>
                 <Grid item sm={6}>
-                  <TextField
+                  {/* <TextField
                     fullWidth
                     inputProps={{
                       maxLength: 11,
@@ -645,8 +739,31 @@ const EmployeeListPage = () => {
                     helperText={aadharNoErrorText}
                     value={aadharNo}
 
+                  /> */}
+                  <Autocomplete
+                    disabled={editValues[0]}
+                    disablePortal
+                    fullWidth
+                    options={adhaarNoFullData}
+                    onInputChange={(event: React.SyntheticEvent, value: any) => {
+                      isSetAadharNoError(false);
+                      setAadharNoErrorText("");
+                      setAadharNo(value);
+                      onSearchAdhaar(value.toString());
 
+                    }}
+                    onChange={(event: React.SyntheticEvent, value: any) => {
+                      debugger;
+                      isSetMobileNoError(false);
+                      setMobileErrorText("");
+                      if (value !== null) {
+                        setAadharNo(value.label);
+                      }
+                    }}
+                    value={aadharNo}
+                    renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isAadharNoError} helperText={aadharNoErrorText} />}
                   />
+
                 </Grid>
               </Grid>
             </Grid>
@@ -693,24 +810,21 @@ const EmployeeListPage = () => {
                     fullWidth
                     options={mobileNoFullData}
                     onInputChange={(event: React.SyntheticEvent, value: any) => {
+                      isSetMobileNoError(false);
+                      setMobileErrorText("");
+                      setMobileNo(value);
+                      onChangeHandler(value.toString());
+
+                    }}
+                    onChange={(event: React.SyntheticEvent, value: any) => {
                       debugger;
                       isSetMobileNoError(false);
                       setMobileErrorText("");
-                      setMobileNumber(value);
-                      onChangeHandler(value.toString());
-                      // if (value !== null) {
-
-                      // }
+                      if (value !== null) {
+                        setMobileNo(value.label);
+                      }
                     }}
-                    // onChange={(event: React.SyntheticEvent, value: any) => {
-                    //   debugger;
-                    //   isSetMobileNoError(false);
-                    //   setMobileErrorText("");
-                    //   if (value !== null) {
-
-                    //   }
-                    // }}
-                    value={mobileNumber}
+                    value={mobileNo}
                     renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isMobileNoError} helperText={mobileErrorText} />}
                   />
 
@@ -875,11 +989,10 @@ const EmployeeListPage = () => {
                     }}
                     variant="outlined"
                     size="small"
-                    // type="number"
+                    type="number"
                     onChange={(e) => {
                       setAddAadharNo((e.target as HTMLInputElement).value);
-                      isSetAddAadharNoError(false);
-                      setAddAadharNoErrorText("");
+                      isSetAddAadharNoError(false)
                     }}
                     error={isAddAadharNoError}
                     helperText={addAadharNoErrorText}
@@ -888,9 +1001,9 @@ const EmployeeListPage = () => {
                 </Grid>
               </Grid>
             </Grid>
-
             <Grid item xs={4} sm={8} md={12}>
-              <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleValidateClick}>
+              <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }}
+               onClick={() => { handleValidateClick() }}>
                 Validate & Generate Employee ID
               </LoadingButton>
             </Grid>
