@@ -283,10 +283,10 @@ export interface BranchModel {
   stateID: string;
   cityID: string;
   branchAdmin: string;
-  pincode: number;
-  accountNo: string;
+  pincode: string;
+  accountNumber: string;
   bankName: string;
-  bankBranchName: string;
+  branchName: string;
   ifscCode: string;
   address: string;
   gstNo: string;
@@ -296,6 +296,7 @@ export interface BranchModel {
   branchInchargeContactNo: string;
   stateName: string;
   cityName: string;
+  companyName:string;
 }
 
 export interface BranchTypeModel {
