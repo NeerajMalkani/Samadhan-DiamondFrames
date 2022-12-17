@@ -598,7 +598,7 @@ const EmployeeEdit = () => {
   };
 
   const BloodGroupDropdown = () => {
-    let b = BloodGroup.filter((el) => {
+    let b = BloodGroup.filter((el) => {  
       return el.ID.toString() === bg_ID.toString();
     });
 
