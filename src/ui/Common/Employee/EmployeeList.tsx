@@ -49,6 +49,7 @@ const EmployeeListPage = () => {
 
   const [mobileSearchList, setMobileSearchList] = useState<Array<MobileNoModel>>([])
 
+
   const [mobileNo, setMobileNo] = React.useState("");
   const [mobileErrorText, setMobileErrorText] = useState("");
   const [isMobileNoError, isSetMobileNoError] = useState(false);
@@ -87,6 +88,9 @@ const EmployeeListPage = () => {
   const [actionStatus, setActionStatus] = React.useState<string>("new");
   const [selectedID, setSelectedID] = React.useState<number>(0);
   const [open, setOpen] = React.useState(false);
+  const [openOTPDialog, setOpenOTPDialog] = React.useState(false);
+  const [employeeSearchLoader, SetEmployeeSearchLoader] = useState(false);
+
   const [snackMsg, setSnackMsg] = React.useState("");
   const [buttonLoading, setButtonLoading] = useState(false);
   // const [searchQuery, setSearchQuery] = useState("");
@@ -120,6 +124,7 @@ const EmployeeListPage = () => {
     setAddMobileNo("");
     setAddAadharNo("");
     setOpen(false);
+    setOpenOTPDialog(false);
   };
 
   const FetchData = (type: string) => {
@@ -159,7 +164,7 @@ const EmployeeListPage = () => {
         } else {
           setSnackbarType("info");
           setSnackMsg(communication.NoData);
-          setOpen(true);
+          //setOpen(true);
         }
         setLoading(false);
       })
@@ -167,7 +172,7 @@ const EmployeeListPage = () => {
         setLoading(false);
         setSnackbarType("error");
         setSnackMsg(communication.NetworkError);
-        setOpen(true);
+        //setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
@@ -189,7 +194,7 @@ const EmployeeListPage = () => {
     ResetFields();
     Provider.createDFCommon(Provider.API_URLS.EmployeeSearch, params)
       .then((response: any) => {
-        // debugger;
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             debugger
@@ -203,11 +208,13 @@ const EmployeeListPage = () => {
             });
             setGridEmployeeSearchList(arrList);
             setGridEmployeeSearchListTemp(arrList);
+            SetEmployeeSearchLoader(false);
           }
         } else {
           setSnackbarType("info");
           setSnackMsg(communication.NoData);
-          setOpen(true);
+          //setOpen(true);
+          SetEmployeeSearchLoader(true);
         }
         setLoading(false);
       })
@@ -215,7 +222,7 @@ const EmployeeListPage = () => {
         setLoading(false);
         setSnackbarType("error");
         setSnackMsg(communication.NetworkError);
-        setOpen(true);
+        //setOpen(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
@@ -239,7 +246,6 @@ const EmployeeListPage = () => {
       FetchSearchData();
       setSearchActive("inline");
     }
-
   };
 
   const handleValidateClick = () => {
@@ -372,7 +378,9 @@ const EmployeeListPage = () => {
   //       });
   //   }
   // };
-  const SendOTP = () => {
+  
+  const SendOTP = (employeeID, mobileNo) => {
+    debugger;
     if (actionStatus === "new") {
       let params = {
         data: {
@@ -387,7 +395,9 @@ const EmployeeListPage = () => {
           debugger;
           if (response.data && response.data.code === 200) {
             debugger;
-            FetchData("updated");
+            setOpenOTPDialog(true);
+            //setOtp();
+            //FetchData("updated");
           } else if (response.data.code === 304) {
             setSnackMsg(response.data.message);
             setSnackbarType("error");
@@ -418,10 +428,7 @@ const EmployeeListPage = () => {
           Sess_branch_refno: 0
         }
       }
-      Provider.createDFCommon(Provider.API_URLS.EmployeeotpVerify, {
-        EmployeeID: employeeID,
-        OTP: otp,
-      })
+      Provider.createDFCommon(Provider.API_URLS.EmployeeotpVerify, params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
@@ -450,7 +457,7 @@ const EmployeeListPage = () => {
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpenOTPDialog(false);
   };
 
 
@@ -494,7 +501,7 @@ const EmployeeListPage = () => {
 
 
   const setOTPDialog = () => {
-    setOpen(true);
+    setOpenOTPDialog(true);
   };
 
   /*coding creat button toggle */
@@ -866,7 +873,7 @@ const EmployeeListPage = () => {
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} >
 
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "6px", borderColor: "rgba(0,0,0,0.12)", display: `${searchActive}` }} >
-            <Typography variant="h6">EMPLOYEE SEARCH  RESULT</Typography>
+            <Typography variant="h6">EMPLOYEE SEARCH RESULT</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} >
             {loading ? (
@@ -876,13 +883,21 @@ const EmployeeListPage = () => {
             ) : (
               <div style={{ height: "auto", width: "100%", marginBottom: "20px" }}>
                 {gridEmployeeSearchList.length === 0 ? (
-                  // <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
-                  <div></div>
+
+                  <div>
+
+                    {
+                      employeeSearchLoader ? (
+                        <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+
+                      ) : ("")
+
+                    }
+
+                  </div>
                 ) : (
                   <>
-                    {/* <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                      
-                    </Grid> */}
+
                     <DataGrid
                       style={{
                         opacity: dataGridOpacity,
@@ -917,10 +932,10 @@ const EmployeeListPage = () => {
         </Grid>
         <br></br>
 
-
         <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)", display: `${active}` }} >
           <Typography variant="h6">EMPLOYEE (ADD NEW / EDIT)</Typography>
         </Grid>
+        <br></br>
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ display: `${active}` }}>
           <Grid container direction="row" alignItems="center" justifyContent="center" rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
             <Grid item xs={4}>
@@ -1004,7 +1019,7 @@ const EmployeeListPage = () => {
             </Grid>
             <Grid item xs={4} sm={8} md={12}>
               <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }}
-               onClick={() => { handleValidateClick() }}>
+                onClick={() => { handleValidateClick() }}>
                 Validate & Generate Employee ID
               </LoadingButton>
             </Grid>
@@ -1025,11 +1040,14 @@ const EmployeeListPage = () => {
           ) : (
             <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
               {employeeList.length === 0 ? (
-                // <Grid>
-                //   <Icon fontSize="inherit"><ListIcon/></Icon>
-                //   <Typography>No records found.</Typography>
-                // </Grid>
-                <></>
+                <>
+                  {/* <Grid>
+                    <Icon fontSize="inherit"><ListIcon /></Icon>
+                    <Typography>No records found.</Typography>
+                  </Grid> */}
+                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
+
+                  <></></>
               ) : (
                 <>
                   <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
@@ -1063,19 +1081,19 @@ const EmployeeListPage = () => {
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     disableSelectionOnClick
                     onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-
+                      debugger;
                       if (param.field === 'action') {
                         // const arrActivity = [...employeeList];
                         // let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         // handelEditAndDelete((e.target as any).textContent, a);
                       }
                       else if (param.field === 'verifyStatus') {
-
                         const arrActivity = [...employeeList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        setOtp(NullOrEmpty(a.otp) ? "" : a.otp.toString());
-                        setEmployeeID(a.id);
-                        setOTPDialog();
+                        //setOtp(NullOrEmpty(a.otp) ? "" : a.otp.toString());
+                        //setEmployeeID(a.id);
+                        SendOTP(a.id,a.mobileNo);
+                        //setOTPDialog();
                       }
                     }}
                     sx={{
@@ -1094,7 +1112,7 @@ const EmployeeListPage = () => {
 
       </Container>
       <div>
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <Dialog open={openOTPDialog} onClose={handleClose} fullWidth maxWidth="sm">
           <DialogTitle>EMPLOYEE OTP NO VERIFICATION & LOGIN ACTIVATION
           </DialogTitle>
           <DialogContent>
@@ -1125,7 +1143,7 @@ const EmployeeListPage = () => {
             <br></br>
             <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
 
-              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleSubmitVerify} onSubmit={SendOTP}>
+              <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} onClick={handleSubmitVerify}>
                 Submit & Verify
               </Button>
 
@@ -1142,7 +1160,7 @@ const EmployeeListPage = () => {
           {snackMsg}
         </Alert>
       </Snackbar>
-    </Box>
+    </Box >
   );
 };
 
