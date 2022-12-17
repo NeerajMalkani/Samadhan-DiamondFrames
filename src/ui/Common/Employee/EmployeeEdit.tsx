@@ -54,6 +54,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { BloodGroup } from "../../../utils/JSCommonFunction";
 import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { NullOrEmpty } from "../../../utils/CommonFunctions";
+import { APIConverter } from "../../../utils/apiconverter";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -493,7 +494,7 @@ const EmployeeEdit = () => {
   };
 
   const FetchEmployeeDetails = (id: number) => {
-    debugger;
+    // debugger;
     let params = {
       // ID: id,
       // AddedByUserID: cookies.dfc.UserID
@@ -502,12 +503,12 @@ const EmployeeEdit = () => {
         myemployee_refno:id
       }
     };
-    debugger;
+    // debugger;
     Provider.createDFCommon(Provider.API_URLS.GetEmployeeBasicData,params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
+            // debugger;
             var employee_data = response.data.data[0].employee[0];
             var bankDetails_data = response.data.data[0].bankDetails[0];
             var reporting_data = response.data.data[0].employeeReportingAuthority[0];
@@ -690,7 +691,7 @@ const EmployeeEdit = () => {
       uploadImage();
     } else {
       let img = (SplitImageName(uploadedImage));
-      InsertData("Success", img);
+      InsertData("Success", img,employeeID);
     }
   };
 
@@ -714,7 +715,7 @@ const EmployeeEdit = () => {
     return imgName;
   }
 
-  const InsertData = (status: string, fileName: string) => {
+  const InsertData = (status: string, fileName: string,employeeID) => {
 debugger;
     if (!NullOrEmpty(pincode)) {
 
@@ -737,42 +738,68 @@ debugger;
     }
 
     if (status.toLowerCase() === "success") {
-      const params = {
-        ID: employeeID,
-        MobileNo: mobile.trim(),
-        AadharNo: aadhar.trim(),
-        FatherName: fatherName,
-        Address: address,
-        StateID: selectedStateID,
-        CityID: selectedCityID,
-        Pincode: NullOrEmpty(pincode) ? 0 : parseInt(pincode),
-        ProfilePhoto: fileName ? AWSImagePath + fileName : "",
-        BloodGroup: bloodGroupID,
-        DOB: DOB,
-        DOJ: DOJ,
-        EmergencyContactName: emergencyCName,
-        EmergencyContactNo: emergencyCNo,
-        IDCardValidity: CardValidity,
-        LoginActiveStatus: (login === "Yes") ? true : false,
-        BranchID: branchID,
-        DepartmentID: departmentID,
-        DesignationID: designationID,
-        EmployeeType: NullOrEmpty(employeeType) ? "0" : parseInt(employeeType),
-        LastWorkDate: LastWorkingDate,
-        WagesType: NullOrEmpty(wagesType) ? 0 : wagesType === "Daily" ? 1 : 2,
-        Salary: NullOrEmpty(salary) ? 0 : parseInt(salary),
-        AccountHolderName: accountHName,
-        AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
-        BankName: bankName,
-        BranchName: bankBranchName,
-        IFSCCode: ifscCode,
-      };
+      // const params = {
+      //   ID: employeeID,
+      //   MobileNo: mobile.trim(),
+      //   AadharNo: aadhar.trim(),
+      //   FatherName: fatherName,
+      //   Address: address,
+      //   StateID: selectedStateID,
+      //   CityID: selectedCityID,
+      //   Pincode: NullOrEmpty(pincode) ? 0 : parseInt(pincode),
+      //   ProfilePhoto: fileName ? AWSImagePath + fileName : "",
+      //   BloodGroup: bloodGroupID,
+      //   DOB: DOB,
+      //   DOJ: DOJ,
+      //   EmergencyContactName: emergencyCName,
+      //   EmergencyContactNo: emergencyCNo,
+      //   IDCardValidity: CardValidity,
+      //   LoginActiveStatus: (login === "Yes") ? true : false,
+      //   BranchID: branchID,
+      //   DepartmentID: departmentID,
+      //   DesignationID: designationID,
+      //   EmployeeType: NullOrEmpty(employeeType) ? "0" : parseInt(employeeType),
+      //   LastWorkDate: LastWorkingDate,
+      //   WagesType: NullOrEmpty(wagesType) ? 0 : wagesType === "Daily" ? 1 : 2,
+      //   Salary: NullOrEmpty(salary) ? 0 : parseInt(salary),
+      //   AccountHolderName: accountHName,
+      //   AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
+      //   BankName: bankName,
+      //   BranchName: bankBranchName,
+      //   IFSCCode: ifscCode,
+      // };
+       
+      // debugger;
+     let params={
+        data:{
+          Sess_UserRefno:cookies.dfc.UserID,
+          myemployee_refno:employeeID,
+          mobile_no:mobile,
+          aadhar_no:aadhar,
+          father_name:fatherName,
+          address:address,
+          state_refno:selectedStateName,
+          district_refno:selectedCityName,
+          pincode:pincode,
+          bloodgroup_refno:bloodGroupID,
+          dob:DOB,
+          doj:DOJ,
+          emergency_contact_name:emergencyCName,
+          idcard_valid_date:CardValidity,
+          active_status: display == "Yes" ? "1" : "0",
+          // emergency_contact_no
+         
+          
+        }
+      }
       debugger;
-      Provider.create("master/updateemployeedetails", params)
+      Provider.createDFCommon(Provider.API_URLS.GetEmployeeBasicData, params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
-
+            debugger;
+            response.data.data = APIConverter(response.data.data);
+            debugger;
             setSnackbarType("success");
             setSnackMsg("Data updated successfully");
 
@@ -1731,7 +1758,8 @@ debugger;
 
             <Grid item xs={4} sm={8} md={12}>
               <Grid item xs={4} sm={8} md={12}>
-                <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={handleSubmitClick}>
+                <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }}
+                 onClick={handleSubmitClick}>
                   Update
                 </LoadingButton>
               </Grid>

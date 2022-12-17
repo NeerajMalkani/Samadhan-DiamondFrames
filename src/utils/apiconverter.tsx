@@ -79,6 +79,12 @@ export const APIConverter = (response: any, type?: string) => {
     }
 
   renameKey(obj, "mobile_no", "contactPersonNumber");
+  renameKey(obj, "aadhar_no", "aadhar");
+  renameKey(obj, "father_name", "fatherName");
+  renameKey(obj, "bloodgroup_refno", "bloodGroupID");
+  renameKey(obj, "dob", "DOB");
+  renameKey(obj, "doj", "DOJ");
+  renameKey(obj, "emergency_contact_name", "emergencyCName");
   renameKey(obj, "bank_account_no", "accountNumber");
   renameKey(obj, "bank_branch_name", "branchName");
   renameKey(obj, "bank_name", "bankName");
@@ -119,6 +125,7 @@ export const APIConverter = (response: any, type?: string) => {
   renameKey(obj, "reporting_status", "reportingAuthority");
 
   renameKey(obj, "employee_name", "employeeName");
+  renameKey(obj, "employee_name", "addEmployeeName");
   renameKey(obj, "branchname", "branchName");
   renameKey(obj, "common_employee_code", "employeeCode");
   renameKey(obj, "departmentname", "departmentName");
@@ -132,7 +139,6 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "myemployee_refno", "id");
   renameKey(obj, "mobile_OTP_verify_status", "verifyStatus");
   renameKey(obj, "profie_update_status", "profileStatus");
-  renameKey(obj, "myemployee_refno", "id");
 
   renameKey(obj, "company_refno", "companyID");
   renameKey(obj, "parent_branch_refno", "regionalOfficeID");

@@ -688,6 +688,8 @@ export interface EmployeeModel {
   material: string;
   companyName:string;
   aadharNo:string;
+  addEmployeeName:string;
+  otpMobileNo:string
 }
 export interface MobileNoModel{
   mobile_no_Result:string;
