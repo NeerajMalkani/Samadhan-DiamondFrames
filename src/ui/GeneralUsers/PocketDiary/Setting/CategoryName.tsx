@@ -24,7 +24,7 @@ const CategoryName = () => {
     }, []);
 
     //#region Variables
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [display, setDisplay] = React.useState("Yes");
   const [categoryName, setCategoryName] = React.useState("");
   const [categoryList, setcategoryList] =useState<Array<CategoryNameModel>>([]);//React.useContext(DataContext).activityNamesList;

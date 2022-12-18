@@ -1,7 +1,6 @@
 
 import { NumericLiteral } from 'typescript';
 import { UrlWithStringQuery } from 'url';
-// >>>>>>> 58e49af1ebc4ffd328c8937fbce761467f9f5ec4
 
 export interface ActivityRoleNameModel {
   id: number;
@@ -1067,6 +1066,7 @@ export interface OpeningStockModel {
   weightPerPiece: string;
   action: string;
 }
+
 export interface venderOrderFormModel {
   id: number;
   srno: number;
@@ -1115,6 +1115,56 @@ export interface summaryMaterialModel {
   weightPerPiece: string;
   action: string;
 }
+
 export interface ContactModel {
   contactNo: number;
+}
+
+export interface OpeningStockScrapModel {
+  id: number;
+  srno: number;
+  addedDate: string;
+  openingStock: string;
+  action: string;
+}
+
+
+export interface EmployeeRequestModel {
+  id: number;
+  srno: number;
+  employeeName: string;
+  branchName: string;
+  designationName: string;
+  action: string;
+}
+
+export interface EmployeeMarkAvailabilityModel {
+  id: number;
+  srno: number;
+  employeeName: string;
+  markAvailability: string;
+}
+
+export interface EmployeeMarkAvailabilityEntryModel {
+  id: number;
+  srno: number;
+  avaibilityDate: string;
+  availabilityEmployeeCount: string;
+  action: string;
+}
+
+export interface EmployeeMarkAttendenceModel {
+  id: number;
+  srno: number;
+  employeeName: string;
+  presentAttendanceStatus: string;
+}
+
+export interface EmployeeAttendenceEntryModel {
+  id: number;
+  srno: number;
+  markAvaibilityCount: string;
+  presentCount: string;
+  action: string;
+
 }

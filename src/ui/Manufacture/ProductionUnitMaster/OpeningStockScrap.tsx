@@ -10,7 +10,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { ArrowDropDown, FormatAlignJustify } from "@mui/icons-material";
 import { border } from "@mui/system";
 import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
-import { ServiceModel, CategoryModel, BrandModel, productModel, OpeningStockModel } from "../../../models/Model";
+import { OpeningStockScrapModel } from "../../../models/Model";
 import Provider from "../../../api/Provider";
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -18,7 +18,7 @@ import ListIcon from '@mui/icons-material/List';
 import NoData from '../../../components/NoData';
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid } from '@mui/x-data-grid';
-import { openingStockColumns } from '../../../utils/tablecolumns';
+import { openingStockScrapColumns } from '../../../utils/tablecolumns';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -28,7 +28,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 let st_ID = 0, ct_ID = 0;
 
 
-const OpeningStock = () => {
+const OpeningStockScrap = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
     const [CookieUserID, SetCookieUseID] = useState(0);
     let navigate = useNavigate();
@@ -48,7 +48,7 @@ const OpeningStock = () => {
     const [snackMsg, setSnackMsg] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [pageSize, setPageSize] = React.useState<number>(5);
 
@@ -56,37 +56,9 @@ const OpeningStock = () => {
 
     const [date, setDate] = useState<Date | null>(new Date());
 
-    const [serviceName, setServiceName] = useState("--Select--");
-    const [serviceNameID, setServiceNameID] = useState<number>(0);
-    const [serviceNameError, setServiceNameError] = useState("");
-    const [isServiceNameError, setIsStateNameError] = useState(false);
-    const [serviceNameList, setServiceNameList] = useState<Array<ServiceModel>>([]);
-
-    const [categoryName, setCategoryName] = useState("--Select--");
-    const [categoryNameID, setCategoryNameID] = useState<number>(0);
-    const [categoryNameError, setCategoryNameError] = useState("");
-    const [isCategoryNameError, setIsCategoryNameError] = useState(false);
-    const [categoryNameList, setCategoryNameList] = useState<Array<CategoryModel>>([]);
-
-    const [brandName, setBrandName] = useState("--Select--");
-    const [brandNameID, setBrandNameID] = useState<number>(0);
-    const [brandNameError, setBrandNameError] = useState("");
-    const [isBrandNameError, setIsBrandNameError] = useState(false);
-    const [brandNameList, setBrandNameList] = useState<Array<BrandModel>>([]);
-
-    const [productName, setProductName] = useState("--Select--");
-    const [productNameID, setProductNameID] = useState<number>(0);
-    const [productNameError, setProductNameError] = useState("");
-    const [isProductNameError, setIsProductNameError] = useState(false);
-    const [productNameList, setProductNameList] = useState<Array<productModel>>([]);
-
-    const [totalProduct, setTotalProduct] = useState("");
-    const [totalProductError, setTotalProductError] = useState("");
-    const [isTotalProductError, setIsTotalProductError] = useState(false);
-
-    const [weight, setWeight] = useState("");
-    const [weightError, setWeightError] = useState("");
-    const [isWeightError, setIsWeightError] = useState(false);
+    const [totalOpeningStock, setTotalOpeningStock] = useState("");
+    const [totalOpeningStockError, setTotalOpeningStockError] = useState("");
+    const [isTotalOpeningStockError, setIsTotalOpeningStockError] = useState(false);
 
     const [actionStatus, setActionStatus] = React.useState<string>("new");
     const [selectedID, setSelectedID] = React.useState<number>(0);
@@ -95,7 +67,7 @@ const OpeningStock = () => {
     const [buttonLoading, setButtonLoading] = useState(false);
     const [display, setDisplay] = React.useState("Yes");
 
-    const [openingStockList, setOpeningStockList] = useState<Array<OpeningStockModel>>([]);
+    const [openingStockList, setOpeningStockList] = useState<Array<OpeningStockScrapModel>>([]);
     const [openingStockListTemp, setOpeningStockListTemp] = React.useState<Array<any>>([]);
     //#endregion
 
@@ -103,80 +75,10 @@ const OpeningStock = () => {
     //#region Functions
     useEffect(() => {
         // FetchUserData("");
-        // FetchStates();
-        //FetchCity();
+
     }, []);
 
-    //   const FetchStates = () => {
-    //     Provider.getAll("master/getstates")
-    //       .then((response: any) => {
-    //         if (response.data && response.data.code === 200) {
-    //           if (response.data.data) {
-    //             const stateData: any = [];
-    //             response.data.data.map((data: any, i: number) => {
-    //               stateData.push({
-    //                 id: data.id,
-    //                 label: data.stateName,
-    //               });
-    //             });
-    //             setStateNameList(response.data.data);
 
-    //             if (st_ID > 0) {
-    //               let a = stateData.filter((el) => {
-    //                 return el.id === st_ID;
-    //               });
-    //               setState(a[0].label);
-    //             }
-
-    //             FetchCity(st_ID);
-    //           }
-    //         }
-    //       })
-    //       .catch((e) => { });
-    //   };
-
-    //   const FetchCity = (stateID) => {
-    //     debugger;
-    //     let params = {
-    //       ID: stateID,
-    //     };
-    //     Provider.getAll(`master/getcitiesbyid?${new URLSearchParams(GetStringifyJson(params))}`)
-    //       .then((response: any) => {
-    //         debugger;
-    //         if (response.data && response.data.code === 200) {
-    //           if (response.data.data) {
-    //             const cityData: any = [];
-    //             response.data.data.map((data: any, i: number) => {
-    //               cityData.push({
-    //                 id: data.id,
-    //                 label: data.cityName,
-    //               });
-    //             });
-
-    //             setCityNameList(response.data.data);
-    //             if (ct_ID > 0) {
-    //               let a = cityData.filter((el) => {
-    //                 return el.id === ct_ID;
-    //               });
-    //               setCity(a[0].label);
-    //             }
-    //           }
-    //           else {
-    //             setCityNameList([]);
-    //             setCity("");
-    //             ct_ID=0;
-    //             setCityID(0);
-    //           }
-    //         }
-    //         else {
-    //           setCityNameList([]);
-    //             setCity("");
-    //             ct_ID=0;
-    //             setCityID(0);
-    //         }
-    //       })
-    //       .catch((e) => { });
-    //   };
 
     //   const FetchUserData = (type: string) => {
     //     debugger;
@@ -249,55 +151,6 @@ const OpeningStock = () => {
         setDate(newValueDate);
     };
 
-    const handleSNChange = (event: SelectChangeEvent) => {
-        debugger;
-        let serviceName: string = event.target.value;
-        let ac = serviceNameList.find((el) => el.serviceName === serviceName);
-        if (ac !== undefined) {
-            setServiceName(serviceName);
-            setServiceNameID(ac?.id);
-            setIsStateNameError(false);
-            setServiceNameError("");
-
-        }
-    };
-
-    const handleCNChange = (event: SelectChangeEvent) => {
-        debugger;
-        let categoryName: string = event.target.value;
-        let ac = categoryNameList.find((el) => el.categoryName === categoryName);
-        if (ac !== undefined) {
-            setCategoryName(categoryName);
-            setCategoryNameID(ac?.id);
-            setIsCategoryNameError(false);
-            setCategoryNameError("");
-
-        }
-    };
-
-    const handleBNChange = (event: SelectChangeEvent) => {
-        debugger;
-        let brandName: string = event.target.value;
-        let ac = brandNameList.find((el) => el.brandName === brandName);
-        if (ac !== undefined) {
-            setBrandName(brandName);
-            setBrandNameID(ac?.id);
-            setIsBrandNameError(false);
-            setBrandNameError("");
-        }
-    };
-
-    const handlePNChange = (event: SelectChangeEvent) => {
-        debugger;
-        let productName: string = event.target.value;
-        let ac = productNameList.find((el) => el.productName === productName);
-        if (ac !== undefined) {
-            setProductName(productName);
-            setProductNameID(ac?.id);
-            setIsProductNameError(false);
-            setProductNameError("");
-        }
-    };
     const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDisplay((event.target as HTMLInputElement).value);
     };
@@ -457,14 +310,14 @@ const OpeningStock = () => {
             <Container maxWidth="lg">
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Grid item xs={4} sm={8} md={12}>
-                        <Typography variant='h4'>Opening Stock</Typography>
+                        <Typography variant='h4'>Opening Stock Scrap</Typography>
                     </Grid>
-                    <Grid item xs={2} sm={8}>
-                        <Typography variant="h4" sx={{
-                            borderBottom: 1,
-                            paddingBottom: '8px',
-                            borderColor: 'rgba(0,0,0,0.12)',
-                        }}>Opening Stock (Add/Edit)</Typography>
+                    <Grid item xs={2} sm={8} sx={{
+                        borderBottom: 1,
+                        paddingBottom: '8px',
+                        borderColor: 'rgba(0,0,0,0.12)',
+                    }}>
+                        <Typography variant="h4">Opening Stock  Scrap (Add/Edit)</Typography>
                     </Grid>
                 </Grid>
                 <br></br>
@@ -488,147 +341,24 @@ const OpeningStock = () => {
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
                     <Grid item sm={4}>
                         <label>
-                            <label style={{ color: "#ff0000" }}>*</label> Service Name
-                        </label>
-                    </Grid>
-                    <Grid item sm={4}>
-                        <FormControl fullWidth size="small" error={isServiceNameError}>
-                            <Select value={serviceName} onChange={handleSNChange}>
-                                <MenuItem disabled={true} value="--Select--">
-                                    --Select--
-                                </MenuItem>
-                                {serviceNameList.map((item, index) => {
-                                    return (
-                                        <MenuItem key={index} value={item.serviceName}>
-                                            {item.serviceName}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                            <FormHelperText>{serviceNameError}</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-                <br></br>
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                    <Grid item sm={4}>
-                        <label>
-                            <label style={{ color: "#ff0000" }}>*</label> Category Name
-                        </label>
-                    </Grid>
-                    <Grid item sm={4}>
-                        <FormControl fullWidth size="small" error={isCategoryNameError}>
-                            <Select value={categoryName} onChange={handleCNChange}>
-                                <MenuItem disabled={true} value="--Select--">
-                                    --Select--
-                                </MenuItem>
-                                {categoryNameList.map((item, index) => {
-                                    return (
-                                        <MenuItem key={index} value={item.categoryName}>
-                                            {item.categoryName}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                            <FormHelperText>{categoryNameError}</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-                <br></br>
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                    <Grid item sm={4}>
-                        <label>
-                            <label style={{ color: "#ff0000" }}>*</label> Brand Name
-                        </label>
-                    </Grid>
-                    <Grid item sm={4}>
-                        <FormControl fullWidth size="small" error={isBrandNameError}>
-                            <Select value={brandName} onChange={handleBNChange}>
-                                <MenuItem disabled={true} value="--Select--">
-                                    --Select--
-                                </MenuItem>
-                                {brandNameList.map((item, index) => {
-                                    return (
-                                        <MenuItem key={index} value={item.brandName}>
-                                            {item.brandName}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                            <FormHelperText>{brandNameError}</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-                <br></br>
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                    <Grid item sm={4}>
-                        <label>
-                            <label style={{ color: "#ff0000" }}>*</label> Product Name
-                        </label>
-                    </Grid>
-                    <Grid item sm={4}>
-                        <FormControl fullWidth size="small" error={isProductNameError}>
-                            <Select value={productName} onChange={handlePNChange}>
-                                <MenuItem disabled={true} value="--Select--">
-                                    --Select--
-                                </MenuItem>
-                                {productNameList.map((item, index) => {
-                                    return (
-                                        <MenuItem key={index} value={item.productName}>
-                                            {item.productName}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                            <FormHelperText>{productNameError}</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-                <br></br>
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                    <Grid item sm={4}>
-                        <label>
-                            <label style={{ color: "#ff0000" }}>*</label> Total Products
+                            <label style={{ color: "#ff0000" }}>*</label> Toatal Opening Stock Scrap (Kg)
                         </label>
                     </Grid>
                     <Grid item sm={4}>
                         <TextField
                             variant="outlined"
                             size="small"
-                            error={isTotalProductError}
-                            helperText={totalProductError}
-                            value={totalProduct}
+                            error={isTotalOpeningStockError}
+                            helperText={totalOpeningStockError}
+                            value={totalOpeningStock}
                             onChange={(e) => {
-                                setTotalProduct((e.target as HTMLInputElement).value);
-                                setIsTotalProductError(false);
-                                setTotalProductError("");
+                                setTotalOpeningStock((e.target as HTMLInputElement).value);
+                                setIsTotalOpeningStockError(false);
+                                setTotalOpeningStockError("");
                             }}
                         ></TextField>
                     </Grid>
                 </Grid>
-                <br></br>
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                    <Grid item sm={4}>
-                        <label>
-                            <label style={{ color: "#ff0000" }}>*</label>Weight Per Piece</label>
-                    </Grid>
-                    <Grid item sm={4}>
-                        <TextField
-                            variant="outlined"
-                            size="small"
-                            error={isWeightError}
-                            helperText={weightError}
-                            value={weight}
-                            onChange={(e) => {
-                                setWeight((e.target as HTMLInputElement).value);
-                                setIsWeightError(false);
-                                setWeightError("");
-                            }}
-                        ></TextField>
-                    </Grid>
-                </Grid>
-                <br></br>
-
                 <br></br>
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                     <Grid>
@@ -649,7 +379,7 @@ const OpeningStock = () => {
                         borderColor: 'rgba(0,0,0,0.12)',
                     }}
                 >
-                    <Typography variant='h6'>Opening Stock</Typography>
+                    <Typography variant='h6'>Opening Stock Scrap List</Typography>
                 </Grid>
                 <Grid item xs={4} sm={8} md={12}>
                     {loading ? (
@@ -711,7 +441,7 @@ const OpeningStock = () => {
                                         }}
                                         autoHeight={true}
                                         rows={openingStockListTemp}
-                                        columns={openingStockColumns}
+                                        columns={openingStockScrapColumns}
                                         pageSize={pageSize}
                                         rowsPerPageOptions={[5, 10, 20]}
                                         onPageSizeChange={(newPageSize) =>
@@ -723,7 +453,7 @@ const OpeningStock = () => {
                                             e: React.MouseEvent<HTMLElement>
                                         ) => {
                                             const arrActivity = [...openingStockList];
-                                            let a: OpeningStockModel | undefined =
+                                            let a: OpeningStockScrapModel | undefined =
                                                 arrActivity.find((el) => el.id === param.row.id);
                                             // handelEditAndDelete((e.target as any).textContent, a);
                                         }}
@@ -740,11 +470,9 @@ const OpeningStock = () => {
                         </div>
                     )}
                 </Grid>
-
-
             </Container>
         </Box>
     );
 };
 
-export default OpeningStock;
+export default OpeningStockScrap;

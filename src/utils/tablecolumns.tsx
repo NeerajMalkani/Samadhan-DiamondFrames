@@ -4691,3 +4691,215 @@ export const summaryMaterialColumn: GridColDef[] = [
     ),
   },
 ];
+
+
+export const openingStockScrapColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "addedDate",
+    headerName: "Added Date",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "openingStockScrap",
+    headerName: "Opening Stock Scrap (kg)",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Update
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+
+export const employeeRequestColumns: GridColDef[] = [
+  {
+    field: 'srno',
+    headerName: 'Sr. No.',
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: 'employeeName',
+    headerName: 'Employee Name / Code',
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: 'locationName',
+    headerName: 'Branch',
+    flex: 1.8,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: 'designationName',
+    headerName: 'Designation',
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: 'action',
+    headerName: 'Action',
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => {
+      return <Link href={`edit/${e.row.id}`}>Edit</Link>;
+    },
+  },
+];
+
+
+export const employeeMarkAvailabilityColumns: GridColDef[] = [
+  {
+    field: 'srno',
+    headerName: 'Sr. No.',
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: 'employeeName',
+    headerName: 'Employee Name / Code',
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: 'markAvailability',
+    headerName: 'Mark Availability',
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+];
+
+export const employeeMarkAvailabilityEntryColumns: GridColDef[] = [
+  {
+    field: 'srno',
+    headerName: 'Sr. No.',
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: 'avaibilityDate',
+    headerName: 'Avaibility Date',
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: 'availabilityEmployeeCount',
+    headerName: 'Availability Employee Count',
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+   {
+    field: 'action',
+    headerName: 'Action',
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => {
+      return <Link href={`edit/${e.row.id}`}>Edit</Link>;
+    },
+  },
+];
+
+export const employeeAttendenceColumns: GridColDef[] = [
+  {
+    field: 'srno',
+    headerName: 'Sr. No.',
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: 'employeeName',
+    headerName: 'Employee Name / Code',
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: 'presentAttendence',
+    headerName: 'Present Attendence Status',
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+];
+
+export const employeeAttendenceListColumns: GridColDef[] = [
+  {
+    field: 'srno',
+    headerName: 'Sr. No.',
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: 'attendenceDate',
+    headerName: 'Attendence Date',
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: 'markAvalibilityCount',
+    headerName: 'Mark Avalibility Count',
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: 'persentCount',
+    headerName: 'Present Count',
+    flex: 1.5,
+    minWidth: 120,
+    sortable: false,
+  },
+  {
+    field: 'action',
+    headerName: 'Action',
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => {
+      return <Link href={`edit/${e.row.id}`}>Edit</Link>;
+    },
+  },
+];

@@ -24,7 +24,7 @@ const BudgetSetup = () => {
     }, []);
 
     //#region Variables
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [display, setDisplay] = React.useState("Yes");
  
   const [budgetList, setBudgetList] =useState<Array<BudgetModel>>([]);//React.useContext(DataContext).activityNamesList;
