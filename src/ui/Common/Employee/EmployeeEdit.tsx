@@ -128,6 +128,10 @@ const EmployeeEdit = () => {
   const [fatherNameError, setFatherNameError] = useState("");
   const [isFatherNameError, setIsFatherNameError] = useState(false);
 
+  const [firstName, setFirstName] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [isFirstNameError, setIsFirstNameError] = useState(false);
+
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState("");
   const [isAddressError, setIsAddressError] = useState(false);
@@ -503,17 +507,17 @@ const EmployeeEdit = () => {
         myemployee_refno: id
       }
     };
-    // debugger;
+    debugger;
     Provider.createDFCommon(Provider.API_URLS.GetEmployeeBasicData, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            // debugger;
-            
+            debugger;
+
 
             response.data.data = APIConverter(response.data.data, "employee");
-
+            debugger;
             var employee_data = response.data.data[0].employee[0];
             var bankDetails_data = response.data.data[0].bankDetails[0];
             var reporting_data = response.data.data[0].employeeReportingAuthority[0];
@@ -536,24 +540,26 @@ const EmployeeEdit = () => {
             setDOJ(NullOrEmpty(employee_data.DOJ) ? null : employee_data.DOJ);
             setEmergencyCName(!NullOrEmpty(employee_data.emergencyCName) ? employee_data.emergencyCName : "");
             setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
-//setEmployeeCompanyID();
+            setEmployeeCompanyID(employee_data.emergencyContactNo);
+            setEmployeeID(employee_data.employeeID);
 
 
 
-            
 
             setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
-            
-            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
-            
-            setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
-            
 
+            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+            setDisplay(!NullOrEmpty(employee_data.display) ? employee_data.display : "");
+
+            setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
+            // setFirstName(!NullOrEmpty(employee_data.firstName) ? employee_data.firstName : "");
+
+            setSelectedStateID(!NullOrEmpty(employee_data.setSelectedStateID) ? employee_data.setSelectedStateID:"")
             if (!NullOrEmpty(employee_data.stateID)) {
               setSelectedStateID(employee_data.stateID);
               st_ID = employee_data.stateID;
             }
-            
+
 
             if (!NullOrEmpty(employee_data.branchID)) {
               setBranchID(employee_data.branchID);
@@ -572,12 +578,12 @@ const EmployeeEdit = () => {
 
             setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
 
-            
+
             setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
             setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
 
-            
-            
+
+
             setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
             setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
             setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
@@ -783,7 +789,7 @@ const EmployeeEdit = () => {
       //   LastWorkDate: LastWorkingDate,
       //   WagesType: NullOrEmpty(wagesType) ? 0 : wagesType === "Daily" ? 1 : 2,
       //   Salary: NullOrEmpty(salary) ? 0 : parseInt(salary),
-      //   AccountHolderName: accountHName,
+      //   AccountHolderName: accountHName,father_name
       //   AccountNumber: NullOrEmpty(accountNo) ? 0 : parseInt(accountNo),
       //   BankName: bankName,
       //   BranchName: bankBranchName,
@@ -1013,6 +1019,29 @@ const EmployeeEdit = () => {
                         error={isAadharError}
                         helperText={aadharError}
                         value={aadhar}
+                      />
+                    </Grid>
+                  </Grid>
+                  <br></br>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={4}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b style={{ float: "right" }}>First Name</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        onChange={(e) => {
+                          setFirstName((e.target as HTMLInputElement).value);
+                          setIsFirstNameError(false);
+                          setFirstNameError("");
+                        }}
+                        error={isFirstNameError}
+                        helperText={firstNameError}
+                        value={firstName}
                       />
                     </Grid>
                   </Grid>

@@ -285,7 +285,7 @@ const EmployeeListPage = () => {
           Sess_branch_refno: cookies.dfc.Sess_branch_refno
         }
       }
-      debugger
+      // debugger
       Provider.createDFCommon(Provider.API_URLS.EmployeeCreate, params)
         .then((response) => {
          // debugger;
@@ -1054,17 +1054,17 @@ const EmployeeListPage = () => {
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     disableSelectionOnClick
                     onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                      debugger;
+                      // debugger;
                       if (param.field === 'action') {
                         const arrActivity = [...employeeList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        debugger;
+                        // debugger;
                         // handelEditAndDelete((e.target as any).textContent, a);
                       }
                       else if (param.field === 'verifyStatus') {
                         const arrActivity = [...employeeList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        debugger;
+                        // debugger;
                         // setOtp(NullOrEmpty(a.otp) ? "" : a.otp.toString());
                         setEmployeeID(a.employeeID);
                         setOtpMobileNo(a.mobileNo)

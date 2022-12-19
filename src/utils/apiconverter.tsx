@@ -179,7 +179,8 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "Search_employee_mobile_no", "mobileNo");
     renameKey(obj, "employee_user_refno", "employeeID");
     renameKey(obj, "employee_company_refno", "employeeCompanyID");
-
+    renameKey(obj, "idcard_valid_date", "CardValidity");
+    renameKey(obj, "login_active_status", "display");
 
 
   });
