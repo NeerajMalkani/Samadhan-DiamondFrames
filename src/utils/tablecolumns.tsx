@@ -1455,7 +1455,7 @@ export const employeeColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`edit/${e.row.id}`}>Edit</Link>;
+      return <Link href={`edit/${e.row.employeeID}`}>Edit</Link>;
     },
   },
 ];

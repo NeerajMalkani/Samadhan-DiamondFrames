@@ -79,7 +79,7 @@ const EmployeeListPage = () => {
   const [otpErrorText, setOtpErrorText] = useState("");
   const [isOtpError, isSetOtpError] = useState(false);
 
-  const [employeeID, setEmployeeID] = React.useState<number>();
+  const [employeeID, setEmployeeID] = React.useState("");
   const [otpMobileNo, setOtpMobileNo] = React.useState("");
 
   const [pageSize, setPageSize] = React.useState<number>(5);
@@ -131,7 +131,6 @@ const EmployeeListPage = () => {
   const FetchData = (type: string) => {
     // debugger;
     let params = {
-      //AddedByUserID: cookies.dfc.UserID,
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
         Sess_company_refno: cookies.dfc.Sess_company_refno,
@@ -142,11 +141,11 @@ const EmployeeListPage = () => {
     ResetFields();
     Provider.createDFCommon(Provider.API_URLS.MyemployeeList, params)
       .then((response: any) => {
-        debugger;
+        //debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             // debugger;
-            response.data.data = APIConverter(response.data.data);
+            response.data.data = APIConverter(response.data.data, "employee");
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.profileStatus = a.profileStatus == 1 ? "complete" : "Incomplete";
@@ -195,10 +194,10 @@ const EmployeeListPage = () => {
     ResetFields();
     Provider.createDFCommon(Provider.API_URLS.EmployeeSearch, params)
       .then((response: any) => {
-        debugger;
+       // debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger
+           // debugger
             response.data.data = APIConverter(response.data.data);
 
             const arrList = [...response.data.data];
@@ -229,7 +228,7 @@ const EmployeeListPage = () => {
   };
 
   const handleSearchClick = () => {
-    debugger;
+   // debugger;
     let isValid: boolean = true;
 
     if (aadharNo.trim() === "" && mobileNo.trim() === "") {
@@ -250,9 +249,9 @@ const EmployeeListPage = () => {
   };
 
   const handleValidateClick = () => {
-    debugger;
+  //  debugger;
     let isValid: boolean = true;
-    debugger;
+   // debugger;
     if (addEmployeeName.trim() === "" && addMobileNo.trim() === "" && addAadharNo.trim() === "") {
       isValid = false;
       isSetAddEmployeeNameError(true);
@@ -281,7 +280,7 @@ const EmployeeListPage = () => {
           Sess_UserRefno: cookies.dfc.UserID,
           aadhar_no: aadharNo,
           employee_mobile_no: mobileNo,
-          employee_name:addEmployeeName,
+          employee_name: addEmployeeName,
           Sess_company_refno: cookies.dfc.Sess_company_refno,
           Sess_branch_refno: cookies.dfc.Sess_branch_refno
         }
@@ -289,19 +288,19 @@ const EmployeeListPage = () => {
       debugger
       Provider.createDFCommon(Provider.API_URLS.EmployeeCreate, params)
         .then((response) => {
-          debugger;
+         // debugger;
           if (response.data && response.data.code === 200) {
-            debugger;
-            if(response.data.data.Created == 1) {
+           // debugger;
+            if (response.data.data.Created == 1) {
               FetchData("added");
             }
-            else  {
+            else {
               setSnackMsg(response.data.message);
               setSnackbarType("error");
               //ResetFields();
             }
-            debugger;
-            
+           // debugger;
+
           } else if (response.data.code === 304) {
             setSnackMsg(response.data.message);
             setSnackbarType("error");
@@ -321,7 +320,7 @@ const EmployeeListPage = () => {
   };
 
   const InsertExistingEmployee = (employeeID: number) => {
-    debugger;
+   // debugger;
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
@@ -330,10 +329,10 @@ const EmployeeListPage = () => {
         Sess_branch_refno: cookies.dfc.Sess_branch_refno
       }
     }
-    debugger;
+   // debugger;
     Provider.createDFCommon(Provider.API_URLS.EmployeeAdd, params)
       .then((response) => {
-        debugger;
+       // debugger;
         if (response.data && response.data.code === 200) {
           // response.data.data = APIConverter(response.data.data);
           debugger;
@@ -355,41 +354,8 @@ const EmployeeListPage = () => {
       });
   };
 
-  // const SendOTP = () => {
-  //   if (actionStatus === "new") {
-  //     let params = {
-  //       data: {
-  //         Sess_UserRefno: cookies.dfc.UserID,
-  //         employee_user_refno: employeeID,
-  //         Sess_company_refno: cookies.dfc.Sess_company_refno,
-  //         Sess_branch_refno: cookies.dfc.Sess_branch_refno
-  //       }
-  //     }
-  //     Provider.createDFCommon(Provider.API_URLS.SendotptoEmployee, params)
-  //       .then((response) => {
-  //         debugger;
-  //         if (response.data && response.data.code === 200) {
-  //           FetchData("updated");
-  //         } else if (response.data.code === 304) {
-  //           setSnackMsg(response.data.message);
-  //           setSnackbarType("error");
-  //           ResetFields();
-  //         } else {
-  //           ResetFields();
-  //           setSnackMsg(communication.Error);
-  //           setSnackbarType("error");
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         ResetFields();
-  //         setSnackMsg(communication.NetworkError);
-  //         setSnackbarType("error");
-  //       });
-  //   }
-  // };
-  
   const SendOTP = (employeeID, mobileNo) => {
-    debugger;
+   // debugger;
     if (actionStatus === "new") {
       let params = {
         data: {
@@ -398,12 +364,12 @@ const EmployeeListPage = () => {
           employee_mobile_no: mobileNo
         }
       }
-      debugger;
+     // debugger;
       Provider.createDFCommon(Provider.API_URLS.SendotptoEmployee, params)
         .then((response) => {
-          debugger;
+         // debugger;
           if (response.data && response.data.code === 200) {
-            debugger;
+           // debugger;
             setOpenOTPDialog(true);
             setOtp(response.data.data.employee_otp_no);
             //FetchData("updated");
@@ -426,7 +392,7 @@ const EmployeeListPage = () => {
   };
 
   const SubmitVerify = () => {
-    debugger;
+   // debugger;
     if (actionStatus === "new") {
       let params = {
         data: {
@@ -434,17 +400,17 @@ const EmployeeListPage = () => {
           employee_otp_no: otp,
           employee_mobile_no: otpMobileNo,
           myemployee_refno: employeeID,
-          Sess_company_refno:cookies.dfc.Sess_company_refno,
+          Sess_company_refno: cookies.dfc.Sess_company_refno,
           Sess_branch_refno: cookies.dfc.Sess_branch_refno
         }
       }
-      debugger;
+     // debugger;
       Provider.createDFCommon(Provider.API_URLS.EmployeeotpVerify, params)
         .then((response) => {
-          debugger;
+         // debugger;
           if (response.data && response.data.code === 200) {
-            response.data.data = APIConverter(response.data.data);
-            debugger;
+            //response.data.data = APIConverter(response.data.data);
+           // debugger;
             FetchData("updated");
           } else if (response.data.code === 304) {
             setSnackMsg(response.data.message);
@@ -465,7 +431,7 @@ const EmployeeListPage = () => {
   };
 
   const handleSubmitVerify = () => {
-    debugger;
+   // debugger;
     SubmitVerify();
   };
 
@@ -772,7 +738,6 @@ const EmployeeListPage = () => {
 
                     }}
                     onChange={(event: React.SyntheticEvent, value: any) => {
-                      debugger;
                       isSetMobileNoError(false);
                       setMobileErrorText("");
                       if (value !== null) {
@@ -836,7 +801,6 @@ const EmployeeListPage = () => {
 
                     }}
                     onChange={(event: React.SyntheticEvent, value: any) => {
-                      debugger;
                       isSetMobileNoError(false);
                       setMobileErrorText("");
                       if (value !== null) {
@@ -876,7 +840,6 @@ const EmployeeListPage = () => {
               </Grid>
             </Grid>
           </Grid>
-
 
         </Grid>
         <br></br>
@@ -922,7 +885,6 @@ const EmployeeListPage = () => {
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                       disableSelectionOnClick
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        debugger;
                         const arrActivity = [...gridEmployeeSearchList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         InsertExistingEmployee(a.id);
@@ -1103,9 +1065,9 @@ const EmployeeListPage = () => {
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         debugger;
                         // setOtp(NullOrEmpty(a.otp) ? "" : a.otp.toString());
-                        setEmployeeID(a.id);
+                        setEmployeeID(a.employeeID);
                         setOtpMobileNo(a.mobileNo)
-                        SendOTP(a.id,a.mobileNo);
+                        SendOTP(a.employeeID, a.mobileNo);
 
                         //setOTPDialog();
                       }

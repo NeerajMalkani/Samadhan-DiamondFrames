@@ -245,6 +245,7 @@ const EmployeeEdit = () => {
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [open, setOpen] = useState(false);
   const [snackMsg, setSnackMsg] = useState("");
+  const [employeeCompanyID, setEmployeeCompanyID] = useState("");
 
   const [buttonLoading, setButtonLoading] = useState(false);
   //#endregion 
@@ -265,10 +266,11 @@ const EmployeeEdit = () => {
   }
 
   useEffect(() => {
+    debugger;
     let id = window.location.pathname.split('/').at(-1);
     if (!NullOrEmpty(id)) {
       setEmployeeID(parseInt(id));
-      FetchEmployeeDetails(parseInt(id));
+      FetchEmployeeBasicDetails(parseInt(id));
       setDOB(null);
       setDOJ(null);
       setCardValidity(null);
@@ -276,7 +278,7 @@ const EmployeeEdit = () => {
     }
     else {
       setEmployeeID(0);
-      FetchEmployeeDetails(0);
+      FetchEmployeeBasicDetails(0);
     }
   }, []);
 
@@ -493,46 +495,65 @@ const EmployeeEdit = () => {
     setValue(newValue);
   };
 
-  const FetchEmployeeDetails = (id: number) => {
-    // debugger;
+  const FetchEmployeeBasicDetails = (id: number) => {
+    debugger;
     let params = {
-      // ID: id,
-      // AddedByUserID: cookies.dfc.UserID
-      data:{
+      data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        myemployee_refno:id
+        myemployee_refno: id
       }
     };
     // debugger;
-    Provider.createDFCommon(Provider.API_URLS.GetEmployeeBasicData,params)
+    Provider.createDFCommon(Provider.API_URLS.GetEmployeeBasicData, params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
             // debugger;
+            
+
+            response.data.data = APIConverter(response.data.data, "employee");
+
             var employee_data = response.data.data[0].employee[0];
             var bankDetails_data = response.data.data[0].bankDetails[0];
             var reporting_data = response.data.data[0].employeeReportingAuthority[0];
 
-            setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
-            setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
-            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+
             setAadhar(!NullOrEmpty(employee_data.aadharNo) ? employee_data.aadharNo : "");
-            setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
             setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
+
+            if (!NullOrEmpty(employee_data.bloodGroupID)) {
+              setBloodGroupID(employee_data.bloodGroupID);
+              bg_ID = employee_data.bloodGroupID;
+            }
+            setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
+            if (!NullOrEmpty(employee_data.cityID)) {
+              setSelectedCityID(employee_data.cityID);
+              ct_ID = employee_data.cityID;
+            }
+
+            setDOB(NullOrEmpty(employee_data.DOB) ? null : employee_data.DOB);
+            setDOJ(NullOrEmpty(employee_data.DOJ) ? null : employee_data.DOJ);
+            setEmergencyCName(!NullOrEmpty(employee_data.emergencyCName) ? employee_data.emergencyCName : "");
+            setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
+//setEmployeeCompanyID();
+
+
+
+            
+
+            setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
+            
+            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+            
+            setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
+            
 
             if (!NullOrEmpty(employee_data.stateID)) {
               setSelectedStateID(employee_data.stateID);
               st_ID = employee_data.stateID;
             }
-
-            if (!NullOrEmpty(employee_data.cityID)) {
-              setSelectedCityID(employee_data.cityID);
-              ct_ID = employee_data.cityID;
-            }
-            if (!NullOrEmpty(employee_data.bloodGroup)) {
-              setBloodGroupID(employee_data.bloodGroup);
-              bg_ID = employee_data.bloodGroup;
-            }
+            
 
             if (!NullOrEmpty(employee_data.branchID)) {
               setBranchID(employee_data.branchID);
@@ -551,13 +572,12 @@ const EmployeeEdit = () => {
 
             setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
 
-            setDOB(NullOrEmpty(employee_data.dob) ? null : employee_data.dob);
-            setDOJ(NullOrEmpty(employee_data.doj) ? null : employee_data.doj);
+            
             setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
             setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
 
-            setEmergencyCName(!NullOrEmpty(employee_data.emergencyContactName) ? employee_data.emergencyContactName : "");
-            setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
+            
+            
             setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
             setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
             setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
@@ -597,8 +617,9 @@ const EmployeeEdit = () => {
       });
   };
 
+
   const BloodGroupDropdown = () => {
-    let b = BloodGroup.filter((el) => {  
+    let b = BloodGroup.filter((el) => {
       return el.ID.toString() === bg_ID.toString();
     });
 
@@ -691,7 +712,7 @@ const EmployeeEdit = () => {
       uploadImage();
     } else {
       let img = (SplitImageName(uploadedImage));
-      InsertData("Success", img,employeeID);
+      InsertData("Success", img, employeeID);
     }
   };
 
@@ -715,8 +736,8 @@ const EmployeeEdit = () => {
     return imgName;
   }
 
-  const InsertData = (status: string, fileName: string,employeeID) => {
-debugger;
+  const InsertData = (status: string, fileName: string, employeeID) => {
+    debugger;
     if (!NullOrEmpty(pincode)) {
 
       if (pincode.match(/[^$,.\d]/)) {
@@ -768,28 +789,28 @@ debugger;
       //   BranchName: bankBranchName,
       //   IFSCCode: ifscCode,
       // };
-       
+
       // debugger;
-     let params={
-        data:{
-          Sess_UserRefno:cookies.dfc.UserID,
-          myemployee_refno:employeeID,
-          mobile_no:mobile,
-          aadhar_no:aadhar,
-          father_name:fatherName,
-          address:address,
-          state_refno:selectedStateName,
-          district_refno:selectedCityName,
-          pincode:pincode,
-          bloodgroup_refno:bloodGroupID,
-          dob:DOB,
-          doj:DOJ,
-          emergency_contact_name:emergencyCName,
-          idcard_valid_date:CardValidity,
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          myemployee_refno: employeeID,
+          mobile_no: mobile,
+          aadhar_no: aadhar,
+          father_name: fatherName,
+          address: address,
+          state_refno: selectedStateName,
+          district_refno: selectedCityName,
+          pincode: pincode,
+          bloodgroup_refno: bloodGroupID,
+          dob: DOB,
+          doj: DOJ,
+          emergency_contact_name: emergencyCName,
+          idcard_valid_date: CardValidity,
           active_status: display == "Yes" ? "1" : "0",
           // emergency_contact_no
-         
-          
+
+
         }
       }
       debugger;
@@ -870,9 +891,9 @@ debugger;
   };
   //#endregion
 
-    //AutoSuggest Start
-    
-    //AutoSuggest End
+  //AutoSuggest Start
+
+  //AutoSuggest End
 
 
 
@@ -1759,7 +1780,7 @@ debugger;
             <Grid item xs={4} sm={8} md={12}>
               <Grid item xs={4} sm={8} md={12}>
                 <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }}
-                 onClick={handleSubmitClick}>
+                  onClick={handleSubmitClick}>
                   Update
                 </LoadingButton>
               </Grid>
