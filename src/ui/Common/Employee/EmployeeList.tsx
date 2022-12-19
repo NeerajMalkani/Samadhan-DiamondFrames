@@ -1058,6 +1058,7 @@ const EmployeeListPage = () => {
                       if (param.field === 'action') {
                         const arrActivity = [...employeeList];
                         let a: EmployeeModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        debugger;
                         // handelEditAndDelete((e.target as any).textContent, a);
                       }
                       else if (param.field === 'verifyStatus') {

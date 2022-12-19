@@ -85,7 +85,7 @@ const EmployeeAttendenceEntryList = () => {
               group_refno: 'all',
             },
           };
-          Provider.createDF('apiappadmin/spawu7S4urax/tYjD/grouprefnocheck/', params)
+          Provider.createDFCommon('apiappadmin/spawu7S4urax/tYjD/grouprefnocheck/', params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
