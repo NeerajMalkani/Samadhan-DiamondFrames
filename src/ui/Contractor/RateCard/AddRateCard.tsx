@@ -283,6 +283,73 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
+    const fetchServiceProductRate=(categoryID,productID)=>{
+        let params={
+            data:{
+                Sess_UserRefno: cookies.dfc.UserID,
+                category_refno: categoryID,
+                product_refno:productID
+            }
+        };
+        debugger;
+        Provider.createDFContractor(Provider.API_URLS.getmaterialratedataratecardform, params)
+        .then((response:any)=>{
+            if (response.data && response.data.code === 200) {
+                if (response.data.data) {
+                    debugger;
+                    response.data.data = APIConverter(response.data.data);
+                    debugger;
+                    setMaterialRate(response.data.data[0].materialRate);
+                    setAlternativeWithMaterialRate(response.data.data[0].alternativeWithMaterialRate);
+                    setWithoutMaterialRate(response.data.data[0].withoutMaterialRate)
+                    setShortSpecification(response.data.data[0].shortSpecification)
+                    setSpecificationSP(response.data.data[0].specificationSP)
+                }
+            }
+        })
+
+    }
+
+    const fetchUnitOfSale = (categoryID,productID,unitId) => {
+        let params = {
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                category_refno: categoryID,
+                product_refno:productID,
+                unitcategoryrefno_unitrefno:unitId
+            }
+        };
+        Provider.createDFContractor(Provider.API_URLS.getmaterialratedata_unitofsaleonchange_ratecardform, params)
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        response.data.data = APIConverter(response.data.data);
+                        const Unit: any = [];
+                        response.data.data.map((data: any, i: number) => {
+                            Unit.push({
+                                id: data.id,
+                                label: data.UnitName,
+                            });
+                        });
+                        setUnitOfSalesDDData(Unit);
+                        setUnitOfSalesFullData(response.data.data);
+                        if (u_ID > 0) {
+                            let a = Unit.filter((el) => {
+                                return el.id === u_ID;
+                            });
+
+                            let b = response.data.data.filter((el) => {
+                                return el.id === u_ID;
+                            });
+                            setSelectedUnitOfSales(a[0].label);
+                            setUnitOfSales(a[0].id);
+                        }
+                    }
+                }
+            })
+            .catch((e) => { });
+    };
+
 
     const FetchServiceProductName = (arnID, serviceNameID, categoryID) => {
         let params = {
@@ -501,6 +568,7 @@ const AddRateCard = () => {
 
         let params = {
             RateCardID: rateCardID,
+
             ProductID: serviceProductNameID,
             ActivityID: arnID,
             ServiceID: serviceNameID,
@@ -556,6 +624,11 @@ const AddRateCard = () => {
 
     // const design = (
     //     <>
+
+
+
+
+
     //#endregion 
 
     return (
@@ -694,16 +767,21 @@ const AddRateCard = () => {
                                                 });
 
                                                 if (product != null) {
-
+                                                    fetchServiceProductRate(  categoryID,value.id);
                                                     setSelectedUnitID(product[0].selectedUnitID);
                                                     setSpecificationSP(product[0].specification);
                                                     setShortSpecification(product[0].shortSpecification);
                                                     setMaterialRate(product[0].rateWithMaterials);
                                                     setWithoutMaterialRate(product[0].rateWithoutMaterials);
+
+                                                   
                                                 }
 
                                                 FetchUnitOfSalesName(value.id, product[0].selectedUnitID, product[0].rateWithMaterials, product[0].rateWithoutMaterials);
+                                                // fetchUnitOfSale(productID, value.id,unitId);
+                                                
                                             }
+                                            
                                         }}
                                         value={serviceProductName}
                                         renderInput={(params) => <TextField variant="outlined" {...params} label="" size="small" error={isServiceProductNameError} helperText={serviceProductNameError} />}
@@ -730,11 +808,12 @@ const AddRateCard = () => {
                                             if (value !== null) {
                                                 setUnitOfSales(value.label);
                                                 setSelectedUnitID(value.id);
+                                            
 
                                                 let product = serviceProductNameFullData.filter((el: any) => {
                                                     return el.display && el.productID === serviceProductNameID;
                                                 });
-
+                                               
                                                 if (value.id == unitOfSalesFullData[0].unitID) {
 
                                                     setMaterialRate(product[0].rateWithMaterials);
@@ -742,6 +821,7 @@ const AddRateCard = () => {
 
                                                     setAlternativeWithMaterialRate((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
                                                     setAlternativeWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
+                                                    
                                                 }
                                                 else if (value.id == unitOfSalesFullData[1].unitID) {
 
@@ -751,6 +831,7 @@ const AddRateCard = () => {
                                                     setAlternativeWithMaterialRate(((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate) * unitOfSalesFullData[0].conversionRate).toFixed(2).toString());
                                                     setAlternativeWithoutMaterialRate(((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate) * unitOfSalesFullData[0].conversionRate).toFixed(2).toString());
                                                 }
+                                                
                                             }
                                         }}
                                         value={unitOfSales}

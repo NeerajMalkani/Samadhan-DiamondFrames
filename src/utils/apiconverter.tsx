@@ -102,6 +102,16 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "company_name_prefix", "companyNamePrefix");
     renameKey(obj, "employee_code_prefix", "employeeCodePrefix");
     renameKey(obj, "firstname", "contactPersonName");
+    renameKey(obj, "actual_unit_value", "actualUnitName");
+    renameKey(obj, "convert_unit_value", "convertUnitValue");
+    renameKey(obj, "convertedUnit", "convertedUnit");
+    renameKey(obj, "rateWithMaterials", "rateWithMaterials");
+    renameKey(obj, "rateWithoutMaterials", "rateWithoutMaterials");
+    renameKey(obj, "selectedUnit", "selectedUnit");
+    renameKey(obj, "shortSpecification", "shortSpecification");
+    renameKey(obj, "specification", "specification");
+    renameKey(obj, "with_material_alternate_rate", "withMaterialAlternateRate");
+    renameKey(obj, "without_material_alternate_rate", "withoutMaterialAlternateRate");
 
     renameKey(obj, "gst_no", "gstNumber");
     renameKey(obj, "pan_no", "pan");
