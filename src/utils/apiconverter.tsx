@@ -105,8 +105,8 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "actual_unit_value", "actualUnitName");
     renameKey(obj, "convert_unit_value", "convertUnitValue");
     renameKey(obj, "convertedUnit", "convertedUnit");
-    renameKey(obj, "rateWithMaterials", "rateWithMaterials");
-    renameKey(obj, "rateWithoutMaterials", "rateWithoutMaterials");
+    // renameKey(obj, "rateWithMaterials", "rateWithMaterials");
+    // renameKey(obj, "rateWithoutMaterials", "rateWithoutMaterials");
     renameKey(obj, "selectedUnit", "selectedUnit");
     renameKey(obj, "shortSpecification", "shortSpecification");
     renameKey(obj, "specification", "specification");
