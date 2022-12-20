@@ -531,6 +531,7 @@ const EmployeeEdit = () => {
               bg_ID = employee_data.bloodGroupID;
             }
             setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
+
             if (!NullOrEmpty(employee_data.cityID)) {
               setSelectedCityID(employee_data.cityID);
               ct_ID = employee_data.cityID;
@@ -541,25 +542,25 @@ const EmployeeEdit = () => {
             setEmergencyCName(!NullOrEmpty(employee_data.emergencyCName) ? employee_data.emergencyCName : "");
             setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
             setEmployeeCompanyID(employee_data.emergencyContactNo);
-            setEmployeeID(employee_data.employeeID);
-
-
-
-
+            //setEmployeeID(employee_data.employeeID);
             setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
-
-            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
-            setDisplay(!NullOrEmpty(employee_data.display) ? employee_data.display : "");
-
             setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
-            // setFirstName(!NullOrEmpty(employee_data.firstName) ? employee_data.firstName : "");
+            setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
+            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+            setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
+            setUploadedImage(employee_data.profilePhoto);
+            setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
 
-            setSelectedStateID(!NullOrEmpty(employee_data.setSelectedStateID) ? employee_data.setSelectedStateID:"")
             if (!NullOrEmpty(employee_data.stateID)) {
               setSelectedStateID(employee_data.stateID);
               st_ID = employee_data.stateID;
             }
 
+
+
+            setDisplay(!NullOrEmpty(employee_data.display) ? employee_data.display : "");
+            // setFirstName(!NullOrEmpty(employee_data.firstName) ? employee_data.firstName : "");
+            setSelectedStateID(!NullOrEmpty(employee_data.setSelectedStateID) ? employee_data.setSelectedStateID:"")
 
             if (!NullOrEmpty(employee_data.branchID)) {
               setBranchID(employee_data.branchID);
@@ -576,13 +577,7 @@ const EmployeeEdit = () => {
               de_ID = employee_data.designationID;
             }
 
-            setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
-
-
             setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
-            setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
-
-
 
             setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
             setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
@@ -592,7 +587,6 @@ const EmployeeEdit = () => {
               setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
               setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
               rpt_ID = reporting_data.reportingAuthorityID;
-
             }
 
             setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "0");
@@ -605,8 +599,7 @@ const EmployeeEdit = () => {
             setBankName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.bankName) ? bankDetails_data.bankName : "" : "");
             setBankBranchName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.branchName) ? bankDetails_data.branchName : "" : "");
             setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode : "" : "");
-            setUploadedImage(employee_data.profilePhoto);
-            setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
+            
           }
 
           setLoading(false);

@@ -16,6 +16,7 @@ export const APIConverter = (response: any, type?: string) => {
     if (type == "employee") {
       renameKey(obj, "myemployee_refno", "employeeID");
       renameKey(obj, "aadhar_no", "aadharNo");
+      renameKey(obj, "firstname", "employeeName");
     }
     if (type == "addratecard") {
       renameKey(obj, "service_refno", "serviceID");
@@ -194,6 +195,7 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "employee_company_refno", "employeeCompanyID");
     renameKey(obj, "idcard_valid_date", "CardValidity");
     renameKey(obj, "login_active_status", "display");
+    renameKey(obj, "idcard_valid_date", "idCardValidity");
 
 
   });
