@@ -17,6 +17,9 @@ export const APIConverter = (response: any, type?: string) => {
       renameKey(obj, "myemployee_refno", "employeeID");
       renameKey(obj, "aadhar_no", "aadharNo");
     }
+    if (type == "addratecard") {
+      renameKey(obj, "service_refno", "serviceID");
+    }
 
     renameKey(obj, "product_refno", "productID");
     renameKey(obj, "product_name", "productName");

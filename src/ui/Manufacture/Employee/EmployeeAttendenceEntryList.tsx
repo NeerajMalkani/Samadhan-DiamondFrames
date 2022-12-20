@@ -60,7 +60,7 @@ const EmployeeAttendenceEntryList = () => {
     //#region Functions
 
     useEffect(() => {
-        FetchData("");
+        // FetchData("");
     }, []);
 
     const ResetFields = () => {
@@ -132,7 +132,7 @@ const EmployeeAttendenceEntryList = () => {
                 .then((response) => {
                     debugger;
                     if (response.data && response.data.code === 200) {
-                        FetchData("added");
+                        // FetchData("added");
                     } else if (response.data.code === 304) {
                         setSnackMsg(response.data.message);
                         setSnackbarType("error");
@@ -159,7 +159,7 @@ const EmployeeAttendenceEntryList = () => {
                 .then((response) => {
                     debugger;
                     if (response.data && response.data.code === 200) {
-                        FetchData("updated");
+                        // FetchData("updated");
                     } else if (response.data.code === 304) {
                         setSnackMsg(response.data.message);
                         setSnackbarType("error");

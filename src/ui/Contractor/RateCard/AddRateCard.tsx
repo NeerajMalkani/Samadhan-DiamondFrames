@@ -14,6 +14,7 @@ import { SelectChangeEvent } from "@mui/material";
 import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
+import { APIConverter } from "../../../utils/apiconverter";
 
 let s_ID = 0, c_ID = 0, p_ID = 0, u_ID = 0;
 
@@ -118,9 +119,10 @@ const AddRateCard = () => {
     const [arnID, setArnID] = useState<number>(0);
     //#endregion
 
-     //#region Functions
+    //#region Functions
+
     useEffect(() => {
-        
+
         let id = window.location.pathname.split('/').at(-1);
         if (!NullOrEmpty(id) && !isNaN(parseInt(id))) {
             setRateCardID(parseInt(id));
@@ -129,7 +131,7 @@ const AddRateCard = () => {
         else {
             setRateCardID(0);
             //FetchRateCardDetails(parseInt(id));
-            FetchActvityRoles();
+            FetchServiceName();
         }
     }, []);
 
@@ -175,7 +177,6 @@ const AddRateCard = () => {
                     }
 
                     setLoading(false);
-                    FetchActvityRoles();
                     FetchCategory(response.data.data[0].activityID, response.data.data[0].serviceID);
                     FetchServiceProductName(response.data.data[0].activityID, response.data.data[0].serviceID, response.data.data[0].categoryID);
                     FetchUnitOfSalesName(response.data.data[0].productID, response.data.data[0].selectedUnitID, 0, 0);
@@ -187,31 +188,19 @@ const AddRateCard = () => {
             });
     };
 
-    const FetchActvityRoles = () => {
-        Provider.getAll("master/getmainactivities")
-            .then((response: any) => {
-                if (response.data && response.data.code === 200) {
-                    if (response.data.data) {
-                        response.data.data = response.data.data.filter((el: any) => {
-                            return el.display && el.activityRoleName === "Contractor";
-                        });
-                        setArnID(response.data.data[0].id);
-                    }
-
-                    FetchServiceName();
-                }
-            })
-            .catch((e) => { });
-    };
 
     const FetchServiceName = () => {
+
         let params = {
-            ContractorID: cookies.dfc.UserID,
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID
+            }
         };
-        Provider.getAll(`master/getcontractoractiveservices?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.createDFContractor(Provider.API_URLS.getservicenameratecardform, params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
+                        response.data.data = APIConverter(response.data.data, "addratecard");
                         const serviceName: any = [];
                         response.data.data.map((data: any, i: number) => {
                             serviceName.push({
@@ -233,15 +222,21 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
+
+
+
     const FetchCategory = (arnID, serviceNameID) => {
         let params = {
-            ActivityID: arnID,
-            ServiceID: serviceNameID,
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                service_refno: serviceNameID
+            }
         };
-        Provider.getAll(`master/getcategoriesbyserviceid?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.createDFContractor(Provider.API_URLS.getcategorynameratecardform, params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
+                        response.data.data = APIConverter(response.data.data);
                         const category: any = [];
                         response.data.data.map((data: any, i: number) => {
                             category.push({
@@ -251,7 +246,6 @@ const AddRateCard = () => {
                         });
                         setCategoryDDData(category);
                         setCategoryFullData(response.data.data);
-
                         if (c_ID > 0) {
                             let a = category.filter((el) => {
                                 return el.id === c_ID;
@@ -260,11 +254,6 @@ const AddRateCard = () => {
                             let b = response.data.data.filter((el) => {
                                 return el.id === c_ID;
                             });
-
-                            setHSN(b[0].hsnsacCode);
-                            setGstRate(b[0].gstRate);
-
-
                             setSelectedCategory(a[0].label);
                             setCategoryID(a[0].id);
                         }
@@ -274,18 +263,42 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
-    const FetchServiceProductName = (arnID, serviceNameID, categoryID) => {
+    const FetchHsnCode = (categoryID) => {
         let params = {
-            ActivityID: arnID,
-            ServiceID: serviceNameID,
-            CategoryID: categoryID,
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                category_refno: categoryID
+            }
         };
-
-        Provider.getAll(`master/getproductsbycategoryid?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.createDFContractor(Provider.API_URLS.getcategorydataratecardform, params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
-                    
                     if (response.data.data) {
+                        response.data.data = APIConverter(response.data.data);
+                        setHSN(response.data.data[0].hsnsacCode);
+                        setGstRate(response.data.data[0].gstRate);
+                    }
+                }
+            })
+            .catch((e) => { });
+    };
+
+
+    const FetchServiceProductName = (arnID, serviceNameID, categoryID) => {
+        let params = {
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                category_refno: categoryID
+            }
+            // ActivityID: arnID,
+            // ServiceID: serviceNameID,
+            // CategoryID: categoryID,
+        };
+        Provider.createDFContractor(Provider.API_URLS.getproductnameratecardform, params)
+            .then((response: any) => {
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        response.data.data = APIConverter(response.data.data);
                         const serviceProduct: any = [];
                         response.data.data.map((data: any, i: number) => {
                             serviceProduct.push({
@@ -312,16 +325,23 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
+    
+
     const FetchUnitOfSalesName = (serviceProductNameID, selectedUnitID, MaterialRate, WithoutMaterialRate) => {
-        
+        debugger;
         let params = {
-            ProductID: serviceProductNameID,
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                product_refno: serviceProductNameID
+            }
+            // ProductID: serviceProductNameID,
         };
-        Provider.getAll(`master/getproductunitbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.createDFContractor(Provider.API_URLS.getunitofsaleratecardform, params)
             .then((response: any) => {
-                
+            debugger;
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
+                        debugger;
                         const unitSales: any = [];
                         response.data.data.map((data: any, i: number) => {
                             unitSales.push({
@@ -410,7 +430,7 @@ const AddRateCard = () => {
     }
 
     const handleSubmitClick = () => {
-        
+
         let isValid: boolean = true;
 
         if (selectedServiceName.trim() === "") {
@@ -478,7 +498,7 @@ const AddRateCard = () => {
     };
 
     const InsertUpdateData = () => {
-        
+
         let params = {
             RateCardID: rateCardID,
             ProductID: serviceProductNameID,
@@ -497,11 +517,11 @@ const AddRateCard = () => {
             Display: display === "Yes" ? true : false,
             ContractorID: cookies.dfc.UserID
         };
-        
+
         if (actionStatus === "new") {
             Provider.create("master/insertupdatecontractorratecard", params)
                 .then((response) => {
-                    
+
                     if (response.data && response.data.code === 200) {
                         navigate(`/contractor/ratecardsetup`);
                     } else if (response.data.code === 304) {
@@ -536,7 +556,7 @@ const AddRateCard = () => {
 
     // const design = (
     //     <>
-//#endregion 
+    //#endregion 
 
     return (
         <Box sx={{ mt: 11 }}>
@@ -600,13 +620,8 @@ const AddRateCard = () => {
                                             if (value !== null) {
                                                 setSelectedCategory(value.label);
                                                 setCategoryID(value.id);
-
-                                                let c = categoryFullData.filter((el: any) => {
-                                                    return el.display && el.id === value.id;
-                                                });
-
-                                                setHSN(c[0].hsnsacCode);
-                                                setGstRate(c[0].gstRate);
+                                                
+                                                FetchHsnCode(value.id);
                                                 FetchServiceProductName(arnID, serviceNameID, value.id);
                                             }
 
@@ -710,7 +725,7 @@ const AddRateCard = () => {
                                         options={unitOfSalesDDData}
                                         //sx={{ width: 300 }}
                                         onChange={(event: React.SyntheticEvent, value: any) => {
-                                            
+
                                             isSetUnitOfSalesError(false);
                                             if (value !== null) {
                                                 setUnitOfSales(value.label);
@@ -757,7 +772,7 @@ const AddRateCard = () => {
                                     variant="outlined"
                                     size="small"
                                     onChange={(e) => {
-                                        
+
                                         setMaterialRate((e.target as HTMLInputElement).value);
                                         isSetMaterialRateError(false);
                                         setMaterialRateErrorText("");

@@ -7,6 +7,8 @@ const BASE_URL_Admin =
   "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
 const BASE_URL_Dashboard =
   "https://dfsolutions.in/api/apidashboard/spawu7S4urax/tYjD";
+  const BASE_URL_Contractor =
+  "https://dfsolutions.in/api/apicontractor/spawu7S4urax/tYjD/";
 
 class Provider {
   API_URLS = {
@@ -208,6 +210,19 @@ class Provider {
     DealerProductSetUpCreate:"dealerproductsetupcreate/",
     DealerProductSetupUpdate:"dealerproductsetupupdate/",	
     getassignbranchadminedit_branchform:"getassignbranchadminedit_branchform/",
+
+    getservicenameratecardform:"getservicenameratecardform/",
+    getcategorynameratecardform:"getcategorynameratecardform/",
+    getcategorydataratecardform:"getcategorydataratecardform/",
+    getproductnameratecardform:"getproductnameratecardform/",
+    getunitofsaleratecardform:"getunitofsaleratecardform/",
+    getmaterialratedataratecardform:"getmaterialratedataratecardform/",
+    getmaterialratedata_unitofsaleonchange_ratecardform:"getmaterialratedata_unitofsaleonchange_ratecardform/",
+    getmaterialratedata_withmaterialrateblur_ratecardform:"getmaterialratedata_withmaterialrateblur_ratecardform/",
+    getmaterialratedata_withoutmaterialrateblur_ratecardform:"getmaterialratedata_withoutmaterialrateblur_ratecardform/",
+    ratecardcreate:"ratecardcreate/",
+    ratecardupdate:"ratecardupdate/",
+
    
   };
   getAll(resource: string) {
@@ -251,6 +266,10 @@ class Provider {
         headers: { "Content-Type": "multipart/form-data" },
       });
     }
+  }
+
+  createDFContractor(resource: string, params: any) {
+    return axios.post<any>(`${BASE_URL_Contractor}/${resource}`, params);
   }
 
   update(resource: string, params: any, id: any) {
