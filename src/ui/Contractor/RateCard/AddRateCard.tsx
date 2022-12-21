@@ -308,18 +308,19 @@ const AddRateCard = () => {
                         // setWithoutMaterialRate(product[0].rateWithoutMaterials);
 
 
-                        setMaterialRate(response.data.data[0].materialRate);
-                        setAlternativeWithMaterialRate(response.data.data[0].alternativeWithMaterialRate);
-                        setWithoutMaterialRate(response.data.data[0].withoutMaterialRate)
+                        setMaterialRate(response.data.data[0].rateWithMaterials);
+                        setAlternativeWithMaterialRate(response.data.data[0].withMaterialAlternateRate);
+                        setAlternativeWithoutMaterialRate(response.data.data[0].withoutMaterialAlternateRate)
+                        setWithoutMaterialRate(response.data.data[0].rateWithoutMaterials)
                         setShortSpecification(response.data.data[0].shortSpecification)
-                        setSpecificationSP(response.data.data[0].specificationSP)
+                        setSpecificationSP(response.data.data[0].specification)
                     }
                 }
             })
 
     }
 
-    const fetchUnitOfSale = (categoryID, productID, unitId) => {
+    const fetchUnitOfSaleNameChanges = (categoryID, productID, unitId) => {
         let params = {
             data: {
                 Sess_UserRefno: cookies.dfc.UserID,
@@ -328,11 +329,14 @@ const AddRateCard = () => {
                 unitcategoryrefno_unitrefno: unitId
             }
         };
+        debugger;
         Provider.createDFContractor(Provider.API_URLS.getmaterialratedata_unitofsaleonchange_ratecardform, params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
+                        debugger;
                         response.data.data = APIConverter(response.data.data);
+                        debugger;
                         const Unit: any = [];
                         response.data.data.map((data: any, i: number) => {
                             Unit.push({
@@ -403,7 +407,7 @@ const AddRateCard = () => {
 
 
 
-    const FetchUnitOfSalesName = (serviceProductNameID, selectedUnitID) => {
+    const  FetchUnitOfSalesName = (serviceProductNameID, selectedUnitID) => {
         debugger;
         let params = {
             data: {
@@ -412,11 +416,14 @@ const AddRateCard = () => {
             }
             // ProductID: serviceProductNameID,
         };
+        debugger;
         Provider.createDFContractor(Provider.API_URLS.getunitofsaleratecardform, params)
             .then((response: any) => {
                 debugger;
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
+                        debugger;
+                        response.data.data = APIConverter(response.data.data);
                         debugger;
                         const unitSales: any = [];
                         response.data.data.map((data: any, i: number) => {
@@ -773,7 +780,7 @@ const AddRateCard = () => {
                                                 fetchServiceProductRate(categoryID, value.id);
 
                                                 FetchUnitOfSalesName(value.id, 0);
-                                                // fetchUnitOfSale(productID, value.id,unitId);
+                                                //fetchUnitOfSaleNameChanges(productID, value.id,unitId);
 
                                             }
 
