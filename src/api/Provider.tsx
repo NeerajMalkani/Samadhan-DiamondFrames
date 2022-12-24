@@ -223,7 +223,12 @@ class Provider {
     ratecardcreate:"ratecardcreate/",
     ratecardupdate:"ratecardupdate/",
 
-   
+    pckcategoryrefnocheck:"pckcategoryrefnocheck_appadmin/",
+    pckcategorynamecreate:"pckcategorynamecreate_appadmin/",
+    pckcategorynameupdate:"pckcategorynameupdate_appadmin/",
+
+    pcksubcategoryrefnocheck:"pcksubcategoryrefnocheck_appadmin/",
+    gettransactiontype_pcksubcategoryform:"gettransactiontype_pcksubcategoryform_appadmin/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

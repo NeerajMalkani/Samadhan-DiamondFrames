@@ -196,7 +196,13 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "idcard_valid_date", "CardValidity");
     renameKey(obj, "login_active_status", "display");
     renameKey(obj, "idcard_valid_date", "idCardValidity");
-
+    renameKey(obj, "createby_user_refno", "createbyID");
+    renameKey(obj, "pck_category_refno", "pckCategoryID");
+    renameKey(obj, "pck_category_name", "categoryName");
+    renameKey(obj, "transactiontype_name", "transactionTypeName");
+    renameKey(obj, "pck_sub_category_refno", "subcategoryID");
+    renameKey(obj, "pck_transtype_refno", "transtypeID");
+    renameKey(obj, "sub_category_name", "subCategoryName");
 
   });
 

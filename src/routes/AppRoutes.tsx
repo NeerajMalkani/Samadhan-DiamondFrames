@@ -97,6 +97,9 @@ import MarkAvailability from "../ui/Manufacture/Employee/MarkAvailability";
 import EmployeeAttendenceEntry from "../ui/Manufacture/Employee/EmployeeAttendenceEntry";
 import EmployeeAttendenceEntryList from "../ui/Manufacture/Employee/EmployeeAttendenceEntryList";
 
+import ACategoryName from "../ui/Admin/PocketDairyMaster/ACategoryName";
+import ASubCategoryName from "../ui/Admin/PocketDairyMaster/ASubcategoryName";
+
 
 
 
@@ -209,6 +212,10 @@ const AppRoutes = () => {
               <Route path="manufacture/employee/employeeattendenceentry" element={<EmployeeAttendenceEntry/>}/>
               <Route path="manufacture/employee/employeeattendenceentrylist" element={<EmployeeAttendenceEntryList/>}/>
 
+              <Route path="admin/pocketddairymaster/acategoryname" element={<ACategoryName/>}/>
+              <Route path="admin/pocketddairymaster/asubcategoryname" element={<ASubCategoryName/>}/>
+
+             
                
             </Routes>
           </BrowserRouter>

@@ -3642,6 +3642,102 @@ export const quotationRejectedColumns: GridColDef[] = [
   },
 ];
 
+export const aCategoryNameColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "transactionTypeName",
+    headerName: "Transaction Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Delete
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
+export const aSubCategoryNameColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "transactionTypeName",
+    headerName: "Transaction Type Name",
+    flex: 1.2,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.2,
+    minWidth: 140,
+  },
+  {
+    field: "subCategoryName",
+    headerName: "Sub Category Name",
+    flex: 1.2,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Delete
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
 export const categoryNameColumns: GridColDef[] = [
   {
     field: "srno",

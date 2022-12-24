@@ -974,6 +974,27 @@ export interface ModeTypeModel {
   modeType: string;
 }
 
+export interface AcategoryNameModel {
+  id: number;
+  categoryName: string;
+  createbyID: string;
+  pckCategoryID :string;
+  transactionTypeName :string;
+  display: string;
+}
+
+export interface ASubCategoryNameModel {
+  id: number;
+  createbyID:string;
+  categoryName: string;
+  pckCategoryID :string;
+  subcategoryID :string;
+  transtypeID: string;
+  subCategoryName:string;
+  transactionTypeName :string;
+  display: string;
+}
+
 export interface CategoryNameModel {
   id: number;
   categoryName: string;
