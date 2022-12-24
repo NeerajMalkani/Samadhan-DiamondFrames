@@ -201,6 +201,7 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "transactiontype_name", "transactionTypeName");
     renameKey(obj, "pck_sub_category_refno", "subcategoryID");
     renameKey(obj, "pck_transtype_refno", "transtypeID");
+    renameKey(obj, "pck_transtype_name", "transTypeName");
     renameKey(obj, "sub_category_name", "subCategoryName");    
     renameKey(obj, "contact_person", "contactPersonName");
     renameKey(obj, "contact_person_mobile_no", "Mobile");

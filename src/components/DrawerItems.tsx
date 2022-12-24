@@ -155,6 +155,34 @@ const DrawerItems = ({ open }: OpenObj) => {
       ],
     },
     {
+      title: "Pocket Diary Master",
+      icon: <Group />,
+      expanded: true,
+      items: [
+        {
+          title: "Category Name",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "acategoryname"), //.includes("activity"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/admin/pocketddairymaster/acategoryname`);
+            }, 300);
+          },
+        },
+        {
+          title: "Sub Category Name",
+          isActive: GetSearchedText(window.location.href.toLowerCase(), "asubcategoryname"), //.includes("service"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/admin/pocketddairymaster/asubcategoryname`);
+            }, 300);
+          },
+        },
+        
+      ],
+    },
+    {
       title: "Users",
       icon: <Group />,
       expanded: true,

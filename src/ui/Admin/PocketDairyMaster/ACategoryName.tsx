@@ -1,4 +1,4 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, Select, MenuItem, FormHelperText, FormControl, FormControlLabel, FormLabel,Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container, Select, MenuItem, FormHelperText, FormControl, FormControlLabel, FormLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -30,7 +30,6 @@ const ACategoryName = () => {
   //#region Variables
 
   const [categoryName, setCategoryName] = React.useState("");
-  const [pckCategoryID,setPckCategoryID] = React.useState(Number);
   const [categoryList, setCategoryList] = useState<Array<AcategoryNameModel>>([]);//React.useContext(DataContext).activityNamesList;
   const [categoryListTemp, setCategoryListTemp] = React.useState<Array<any>>([]);
   const [categoryNameError, setCategoryNameError] = useState("");
@@ -57,14 +56,55 @@ const ACategoryName = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [actionStatus, setActionStatus] = React.useState<string>("new");
-  const [selectedID, setSelectedID] = React.useState<number>(0);
+  const [selectedID, setSelectedID] = React.useState("");
   //#endregion 
 
   //#region Functions
 
   useEffect(() => {
+    FetchTransactionType();
     FetchData("");
   }, []);
+
+  const FetchTransactionType = () => {
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+      },
+    };
+    Provider.createDFAdmin(Provider.API_URLS.gettransactiontype_pckcategoryform_appadmin, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+
+            const stateData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              stateData.push({
+                key: data.transTypeName,
+                isSelected: false,
+                id: data.transtypeID
+              });
+            });
+            transactionType[1](stateData);
+
+          }
+        } else {
+          setSnackbarType("info");
+          setSnackMsg(communication.NoData);
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackbarType("error");
+        setSnackMsg(communication.NetworkError);
+        setOpen(true);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
+
 
   const FetchData = (type: string) => {
     let params = {
@@ -81,13 +121,18 @@ const ACategoryName = () => {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.transactionType = a.transactionType ? "Source" : "Expenses";
-              a.id=index + 1;
+              a.id = index + 1;
               a.display = a.display === "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
             setCategoryList(arrList);
             setCategoryListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Category " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
           }
         } else {
           setSnackbarType("info");
@@ -106,33 +151,45 @@ const ACategoryName = () => {
   };
 
   const ResetFields = () => {
-   setSelectedID(0);
+    setSelectedID("0");
     setActionStatus("new");
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     setButtonDisplay("none");
     setButtonLoading(false);
+
+    let arrService = [...transactionType[0]];
+    arrService[0].isSelected = false;
+    arrService[1].isSelected = false;
+
+    transactionType[1](arrService);
   };
-  
+
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
   };
 
   const handleSubmitClick = () => {
-    debugger;
     let isValid = true;
     const IsTextFiledError = categoryName.trim() === "";
     setCategoryNameError(IsTextFiledError ? communication.BlankCategoryName : "");
     setIscategoryNameError(IsTextFiledError);
     if (!IsTextFiledError) {
       setButtonLoading(true);
+
       let blankData = transactionType[0].filter((el) => el.isSelected);
-    if (blankData.length === 0) {
-      isValid = false;
-      istTypenameError[1](true);
-      tTypeNameError[1]("Please select Transaction Type ");
-    }
-      InsertUpdateData(categoryName, display === "yes");
+      if (blankData.length === 0) {
+        isValid = false;
+        istTypenameError[1](true);
+        tTypeNameError[1]("Please select Transaction Type ");
+      }
+
+      if (isValid) {
+
+        const tt = blankData.map((data) => data.id);
+        InsertUpdateData(categoryName, display === "Yes", tt);
+      }
+
       setDisplay("Yes");
       setCategoryName("");
       setCategoryNameError("");
@@ -149,116 +206,131 @@ const ACategoryName = () => {
     setDataGridOpacity(1);
     setDataGridPointer("auto");
     // setActionStatus("new");
+    let arrService = [...transactionType[0]];
+    arrService[0].isSelected = false;
+    arrService[1].isSelected = false;
+
+    transactionType[1](arrService);
   };
 
-    const handelEditAndDelete = (type: string | null, a: AcategoryNameModel | undefined) => {
-      if (type?.toLowerCase() === "edit" && a !== undefined) {
-        setDataGridOpacity(0.3);
-        setDataGridPointer("none");
-        setDisplay(a.display);
-        setCategoryName(a?.categoryName);
-        setSelectedID(a.id);
-        setCategoryNameError("");
-        setIscategoryNameError(false);
-        setButtonDisplay("unset");
-        setActionStatus("edit");
-      }
-      // else if (type?.toLowerCase() === "delete" && a !== undefined) {
-      //   setSelectedID(a.id);
-      //   Provider.deleteAllParams("master/deleteactivityroles", { ID: a.id })
-      //     .then((response) => {
-      //       if (response.data && response.data.code === 200) {
-      //         FetchData();
-      //       } else {
-      //         setSnackMsg("your request cannot be processed");
-      //         setOpen(true);
-      //       }
-      //     })
-      //     .catch((e) => {
-      //       console.log(e);
-      //       setSnackMsg("your request cannot be processed");
-      //       setOpen(true);
-      //     });
-      // }
-    };
+  const handelEditAndDelete = (type: string | null, a: AcategoryNameModel | undefined) => {
+    if (type?.toLowerCase() === "edit" && a !== undefined) {
+      setDataGridOpacity(0.3);
+      setDataGridPointer("none");
+      setDisplay(a.display);
+      setCategoryName(a?.categoryName);
+      setSelectedID(a.pckCategoryID);
 
-    const InsertUpdateData = (categoryName: string,checked: boolean) => {
-      // debugger;
-      if (actionStatus === "new") {
-        Provider.createDFAdmin(Provider.API_URLS.pckcategorynamecreate, {
-          data: {
-            Sess_UserRefno: cookies.dfc.UserID,
-            category_name: categoryName,
-            pck_transtype_refno: [
-                1,
-                2
-            ],
-            view_status: checked ? 1 : 0,
-        }
-        })
-          .then((response) => {
-            // debugger;
-            if (response.data && response.data.code === 200) {
-              // debugger;
-              FetchData("added");
-            }else if (response.data.code === 304) {
-              setSnackMsg(communication.ExistsError);
-              setOpen(true);
-              setSnackbarType("error");
-              ResetFields();
-            } else {
-              ResetFields();
-              setSnackMsg(communication.Error);
-              setSnackbarType("error");
-              setOpen(true);
-            }
-          })
-          .catch((e) => {
-            ResetFields();
-            setSnackMsg(communication.NetworkError);
-            setSnackbarType("error");
-            setOpen(true);
+      const stateData: any = [];
+      transactionType[0].map((data: any, i: number) => {
+        if (a.transactionTypeName.includes(data.key)) {
+          stateData.push({
+            key: data.key,
+            isSelected: true,
+            id: data.id
           });
-      } else if (actionStatus === "edit") {
-        // debugger;
-        Provider.createDFAdmin(Provider.API_URLS.pckcategorynameupdate, {
+        }
+        else {
+          stateData.push({
+            key: data.key,
+            isSelected: false,
+            id: data.id
+          });
+        }
+        transactionType[1](stateData);
+      });
+
+      setCategoryNameError("");
+      setIscategoryNameError(false);
+      setButtonDisplay("unset");
+      setActionStatus("edit");
+    }
+    // else if (type?.toLowerCase() === "delete" && a !== undefined) {
+    //   setSelectedID(a.id);
+    //   Provider.deleteAllParams("master/deleteactivityroles", { ID: a.id })
+    //     .then((response) => {
+    //       if (response.data && response.data.code === 200) {
+    //         FetchData();
+    //       } else {
+    //         setSnackMsg("your request cannot be processed");
+    //         setOpen(true);
+    //       }
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //       setSnackMsg("your request cannot be processed");
+    //       setOpen(true);
+    //     });
+    // }
+  };
+
+  const InsertUpdateData = (categoryName: string, checked: boolean, tt) => {
+    if (actionStatus === "new") {
+      Provider.createDFAdmin(Provider.API_URLS.pckcategorynamecreate, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
-          pck_category_refno: pckCategoryID,
           category_name: categoryName,
-          pck_transtype_refno: [
-              1,
-              2,
-     
-          ],
-          view_status: checked ? 1 : 0,
-      }
-        }) 
-          .then((response) => {
-            // debugger;
-            if (response.data && response.data.code === 200) {
-              // debugger;
-              FetchData("updated");
-            }else if (response.data.code === 304) {
-              setSnackMsg(communication.ExistsError);
-              setOpen(true);
-              setSnackbarType("error");
-              ResetFields();
-            } else {
-              ResetFields();
-              setSnackMsg(communication.Error);
-              setSnackbarType("error");
-              setOpen(true);
-            }
-          })
-          .catch((e) => {
+          pck_transtype_refno: tt,
+          view_status: checked ? "1" : "0",
+        }
+      })
+        .then((response) => {
+          setButtonLoading(false);
+          if (response.data && response.data.code === 200) {
+            FetchData("added");
             ResetFields();
-            setSnackMsg(communication.NetworkError);
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
+          } else {
+            ResetFields();
+            setSnackMsg(communication.Error);
             setSnackbarType("error");
             setOpen(true);
-          });
-      }
-    };
+          }
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
+    } else if (actionStatus === "edit") {
+      Provider.createDFAdmin(Provider.API_URLS.pckcategorynameupdate, {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          pck_category_refno: selectedID,
+          category_name: categoryName,
+          pck_transtype_refno: tt,
+          view_status: checked ? "1" : "0",
+        }
+      })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData("updated");
+            ResetFields();
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
+          } else {
+            ResetFields();
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
+    }
+  };
 
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
@@ -319,35 +391,35 @@ const ACategoryName = () => {
             </Typography>
             <FormControl component="fieldset" error={istTypenameError[0]}>
               {/* <FormLabel component="legend"><b>Transaction Type</b></FormLabel> */}
-            <FormGroup aria-label="position" row>
-              {transactionType[0].map((data, index) => {
-                return (
-                  <FormControlLabel
-                    value={data.id}
-                    control={
-                      <Checkbox
-                        checked={data.isSelected}
-                        tabIndex={-1}
-                        onClick={() => {
-                          istTypenameError[1](false);
-                          tTypeNameError [1]("");
-                          const newChecked = [...transactionType[0]];
-                          newChecked.find((item, i) => {
-                            if (item.id === data.id) {
-                              item.isSelected = !item.isSelected;
-                            }
-                          });
-                          transactionType[1](newChecked);
-                        }}
-                      />
-                    }
-                    label={data.key}
-                    labelPlacement="end"
-                  />
-                );
-              })}
-            </FormGroup>
-            <FormHelperText>{tTypeNameError[0]}</FormHelperText>
+              <FormGroup aria-label="position" row>
+                {transactionType[0].map((data, index) => {
+                  return (
+                    <FormControlLabel
+                      value={data.id}
+                      control={
+                        <Checkbox
+                          checked={data.isSelected}
+                          tabIndex={-1}
+                          onClick={() => {
+                            istTypenameError[1](false);
+                            tTypeNameError[1]("");
+                            const newChecked = [...transactionType[0]];
+                            newChecked.find((item, i) => {
+                              if (item.id === data.id) {
+                                item.isSelected = !item.isSelected;
+                              }
+                            });
+                            transactionType[1](newChecked);
+                          }}
+                        />
+                      }
+                      label={data.key}
+                      labelPlacement="end"
+                    />
+                  );
+                })}
+              </FormGroup>
+              <FormHelperText>{tTypeNameError[0]}</FormHelperText>
             </FormControl>
           </Grid>
           <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
@@ -418,7 +490,7 @@ const ACategoryName = () => {
                       onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                         const arrActivity = [...categoryList];
                         let a: AcategoryNameModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                          handelEditAndDelete((e.target as any).textContent, a);
+                        handelEditAndDelete((e.target as any).textContent, a);
                       }}
                       sx={{
                         "& .MuiDataGrid-columnHeaders": {

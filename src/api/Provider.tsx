@@ -231,6 +231,9 @@ class Provider {
 
     pcksubcategoryrefnocheck:"pcksubcategoryrefnocheck_appadmin/",
     gettransactiontype_pcksubcategoryform:"gettransactiontype_pcksubcategoryform_appadmin/",
+    gettransactiontype_pckcategoryform_appadmin : "gettransactiontype_pckcategoryform_appadmin/",
+    getpckcategoryname_pcksubcategoryform_appadmin:"getpckcategoryname_pcksubcategoryform_appadmin/",
+    pcksubcategorynamecreate_appadmin:"pcksubcategorynamecreate_appadmin/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

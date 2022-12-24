@@ -98,8 +98,8 @@ export interface ProductModel {
   selectedUnitID: number;
   isChecked: boolean;
   unitOfSale: string;
-  selectedUnit:string;
-  convertedUnit:string;
+  selectedUnit: string;
+  convertedUnit: string;
 }
 
 export interface RateCardProductModel {
@@ -295,7 +295,7 @@ export interface BranchModel {
   branchInchargeContactNo: string;
   stateName: string;
   cityName: string;
-  companyName:string;
+  companyName: string;
 }
 
 export interface BranchTypeModel {
@@ -444,7 +444,7 @@ export interface BrandModel {
   gst: string;
   brandPrefixName: string;
   brandID: number;
-  productID:number;
+  productID: number;
   unitOfSale: string;
   unitID: number;
   unitName: string;
@@ -457,7 +457,7 @@ export interface BrandModel {
   contractorDiscount: string;
   display: string;
   action: string;
-  brandNameDisplay:string;
+  brandNameDisplay: string;
 }
 
 export interface ImageDataModel {
@@ -488,8 +488,8 @@ export interface ProductSetupModel {
   convertedUnitValue: string;
   isApprove: string;
   isPublish: string;
-  SaleUnit:string;
-  
+  SaleUnit: string;
+
 }
 
 export interface BuyerCategoryModel {
@@ -672,7 +672,7 @@ export interface EmployeeModel {
   srno: number;
   employeeName: string;
   employeeCode: string;
-  employeeID:string;
+  employeeID: string;
   mobileNo: string;
   branchName: string;
   departmentName: string;
@@ -685,13 +685,13 @@ export interface EmployeeModel {
   rateUnit: string;
   altRateUnit: string;
   material: string;
-  companyName:string;
-  aadharNo:string;
-  addEmployeeName:string;
-  otpMobileNo:string
+  companyName: string;
+  aadharNo: string;
+  addEmployeeName: string;
+  otpMobileNo: string
 }
-export interface MobileNoModel{
-  mobile_no_Result:string;
+export interface MobileNoModel {
+  mobile_no_Result: string;
 }
 
 export interface RateCardModel {
@@ -978,22 +978,30 @@ export interface AcategoryNameModel {
   id: number;
   categoryName: string;
   createbyID: string;
-  pckCategoryID :string;
-  transactionTypeName :string;
+  pckCategoryID: string;
+  transactionTypeName: string;
   display: string;
 }
 
 export interface ASubCategoryNameModel {
   id: number;
-  createbyID:string;
+  createbyID: string;
   categoryName: string;
-  pckCategoryID :string;
-  subcategoryID :string;
+  pckCategoryID: string;
+  subcategoryID: string;
   transtypeID: string;
-  subCategoryName:string;
-  transactionTypeName :string;
+  subCategoryName: string;
+  transactionTypeName: string;
   display: string;
+  notes: string;
 }
+
+export interface PckTransactionTypeModel {
+  id: number;
+  transtypeID: string;
+  transTypeName: string;
+}
+
 
 export interface CategoryNameModel {
   id: number;
