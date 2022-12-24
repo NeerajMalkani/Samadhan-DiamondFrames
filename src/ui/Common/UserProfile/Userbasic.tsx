@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Container, FormControl, FormControlLabel, Typography, Select, Grid, Menu, Snackbar, MenuItem, AlertColor, FormHelperText } from "@mui/material";
+import { Box, TextField, Button, Container, FormControl, FormControlLabel, Typography, Select, Grid, Menu, Snackbar, MenuItem, AlertColor, FormHelperText, Alert } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
@@ -14,6 +14,7 @@ import { CityModel, CompanyModel, StateModel, UserModel, UserProfile } from "../
 import Provider from "../../../api/Provider";
 import { SelectChangeEvent } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { APIConverter } from "../../../utils/apiconverter";
 
 let st_ID = 0, ct_ID = 0;
 
@@ -95,22 +96,22 @@ const Userbasic = () => {
   const [display, setDisplay] = React.useState("Yes");
   //#endregion
 
-   //#region Functions
+  //#region Functions
   useEffect(() => {
     FetchUserData("");
-    // FetchStates();
-    //FetchCity();
   }, []);
 
   const FetchStates = () => {
-    Provider.getAll("master/getstates")
+    Provider.createDFCommonWithouParam(Provider.API_URLS.StateDetails)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+
+            response.data.data = APIConverter(response.data.data);
             const stateData: any = [];
             response.data.data.map((data: any, i: number) => {
               stateData.push({
-                id: data.id,
+                id: data.stateID,
                 label: data.stateName,
               });
             });
@@ -121,9 +122,8 @@ const Userbasic = () => {
                 return el.id === st_ID;
               });
               setState(a[0].label);
+              FetchCity(st_ID);
             }
-
-            FetchCity(st_ID);
           }
         }
       })
@@ -131,19 +131,21 @@ const Userbasic = () => {
   };
 
   const FetchCity = (stateID) => {
-    debugger;
     let params = {
-      ID: stateID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        state_refno: stateID,
+      }
     };
-    Provider.getAll(`master/getcitiesbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.DistrictDetails, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const cityData: any = [];
             response.data.data.map((data: any, i: number) => {
               cityData.push({
-                id: data.id,
+                id: data.cityID,
                 label: data.cityName,
               });
             });
@@ -159,71 +161,71 @@ const Userbasic = () => {
           else {
             setCityNameList([]);
             setCity("");
-            ct_ID=0;
+            ct_ID = 0;
             setCityID(0);
           }
         }
         else {
           setCityNameList([]);
-            setCity("");
-            ct_ID=0;
-            setCityID(0);
+          setCity("");
+          ct_ID = 0;
+          setCityID(0);
         }
       })
       .catch((e) => { });
   };
 
   const FetchUserData = (type: string) => {
-    debugger;
     let params = {
-      UserID: cookies.dfc.UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno
+      }
     };
-    Provider.getAll(`master/getusergeneralprofile?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.getuserprofile, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            if (response.data.data[0] != null) {
-              debugger;
-            const arrList = [...response.data.data];
             debugger;
-            setUserID(arrList[0].userID);
-            setCompanyName(!NullOrEmpty(arrList[0].companyName) ? arrList[0].CompanyName :"");
-            setContactPerson(!NullOrEmpty(arrList[0].contactPersonName) ? arrList[0].contactPersonName :"" );
-            setMobile(!NullOrEmpty(arrList[0].contactPersonNumber) ? arrList[0].Mobile :"" );
-            setProfileAddress(!NullOrEmpty(arrList[0].addressLine) ? arrList[0].addressLine :"");
-            // setState(arrList[0].stateName);
+            response.data.data = APIConverter(response.data.data);
 
-            if (!NullOrEmpty(arrList[0].stateID)) {
-              setStateID(arrList[0].stateID);
-              st_ID = arrList[0].stateID;
-            }
+            if (response.data.data[0] != null) {
+              const arrList = [...response.data.data];
+              setUserID(arrList[0].userID);
+              setCompanyName(!NullOrEmpty(arrList[0].companyName) ? arrList[0].companyName : "");
+              setContactPerson(!NullOrEmpty(arrList[0].contactPersonName) ? arrList[0].contactPersonName : "");
+              setMobile(!NullOrEmpty(arrList[0].Mobile) ? arrList[0].Mobile : "");
+              setProfileAddress(!NullOrEmpty(arrList[0].addressLine) ? arrList[0].addressLine : "");
+              // setState(arrList[0].stateName);
+              if (!NullOrEmpty(arrList[0].stateID)) {
+                setStateID(arrList[0].stateID);
+                st_ID = arrList[0].stateID;
+              }
 
-            if (!NullOrEmpty(arrList[0].cityID)) {
-              setStateID(arrList[0].cityID);
-              ct_ID = arrList[0].cityID;
-            }
+              if (!NullOrEmpty(arrList[0].cityID)) {
+                setCityID(arrList[0].cityID);
+                ct_ID = arrList[0].cityID;
+              }
 
-            setCityID(arrList[0].cityID);
+              setCityID(arrList[0].cityID);
 
-            // if (arrList[0].stateID > 0) {
-            //   debugger;
-            //   FetchCity(arrList[0].stateID);
-            //   setCity(arrList[0].cityName);
-            //   setCityID(arrList[0].cityID);
-            // }
+              // if (arrList[0].stateID > 0) {
+              //   FetchCity(arrList[0].stateID);
+              //   setCity(arrList[0].cityName);
+              //   setCityID(arrList[0].cityID);
+              // }
 
-            setPincode(!NullOrEmpty(arrList[0].pincode) ? arrList[0].pincode :"");
-            setGst(!NullOrEmpty(arrList[0].gstNumber) ? arrList[0].gstNumber : "");
-            setPan(!NullOrEmpty(arrList[0].pan) ? arrList[0].pan : "");
+              setPincode(!NullOrEmpty(arrList[0].pincode) ? arrList[0].pincode : "");
+              setGst(!NullOrEmpty(arrList[0].gstNumber) ? arrList[0].gstNumber : "");
+              setPan(!NullOrEmpty(arrList[0].pan) ? arrList[0].pan : "");
 
-            if (type !== "") {
-              setSnackMsg("User " + type);
-              setOpen(true);
-              setSnackbarType("success");
+              if (type !== "") {
+                setSnackMsg("User " + type);
+                setOpen(true);
+                setSnackbarType("success");
+              }
             }
           }
-        }
         } else {
           setSnackMsg(communication.NoData);
           setOpen(true);
@@ -243,7 +245,6 @@ const Userbasic = () => {
   };
 
   const handleSNChange = (event: SelectChangeEvent) => {
-    debugger;
     let stateName: string = event.target.value;
     let ac = stateNameList.find((el) => el.stateName === stateName);
     if (ac !== undefined) {
@@ -256,7 +257,6 @@ const Userbasic = () => {
   };
 
   const handleCNChange = (event: SelectChangeEvent) => {
-    debugger;
     let cityName: string = event.target.value;
     let ac = cityNameList.find((el) => el.cityName === cityName);
     if (ac !== undefined) {
@@ -272,7 +272,6 @@ const Userbasic = () => {
   };
 
   const handleSubmitClick = () => {
-    debugger;
     let isValid: Boolean = true;
 
     if (companyName.trim() === "") {
@@ -328,7 +327,6 @@ const Userbasic = () => {
       setIsPanError(true);
       setPanError(communication.BlankPan);
     }
-    debugger;
     if (isValid) {
       InsertUpdateData();
     }
@@ -337,22 +335,29 @@ const Userbasic = () => {
   const InsertUpdateData = () => {
     debugger;
     if (actionStatus === "new") {
-      Provider.create("master/updategeneraluserprofile", {
-        UserID: CookieUserID,
-        CompanyName: companyName,
-        ContactPersonName: contactPerson,
-        ContactPersonNumber: mobile,
-        AddressLine: profileAddress,
-        StateID: stateID,
-        CityID: cityID,
-        Pincode: pincode,
-        GSTNumber: gst,
-        PAN: pan,
-      })
+
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_group_refno: cookies.dfc.Sess_group_refno,
+          company_name: companyName,
+          contact_person: contactPerson,
+          contact_person_mobile_no: mobile,
+          address: profileAddress,
+          state_refno: stateID,
+          district_refno: cityID,
+          pincode: pincode,
+          gst_no: gst,
+          pan_no: pan
+        }
+      }
+      Provider.createDFCommon(Provider.API_URLS.userprofileupdate, params)
         .then((response) => {
           debugger;
           if (response.data && response.data.code === 200) {
-            FetchUserData("added");
+            setSnackMsg("Profile Updated Successfully!.");
+            setSnackbarType("success");
+            setOpen(true);
           } else {
             setSnackMsg(communication.Error);
             setSnackbarType("error");
@@ -360,15 +365,23 @@ const Userbasic = () => {
           }
         })
         .catch((e) => {
-          debugger;
-
           setSnackMsg(communication.NetworkError);
           setSnackbarType("error");
           setOpen(true);
         });
     }
   };
-//#endregion 
+
+  const handleSnackbarClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+  //#endregion 
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -376,7 +389,7 @@ const Userbasic = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={2} sm={4}>
-            <Typography variant="h4"> Update Profile</Typography>
+            <Typography variant="h4">Update Profile</Typography>
           </Grid>
         </Grid>
         <br></br>
@@ -584,6 +597,15 @@ const Userbasic = () => {
           </Grid>
         </Grid>
       </Container>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert severity={snackbarType} sx={{ width: "100%" }}>
+          {snackMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

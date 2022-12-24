@@ -7,7 +7,7 @@ const BASE_URL_Admin =
   "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
 const BASE_URL_Dashboard =
   "https://dfsolutions.in/api/apidashboard/spawu7S4urax/tYjD";
-  const BASE_URL_Contractor =
+const BASE_URL_Contractor =
   "https://dfsolutions.in/api/apicontractor/spawu7S4urax/tYjD/";
 
 class Provider {
@@ -203,25 +203,27 @@ class Provider {
     dealermyservicecreate: "dealermyservicecreate/",
     dealermyserviceupdate: "dealermyserviceupdate/",
     dealermyservicerefnocheck: "dealermyservicerefnocheck/",
-    DealerCompanyProductRefNo:"dealercompanyproductrefnocheck/",
-    GetBrandnameDealerProductform:"getbrandnamedealerproductform/",
-    GetProductDealerProductform:"getproductnamedealerproductform/",
-    GetProductDataDealerProductform:"getproductdatadealerproductform/",
-    DealerProductSetUpCreate:"dealerproductsetupcreate/",
-    DealerProductSetupUpdate:"dealerproductsetupupdate/",	
-    getassignbranchadminedit_branchform:"getassignbranchadminedit_branchform/",
+    DealerCompanyProductRefNo: "dealercompanyproductrefnocheck/",
+    GetBrandnameDealerProductform: "getbrandnamedealerproductform/",
+    GetProductDealerProductform: "getproductnamedealerproductform/",
+    GetProductDataDealerProductform: "getproductdatadealerproductform/",
+    DealerProductSetUpCreate: "dealerproductsetupcreate/",
+    DealerProductSetupUpdate: "dealerproductsetupupdate/",
+    getassignbranchadminedit_branchform: "getassignbranchadminedit_branchform/",
 
-    getservicenameratecardform:"getservicenameratecardform/",
-    getcategorynameratecardform:"getcategorynameratecardform/",
-    getcategorydataratecardform:"getcategorydataratecardform/",
-    getproductnameratecardform:"getproductnameratecardform/",
-    getunitofsaleratecardform:"getunitofsaleratecardform/",
-    getmaterialratedataratecardform:"getmaterialratedataratecardform/",
-    getmaterialratedata_unitofsaleonchange_ratecardform:"getmaterialratedata_unitofsaleonchange_ratecardform/",
-    getmaterialratedata_withmaterialrateblur_ratecardform:"getmaterialratedata_withmaterialrateblur_ratecardform/",
-    getmaterialratedata_withoutmaterialrateblur_ratecardform:"getmaterialratedata_withoutmaterialrateblur_ratecardform/",
-    ratecardcreate:"ratecardcreate/",
-    ratecardupdate:"ratecardupdate/",
+    getservicenameratecardform: "getservicenameratecardform/",
+    getcategorynameratecardform: "getcategorynameratecardform/",
+    getcategorydataratecardform: "getcategorydataratecardform/",
+    getproductnameratecardform: "getproductnameratecardform/",
+    getunitofsaleratecardform: "getunitofsaleratecardform/",
+    getmaterialratedataratecardform: "getmaterialratedataratecardform/",
+    getmaterialratedata_unitofsaleonchange_ratecardform: "getmaterialratedata_unitofsaleonchange_ratecardform/",
+    getmaterialratedata_withmaterialrateblur_ratecardform: "getmaterialratedata_withmaterialrateblur_ratecardform/",
+    getmaterialratedata_withoutmaterialrateblur_ratecardform: "getmaterialratedata_withoutmaterialrateblur_ratecardform/",
+    ratecardcreate: "ratecardcreate/",
+    ratecardupdate: "ratecardupdate/",
+    getuserprofile: "getuserprofile/",
+    userprofileupdate: "userprofileupdate/",
 
     pckcategoryrefnocheck:"pckcategoryrefnocheck_appadmin/",
     pckcategorynamecreate:"pckcategorynamecreate_appadmin/",

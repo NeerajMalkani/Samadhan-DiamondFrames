@@ -17,9 +17,10 @@ export const APIConverter = (response: any, type?: string) => {
       renameKey(obj, "myemployee_refno", "employeeID");
       renameKey(obj, "aadhar_no", "aadharNo");
       renameKey(obj, "firstname", "employeeName");
-    }
-    if (type == "addratecard") {
-      renameKey(obj, "service_refno", "serviceID");
+      renameKey(obj, "mobile_no", "contactPersonNumber");
+      renameKey(obj, "branch_refno", "branchID");
+      renameKey(obj, "department_refno", "departmentID");
+      renameKey(obj, "designation_refno", "designationID");
     }
 
     renameKey(obj, "product_refno", "productID");
@@ -48,7 +49,7 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "unitcategoryrefno_unitrefno", "unitId");
     renameKey(obj, "with_material_rate", "rateWithMaterials");
     renameKey(obj, "without_material_rate", "rateWithoutMaterials");
-    // renameKey(obj, "short_desc", "shortSpecification");
+    renameKey(obj, "short_desc", "shortSpecification");
     renameKey(obj, "actual_unitname", "selectedUnit");
     renameKey(obj, "convert_unitname", "convertedUnit");
     renameKey(obj, "service_product_refno", "productID");
@@ -109,7 +110,6 @@ export const APIConverter = (response: any, type?: string) => {
     // renameKey(obj, "rateWithMaterials", "rateWithMaterials");
     // renameKey(obj, "rateWithoutMaterials", "rateWithoutMaterials");
     renameKey(obj, "selectedUnit", "selectedUnit");
-    renameKey(obj, "short_desc", "shortSpecification");
     renameKey(obj, "specification", "specification");
     renameKey(obj, "with_material_alternate_rate", "withMaterialAlternateRate");
     renameKey(obj, "without_material_alternate_rate", "withoutMaterialAlternateRate");
@@ -193,7 +193,6 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "Search_employee_mobile_no", "mobileNo");
     renameKey(obj, "employee_user_refno", "employeeID");
     renameKey(obj, "employee_company_refno", "employeeCompanyID");
-    renameKey(obj, "idcard_valid_date", "CardValidity");
     renameKey(obj, "login_active_status", "display");
     renameKey(obj, "idcard_valid_date", "idCardValidity");
     renameKey(obj, "createby_user_refno", "createbyID");
@@ -202,8 +201,9 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "transactiontype_name", "transactionTypeName");
     renameKey(obj, "pck_sub_category_refno", "subcategoryID");
     renameKey(obj, "pck_transtype_refno", "transtypeID");
-    renameKey(obj, "sub_category_name", "subCategoryName");
-
+    renameKey(obj, "sub_category_name", "subCategoryName");    
+    renameKey(obj, "contact_person", "contactPersonName");
+    renameKey(obj, "contact_person_mobile_no", "Mobile");
   });
 
   return response;

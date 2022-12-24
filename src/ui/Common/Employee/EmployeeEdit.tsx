@@ -270,11 +270,11 @@ const EmployeeEdit = () => {
   }
 
   useEffect(() => {
-    debugger;
     let id = window.location.pathname.split('/').at(-1);
     if (!NullOrEmpty(id)) {
       setEmployeeID(parseInt(id));
       FetchEmployeeBasicDetails(parseInt(id));
+      FetchEmployeeWorkDetails(parseInt(id));
       setDOB(null);
       setDOJ(null);
       setCardValidity(null);
@@ -289,14 +289,22 @@ const EmployeeEdit = () => {
   //#region Functions
 
   const FetchBranch = () => {
+    debugger;
     let params = {
-      AddedByUserID: cookies.dfc.UserID,
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_designation_refno: cookies.dfc.Sess_designation_refno,
+        Sess_company_refno: cookies.dfc.Sess_company_refno
+      }
     };
-
-    Provider.getAll(`master/getuserbranchforemployee?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.GetBranchNameEmployeeWorkForm, params)
       .then((response: any) => {
+        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
+            response.data.data = APIConverter(response.data.data);
+
             const branchData: any = [];
             response.data.data.map((data: any, i: number) => {
               branchData.push({
@@ -500,29 +508,20 @@ const EmployeeEdit = () => {
   };
 
   const FetchEmployeeBasicDetails = (id: number) => {
-    debugger;
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
         myemployee_refno: id
       }
     };
-    debugger;
     Provider.createDFCommon(Provider.API_URLS.GetEmployeeBasicData, params)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
-
-
             response.data.data = APIConverter(response.data.data, "employee");
-            debugger;
-            var employee_data = response.data.data[0].employee[0];
-            var bankDetails_data = response.data.data[0].bankDetails[0];
-            var reporting_data = response.data.data[0].employeeReportingAuthority[0];
+            var employee_data = response.data.data[0];
 
-
+            //#region Basic Details
             setAadhar(!NullOrEmpty(employee_data.aadharNo) ? employee_data.aadharNo : "");
             setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
 
@@ -555,57 +554,178 @@ const EmployeeEdit = () => {
               setSelectedStateID(employee_data.stateID);
               st_ID = employee_data.stateID;
             }
+            //#endregion
 
+            // setDisplay(!NullOrEmpty(employee_data.display) ? employee_data.display : "");
+            // // setFirstName(!NullOrEmpty(employee_data.firstName) ? employee_data.firstName : "");
+            // setSelectedStateID(!NullOrEmpty(employee_data.setSelectedStateID) ? employee_data.setSelectedStateID : "")
 
+            // if (!NullOrEmpty(employee_data.branchID)) {
+            //   setBranchID(employee_data.branchID);
+            //   b_ID = employee_data.branchID;
+            // }
 
-            setDisplay(!NullOrEmpty(employee_data.display) ? employee_data.display : "");
-            // setFirstName(!NullOrEmpty(employee_data.firstName) ? employee_data.firstName : "");
-            setSelectedStateID(!NullOrEmpty(employee_data.setSelectedStateID) ? employee_data.setSelectedStateID:"")
+            // if (!NullOrEmpty(employee_data.departmentID)) {
+            //   setDepartmentID(employee_data.departmentID);
+            //   d_ID = employee_data.departmentID;
+            // }
 
-            if (!NullOrEmpty(employee_data.branchID)) {
-              setBranchID(employee_data.branchID);
-              b_ID = employee_data.branchID;
-            }
+            // if (!NullOrEmpty(employee_data.designationID)) {
+            //   setDesignationID(employee_data.designationID);
+            //   de_ID = employee_data.designationID;
+            // }
 
-            if (!NullOrEmpty(employee_data.departmentID)) {
-              setDepartmentID(employee_data.departmentID);
-              d_ID = employee_data.departmentID;
-            }
+            // setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
 
-            if (!NullOrEmpty(employee_data.designationID)) {
-              setDesignationID(employee_data.designationID);
-              de_ID = employee_data.designationID;
-            }
+            // setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
+            // setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
+            // setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
+            // setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
+            // if (!NullOrEmpty(reporting_data)) {
+            //   setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+            //   setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+            //   rpt_ID = reporting_data.reportingAuthorityID;
+            // }
 
-            setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
+            // setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "0");
+            // setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType === 1 ? "Daily" : "Monthly" : "");
+            // setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
 
-            setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
-            setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
-            setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
-            setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
-            if (!NullOrEmpty(reporting_data)) {
-              setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
-              setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
-              rpt_ID = reporting_data.reportingAuthorityID;
-            }
+            // setAccountHName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountHolderName) ? bankDetails_data.accountHolderName : "" : "");
 
-            setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "0");
-            setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType === 1 ? "Daily" : "Monthly" : "");
-            setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
+            // setAccountNo(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountNumber) ? bankDetails_data.accountNumber : "" : "");
+            // setBankName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.bankName) ? bankDetails_data.bankName : "" : "");
+            // setBankBranchName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.branchName) ? bankDetails_data.branchName : "" : "");
+            // setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode : "" : "");
 
-            setAccountHName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountHolderName) ? bankDetails_data.accountHolderName : "" : "");
-
-            setAccountNo(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountNumber) ? bankDetails_data.accountNumber : "" : "");
-            setBankName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.bankName) ? bankDetails_data.bankName : "" : "");
-            setBankBranchName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.branchName) ? bankDetails_data.branchName : "" : "");
-            setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode : "" : "");
-            
           }
 
           setLoading(false);
+
+          FetchStates();
+          BloodGroupDropdown();
+
+          //FetchBranch();
+          //FetchDepartment();
+          //FetchDesignation();
+          //FetchReport();
+        }
+      })
+      .catch((e) => {
+        setLoading(false);
+      });
+  };
+
+  const FetchEmployeeWorkDetails = (id: number) => {
+    debugger;
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        myemployee_refno: id
+      }
+    };
+    Provider.createDFCommon(Provider.API_URLS.GetEmployeeWorkData, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            debugger;
+            response.data.data = APIConverter(response.data.data, "employee");
+            var employee_data = response.data.data[0];
+            // var bankDetails_data = response.data.data[0].bankDetails[0];
+            // var reporting_data = response.data.data[0].employeeReportingAuthority[0];
+
+            // if (!NullOrEmpty(employee_data.branchID)) {
+            //   setBranchID(employee_data.branchID);
+            //   b_ID = employee_data.branchID;
+            // }
+
+            // if (!NullOrEmpty(employee_data.departmentID)) {
+            //   setDepartmentID(employee_data.departmentID);
+            //   d_ID = employee_data.departmentID;
+            // }
+
+            // if (!NullOrEmpty(employee_data.designationID)) {
+            //   setDesignationID(employee_data.designationID);
+            //   de_ID = employee_data.designationID;
+            // }
+
+
+            //#region Basic Details
+            setAadhar(!NullOrEmpty(employee_data.aadharNo) ? employee_data.aadharNo : "");
+            setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
+
+            if (!NullOrEmpty(employee_data.bloodGroupID)) {
+              setBloodGroupID(employee_data.bloodGroupID);
+              bg_ID = employee_data.bloodGroupID;
+            }
+            setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
+
+            if (!NullOrEmpty(employee_data.cityID)) {
+              setSelectedCityID(employee_data.cityID);
+              ct_ID = employee_data.cityID;
+            }
+
+            setDOB(NullOrEmpty(employee_data.DOB) ? null : employee_data.DOB);
+            setDOJ(NullOrEmpty(employee_data.DOJ) ? null : employee_data.DOJ);
+            setEmergencyCName(!NullOrEmpty(employee_data.emergencyCName) ? employee_data.emergencyCName : "");
+            setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
+            setEmployeeCompanyID(employee_data.emergencyContactNo);
+            //setEmployeeID(employee_data.employeeID);
+            setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
+            setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
+            setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
+            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+            setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
+            setUploadedImage(employee_data.profilePhoto);
+            setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
+
+            if (!NullOrEmpty(employee_data.stateID)) {
+              setSelectedStateID(employee_data.stateID);
+              st_ID = employee_data.stateID;
+            }
+            //#endregion
+
+            // setDisplay(!NullOrEmpty(employee_data.display) ? employee_data.display : "");
+            // // setFirstName(!NullOrEmpty(employee_data.firstName) ? employee_data.firstName : "");
+            // setSelectedStateID(!NullOrEmpty(employee_data.setSelectedStateID) ? employee_data.setSelectedStateID : "")
+
+            
+
+            
+
+            
+
+            // setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
+
+            // setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
+            // setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
+            // setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
+            // setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
+            // if (!NullOrEmpty(reporting_data)) {
+            //   setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+            //   setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
+            //   rpt_ID = reporting_data.reportingAuthorityID;
+            // }
+
+            // setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "0");
+            // setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType === 1 ? "Daily" : "Monthly" : "");
+            // setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
+
+            // setAccountHName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountHolderName) ? bankDetails_data.accountHolderName : "" : "");
+
+            // setAccountNo(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.accountNumber) ? bankDetails_data.accountNumber : "" : "");
+            // setBankName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.bankName) ? bankDetails_data.bankName : "" : "");
+            // setBankBranchName(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.branchName) ? bankDetails_data.branchName : "" : "");
+            // setIFSCCode(!NullOrEmpty(bankDetails_data) ? !NullOrEmpty(bankDetails_data.ifscCode) ? bankDetails_data.ifscCode : "" : "");
+
+          }
+
+          setLoading(false);
+
           FetchStates();
           BloodGroupDropdown();
           FetchBranch();
+
           FetchDepartment();
           FetchDesignation();
           FetchReport();
@@ -615,7 +735,6 @@ const EmployeeEdit = () => {
         setLoading(false);
       });
   };
-
 
   const BloodGroupDropdown = () => {
     let b = BloodGroup.filter((el) => {
@@ -629,16 +748,15 @@ const EmployeeEdit = () => {
   };
 
   const FetchStates = () => {
-    debugger;
-    Provider.getAll("master/getstates")
+    Provider.createDFCommonWithouParam(Provider.API_URLS.StateDetails)
       .then((response: any) => {
-        debugger;
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
             const stateData: any = [];
             response.data.data.map((data: any, i: number) => {
               stateData.push({
-                id: data.id,
+                id: data.stateID,
                 label: data.stateName,
               });
             });
@@ -663,7 +781,7 @@ const EmployeeEdit = () => {
     let params = {
       ID: stateID,
     };
-    Provider.getAll(`master/getcitiesbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+    Provider.createDFCommon(Provider.API_URLS.DistrictDetails, params)
       .then((response: any) => {
 
         if (response.data && response.data.code === 200) {
@@ -671,7 +789,7 @@ const EmployeeEdit = () => {
             const cityData: any = [];
             response.data.data.map((data: any, i: number) => {
               cityData.push({
-                id: data.id,
+                id: data.cityID,
                 label: data.cityName,
               });
             });
