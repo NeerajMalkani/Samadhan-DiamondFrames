@@ -98,7 +98,7 @@ const ASubCategoryName = () => {
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.id = index + 1;
-              a.display = a.display === "1" ? "Yes" : "No";
+              a.display = a.display == "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -137,7 +137,6 @@ const ASubCategoryName = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
             response.data.data = APIConverter(response.data.data);
             setTransactionTypeNamesList(response.data.data);
           }
@@ -281,37 +280,46 @@ const ASubCategoryName = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      // Provider.createDFAdmin(Provider.API_URLS.pckcategorynameupdate, {
-      //   data: {
-      //     Sess_UserRefno: cookies.dfc.UserID,
-      //     pck_category_refno: selectedID,
-      //     category_name: categoryName,
-      //     pck_transtype_refno: tt,
-      //     view_status: checked ? "1" : "0",
-      //   }
-      // })
-      //   .then((response) => {
-      //     if (response.data && response.data.code === 200) {
-      //       FetchData("updated");
-      //       ResetFields();
-      //     } else if (response.data.code === 304) {
-      //       setSnackMsg(communication.ExistsError);
-      //       setOpen(true);
-      //       setSnackbarType("error");
-      //       ResetFields();
-      //     } else {
-      //       ResetFields();
-      //       setSnackMsg(communication.Error);
-      //       setSnackbarType("error");
-      //       setOpen(true);
-      //     }
-      //   })
-      //   .catch((e) => {
-      //     ResetFields();
-      //     setSnackMsg(communication.NetworkError);
-      //     setSnackbarType("error");
-      //     setOpen(true);
-      //   });
+
+      Provider.createDFAdmin(Provider.API_URLS.pcksubcategorynameupdate_appadmin, {
+        data: {
+          // Sess_UserRefno: cookies.dfc.UserID,
+          // pck_category_refno: selectedID,
+          // category_name: categoryName,
+          // pck_transtype_refno: tt,
+          // view_status: checked ? "1" : "0",
+
+          Sess_UserRefno: cookies.dfc.UserID,
+          pck_sub_category_refno: selectedID,
+          pck_transtype_refno: transactionTypeID,
+          pck_category_refno: categoryID,
+          sub_category_name: subCategoryName,
+          notes: notes,
+          view_status: checked ? 1 : 0
+        }
+      })
+        .then((response) => {
+          if (response.data && response.data.code === 200) {
+            FetchData("updated");
+            ResetFields();
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+            ResetFields();
+          } else {
+            ResetFields();
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+        })
+        .catch((e) => {
+          ResetFields();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
     }
   };
 
@@ -369,7 +377,6 @@ const ASubCategoryName = () => {
       setCategoryID(a.pckCategoryID);
       setCategoryName(a.categoryName);
 
-
       setSelectedID(a.subcategoryID);
 
       setSubCategoryName(a.subCategoryName);
@@ -414,7 +421,7 @@ const ASubCategoryName = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4"> Sub Category Name</Typography>
+            <Typography variant="h4"> Sub Category</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Sub Category Name (Add /Edit)</Typography>
@@ -490,7 +497,7 @@ const ASubCategoryName = () => {
             </Typography>
             <TextField
               fullWidth
-              placeholder="Category Name"
+              placeholder="Notes"
               variant="outlined"
               size="small"
               onChange={(e) => {

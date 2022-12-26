@@ -234,6 +234,7 @@ class Provider {
     gettransactiontype_pckcategoryform_appadmin : "gettransactiontype_pckcategoryform_appadmin/",
     getpckcategoryname_pcksubcategoryform_appadmin:"getpckcategoryname_pcksubcategoryform_appadmin/",
     pcksubcategorynamecreate_appadmin:"pcksubcategorynamecreate_appadmin/",
+    pcksubcategorynameupdate_appadmin:"pcksubcategorynameupdate_appadmin/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

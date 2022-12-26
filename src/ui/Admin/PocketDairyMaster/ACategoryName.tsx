@@ -117,12 +117,13 @@ const ACategoryName = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
             response.data.data = APIConverter(response.data.data);
             const arrList = [...response.data.data];
             arrList.map(function (a: any, index: number) {
               a.transactionType = a.transactionType ? "Source" : "Expenses";
               a.id = index + 1;
-              a.display = a.display === "1" ? "Yes" : "No";
+              a.display = a.display == "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -163,6 +164,8 @@ const ACategoryName = () => {
     arrService[1].isSelected = false;
 
     transactionType[1](arrService);
+    handleCancelClick();
+
   };
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,31 +173,27 @@ const ACategoryName = () => {
   };
 
   const handleSubmitClick = () => {
+    debugger;
     let isValid = true;
-    const IsTextFiledError = categoryName.trim() === "";
-    setCategoryNameError(IsTextFiledError ? communication.BlankCategoryName : "");
-    setIscategoryNameError(IsTextFiledError);
-    if (!IsTextFiledError) {
-      setButtonLoading(true);
-
-      let blankData = transactionType[0].filter((el) => el.isSelected);
-      if (blankData.length === 0) {
-        isValid = false;
-        istTypenameError[1](true);
-        tTypeNameError[1]("Please select Transaction Type ");
-      }
-
-      if (isValid) {
-
-        const tt = blankData.map((data) => data.id);
-        InsertUpdateData(categoryName, display === "Yes", tt);
-      }
-
-      setDisplay("Yes");
-      setCategoryName("");
-      setCategoryNameError("");
-      setIscategoryNameError(false);
+    if (categoryName.trim() === "") {
+      setCategoryNameError(communication.BlankCategoryName);
+      setIscategoryNameError(true);
+      isValid = false;
     }
+
+    let blankData = transactionType[0].filter((el) => el.isSelected);
+    if (blankData.length === 0) {
+      isValid = false;
+      istTypenameError[1](true);
+      tTypeNameError[1]("Please select Transaction Type ");
+    }
+
+    if (isValid) {
+      setButtonLoading(true);
+      const tt = blankData.map((data) => data.id);
+      InsertUpdateData(categoryName, display === "Yes", tt);
+    }
+
   };
 
   const handleCancelClick = () => {
@@ -361,7 +360,7 @@ const ACategoryName = () => {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           <Grid item xs={4} sm={8} md={12}>
-            <Typography variant="h4">Category Name</Typography>
+            <Typography variant="h4">Category</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
             <Typography variant="h6">Category Name (Add /Edit)</Typography>
@@ -387,7 +386,7 @@ const ACategoryName = () => {
           </Grid>
           <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b>Transaction Type</b>
+              <b><label style={{ color: "#ff0000" }}>*</label> Transaction Type</b>
             </Typography>
             <FormControl component="fieldset" error={istTypenameError[0]}>
               {/* <FormLabel component="legend"><b>Transaction Type</b></FormLabel> */}

@@ -160,7 +160,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       expanded: true,
       items: [
         {
-          title: "Category Name",
+          title: "Category",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "acategoryname"), //.includes("activity"),
           navigation: () => {
             open[1](false);
@@ -170,7 +170,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           },
         },
         {
-          title: "Sub Category Name",
+          title: "Sub Category",
           isActive: GetSearchedText(window.location.href.toLowerCase(), "asubcategoryname"), //.includes("service"),
           navigation: () => {
             open[1](false);
