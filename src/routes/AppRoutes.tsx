@@ -220,8 +220,6 @@ const AppRoutes = () => {
 
               <Route path="generalusers/pocketdiary/setting/gcategoryname" element={<GCategoryName/>}/>
               <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName/>}/>
-
-             
                
             </Routes>
           </BrowserRouter>
@@ -232,4 +230,3 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
-
