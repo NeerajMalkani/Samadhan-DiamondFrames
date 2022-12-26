@@ -104,6 +104,7 @@ import ASubCategoryName from "../ui/Admin/PocketDairyMaster/ASubCategoryName";
 import GCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GCategoryName";
 import GSubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GSubCategoryName";
 import GMyContacts from "../ui/GeneralUsers/PocketDiary/Setting/GMyContacts";
+import GMyBank from "../ui/GeneralUsers/PocketDiary/Setting/GMyBank";
 
 
 
@@ -222,6 +223,7 @@ const AppRoutes = () => {
               <Route path="generalusers/pocketdiary/setting/gcategoryname" element={<GCategoryName/>}/>
               <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName/>}/>
               <Route path="generalusers/pocketdiary/setting/gmycontacts" element={<GMyContacts/>}/>
+              <Route path="generalusers/pocketdiary/setting/gmybank" element={<GMyBank/>}/>
 
              
                

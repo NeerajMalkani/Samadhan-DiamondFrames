@@ -1004,6 +1004,16 @@ export interface GeneralMyContacts {
   display: string;
 }
 
+export interface GeneralMYBank {
+  id: number;
+  bankName: string;
+  bankAccountNo: string;
+  cardType: string;
+  openingBalance: string;
+  remarks:string;
+  display: string;
+}
+
 export interface PckTransactionTypeModel {
   id: number;
   transtypeID: string;
@@ -1024,6 +1034,16 @@ export interface PayModeModel {
 export interface SubCategoryNameModel {
   id: number;
   subCategoryName: string;
+}
+
+export interface ReceiptModeNameModel {
+  id: number;
+  receiptMode: string;
+}
+
+export interface SourceNameModel {
+  id: number;
+  source: string;
 }
 
 export interface EntryTypeModel {

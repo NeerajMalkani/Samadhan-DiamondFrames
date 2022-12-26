@@ -386,6 +386,16 @@ const DrawerItems = ({ open }: OpenObj) => {
           },
         },
         {
+          title: " My Bank",
+          isActive: window.location.href.toLowerCase().includes("gmybank"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/setting/gmybank`);
+            }, 300);
+          },
+        },
+        {
           title: "Budget Setup",
           isActive: window.location.href.toLowerCase().includes("budgetSetup"),
           navigation: () => {

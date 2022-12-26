@@ -1,4 +1,4 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container,Select,MenuItem,FormHelperText, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container,Select,MenuItem,FormHelperText,Stack, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -7,7 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
 import { IncomeColumns } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
-import { CategoryNameModel,SubCategoryNameModel,EntryTypeModel,PayModeModel,ExpensesModel,IncomeModel } from "../../../models/Model";
+import {ReceiptModeNameModel,SubCategoryNameModel,SourceNameModel} from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
@@ -20,6 +20,7 @@ import { AWSImagePath } from "../../../utils/paths";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import AddIcon from "@mui/icons-material/Add";
 
 const AddSources = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
@@ -33,8 +34,8 @@ const AddSources = () => {
   const [loading, setLoading] = useState(true);
   const [display, setDisplay] = React.useState("Yes");
  
-  const [incomeList, setIncomeList] =useState<Array<IncomeModel>>([]);
-  const [incomeListTemp, setIncomeListTemp] = React.useState<Array<any>>([]);
+  // const [incomeList, setIncomeList] =useState<Array<IncomeModel>>([]);
+  // const [incomeListTemp, setIncomeListTemp] = React.useState<Array<any>>([]);
  
   const [pageSize, setPageSize] = React.useState<number>(5);
   const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
@@ -46,45 +47,35 @@ const AddSources = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
-  const [entryType, setEntryType] = useState("--Select--");
-  const [entryTypeID, setEntryTypeID] = useState<number>(0);
+  const [entryType, setEntryType] = useState("");
   const [entryTypeError, setEntryTypeError] = useState("");
   const [isEntryTypeError, setIsEntryTypeError] = useState(false);
-  const [entryTypeList, setEntryTypeList] = useState<Array<EntryTypeModel>>([]);
 
-  const [categoryName, setCategoryName] = useState("--Select--");
-  const [categoryNameID, setCategoryNameID] = useState<number>(0);
-  const [categoryNameError, setCategoryNameError] = useState("");
-  const [isCategoryNameError, setIsCategoryNameError] = useState(false);
-  const [categoryNameList, setCategoryNameList] = useState<Array<CategoryNameModel>>([]);
+  const [amount, setAmount] = useState("");
+  const [amountError, setAmountError] = useState("");
+  const [isAmountError, setIsAmountError] = useState(false);
 
-  const [payMode, setPayMode] = useState("--Select--");
-  const [payModeID, setPayModeID] = useState<number>(0);
-  const [payModeError, setPayModeError] = useState("");
-  const [ispayModeError, setIsPayModeError] = useState(false);
-  const [payModeList, setPayModeList] = useState<Array<PayModeModel>>([]);
-
+  const [receiptMode, setReceiptMode] = useState("--Select--");
+  const [receiptModeID, setReceiptModeID] = useState<number>(0);
+  const [receiptModeError, setReceiptModeError] = useState("");
+  const [isReceiptModeeError, setIsReceiptModeError] = useState(false);
+  const [receiptModeList, setReceiptModeList] = useState<Array<ReceiptModeNameModel>>([]);
+ 
+  const [source, setSource] = useState("--Select--");
+  const [sourceID, setSourceID] = useState<number>(0);
+  const [sourceError, setSourceError] = useState("");
+  const [isSourceError, setIsSourceError] = useState(false);
+  const [sourceList, setSourceList] = useState<Array<SourceNameModel>>([]);
+ 
   const [subCategoryName, setSubCategoryName] = useState("--Select--");
   const [subCategoryNameID, setSubCategoryNameID] = useState<number>(0);
   const [subCategoryNameError, setSubCategoryNameError] = useState("");
   const [isSubCategoryNameError, setIsSubCategoryNameError] = useState(false);
   const [subCategoryNameList, setSubCategoryNameList] = useState<Array<SubCategoryNameModel>>([]);
- 
-  const [amount, setAmount] = useState("");
-  const [amountError, setAmountError] = useState("");
-  const [isAmountError, setIsAmountError] = useState(false);
-
-  const [notes, setNotes] = useState("");
-  const [notesError, setNotesError] = useState("");
-  const [isNotesError, setIsNotesError] = useState(false);
 
   const [errorDIText, setDIErrorText] = useState("");
   const [designButtonText, setDesignButtonText] = useState("Choose File");
-  const [image, setImage] = useState("");
-  const [uploadedImage, setUploadedImage] = useState("");
-  const [uploadFileUpload, setUploadFileUpload] = useState<any>();
-
-  const [date, setDate] = useState<Date | null>(new Date());
+  
  
  //#endregion 
 
@@ -169,29 +160,7 @@ const AddSources = () => {
 //     setActionStatus("new");
 //   };
 
-const handleETChange = (event: SelectChangeEvent) => {
-    debugger;
-    let entryType: string = event.target.value;
-    let ac = entryTypeList.find((el) => el.entryType === entryType);
-    if (ac !== undefined) {
-        setEntryType(entryType);
-        setEntryTypeID(ac?.id);
-        setIsEntryTypeError(false);
-        setEntryTypeError("");
-    }
-  };
 
-  const handleCNChange = (event: SelectChangeEvent) => {
-    debugger;
-    let categoryName: string = event.target.value;
-    let ac = categoryNameList.find((el) => el.categoryName === categoryName);
-    if (ac !== undefined) {
-      setCategoryName(categoryName);
-      setCategoryNameID(ac?.id);
-      setIsCategoryNameError(false);
-      setCategoryNameError("");
-    }
-  };
 
   const handleSCNChange = (event: SelectChangeEvent) => {
     debugger;
@@ -204,16 +173,28 @@ const handleETChange = (event: SelectChangeEvent) => {
         setSubCategoryNameError("");
     }
   };
-
-  const handlePMChange = (event: SelectChangeEvent) => {
+ 
+  const handleSourceChange = (event: SelectChangeEvent) => {
+    // debugger;
+    // let subCategoryName: string = event.target.value;
+    // let ac = subCategoryNameList.find((el) => el.subCategoryName === subCategoryName);
+    // if (ac !== undefined) {
+    //     setSubCategoryName(subCategoryName);
+    //     setSubCategoryNameID(ac?.id);
+    //     setIsSubCategoryNameError(false);
+    //     setSubCategoryNameError("");
+    // }
+  };
+ 
+  const handleReceiptChange = (event: SelectChangeEvent) => {
     debugger;
-    let payMode: string = event.target.value;
-    let ac = payModeList.find((el) => el.payMode === payMode);
+    let subCategoryName: string = event.target.value;
+    let ac = subCategoryNameList.find((el) => el.subCategoryName === subCategoryName);
     if (ac !== undefined) {
-        setPayMode(payMode);
-        setPayModeID(ac?.id);
-        setIsPayModeError(false);
-        setPayModeError("");
+        setSubCategoryName(subCategoryName);
+        setSubCategoryNameID(ac?.id);
+        setIsSubCategoryNameError(false);
+        setSubCategoryNameError("");
     }
   };
 //   const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
@@ -311,27 +292,8 @@ const handleETChange = (event: SelectChangeEvent) => {
     setOpen(false);
   };
 
-  const handleSubmitClick = () => {
-    debugger;
-    setButtonLoading(true);
-    if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
-      uploadImage();
-    } else {
-    //   InsertData("Success", uploadedImage);
-    }
-  };
 
-  const uploadImage = () => {
-    let imageName: string = uuid();
-    let fileExtension = uploadedImage.split(".").pop();
-    setUploadedImage(imageName + "." + fileExtension);
-    // UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertData);
-  };
-
-  const handleDateChange = (newValueDate: Date | null) => {
-    debugger;
-    setDate(newValueDate);
-  };
+ 
 //   const onChangeSearch = (query: string) => {
 //     setSearchQuery(query);
 //     if (query === "") {
@@ -353,68 +315,102 @@ const handleETChange = (event: SelectChangeEvent) => {
               <Grid item xs={4} sm={8} md={12}>
                 <Typography variant="h4">Add Sources</Typography>
               </Grid>
+              <Grid item xs={4} sm={8} md={12}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="h4">Add/Edit Service Product</Typography>
+              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/master/addserviceproduct")}>
+                View List
+              </Button>
+            </Stack>
+          </Grid>
               <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
                 <Typography variant="h6">Add Sources</Typography>
               </Grid>
-              <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                  <b><label style={{ color: "#ff0000" }}>*</label>Date</b>
-                </Typography>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DesktopDatePicker
-                          inputFormat="MM/dd/yyyy"
-                          clearable
-                          value={date}
-                          onChange={handleDateChange}
-                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
-                      </LocalizationProvider>
-              </Grid>
+             
               <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                   <b><label style={{ color: "#ff0000" }}>*</label> Entry Type</b>
                 </Typography>
-                <FormControl fullWidth size="small" error={isEntryTypeError }>
-              <Select value={entryType} onChange={handleETChange}>
-                <MenuItem disabled={true} value="--Select--">
-                  --Select--
-                </MenuItem>
-                {entryTypeList.map((item, index) => {
-                  return (
-                    <MenuItem key={index} value={item.entryType}>
-                      {item.entryType}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{entryTypeError}</FormHelperText>
-            </FormControl>
+                <TextField
+                  fullWidth
+                  placeholder="self"
+                  variant="outlined"
+                  size="small"
+                  onChange={(e) => {
+                    setEntryType((e.target as HTMLInputElement).value);
+                    setIsEntryTypeError(false);
+                    setEntryTypeError("");
+                  }}
+                  error={isEntryTypeError}
+                  helperText={entryTypeError}
+                  value={entryType}
+                />
               </Grid>
               <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b><label style={{ color: "#ff0000" }}>*</label> Category Name</b>
+                <b><label style={{ color: "#ff0000" }}>*</label> Amount</b>
                 </Typography>
-                <FormControl fullWidth size="small" error={isCategoryNameError}>
-              <Select value={categoryName} onChange={handleCNChange}>
+                <TextField
+                  fullWidth
+                  placeholder="Amount"
+                  variant="outlined"
+                  size="small"
+                  onChange={(e) => {
+                    setAmount((e.target as HTMLInputElement).value);
+                    setIsAmountError(false);
+                    setAmountError("");
+                  }}
+                  error={isAmountError}
+                  helperText={amountError}
+                  value={amount}
+                />
+            </Grid>
+            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b><label style={{ color: "#ff0000" }}>*</label>Receipt Mode</b>
+                </Typography>
+                <FormControl fullWidth size="small" error={isReceiptModeeError}>
+              <Select value={receiptMode} onChange={handleSCNChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
-                {categoryNameList.map((item, index) => {
+                {receiptModeList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.categoryName}>
-                      {item.categoryName}
+                    <MenuItem key={index} value={item.receiptMode}>
+                      {item.receiptMode}
                     </MenuItem>
                   );
                 })}
               </Select>
-              <FormHelperText>{categoryNameError}</FormHelperText>
+              <FormHelperText>{receiptModeError}</FormHelperText>
             </FormControl>
             </Grid>
             <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b><label style={{ color: "#ff0000" }}>*</label>Sub Category Name</b>
+                <b><label style={{ color: "#ff0000" }}>*</label> Source / Receipt</b>
+                </Typography>
+                <FormControl fullWidth size="small" error={isSourceError}>
+              <Select value={source} onChange={handleSourceChange}>
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {sourceList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.source}>
+                      {item.source}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>{sourceError}</FormHelperText> 
+              </FormControl>
+            </Grid>
+            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b><label style={{ color: "#ff0000" }}>*</label> Sub Category</b>
                 </Typography>
                 <FormControl fullWidth size="small" error={isSubCategoryNameError}>
-              <Select value={subCategoryName} onChange={handleSCNChange}>
+              <Select value={subCategoryName} onChange={handleReceiptChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
@@ -429,104 +425,7 @@ const handleETChange = (event: SelectChangeEvent) => {
               <FormHelperText>{subCategoryNameError}</FormHelperText>
             </FormControl>
             </Grid>
-            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b><label style={{ color: "#ff0000" }}>*</label> Pay Mode</b>
-                </Typography>
-                <FormControl fullWidth size="small" error={ispayModeError}>
-              <Select value={payMode} onChange={handlePMChange}>
-                <MenuItem disabled={true} value="--Select--">
-                  --Select--
-                </MenuItem>
-                {payModeList.map((item, index) => {
-                  return (
-                    <MenuItem key={index} value={item.payMode}>
-                      {item.payMode}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{payModeError}</FormHelperText> 
-              </FormControl>
-            </Grid>
-            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b><label style={{ color: "#ff0000" }}>*</label> Amount</b>
-                </Typography>
-                <TextField
-              fullWidth
-              placeholder="Amount"
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setAmount((e.target as HTMLInputElement).value);
-                setIsAmountError(false);
-                setAmountError("");
-              }}
-              error={isAmountError}
-              helperText={amountError}
-              value={amount}
-            />
-            </Grid>
-            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Notes</b>
-                </Typography>
-                <TextField
-              fullWidth
-              placeholder="Notes"
-              variant="outlined"
-              size="small"
-              onChange={(e) => {
-                setNotes((e.target as HTMLInputElement).value);
-                setIsNotesError(false);
-                setNotesError("");
-              }}
-              error={isNotesError}
-              helperText={notesError}
-              value={notes}
-            />
-            </Grid>
-            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b>Attachment</b>
-                </Typography>
-                <FormControl fullWidth size="small">
-                          <Grid style={{ display: "flex" }}>
-                            <Button size="small" variant="contained" component="label" sx={{ mr: 2 }}>
-                              {designButtonText}
-                              <input
-                                type="file"
-                                hidden
-                                accept="image/*"
-                                onChange={(e) => {
-                                  if (e.currentTarget !== null && e.currentTarget.files !== null) {
-                                    setUploadFileUpload(e.currentTarget.files[0]);
-                                    let FileName = e.currentTarget.files[0].name;
-                                    if (FileName !== undefined) {
-                                      setDIErrorText(FileName.trim());
-                                      setUploadedImage(FileName);
-                                    }
-                                    setDesignButtonText("Change");
-                                  }
-                                }}
-                              />
-                            </Button>
-                          </Grid>
-                          <FormHelperText>{errorDIText}</FormHelperText>
-                        </FormControl>
-            </Grid>
-              <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                  <b>Display</b>
-                </Typography>
-                <FormControl>
-                  <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
-                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                    <FormControlLabel value="No" control={<Radio />} label="No" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
+          
               <Grid item xs={3} sm={8} md={12}>
                 <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} >
                   Cancel
@@ -535,7 +434,7 @@ const handleETChange = (event: SelectChangeEvent) => {
                   Submit
                 </LoadingButton>
               </Grid>
-              <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
+              {/* <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
                 <Typography variant="h6">
            Income List
                 </Typography>
@@ -598,7 +497,7 @@ const handleETChange = (event: SelectChangeEvent) => {
                     )}
                   </div>
                 )}
-              </Grid>
+              </Grid> */}
             </Grid>
           </Container>
           <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackbarClose}>
