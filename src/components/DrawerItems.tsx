@@ -357,7 +357,7 @@ const DrawerItems = ({ open }: OpenObj) => {
       items: [
         {
           title: "Category Name",
-          isActive: window.location.href.toLowerCase().includes("categoryname"),
+          isActive: window.location.href.toLowerCase().includes("gcategoryname"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
@@ -367,11 +367,21 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: " Sub Category Name",
-          isActive: window.location.href.toLowerCase().includes("subcategoryname"),
+          isActive: window.location.href.toLowerCase().includes("gsubcategoryname"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
               navigate(`/generalusers/pocketdiary/setting/gsubcategoryname`);
+            }, 300);
+          },
+        },
+        {
+          title: " My Contacts",
+          isActive: window.location.href.toLowerCase().includes("gmycontacts"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/generalusers/pocketdiary/setting/gmycontacts`);
             }, 300);
           },
         },

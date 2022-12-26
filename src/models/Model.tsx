@@ -996,6 +996,14 @@ export interface ASubCategoryNameModel {
   notes: string;
 }
 
+export interface GeneralMyContacts {
+  id: number;
+  name:string;
+  mobileNo:string;
+  remark:string;
+  display: string;
+}
+
 export interface PckTransactionTypeModel {
   id: number;
   transtypeID: string;

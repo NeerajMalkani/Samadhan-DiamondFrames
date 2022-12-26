@@ -3738,6 +3738,54 @@ export const aSubCategoryNameColumns: GridColDef[] = [
   },
 ];
 
+export const gMyContactsNameColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "name",
+    headerName: " Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "mobileNo",
+    headerName: "Mobile No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "remarks",
+    headerName: "Remarks",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Grid>
+    ),
+  },
+];
+
 export const categoryNameColumns: GridColDef[] = [
   {
     field: "srno",
