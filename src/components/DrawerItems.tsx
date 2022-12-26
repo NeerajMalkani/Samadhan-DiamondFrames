@@ -361,7 +361,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/setting/categoryname`);
+              navigate(`/generalusers/pocketdiary/setting/gcategoryname`);
             }, 300);
           },
         },
@@ -371,7 +371,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/setting/subcategoryname`);
+              navigate(`/generalusers/pocketdiary/setting/gsubcategoryname`);
             }, 300);
           },
         },

@@ -1,25 +1,25 @@
 import { Alert, AlertColor, Box, Button, CircularProgress, Container, Select, MenuItem, FormHelperText, FormControl, FormControlLabel, FormLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
-import Header from "../../../components/Header";
+import Header from "../../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Provider from "../../../api/Provider";
+import Provider from "../../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
-import { communication } from "../../../utils/communication";
-import { aCategoryNameColumns } from "../../../utils/tablecolumns";
-import { theme } from "../../../theme/AppTheme";
-import { AcategoryNameModel } from "../../../models/Model";
+import { communication } from "../../../../utils/communication";
+import { aCategoryNameColumns } from "../../../../utils/tablecolumns";
+import { theme } from "../../../../theme/AppTheme";
+import { AcategoryNameModel } from "../../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
 import ListIcon from '@mui/icons-material/List';
-import NoData from "../../../components/NoData";
+import NoData from "../../../../components/NoData";
 import { SelectChangeEvent } from "@mui/material";
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
-import { APIConverter } from "../../../utils/apiconverter";
+import { APIConverter } from "../../../../utils/apiconverter";
 
 
-const ACategoryName = () => {
+const GCategoryName = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
   let navigate = useNavigate();
 
@@ -517,4 +517,4 @@ const ACategoryName = () => {
 
 };
 
-export default ACategoryName;
+export default GCategoryName;
