@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Provider from "../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
-import { aCategoryNameColumns } from "../../../utils/tablecolumns";
+import { adminCategoryNameColumns } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
 import { AcategoryNameModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
@@ -482,7 +482,7 @@ const ACategoryName = () => {
                       }}
                       autoHeight={true}
                       rows={categoryListTemp}
-                      columns={aCategoryNameColumns}
+                      columns={adminCategoryNameColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

@@ -72,7 +72,7 @@ const GCategoryName = () => {
         Sess_UserRefno: cookies.dfc.UserID,
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.gettransactiontype_pckcategoryform_appadmin, params)
+    Provider.createDFCommon(Provider.API_URLS.gettransactiontype_pckcategoryform_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -113,7 +113,7 @@ const GCategoryName = () => {
         pck_category_refno: "all"
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.pckcategoryrefnocheck, params)
+    Provider.createDFCommon(Provider.API_URLS.pckcategoryrefnocheck_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -122,7 +122,7 @@ const GCategoryName = () => {
             arrList.map(function (a: any, index: number) {
               a.transactionType = a.transactionType ? "Source" : "Expenses";
               a.id = index + 1;
-              a.display = a.display === "1" ? "Yes" : "No";
+              a.display = a.display == "1" ? "Yes" : "No";
               let sr = { srno: index + 1 };
               a = Object.assign(a, sr);
             });
@@ -266,7 +266,7 @@ const GCategoryName = () => {
 
   const InsertUpdateData = (categoryName: string, checked: boolean, tt) => {
     if (actionStatus === "new") {
-      Provider.createDFAdmin(Provider.API_URLS.pckcategorynamecreate, {
+      Provider.createDFCommon(Provider.API_URLS.pckcategorynamecreate_user, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           category_name: categoryName,
@@ -298,7 +298,8 @@ const GCategoryName = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-      Provider.createDFAdmin(Provider.API_URLS.pckcategorynameupdate, {
+      debugger;
+      Provider.createDFCommon(Provider.API_URLS.pckcategorynameupdate_user, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           pck_category_refno: selectedID,

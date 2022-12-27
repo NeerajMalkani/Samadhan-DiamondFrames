@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Provider from "../../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../../utils/communication";
-import { aSubCategoryNameColumns } from "../../../../utils/tablecolumns";
+import { genSubCategoryNameColumns } from "../../../../utils/tablecolumns";
 import { theme } from "../../../../theme/AppTheme";
 import { ASubCategoryNameModel, PckTransactionTypeModel, AcategoryNameModel } from "../../../../models/Model";
 import { useCookies } from "react-cookie";
@@ -89,7 +89,7 @@ const GSubCategoryName = () => {
         pck_sub_category_refno: "all"
       },
     };
-    Provider.createDFAdmin(Provider.API_URLS.pcksubcategoryrefnocheck, params)
+    Provider.createDFCommon(Provider.API_URLS.pcksubcategoryrefnocheck_user, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -133,7 +133,7 @@ const GSubCategoryName = () => {
       },
     };
     setLoading(true);
-    await Provider.createDFAdmin(Provider.API_URLS.gettransactiontype_pcksubcategoryform, params)
+    await Provider.createDFCommon(Provider.API_URLS.gettransactiontype_pcksubcategoryform_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -159,7 +159,7 @@ const GSubCategoryName = () => {
       },
     };
     //setLoading(true);
-    await Provider.createDFAdmin(Provider.API_URLS.getpckcategoryname_pcksubcategoryform_appadmin, params)
+    await Provider.createDFCommon(Provider.API_URLS.getpckcategoryname_pcksubcategoryform_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -245,7 +245,7 @@ const GSubCategoryName = () => {
   const InsertUpdateData = (checked: boolean) => {
     debugger;
     if (actionStatus === "new") {
-      Provider.createDFAdmin(Provider.API_URLS.pcksubcategorynamecreate_appadmin, {
+      Provider.createDFCommon(Provider.API_URLS.pcksubcategorynamecreate_user, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           pck_transtype_refno: transactionTypeID,
@@ -281,13 +281,8 @@ const GSubCategoryName = () => {
         });
     } else if (actionStatus === "edit") {
 
-      Provider.createDFAdmin(Provider.API_URLS.pcksubcategorynameupdate_appadmin, {
+      Provider.createDFCommon(Provider.API_URLS.pcksubcategorynameupdate_user, {
         data: {
-          // Sess_UserRefno: cookies.dfc.UserID,
-          // pck_category_refno: selectedID,
-          // category_name: categoryName,
-          // pck_transtype_refno: tt,
-          // view_status: checked ? "1" : "0",
 
           Sess_UserRefno: cookies.dfc.UserID,
           pck_sub_category_refno: selectedID,
@@ -571,7 +566,7 @@ const GSubCategoryName = () => {
                       }}
                       autoHeight={true}
                       rows={subCategoryListTemp}
-                      columns={aSubCategoryNameColumns}
+                      columns={genSubCategoryNameColumns}
                       pageSize={pageSize}
                       rowsPerPageOptions={[5, 10, 20]}
                       onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

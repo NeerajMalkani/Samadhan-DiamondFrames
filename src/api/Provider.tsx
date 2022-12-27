@@ -225,17 +225,26 @@ class Provider {
     getuserprofile: "getuserprofile/",
     userprofileupdate: "userprofileupdate/",
 
-    pckcategoryrefnocheck:"pckcategoryrefnocheck_appadmin/",
-    pckcategorynamecreate:"pckcategorynamecreate_appadmin/",
-    pckcategorynameupdate:"pckcategorynameupdate_appadmin/",
+    pckcategoryrefnocheck: "pckcategoryrefnocheck_appadmin/",
+    pckcategorynamecreate: "pckcategorynamecreate_appadmin/",
+    pckcategorynameupdate: "pckcategorynameupdate_appadmin/",
 
-    pcksubcategoryrefnocheck:"pcksubcategoryrefnocheck_appadmin/",
-    gettransactiontype_pcksubcategoryform:"gettransactiontype_pcksubcategoryform_appadmin/",
-    gettransactiontype_pckcategoryform_appadmin : "gettransactiontype_pckcategoryform_appadmin/",
-    getpckcategoryname_pcksubcategoryform_appadmin:"getpckcategoryname_pcksubcategoryform_appadmin/",
-    pcksubcategorynamecreate_appadmin:"pcksubcategorynamecreate_appadmin/",
-    pcksubcategorynameupdate_appadmin:"pcksubcategorynameupdate_appadmin/",
-    
+    pcksubcategoryrefnocheck: "pcksubcategoryrefnocheck_appadmin/",
+    gettransactiontype_pcksubcategoryform: "gettransactiontype_pcksubcategoryform_appadmin/",
+    gettransactiontype_pckcategoryform_appadmin: "gettransactiontype_pckcategoryform_appadmin/",
+    getpckcategoryname_pcksubcategoryform_appadmin: "getpckcategoryname_pcksubcategoryform_appadmin/",
+    pcksubcategorynamecreate_appadmin: "pcksubcategorynamecreate_appadmin/",
+    pcksubcategorynameupdate_appadmin: "pcksubcategorynameupdate_appadmin/",
+    gettransactiontype_pckcategoryform_user: "gettransactiontype_pckcategoryform_user/",
+    pckcategoryrefnocheck_user: "pckcategoryrefnocheck_user/",
+    pckcategorynamecreate_user: "pckcategorynamecreate_user/",
+    pckcategorynameupdate_user: "pckcategorynameupdate_user/",
+    pcksubcategoryrefnocheck_user: "pcksubcategoryrefnocheck_user/",
+    gettransactiontype_pcksubcategoryform_user: "gettransactiontype_pcksubcategoryform_user/",
+    getpckcategoryname_pcksubcategoryform_user: "getpckcategoryname_pcksubcategoryform_user/",
+    pcksubcategorynamecreate_user: "pcksubcategorynamecreate_user/",
+    pcksubcategorynameupdate_user: "pcksubcategorynameupdate_user/",
+
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

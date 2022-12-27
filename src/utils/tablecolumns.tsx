@@ -1207,7 +1207,7 @@ export const productSetupColumns: GridColDef[] = [
     renderCell: (param) => (
       <Grid>
         <Typography>{`${param.row.brandPrefix}${param.row.productName} >>`}</Typography>
-        <Typography style={{ color: "#47BFA7", fontWeight:"bold" }}>{`${param.row.brandName}`}</Typography>
+        <Typography style={{ color: "#47BFA7", fontWeight: "bold" }}>{`${param.row.brandName}`}</Typography>
       </Grid>
     ),
   },
@@ -1460,7 +1460,7 @@ export const employeeColumns: GridColDef[] = [
   },
 ];
 
-export const mobileSearchList:GridColDef[]=[
+export const mobileSearchList: GridColDef[] = [
   {
     field: "mobile_no_Result",
     // headerName: "Mobile No",
@@ -3642,7 +3642,7 @@ export const quotationRejectedColumns: GridColDef[] = [
   },
 ];
 
-export const aCategoryNameColumns: GridColDef[] = [
+export const adminCategoryNameColumns: GridColDef[] = [
   {
     field: "srno",
     headerName: "Sr. No.",
@@ -3684,6 +3684,57 @@ export const aCategoryNameColumns: GridColDef[] = [
         </Button>
       </Grid>
     ),
+  },
+];
+
+export const aCategoryNameColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "transactionTypeName",
+    headerName: "Transaction Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (params) => {
+      if (params.row.createbyID != 2) {
+        return (
+          <Button variant="contained" size="small" sx={{ mr: 1 }}>
+            Edit
+          </Button>
+        );
+      } else {
+        return (
+          <Grid>
+            <Typography>Created by Admin</Typography>
+          </Grid>
+        );
+      }
+    },
+    
   },
 ];
 
@@ -3738,7 +3789,7 @@ export const aSubCategoryNameColumns: GridColDef[] = [
   },
 ];
 
-export const gMyContactsNameColumns: GridColDef[] = [
+export const genSubCategoryNameColumns: GridColDef[] = [
   {
     field: "srno",
     headerName: "Sr. No.",
@@ -3746,27 +3797,27 @@ export const gMyContactsNameColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "name",
-    headerName: " Name",
-    flex: 1.8,
+    field: "transactionTypeName",
+    headerName: "Transaction Type Name",
+    flex: 1.2,
     minWidth: 140,
   },
   {
-    field: "mobileNo",
-    headerName: "Mobile No",
-    flex: 1.8,
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.2,
     minWidth: 140,
   },
   {
-    field: "remarks",
-    headerName: "Remarks",
-    flex: 1.8,
+    field: "subCategoryName",
+    headerName: "Sub Category Name",
+    flex: 1.2,
     minWidth: 140,
   },
   {
     field: "display",
     headerName: "Display",
-    flex: 1.8,
+    flex: 1,
     minWidth: 140,
     sortable: false,
   },
@@ -3776,76 +3827,21 @@ export const gMyContactsNameColumns: GridColDef[] = [
     flex: 1,
     minWidth: 100,
     sortable: false,
-    renderCell: (e) => (
-      <Grid>
-        <Button variant="text" sx={{ mr: 1 }}>
-          Edit
-        </Button>
-      </Grid>
-    ),
-  },
-];
-
-export const gMyBankNameColumns: GridColDef[] = [
-  {
-    field: "srno",
-    headerName: "Sr. No.",
-    minWidth: 60,
-    sortable: false,
-  },
-  {
-    field: "bankname",
-    headerName: "Bank Name",
-    flex: 1.8,
-    minWidth: 140,
-  },
-  {
-    field: "bankAccountNo",
-    headerName: "Bank Account No",
-    flex: 1.8,
-    minWidth: 140,
-  },
-  {
-    field: "cardTypeName",
-    headerName: "Card Type Name",
-    flex: 1.8,
-    minWidth: 140,
-  },
-  {
-    field: "opening Balance",
-    headerName: "Opening Balance",
-    flex: 1.8,
-    minWidth: 140,
-  },
-  {
-    field: "remarks",
-    headerName: "Remarks",
-    flex: 1.8,
-    minWidth: 140,
-  },
-  {
-    field: "display",
-    headerName: "Display",
-    flex: 1.8,
-    minWidth: 140,
-    sortable: false,
-  },
-  {
-    field: "action",
-    headerName: "Action",
-    flex: 1,
-    minWidth: 100,
-    sortable: false,
-    renderCell: (e) => (
-      <Grid>
-        <Button variant="text" sx={{ mr: 1 }}>
-          Edit
-        </Button>
-        <Button variant="text" sx={{ mr: 1 }}>
-          Delete
-        </Button>
-      </Grid>
-    ),
+    renderCell: (params) => {
+      if (params.row.createbyID != 2) {
+        return (
+          <Button variant="contained" size="small" sx={{ mr: 1 }}>
+            Edit
+          </Button>
+        );
+      } else {
+        return (
+          <Grid>
+            <Typography>Created by Admin</Typography>
+          </Grid>
+        );
+      }
+    },
   },
 ];
 
@@ -5023,7 +5019,7 @@ export const employeeMarkAvailabilityEntryColumns: GridColDef[] = [
     minWidth: 120,
     sortable: false,
   },
-   {
+  {
     field: 'action',
     headerName: 'Action',
     flex: 1,
