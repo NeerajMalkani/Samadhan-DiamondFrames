@@ -74,7 +74,7 @@ import QuotationWise from "../ui/Contractor/QuotationAndEstimation/QuotationWise
 // import SubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/SubCategoryName";
 import BudgetSetup from "../ui/GeneralUsers/PocketDiary/Setting/BudgetSetup";
 import AddExpenses from "../ui/GeneralUsers/PocketDiary/AddExpenses";
-import AddSources from "../ui/GeneralUsers/PocketDiary/AddSource";
+import Sources from "../ui/GeneralUsers/PocketDiary/Source";
 import Inbox from "../ui/GeneralUsers/PocketDiary/Inbox";
 import DashboardManufacture from "../ui/DashboardManufacture";
 import BrandConversionValue from "../ui/Manufacture/ProductionUnitMaster/BrandConversionValue";
@@ -105,6 +105,7 @@ import GCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GCategoryName"
 import GSubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GSubCategoryName";
 import GMyContacts from "../ui/GeneralUsers/PocketDiary/Setting/GMyContacts";
 import GMyBank from "../ui/GeneralUsers/PocketDiary/Setting/GMyBank";
+import AddSource from "../ui/GeneralUsers/PocketDiary/AddSource";
 
 
 
@@ -193,7 +194,7 @@ const AppRoutes = () => {
               <Route path="generalusers/pocketdiary/setting/subcategoryname" element={<SubCategoryName/>}/> */}
               <Route path="generalusers/pocketdiary/setting/budgetsetup" element={<BudgetSetup/>}/>
               <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses/>}/>
-              <Route path="generalusers/pocketdiary/addsource" element={<AddSources/>}/>
+              <Route path="generalusers/pocketdiary/source" element={<Sources/>}/>
               <Route path="generalusers/pocketdiary/inbox" element={<Inbox/>}/>
               <Route path="dashboardmanufacture" element={<DashboardManufacture/>}/>
               <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue/>}/>
@@ -224,7 +225,7 @@ const AppRoutes = () => {
               <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName/>}/>
               <Route path="generalusers/pocketdiary/setting/gmycontacts" element={<GMyContacts/>}/>
               <Route path="generalusers/pocketdiary/setting/gmybank" element={<GMyBank/>}/>
-
+              <Route path="generalusers/pocketdiary/addsource" element={<AddSource/>}/>
              
                
             </Routes>

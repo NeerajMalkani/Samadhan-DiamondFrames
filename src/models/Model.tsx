@@ -1061,7 +1061,7 @@ export interface ExpensesModel {
   expenses: string;
 }
 
-export interface IncomeModel {
+export interface SourceModel {
   id: number;
   income: string;
 }

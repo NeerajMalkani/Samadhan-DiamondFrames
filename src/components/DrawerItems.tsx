@@ -417,11 +417,11 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
         {
           title: "Add Source",
-          isActive: window.location.href.toLowerCase().includes("addsource"),
+          isActive: window.location.href.toLowerCase().includes("source"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/addsource`);
+              navigate(`/generalusers/pocketdiary/source`);
             }, 300);
           },
         },

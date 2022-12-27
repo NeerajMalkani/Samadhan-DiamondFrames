@@ -4126,7 +4126,7 @@ export const ExpensesColumns: GridColDef[] = [
   },
 ];
 
-export const IncomeColumns: GridColDef[] = [
+export const SourceColumns: GridColDef[] = [
   {
     field: "srno",
     headerName: "Sr. No.",
@@ -4141,8 +4141,8 @@ export const IncomeColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "entryTypeName",
-    headerName: "Entry Type Name",
+    field: "entryType",
+    headerName: "Entry Type ",
     flex: 1.8,
     minWidth: 140,
   },
@@ -4159,8 +4159,8 @@ export const IncomeColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "paymentType",
-    headerName: "Payment Type",
+    field: "receiptMode",
+    headerName: "Receipt Mode",
     flex: 1.8,
     minWidth: 140,
   },
@@ -4194,19 +4194,6 @@ export const IncomeColumns: GridColDef[] = [
         <Button variant="text" sx={{ mr: 1 }}>
           Edit
         </Button>
-
-        {/* <Button
-          variant="contained"
-          sx={{ backgroundColor: theme.palette.error.main }}
-        >
-          Delete
-        </Button> */}
-        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
-          <EditIcon />
-        </IconButton>
-        <IconButton aria-label="delete">
-          <DeleteIcon />
-        </IconButton> */}
       </Grid>
     ),
   },
