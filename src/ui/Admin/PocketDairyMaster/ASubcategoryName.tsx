@@ -11,13 +11,12 @@ import { ASubCategoryNameModel, PckTransactionTypeModel, AcategoryNameModel } fr
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import SearchIcon from "@mui/icons-material/Search";
-import ListIcon from '@mui/icons-material/List';
+import ListIcon from "@mui/icons-material/List";
 import NoData from "../../../components/NoData";
 import { SelectChangeEvent } from "@mui/material";
-import FormGroup from '@mui/material/FormGroup';
-import Checkbox from '@mui/material/Checkbox';
+import FormGroup from "@mui/material/FormGroup";
+import Checkbox from "@mui/material/Checkbox";
 import { APIConverter } from "../../../utils/apiconverter";
-
 
 const ASubCategoryName = () => {
   const [cookies, setCookie] = useCookies(["dfc"]);
@@ -72,8 +71,7 @@ const ASubCategoryName = () => {
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
   const [selectedID, setSelectedID] = React.useState("");
 
-  //#endregion 
-
+  //#endregion
 
   //#region Function
 
@@ -86,7 +84,7 @@ const ASubCategoryName = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        pck_sub_category_refno: "all"
+        pck_sub_category_refno: "all",
       },
     };
     Provider.createDFAdmin(Provider.API_URLS.pcksubcategoryrefnocheck, params)
@@ -155,7 +153,7 @@ const ASubCategoryName = () => {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
         Sess_group_refno: cookies.dfc.Sess_group_refno,
-        pck_transtype_refno: transactionType
+        pck_transtype_refno: transactionType,
       },
     };
     //setLoading(true);
@@ -177,13 +175,10 @@ const ASubCategoryName = () => {
       });
   };
 
-
   const handleTTChange = (event: SelectChangeEvent) => {
     debugger;
     let transactionTypeName: string = event.target.value;
-    let ac = transactionTypeNamesList.find(
-      (el) => el.transTypeName === transactionTypeName
-    );
+    let ac = transactionTypeNamesList.find((el) => el.transTypeName === transactionTypeName);
 
     setCategoryID("0");
     setCategoryName("--Select--");
@@ -194,17 +189,14 @@ const ASubCategoryName = () => {
       setTransactionTypeError(false);
       setTransactionTypeErrorText("");
       FetchCategory(ac.transtypeID);
-    }
-    else {
+    } else {
       FetchCategory(0);
     }
   };
 
   const handleCNChange = (event: SelectChangeEvent) => {
     let categoryName: string = event.target.value;
-    let ac = categoryNamesList.find(
-      (el) => el.categoryName === categoryName
-    );
+    let ac = categoryNamesList.find((el) => el.categoryName === categoryName);
     if (ac !== undefined) {
       setCategoryID(ac.pckCategoryID);
       setCategoryName(categoryName);
@@ -239,7 +231,6 @@ const ASubCategoryName = () => {
       setButtonLoading(true);
       InsertUpdateData(display === "Yes");
     }
-
   };
 
   const InsertUpdateData = (checked: boolean) => {
@@ -252,8 +243,8 @@ const ASubCategoryName = () => {
           pck_category_refno: categoryID,
           sub_category_name: subCategoryName,
           notes: notes,
-          view_status: checked ? 1 : 0
-        }
+          view_status: checked ? 1 : 0,
+        },
       })
         .then((response) => {
           debugger;
@@ -280,7 +271,6 @@ const ASubCategoryName = () => {
           setOpen(true);
         });
     } else if (actionStatus === "edit") {
-
       Provider.createDFAdmin(Provider.API_URLS.pcksubcategorynameupdate_appadmin, {
         data: {
           // Sess_UserRefno: cookies.dfc.UserID,
@@ -295,8 +285,8 @@ const ASubCategoryName = () => {
           pck_category_refno: categoryID,
           sub_category_name: subCategoryName,
           notes: notes,
-          view_status: checked ? 1 : 0
-        }
+          view_status: checked ? 1 : 0,
+        },
       })
         .then((response) => {
           if (response.data && response.data.code === 200) {
@@ -338,9 +328,7 @@ const ASubCategoryName = () => {
     setCategoryName("");
     setSubCategoryName("");
     setNotes("");
-
   };
-
 
   const handleCancelClick = () => {
     setSelectedID("0");
@@ -406,11 +394,9 @@ const ASubCategoryName = () => {
       setButtonDisplay("unset");
       setActionStatus("edit");
     }
-
   };
 
-
-  //#endregion 
+  //#endregion
 
   const handleDisplayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisplay((event.target as HTMLInputElement).value);
@@ -455,7 +441,7 @@ const ASubCategoryName = () => {
                 <label style={{ color: "#ff0000" }}>*</label>
                 <b>Category Name</b>
               </Typography>
-              <Select value={categoryName} onChange={handleCNChange} >
+              <Select value={categoryName} onChange={handleCNChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
@@ -473,7 +459,9 @@ const ASubCategoryName = () => {
           </Grid>
           <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              <b><label style={{ color: "#ff0000" }}>*</label>Sub Category Name</b>
+              <b>
+                <label style={{ color: "#ff0000" }}>*</label>Sub Category Name
+              </b>
             </Typography>
             <TextField
               fullWidth
@@ -531,9 +519,7 @@ const ASubCategoryName = () => {
             </LoadingButton>
           </Grid>
           <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Sub Category List
-            </Typography>
+            <Typography variant="h6">Sub Category List</Typography>
           </Grid>
           <Grid item xs={4} sm={8} md={12}>
             {loading ? (
@@ -603,7 +589,6 @@ const ASubCategoryName = () => {
       </Snackbar>
     </Box>
   );
-
 };
 
 export default ASubCategoryName;

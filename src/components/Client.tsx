@@ -90,7 +90,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
   const PrefillData = (data: ClientModel) => {
     editValues[1](!data.addedBy);
 
-    id[1](data.id);
+    id[1](data.client_user_refno);
     isNameError[1](false);
     nameError[1]("");
     name[1](data.companyName);
@@ -101,11 +101,11 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
 
     isCMNError[1](false);
     cmnError[1]("");
-    cmn[1](data.contactMobileNumber);
+    cmn[1](data.Mobile);
 
     isAddressError[1](false);
     addressError[1]("");
-    address[1](data.contactMobileNumber);
+    address[1](data.addressLine);
 
     setIsStateError(false);
     setStateError("");
@@ -130,31 +130,31 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
     gstError[1]("");
 
     let arrService = [...serviceType[0]];
-    switch (data.serviceType) {
-      case 1:
+    switch (true) {
+      case data.serviceType.indexOf("14") !== -1 && data.serviceType.indexOf("13") !== -1 && data.serviceType.indexOf("8") !== -1:
         arrService[0].isSelected = true;
-        break;
-      case 2:
         arrService[1].isSelected = true;
-        break;
-      case 3:
         arrService[2].isSelected = true;
         break;
-      case 12:
+      case data.serviceType.indexOf("14") !== -1 && data.serviceType.indexOf("13") !== -1:
         arrService[0].isSelected = true;
         arrService[1].isSelected = true;
         break;
-      case 13:
+      case data.serviceType.indexOf("8") !== -1 && data.serviceType.indexOf("14") !== -1:
         arrService[0].isSelected = true;
         arrService[2].isSelected = true;
         break;
-      case 23:
+      case data.serviceType.indexOf("8") !== -1 && data.serviceType.indexOf("13") !== -1:
         arrService[2].isSelected = true;
         arrService[1].isSelected = true;
         break;
-      case 123:
+      case data.serviceType.indexOf("14") !== -1:
         arrService[0].isSelected = true;
+        break;
+      case data.serviceType.indexOf("13") !== -1:
         arrService[1].isSelected = true;
+        break;
+      case data.serviceType.indexOf("8") !== -1:
         arrService[2].isSelected = true;
         break;
     }
@@ -325,7 +325,7 @@ const CreateClient = ({ client, cancelCallBack, saveCallBack, type, cardDisplay 
   };
 
   const InsertUpdateData = (serviceType: number) => {
-    debugger
+    debugger;
     if (type === "add" || type === "client") {
       Provider.create("contractorquotationestimation/insertclient", {
         AddedByUserID: CookieUserID,

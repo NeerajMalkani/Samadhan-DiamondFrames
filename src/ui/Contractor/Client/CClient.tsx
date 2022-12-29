@@ -16,9 +16,7 @@ import { ClientModel } from "../../../models/Model";
 import { clientColumns } from "../../../utils/tablecolumns";
 
 const ContractorClientPage = () => {
-
-  
- //#region Variables
+  //#region Variables
   const [cookies, setCookie] = useCookies(["dfc"]);
   const [CookieUserID, SetCookieUseID] = useState(0);
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
@@ -37,9 +35,9 @@ const ContractorClientPage = () => {
   let navigate = useNavigate();
 
   let selectedData = useState<ClientModel>();
- //#endregion 
+  //#endregion
 
- //#region Functions
+  //#region Functions
   useEffect(() => {
     if (!cookies || !cookies.dfc || !cookies.dfc.UserID) {
       navigate(`/login`);
@@ -94,9 +92,9 @@ const ContractorClientPage = () => {
       setClientListTemp(
         clientList.filter((el: ClientModel) => {
           if (searchMobile === "" && searchName !== "") return el.companyName.toString().toLowerCase().includes(searchName.toLowerCase());
-          else if (searchMobile !== "" && searchName === "") return el.contactMobileNumber.toString().toLowerCase().includes(searchMobile.toLowerCase());
+          else if (searchMobile !== "" && searchName === "") return el.Mobile.toString().toLowerCase().includes(searchMobile.toLowerCase());
           else {
-            return el.companyName.toString().toLowerCase().includes(searchName.toLowerCase()) || el.contactMobileNumber.toString().toLowerCase().includes(searchMobile.toLowerCase());
+            return el.companyName.toString().toLowerCase().includes(searchName.toLowerCase()) || el.Mobile.toString().toLowerCase().includes(searchMobile.toLowerCase());
           }
         })
       );
@@ -109,7 +107,7 @@ const ContractorClientPage = () => {
     }
     setOpen(false);
   };
-//#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -249,7 +247,7 @@ const ContractorClientPage = () => {
                         const arrActivity = [...clientList];
                         cardDisplay[1]("block");
                         dataType[1]("edit");
-                        let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                        let a: ClientModel | undefined = arrActivity.find((el) => el.client_user_refno === param.row.client_user_refno);
 
                         selectedData[1](a);
                         setDataGridOpacity(0.3);

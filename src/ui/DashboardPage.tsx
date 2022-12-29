@@ -1,25 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControl,
-  FormHelperText,
-  Grid,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Avatar, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormHelperText, Grid, MenuItem, Select, SelectChangeEvent, Snackbar, Typography } from "@mui/material";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
@@ -86,7 +65,7 @@ const DashboardPage = () => {
   const [galleryHeight, setGalleryHeight] = useState(504);
   const [arnID, setArnID] = useState<number>(2);
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
-  //#endregion 
+  //#endregion
 
   // const arrQuickLinks = [
   //   { title: "Pocket Diary", icon: "CalculateIcon", backgroundColor: "" },
@@ -147,7 +126,7 @@ const DashboardPage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        Sess_group_refno: cookies.dfc.Sess_group_refno
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
       },
     };
     Provider.createDFDashboard(Provider.API_URLS.GetdashboardServicecatalogue, params)
@@ -176,7 +155,7 @@ const DashboardPage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        Sess_group_refno: cookies.dfc.Sess_group_refno
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
       },
     };
     Provider.createDFDashboard(Provider.API_URLS.GetdashboardTotaluser, params)
@@ -187,25 +166,25 @@ const DashboardPage = () => {
           let usr_data = [
             {
               roleID: 0,
-              roleName: 'Dealer',
-              roleCount: response.data.data[0].TotalDealer
+              roleName: "Dealer",
+              roleCount: response.data.data[0].TotalDealer,
             },
             {
               roleID: 1,
-              roleName: 'Contractor',
-              roleCount: response.data.data[0].TotalContractor
+              roleName: "Contractor",
+              roleCount: response.data.data[0].TotalContractor,
             },
             {
               roleID: 2,
-              roleName: 'General User',
-              roleCount: response.data.data[0].TotalGeneralUser
+              roleName: "General User",
+              roleCount: response.data.data[0].TotalGeneralUser,
             },
             {
               roleID: 3,
-              roleName: 'Client',
-              roleCount: response.data.data[0].TotalClient
+              roleName: "Client",
+              roleCount: response.data.data[0].TotalClient,
             },
-          ]
+          ];
 
           setUserCountData(usr_data);
         }
@@ -220,7 +199,7 @@ const DashboardPage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        Sess_group_refno: cookies.dfc.Sess_group_refno
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
       },
     };
     Provider.createDFDashboard(Provider.API_URLS.GetdashboardUserswitchto, params)
@@ -248,7 +227,7 @@ const DashboardPage = () => {
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
-        Sess_group_refno: cookies.dfc.Sess_group_refno
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
       },
     };
     Provider.createDFDashboard(Provider.API_URLS.GetdashboardServicecatalogue, params)
@@ -277,7 +256,6 @@ const DashboardPage = () => {
           setIsSnackbarOpen(true);
         }
         GetUserCount();
-
       })
       .catch((e) => {
         setIsLoading(false);
@@ -298,7 +276,6 @@ const DashboardPage = () => {
   };
 
   const SwitchUserClick = () => {
-
     if (role === "" || roleID === 0) {
       setRoleError(true);
       setRoleErrorText("Error");
@@ -316,8 +293,8 @@ const DashboardPage = () => {
     const params = {
       data: {
         Sess_UserRefno: CookieUserID,
-        switchto_group_refno: roleID
-      }
+        switchto_group_refno: roleID,
+      },
     };
     Provider.createDFDashboard(Provider.API_URLS.Getdashboard_Userswitchto_Proceed, params)
       .then((response) => {
@@ -338,7 +315,6 @@ const DashboardPage = () => {
   };
 
   const GetUserDetails = (user_refno) => {
-    debugger;
     setIsLoading(true);
     let params = {
       data: {
@@ -347,7 +323,6 @@ const DashboardPage = () => {
     };
     Provider.createDFCommon(Provider.API_URLS.UserFromRefNo, params)
       .then((response: any) => {
-        debugger;
         removeCookie("dfc");
         if (response.data && response.data.code === 200) {
           const user = {
@@ -413,7 +388,7 @@ const DashboardPage = () => {
   //   fontSize: "16px",
   //   fontWeight: "bold",
   // };
-  //#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 7 }}>
@@ -484,7 +459,7 @@ const DashboardPage = () => {
                     console.log(index);
                   }}
                 /> */}
-                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={(CookieRoleID == 3 || CookieRoleID == 4) ? handleCardClick : () => { }} type="category" />
+                <ShowsGrid shows={catalogueCategoryImages} buttonSettings={buttonSetting} cardCallback={CookieRoleID == 3 || CookieRoleID == 4 ? handleCardClick : () => {}} type="category" />
               </Grid>
             </Grid>
             <Grid xs={4} sm={8} md={12} sx={{ mt: 2, pb: 1, border: 1, borderRadius: "4px", borderColor: "rgba(0, 0, 0, 0.12)", backgroundColor: "rgba(0, 102, 193, 0.04)" }}>

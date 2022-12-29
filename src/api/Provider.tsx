@@ -3,12 +3,9 @@ import axios from "axios";
 const BASE_URL_OLD = "https://api.starselector.com/api";
 // const BASE_URL_OLD = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD/";
 const BASE_URL = "https://dfsolutions.in/api/apicommon/spawu7S4urax/tYjD";
-const BASE_URL_Admin =
-  "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
-const BASE_URL_Dashboard =
-  "https://dfsolutions.in/api/apidashboard/spawu7S4urax/tYjD";
-const BASE_URL_Contractor =
-  "https://dfsolutions.in/api/apicontractor/spawu7S4urax/tYjD/";
+const BASE_URL_Admin = "https://dfsolutions.in/api/apiappadmin/spawu7S4urax/tYjD";
+const BASE_URL_Dashboard = "https://dfsolutions.in/api/apidashboard/spawu7S4urax/tYjD";
+const BASE_URL_Contractor = "https://dfsolutions.in/api/apicontractor/spawu7S4urax/tYjD/";
 
 class Provider {
   API_URLS = {
@@ -199,6 +196,14 @@ class Provider {
     GetEmployeePaydata: "getemployeepaydata/",
     EmployeePaydataUpdate: "employeepaydataupdate/",
 
+    MyClientUserRefNoCheck: "myclientuserrefnocheck/",
+    CompanyNameAutocompleteClientSearch: "companynameautocompleteclientsearch/",
+    MobileNoAutocompleteClientSearch: "mobilenoautocompleteclientsearch/",
+    ClientSearch: "clientsearch/",
+    ClientAdd: "clientadd/",
+    ClientCreate: "clientcreate/",
+    ClientUpdate: "clientupdate/",
+
     getservicenamedealermyserviceform: "getservicenamedealermyserviceform/",
     dealermyservicecreate: "dealermyservicecreate/",
     dealermyserviceupdate: "dealermyserviceupdate/",
@@ -244,7 +249,6 @@ class Provider {
     getpckcategoryname_pcksubcategoryform_user: "getpckcategoryname_pcksubcategoryform_user/",
     pcksubcategorynamecreate_user: "pcksubcategorynamecreate_user/",
     pcksubcategorynameupdate_user: "pcksubcategorynameupdate_user/",
-
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

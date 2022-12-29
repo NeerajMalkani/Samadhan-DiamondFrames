@@ -1,24 +1,4 @@
-import {
-  Alert,
-  AlertColor,
-  Autocomplete,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, AlertColor, Autocomplete, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -103,7 +83,7 @@ const ImageGalleryProductDetailsPage = () => {
 
   const [userClientError, setUserClientError] = useState("");
   const [isUserClientError, setIsUserClientError] = useState(false);
-  //#endregion 
+  //#endregion
 
   //#region Functions
   const CreateLengthFeet = (count: number) => {
@@ -154,8 +134,8 @@ const ImageGalleryProductDetailsPage = () => {
         Sess_group_refno: cookies.dfc.Sess_group_refno,
         service_refno: data.id,
         designtype_refno: data.designTypeID,
-        "product_refno": data.productID,
-        designgallery_refno: data.designgallery_refno
+        product_refno: data.productID,
+        designgallery_refno: data.designgallery_refno,
       },
     };
     Provider.createDFCommon(Provider.API_URLS.Getgotoestimation, params)
@@ -205,7 +185,7 @@ const ImageGalleryProductDetailsPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const FetchEstimationData = (userDesignEstimationID, from) => {
@@ -220,27 +200,26 @@ const ImageGalleryProductDetailsPage = () => {
           }
         }
       })
-      .catch((e) => { });
+      .catch((e) => {});
   };
 
   const AddMoreDesigns = (addMore) => {
     debugger;
     const params = {
       data: {
-
-        "Sess_UserRefno": CookieUserID,
-        "Sess_group_refno": cookies.dfc.Sess_group_refno,
-        "clickaddmorecheck": addMore,
-        "service_refno": productData.id,
-        "designtype_refno": productData.designTypeID,
-        "product_refno": productData.productID,
-        "designgallery_refno": productData.designgallery_refno,
-        "lengthfoot": lengthFeet,
-        "lengthinches": lengthInches,
-        "widthheightfoot": widthHeightFeet,
-        "widthheightinches": widthHeightInches,
-        "totalfoot": totalSqFt
-      }
+        Sess_UserRefno: CookieUserID,
+        Sess_group_refno: cookies.dfc.Sess_group_refno,
+        clickaddmorecheck: addMore,
+        service_refno: productData.id,
+        designtype_refno: productData.designTypeID,
+        product_refno: productData.productID,
+        designgallery_refno: productData.designgallery_refno,
+        lengthfoot: lengthFeet,
+        lengthinches: lengthInches,
+        widthheightfoot: widthHeightFeet,
+        widthheightinches: widthHeightInches,
+        totalfoot: totalSqFt,
+      },
     };
 
     Provider.createDFCommon(Provider.API_URLS.GetscEstimation, params)
@@ -275,7 +254,6 @@ const ImageGalleryProductDetailsPage = () => {
         setSnackbarType("error");
         setOpen(true);
       });
-
   };
 
   const InsertDesignEstimationEnquiry = (from: string, fromCount: number, subtotal: number, userDesignEstimationID: number, labourCost) => {
@@ -339,9 +317,9 @@ const ImageGalleryProductDetailsPage = () => {
       setSearchClientList(
         otherClientsFullData.filter((el: ClientModel) => {
           if (selectedOtherPhoneNo === "" && selectedOtherName !== "") return el.companyName.toString().toLowerCase().includes(selectedOtherName.toLowerCase());
-          else if (selectedOtherPhoneNo !== "" && selectedOtherName === "") return el.contactMobileNumber.toString().toLowerCase().includes(selectedOtherPhoneNo.toLowerCase());
+          else if (selectedOtherPhoneNo !== "" && selectedOtherName === "") return el.Mobile.toString().toLowerCase().includes(selectedOtherPhoneNo.toLowerCase());
           else {
-            return el.companyName.toString().toLowerCase().includes(selectedOtherName.toLowerCase()) || el.contactMobileNumber.toString().toLowerCase().includes(selectedOtherPhoneNo.toLowerCase());
+            return el.companyName.toString().toLowerCase().includes(selectedOtherName.toLowerCase()) || el.Mobile.toString().toLowerCase().includes(selectedOtherPhoneNo.toLowerCase());
           }
         })
       );
@@ -443,7 +421,7 @@ const ImageGalleryProductDetailsPage = () => {
         setOpen(true);
       });
   };
-  //#endregion 
+  //#endregion
 
   return (
     <Box sx={{ mt: 11 }}>
@@ -479,11 +457,7 @@ const ImageGalleryProductDetailsPage = () => {
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ padding: "8px", border: "1px solid rgba(0,0,0,0.54)" }}>
                   <Grid item xs={4} sm={4} md={5} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <div style={{ maxWidth: 360, maxHeight: 360, overflow: "hidden", padding: "4px", border: "1px solid rgba(0,0,0,0.12)" }}>
-                      <img
-                        src={selectedData.designImage}
-                        alt={selectedData.designTypeName}
-                        style={{ display: "block", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center", width: "100%", objectFit: "cover" }}
-                      />
+                      <img src={selectedData.designImage} alt={selectedData.designTypeName} style={{ display: "block", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center", width: "100%", objectFit: "cover" }} />
                     </div>
                   </Grid>
                   <Grid item xs={4} sm={4} md={6}>
@@ -631,8 +605,8 @@ const ImageGalleryProductDetailsPage = () => {
                             disableSelectionOnClick
                             onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                               const arrActivity = [...searchClientList];
-                              let a: ClientModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                              InsertOtherClient(a.id);
+                              let a: ClientModel | undefined = arrActivity.find((el) => el.client_user_refno === param.row.client_user_refno);
+                              InsertOtherClient(a.client_user_refno);
                             }}
                             sx={{
                               "& .MuiDataGrid-columnHeaders": {

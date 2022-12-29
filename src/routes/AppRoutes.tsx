@@ -1,7 +1,5 @@
-import { Box, CssBaseline,ThemeProvider } from "@mui/material";
-import { useState } from "react";
+import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ActivityRoleNameModel, CategoryModel, ServiceNameModel, UnitOfSalesModel, ProductModel, DepartmentNameModel, DesignationNameModel, EWayBillModel, LocationTypeModel } from "../models/Model";
 import { theme } from "../theme/AppTheme";
 import ActivityPage from "../ui/Admin/Master/ActivityPage";
 import ServicePage from "../ui/Admin/Master/ServicePage";
@@ -26,14 +24,11 @@ import PostNewDesignPage from "../ui/Admin/ServiceCatalogue/PostNewDesignPage";
 import BrandMasterPage from "../ui/Dealer/BrandAndProducts/BrandMaster";
 import BrandPage from "../ui/Dealer/BrandAndProducts/Brand";
 import ProductListPage from "../ui/Dealer/Product/Product";
-//import MyServices from "../ui/Dealer/CompanyProfile/MyServices";
 import BuyerCategory from "../ui/Dealer/BrandAndProducts/BuyerCategory";
-import Basic from "../ui/Dealer/CompanyProfile/Basic";
 import MaterialSetup from "../ui/Admin/ServiceCatalogue/MaterialSetup";
 import EmployeeListPage from "../ui/Common/Employee/EmployeeList";
 import CBasic from "../ui/Common/CompanyProfile/CBasic";
 import MyServices from "../ui/Common/CompanyProfile/MyServices";
-//import CMyService from "../ui/Contractor/CompanyProfile/CMyService";
 import AddDepartment from "../ui/Common/Organization/AddDepartment";
 import AddDesignation from "../ui/Common/Organization/AddDesignation";
 import ImageGalleryCategoryPage from "../ui/GeneralUsers/ImageGalleryAndEstimation/ImageGalleryCategory";
@@ -48,7 +43,6 @@ import DesignWisePage from "../ui/Contractor/QuotationAndEstimation/DesignWise/D
 import Approved from "../ui/Admin/Users/Approved";
 import Pending from "../ui/Admin/Users/Pending";
 import Declined from "../ui/Admin/Users/Declined";
-import Userbasic from "../ui/GeneralUsers/Userbasic";
 import UserBasic from "../ui/Common/UserProfile/Userbasic";
 import AppUserEnquiry from "../ui/Contractor/Enquiries/AppUserEnquiry";
 import ArchitectAndConsultant from "../ui/Contractor/Enquiries/ArchitectAndConsultant";
@@ -98,19 +92,13 @@ import EmployeeAttendenceEntry from "../ui/Manufacture/Employee/EmployeeAttenden
 import EmployeeAttendenceEntryList from "../ui/Manufacture/Employee/EmployeeAttendenceEntryList";
 
 import ACategoryName from "../ui/Admin/PocketDairyMaster/ACategoryName";
-import ASubCategoryName from "../ui/Admin/PocketDairyMaster/ASubCategoryName";
-// import ASubCategoryName from "../ui/Admin/PocketDairyMaster/ASubcategoryName";
+import ASubCategoryName from "../ui/Admin/PocketDairyMaster/ASubcategoryName";
 
 import GCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GCategoryName";
 import GSubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GSubCategoryName";
 import GMyContacts from "../ui/GeneralUsers/PocketDiary/Setting/GMyContacts";
 import GMyBank from "../ui/GeneralUsers/PocketDiary/Setting/GMyBank";
 import AddSource from "../ui/GeneralUsers/PocketDiary/AddSource";
-
-
-
-
-
 
 const AppRoutes = () => {
   return (
@@ -125,7 +113,6 @@ const AppRoutes = () => {
               <Route path="signup" element={<SignupPage />} />
               <Route path="forgotpassword" element={<ForgotPasswordPage />} />
               <Route path="dashboard" element={<DashboardPage />} />
-              /*pocketDashboard*/
               <Route path="dashboardpocket" element={<DashboardPocket />} />
               <Route path="master/activity" element={<ActivityPage />} />
               <Route path="master/service" element={<ServicePage />} />
@@ -192,42 +179,39 @@ const AppRoutes = () => {
               <Route path="contractor/quotationandestimation/quotationwise" element={<QuotationWise />} />
               {/* <Route path="generalusers/pocketdiary/setting/categoryname" element={<CategoryName/>}/>
               <Route path="generalusers/pocketdiary/setting/subcategoryname" element={<SubCategoryName/>}/> */}
-              <Route path="generalusers/pocketdiary/setting/budgetsetup" element={<BudgetSetup/>}/>
-              <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses/>}/>
-              <Route path="generalusers/pocketdiary/source" element={<Sources/>}/>
-              <Route path="generalusers/pocketdiary/inbox" element={<Inbox/>}/>
-              <Route path="dashboardmanufacture" element={<DashboardManufacture/>}/>
-              <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue/>}/>
-              <Route path="manufacture/productionunitmaster/openingstock" element={<OpeningStock/>}/>
+              <Route path="generalusers/pocketdiary/setting/budgetsetup" element={<BudgetSetup />} />
+              <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses />} />
+              <Route path="generalusers/pocketdiary/source" element={<Sources />} />
+              <Route path="generalusers/pocketdiary/inbox" element={<Inbox />} />
+              <Route path="dashboardmanufacture" element={<DashboardManufacture />} />
+              <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue />} />
+              <Route path="manufacture/productionunitmaster/openingstock" element={<OpeningStock />} />
 
-              <Route path="manufacture/productproduction" element={<ProductProduction/>}/>
-              <Route path="manufacture/productOrderList" element={<ProductOrderList/>}/>
-              <Route path="manufacture/newproductorder" element={<CreateNewProductOrder />}/>
-              <Route path="manufacture/venderOrderForm" element={<VenderOrderFormList/>}/>
-              <Route path="/manufacture/venderorderaddform" element={<VenderOrderAddForm />}/>
-              <Route path="manufacture/invoicerecieptlist" element={<InvoiceRecieptList/>}/>
-              <Route path="manufacture/addinvoicerecieptlist" element={<AddInvoiceReciept />}/>
-              <Route path="manufacture/productionstatus" element={<ProductionStatus/>}/>
-              <Route path="manufacture/addProductionStatus" element={<AddProductionStatus />}/>
-              <Route path="manufacture/summaryMaterial" element={<SummaryMaterial/>}/>
+              <Route path="manufacture/productproduction" element={<ProductProduction />} />
+              <Route path="manufacture/productOrderList" element={<ProductOrderList />} />
+              <Route path="manufacture/newproductorder" element={<CreateNewProductOrder />} />
+              <Route path="manufacture/venderOrderForm" element={<VenderOrderFormList />} />
+              <Route path="/manufacture/venderorderaddform" element={<VenderOrderAddForm />} />
+              <Route path="manufacture/invoicerecieptlist" element={<InvoiceRecieptList />} />
+              <Route path="manufacture/addinvoicerecieptlist" element={<AddInvoiceReciept />} />
+              <Route path="manufacture/productionstatus" element={<ProductionStatus />} />
+              <Route path="manufacture/addProductionStatus" element={<AddProductionStatus />} />
+              <Route path="manufacture/summaryMaterial" element={<SummaryMaterial />} />
 
+              <Route path="manufacture/productionunitmaster/openingstockscrap" element={<OpeningStockScrap />} />
+              <Route path="manufacture/employee/employeerequest" element={<EmployeeRequest />} />
+              <Route path="manufacture/employee/markavailability" element={<MarkAvailability />} />
+              <Route path="manufacture/employee/employeeattendenceentry" element={<EmployeeAttendenceEntry />} />
+              <Route path="manufacture/employee/employeeattendenceentrylist" element={<EmployeeAttendenceEntryList />} />
 
-              <Route path="manufacture/productionunitmaster/openingstockscrap" element={<OpeningStockScrap/>}/>
-              <Route path="manufacture/employee/employeerequest" element={<EmployeeRequest/>}/>
-              <Route path="manufacture/employee/markavailability" element={<MarkAvailability/>}/>
-              <Route path="manufacture/employee/employeeattendenceentry" element={<EmployeeAttendenceEntry/>}/>
-              <Route path="manufacture/employee/employeeattendenceentrylist" element={<EmployeeAttendenceEntryList/>}/>
+              <Route path="admin/pocketddairymaster/acategoryname" element={<ACategoryName />} />
+              <Route path="admin/pocketddairymaster/asubcategoryname" element={<ASubCategoryName />} />
 
-              <Route path="admin/pocketddairymaster/acategoryname" element={<ACategoryName/>}/>
-              <Route path="admin/pocketddairymaster/asubcategoryname" element={<ASubCategoryName/>}/>
-
-              <Route path="generalusers/pocketdiary/setting/gcategoryname" element={<GCategoryName/>}/>
-              <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName/>}/>
-              <Route path="generalusers/pocketdiary/setting/gmycontacts" element={<GMyContacts/>}/>
-              <Route path="generalusers/pocketdiary/setting/gmybank" element={<GMyBank/>}/>
-              <Route path="generalusers/pocketdiary/addsource" element={<AddSource/>}/>
-             
-               
+              <Route path="generalusers/pocketdiary/setting/gcategoryname" element={<GCategoryName />} />
+              <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName />} />
+              <Route path="generalusers/pocketdiary/setting/gmycontacts" element={<GMyContacts />} />
+              <Route path="generalusers/pocketdiary/setting/gmybank" element={<GMyBank />} />
+              <Route path="generalusers/pocketdiary/addsource" element={<AddSource />} />
             </Routes>
           </BrowserRouter>
         </Box>

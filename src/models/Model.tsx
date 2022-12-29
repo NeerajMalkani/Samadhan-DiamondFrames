@@ -1,6 +1,5 @@
-
-import { NumericLiteral } from 'typescript';
-import { UrlWithStringQuery } from 'url';
+import { NumericLiteral } from "typescript";
+import { UrlWithStringQuery } from "url";
 
 export interface ActivityRoleNameModel {
   id: number;
@@ -258,7 +257,7 @@ export interface DFUnitOfSalesModel1 {
   unit1ID: number;
   convert_unit_name: string;
   unit2ID: number;
-  unit_category_refno: number
+  unit_category_refno: number;
 }
 
 export interface UserCreds {
@@ -328,7 +327,6 @@ export interface DFDepartmentNameModel {
   action: string;
 }
 
-
 export interface DesignationNameModel {
   id: number;
   srno: number;
@@ -347,7 +345,6 @@ export interface DFDesignationNameModel {
   reportingAuthority: string;
   action: string;
 }
-
 
 export interface EWayBillModel {
   id: number;
@@ -489,7 +486,6 @@ export interface ProductSetupModel {
   isApprove: string;
   isPublish: string;
   SaleUnit: string;
-
 }
 
 export interface BuyerCategoryModel {
@@ -628,7 +624,7 @@ export interface ButtonSettings {
 
 export interface ActionButtons {
   title: string;
-  type: 'text' | 'outlined' | 'contained';
+  type: "text" | "outlined" | "contained";
   callBack: Function;
 }
 
@@ -688,7 +684,7 @@ export interface EmployeeModel {
   companyName: string;
   aadharNo: string;
   addEmployeeName: string;
-  otpMobileNo: string
+  otpMobileNo: string;
 }
 export interface MobileNoModel {
   mobile_no_Result: string;
@@ -755,22 +751,34 @@ export interface QuotationProductDetailsModel {
 }
 
 export interface ClientModel {
-  id: number;
   srno: number;
-  address1: string;
-  cityID: number;
-  cityName: string;
+  myclient_refno: number;
+  client_user_refno: number;
+  client_role_refno: Array<any>;
+  buyercategory_refno: string;
+  buyercategory_name: string;
   companyName: string;
-  contactMobileNumber: string;
-  contactPerson: string;
-  display: string;
+  addressLine: string;
+  addedBy: boolean;
+  addby_user_refno: string;
   gstNumber: string;
   pan: string;
   pincode: string;
-  serviceType: number;
+  display: string;
   stateID: number;
   stateName: string;
-  addedBy: boolean;
+  cityID: number;
+  cityName: string;
+  Mobile: string;
+  contactPersonName: string;
+  createbyID: number;
+  serviceType: Array<any>;
+}
+
+export interface ClientSearchModel {
+  Search_company_name: string;
+  Search_mobile_no: string;
+  Search_user_refno: string;
 }
 
 export interface QuotationDataModel {
@@ -872,7 +880,7 @@ export interface DFDeclinedModel {
   id: number;
   userID: number;
   srno: number;
-  user_refno: string,
+  user_refno: string;
   company_name: string;
   activityrole: string;
   departmentname: string;
@@ -998,9 +1006,9 @@ export interface ASubCategoryNameModel {
 
 export interface GeneralMyContacts {
   id: number;
-  name:string;
-  mobileNo:string;
-  remark:string;
+  name: string;
+  mobileNo: string;
+  remark: string;
   display: string;
 }
 
@@ -1010,7 +1018,7 @@ export interface GeneralMYBank {
   bankAccountNo: string;
   cardType: string;
   openingBalance: string;
-  remarks:string;
+  remarks: string;
   display: string;
 }
 
@@ -1019,7 +1027,6 @@ export interface PckTransactionTypeModel {
   transtypeID: string;
   transTypeName: string;
 }
-
 
 export interface CategoryNameModel {
   id: number;
@@ -1185,7 +1192,6 @@ export interface OpeningStockScrapModel {
   action: string;
 }
 
-
 export interface EmployeeRequestModel {
   id: number;
   srno: number;
@@ -1223,5 +1229,4 @@ export interface EmployeeAttendenceEntryModel {
   markAvaibilityCount: string;
   presentCount: string;
   action: string;
-
 }

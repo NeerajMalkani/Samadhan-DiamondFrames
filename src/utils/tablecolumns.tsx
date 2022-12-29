@@ -710,8 +710,8 @@ export const designationColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: 'reportingAuthority',
-    headerName: 'Reporting Authority',
+    field: "reportingAuthority",
+    headerName: "Reporting Authority",
     flex: 1.8,
     sortable: false,
     minWidth: 140,
@@ -1382,7 +1382,7 @@ export const employeeColumns: GridColDef[] = [
           <Typography>{params.row.employeeCode}</Typography>
         </Grid>
       );
-    }
+    },
   },
   {
     field: "mobileNo",
@@ -1468,7 +1468,7 @@ export const mobileSearchList: GridColDef[] = [
     minWidth: 120,
     sortable: false,
   },
-]
+];
 
 export const clientListColumns: GridColDef[] = [
   {
@@ -1485,17 +1485,21 @@ export const clientListColumns: GridColDef[] = [
     minWidth: 140,
     renderCell: (params) => {
       if (params.value !== null && params.value !== undefined) {
-        const sl = ["Vendor", "Supplier", "Client"];
-        return (
-          <Grid>
-            {params.value
-              .toString()
-              .split("")
-              .map((k: number) => {
-                return <Typography color="textSecondary">{sl[k - 1]}</Typography>;
+        if (Array.isArray(params.value)) {
+          return (
+            <Grid>
+              {params.value.map((k: string) => {
+                return <Typography color="textSecondary">{k === "14" ? "Vendor" : k === "13" ? "Supplier" : "Client"}</Typography>;
               })}
-          </Grid>
-        );
+            </Grid>
+          );
+        } else {
+          return (
+            <Grid>
+              <Typography color="textSecondary">{params.value === "14" ? "Vendor" : params.value === "13" ? "Supplier" : "Client"}</Typography>;
+            </Grid>
+          );
+        }
       }
     },
   },
@@ -1528,14 +1532,14 @@ export const clientListColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "contactPerson",
+    field: "contactPersonName",
     headerName: "Contact Person",
     flex: 1,
     minWidth: 100,
     sortable: false,
   },
   {
-    field: "contactMobileNumber",
+    field: "Mobile",
     headerName: "Phone No",
     flex: 1,
     minWidth: 100,
@@ -1562,7 +1566,7 @@ export const clientListColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`edit/${e.row.id}`}>Edit</Link>;
+      return <Link href={`edit/${e.row.client_user_refno}`}>Edit</Link>;
     },
   },
 ];
@@ -1688,31 +1692,32 @@ export const clientColumns: GridColDef[] = [
     maxWidth: 240,
     renderCell: (e) => {
       let arrService = [];
-      switch (e.row.serviceType) {
-        case 1:
+      switch (true) {
+        case e.row.client_role_refno.indexOf("14") !== -1 && e.row.client_role_refno.indexOf("13") !== -1 && e.row.client_role_refno.indexOf("8") !== -1:
           arrService.push("Vendor");
-          break;
-        case 2:
           arrService.push("Supplier");
-          break;
-        case 3:
           arrService.push("Client");
           break;
-        case 12:
+        case e.row.client_role_refno.indexOf("14") !== -1 && e.row.client_role_refno.indexOf("13") !== -1:
           arrService.push("Vendor");
           arrService.push("Supplier");
           break;
-        case 13:
+        case e.row.client_role_refno.indexOf("14") !== -1 && e.row.client_role_refno.indexOf("8") !== -1:
           arrService.push("Vendor");
           arrService.push("Client");
           break;
-        case 23:
+        case e.row.client_role_refno.indexOf("13") !== -1 && e.row.client_role_refno.indexOf("8") !== -1:
           arrService.push("Supplier");
           arrService.push("Vendor");
           break;
-        case 123:
+
+        case e.row.client_role_refno.indexOf("14") !== -1:
           arrService.push("Vendor");
+          break;
+        case e.row.client_role_refno.indexOf("13") !== -1:
           arrService.push("Supplier");
+          break;
+        case e.row.client_role_refno.indexOf("8") !== -1:
           arrService.push("Client");
           break;
       }
@@ -3734,7 +3739,6 @@ export const aCategoryNameColumns: GridColDef[] = [
         );
       }
     },
-    
   },
 ];
 
@@ -4993,7 +4997,6 @@ export const summaryMaterialColumn: GridColDef[] = [
   },
 ];
 
-
 export const openingStockScrapColumns: GridColDef[] = [
   {
     field: "srno",
@@ -5044,38 +5047,37 @@ export const openingStockScrapColumns: GridColDef[] = [
   },
 ];
 
-
 export const employeeRequestColumns: GridColDef[] = [
   {
-    field: 'srno',
-    headerName: 'Sr. No.',
+    field: "srno",
+    headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'employeeName',
-    headerName: 'Employee Name / Code',
+    field: "employeeName",
+    headerName: "Employee Name / Code",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: 'locationName',
-    headerName: 'Branch',
+    field: "locationName",
+    headerName: "Branch",
     flex: 1.8,
     minWidth: 120,
     sortable: false,
   },
   {
-    field: 'designationName',
-    headerName: 'Designation',
+    field: "designationName",
+    headerName: "Designation",
     flex: 1.5,
     minWidth: 120,
     sortable: false,
   },
   {
-    field: 'action',
-    headerName: 'Action',
+    field: "action",
+    headerName: "Action",
     flex: 1,
     minWidth: 100,
     sortable: false,
@@ -5085,24 +5087,23 @@ export const employeeRequestColumns: GridColDef[] = [
   },
 ];
 
-
 export const employeeMarkAvailabilityColumns: GridColDef[] = [
   {
-    field: 'srno',
-    headerName: 'Sr. No.',
+    field: "srno",
+    headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'employeeName',
-    headerName: 'Employee Name / Code',
+    field: "employeeName",
+    headerName: "Employee Name / Code",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: 'markAvailability',
-    headerName: 'Mark Availability',
+    field: "markAvailability",
+    headerName: "Mark Availability",
     flex: 1.5,
     minWidth: 120,
     sortable: false,
@@ -5111,28 +5112,28 @@ export const employeeMarkAvailabilityColumns: GridColDef[] = [
 
 export const employeeMarkAvailabilityEntryColumns: GridColDef[] = [
   {
-    field: 'srno',
-    headerName: 'Sr. No.',
+    field: "srno",
+    headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'avaibilityDate',
-    headerName: 'Avaibility Date',
+    field: "avaibilityDate",
+    headerName: "Avaibility Date",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: 'availabilityEmployeeCount',
-    headerName: 'Availability Employee Count',
+    field: "availabilityEmployeeCount",
+    headerName: "Availability Employee Count",
     flex: 1.5,
     minWidth: 120,
     sortable: false,
   },
   {
-    field: 'action',
-    headerName: 'Action',
+    field: "action",
+    headerName: "Action",
     flex: 1,
     minWidth: 100,
     sortable: false,
@@ -5144,21 +5145,21 @@ export const employeeMarkAvailabilityEntryColumns: GridColDef[] = [
 
 export const employeeAttendenceColumns: GridColDef[] = [
   {
-    field: 'srno',
-    headerName: 'Sr. No.',
+    field: "srno",
+    headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'employeeName',
-    headerName: 'Employee Name / Code',
+    field: "employeeName",
+    headerName: "Employee Name / Code",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: 'presentAttendence',
-    headerName: 'Present Attendence Status',
+    field: "presentAttendence",
+    headerName: "Present Attendence Status",
     flex: 1.5,
     minWidth: 120,
     sortable: false,
@@ -5167,35 +5168,35 @@ export const employeeAttendenceColumns: GridColDef[] = [
 
 export const employeeAttendenceListColumns: GridColDef[] = [
   {
-    field: 'srno',
-    headerName: 'Sr. No.',
+    field: "srno",
+    headerName: "Sr. No.",
     flex: 0.8,
     minWidth: 60,
     sortable: false,
   },
   {
-    field: 'attendenceDate',
-    headerName: 'Attendence Date',
+    field: "attendenceDate",
+    headerName: "Attendence Date",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: 'markAvalibilityCount',
-    headerName: 'Mark Avalibility Count',
+    field: "markAvalibilityCount",
+    headerName: "Mark Avalibility Count",
     flex: 1.5,
     minWidth: 120,
     sortable: false,
   },
   {
-    field: 'persentCount',
-    headerName: 'Present Count',
+    field: "persentCount",
+    headerName: "Present Count",
     flex: 1.5,
     minWidth: 120,
     sortable: false,
   },
   {
-    field: 'action',
-    headerName: 'Action',
+    field: "action",
+    headerName: "Action",
     flex: 1,
     minWidth: 100,
     sortable: false,
