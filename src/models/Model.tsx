@@ -1006,9 +1006,13 @@ export interface ASubCategoryNameModel {
 
 export interface GeneralMyContacts {
   id: number;
-  name: string;
-  mobileNo: string;
-  remark: string;
+
+  contactName: string;
+  contactPersonName: string;
+  MobileNo: string;
+  contactPhoneno: string;
+  mycontactID: string;
+  remarks: string;
   display: string;
 }
 

@@ -72,7 +72,7 @@ const GCategoryName = () => {
         Sess_UserRefno: cookies.dfc.UserID,
       },
     };
-    Provider.createDFCommon(Provider.API_URLS.gettransactiontype_pckcategoryform_user, params)
+    Provider.createDFPocketDairy(Provider.API_URLS.gettransactiontype_pckcategoryform_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -113,7 +113,7 @@ const GCategoryName = () => {
         pck_category_refno: "all"
       },
     };
-    Provider.createDFCommon(Provider.API_URLS.pckcategoryrefnocheck_user, params)
+    Provider.createDFPocketDairy(Provider.API_URLS.pckcategoryrefnocheck_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -266,7 +266,7 @@ const GCategoryName = () => {
 
   const InsertUpdateData = (categoryName: string, checked: boolean, tt) => {
     if (actionStatus === "new") {
-      Provider.createDFCommon(Provider.API_URLS.pckcategorynamecreate_user, {
+      Provider.createDFPocketDairy(Provider.API_URLS.pckcategorynamecreate_user, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           category_name: categoryName,
@@ -299,7 +299,7 @@ const GCategoryName = () => {
         });
     } else if (actionStatus === "edit") {
       debugger;
-      Provider.createDFCommon(Provider.API_URLS.pckcategorynameupdate_user, {
+      Provider.createDFPocketDairy(Provider.API_URLS.pckcategorynameupdate_user, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           pck_category_refno: selectedID,

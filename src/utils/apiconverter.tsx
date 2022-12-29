@@ -21,6 +21,7 @@ export const APIConverter = (response: any, type?: string) => {
       renameKey(obj, "branch_refno", "branchID");
       renameKey(obj, "department_refno", "departmentID");
       renameKey(obj, "designation_refno", "designationID");
+      renameKey(obj, "employee_user_refno", "employeeUserID");
     }
 
     renameKey(obj, "product_refno", "productID");
@@ -110,7 +111,7 @@ export const APIConverter = (response: any, type?: string) => {
     // renameKey(obj, "rateWithMaterials", "rateWithMaterials");
     // renameKey(obj, "rateWithoutMaterials", "rateWithoutMaterials");
     renameKey(obj, "selectedUnit", "selectedUnit");
-    renameKey(obj, "specification", "specification");
+    //renameKey(obj, "specification", "specification");
     renameKey(obj, "with_material_alternate_rate", "withMaterialAlternateRate");
     renameKey(obj, "without_material_alternate_rate", "withoutMaterialAlternateRate");
 
@@ -204,7 +205,15 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "pck_transtype_name", "transTypeName");
     renameKey(obj, "sub_category_name", "subCategoryName");    
     renameKey(obj, "contact_person", "contactPersonName");
-    renameKey(obj, "contact_person_mobile_no", "Mobile");
+    renameKey(obj, "contact_person_mobile_no", "MobileNo");
+    renameKey(obj, "contact_name", "contactName");
+    renameKey(obj, "contact_phoneno", "contactPhoneno");
+    renameKey(obj, "pck_mycontact_refno", "mycontactID");
+    renameKey(obj, "dol", "LastWorkingDate");
+    renameKey(obj, "employee_type_refno", "employeeType");
+    renameKey(obj, "reporting_user_refno", "reportingAuthorityID");
+
+    
   });
 
   return response;

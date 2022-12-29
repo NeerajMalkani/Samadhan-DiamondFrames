@@ -107,6 +107,9 @@ const EmployeeEdit = () => {
   //#region Variables
 
   const [employeeID, setEmployeeID] = React.useState<number>(0);
+  const [companyEmployeeID, setCompanyEmployeeID] = React.useState<number>(0);
+  const [employeeUserID, setEmployeeUserID] = React.useState<number>(0);
+  const [myEmployeeID, setMyEmployeeID] = React.useState<number>(0);
 
   const [employeeName, setEmployeeName] = useState("");
   const [employeeNameError, setEmployeeNameError] = useState("");
@@ -508,6 +511,7 @@ const EmployeeEdit = () => {
   };
 
   const FetchEmployeeBasicDetails = (id: number) => {
+    //debugger;
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
@@ -518,6 +522,7 @@ const EmployeeEdit = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            //debugger;
             response.data.data = APIConverter(response.data.data, "employee");
             var employee_data = response.data.data[0];
 
@@ -541,11 +546,11 @@ const EmployeeEdit = () => {
             setEmergencyCName(!NullOrEmpty(employee_data.emergencyCName) ? employee_data.emergencyCName : "");
             setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
             setEmployeeCompanyID(employee_data.emergencyContactNo);
-            //setEmployeeID(employee_data.employeeID);
+
             setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
             setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
             setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
-            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+            setMobile(!NullOrEmpty(employee_data.contactPersonNumber) ? employee_data.contactPersonNumber : "");
             setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
             setUploadedImage(employee_data.profilePhoto);
             setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
@@ -601,14 +606,8 @@ const EmployeeEdit = () => {
           }
 
           setLoading(false);
-
           FetchStates();
           BloodGroupDropdown();
-
-          //FetchBranch();
-          //FetchDepartment();
-          //FetchDesignation();
-          //FetchReport();
         }
       })
       .catch((e) => {
@@ -631,83 +630,79 @@ const EmployeeEdit = () => {
             debugger;
             response.data.data = APIConverter(response.data.data, "employee");
             var employee_data = response.data.data[0];
-            // var bankDetails_data = response.data.data[0].bankDetails[0];
-            // var reporting_data = response.data.data[0].employeeReportingAuthority[0];
 
-            // if (!NullOrEmpty(employee_data.branchID)) {
-            //   setBranchID(employee_data.branchID);
-            //   b_ID = employee_data.branchID;
-            // }
+            setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
+            setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "0");
+            setEmployeeUserID(!NullOrEmpty(employee_data.employeeUserID) ? employee_data.employeeUserID : "0");
 
-            // if (!NullOrEmpty(employee_data.departmentID)) {
-            //   setDepartmentID(employee_data.departmentID);
-            //   d_ID = employee_data.departmentID;
-            // }
+            if (!NullOrEmpty(employee_data.branchID)) {
+              setBranchID(employee_data.branchID);
+              b_ID = employee_data.branchID;
+            }
 
-            // if (!NullOrEmpty(employee_data.designationID)) {
-            //   setDesignationID(employee_data.designationID);
-            //   de_ID = employee_data.designationID;
-            // }
+            if (!NullOrEmpty(employee_data.departmentID)) {
+              setDepartmentID(employee_data.departmentID);
+              d_ID = employee_data.departmentID;
+            }
 
+            if (!NullOrEmpty(employee_data.designationID)) {
+              setDesignationID(employee_data.designationID);
+              de_ID = employee_data.designationID;
+            }
+
+            setCompanyEmployeeID(employee_data.employeeCompanyID);
+            setMyEmployeeID(employee_data.employeeID);
+
+            if (!NullOrEmpty(employee_data.reportingAuthorityID)) {
+              setReporting(!NullOrEmpty(employee_data.reportingAuthorityID) ? employee_data.reportingAuthorityID : "");
+              setReportListID(!NullOrEmpty(employee_data.reportingAuthorityID) ? employee_data.reportingAuthorityID : "");
+              rpt_ID = employee_data.reportingAuthorityID;
+            }
 
             //#region Basic Details
-            setAadhar(!NullOrEmpty(employee_data.aadharNo) ? employee_data.aadharNo : "");
-            setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
+            // setAadhar(!NullOrEmpty(employee_data.aadharNo) ? employee_data.aadharNo : "");
+            // setAddress(!NullOrEmpty(employee_data.address) ? employee_data.address : "");
 
-            if (!NullOrEmpty(employee_data.bloodGroupID)) {
-              setBloodGroupID(employee_data.bloodGroupID);
-              bg_ID = employee_data.bloodGroupID;
-            }
-            setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
+            // if (!NullOrEmpty(employee_data.bloodGroupID)) {
+            //   setBloodGroupID(employee_data.bloodGroupID);
+            //   bg_ID = employee_data.bloodGroupID;
+            // }
+            // setEmployeeCode(!NullOrEmpty(employee_data.employeeCode) ? employee_data.employeeCode : "");
 
-            if (!NullOrEmpty(employee_data.cityID)) {
-              setSelectedCityID(employee_data.cityID);
-              ct_ID = employee_data.cityID;
-            }
+            // if (!NullOrEmpty(employee_data.cityID)) {
+            //   setSelectedCityID(employee_data.cityID);
+            //   ct_ID = employee_data.cityID;
+            // }
 
-            setDOB(NullOrEmpty(employee_data.DOB) ? null : employee_data.DOB);
-            setDOJ(NullOrEmpty(employee_data.DOJ) ? null : employee_data.DOJ);
-            setEmergencyCName(!NullOrEmpty(employee_data.emergencyCName) ? employee_data.emergencyCName : "");
-            setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
-            setEmployeeCompanyID(employee_data.emergencyContactNo);
-            //setEmployeeID(employee_data.employeeID);
-            setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
-            setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
-            setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
-            setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
-            setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
-            setUploadedImage(employee_data.profilePhoto);
-            setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
+            // setDOB(NullOrEmpty(employee_data.DOB) ? null : employee_data.DOB);
+            // setDOJ(NullOrEmpty(employee_data.DOJ) ? null : employee_data.DOJ);
+            // setEmergencyCName(!NullOrEmpty(employee_data.emergencyCName) ? employee_data.emergencyCName : "");
+            // setEmergencyCNo(!NullOrEmpty(employee_data.emergencyContactNo) ? employee_data.emergencyContactNo : "");
+            // setEmployeeCompanyID(employee_data.emergencyContactNo);
 
-            if (!NullOrEmpty(employee_data.stateID)) {
-              setSelectedStateID(employee_data.stateID);
-              st_ID = employee_data.stateID;
-            }
+            // setEmployeeName(!NullOrEmpty(employee_data.employeeName) ? employee_data.employeeName : "");
+            // setFatherName(!NullOrEmpty(employee_data.fatherName) ? employee_data.fatherName : "");
+            // setCardValidity(NullOrEmpty(employee_data.idCardValidity) ? null : employee_data.idCardValidity);
+            // setMobile(!NullOrEmpty(employee_data.mobileNo) ? employee_data.mobileNo : "");
+            // setPincode(!NullOrEmpty(employee_data.pincode) ? employee_data.pincode.toString() : "");
+            // setUploadedImage(employee_data.profilePhoto);
+            // setImage(!NullOrEmpty(employee_data.profilePhoto) ? employee_data.profilePhoto : AWSImagePath + "placeholder-image.png");
+
+            // if (!NullOrEmpty(employee_data.stateID)) {
+            //   setSelectedStateID(employee_data.stateID);
+            //   st_ID = employee_data.stateID;
+            // }
             //#endregion
 
             // setDisplay(!NullOrEmpty(employee_data.display) ? employee_data.display : "");
             // // setFirstName(!NullOrEmpty(employee_data.firstName) ? employee_data.firstName : "");
             // setSelectedStateID(!NullOrEmpty(employee_data.setSelectedStateID) ? employee_data.setSelectedStateID : "")
 
-            
-
-            
-
-            
-
-            // setLastWorkingDate(NullOrEmpty(employee_data.LastWorkingDate) ? null : employee_data.LastWorkingDate);
-
             // setLogin(!NullOrEmpty(employee_data.loginActiveStatus) ? (employee_data.loginActiveStatus === true) ? "Yes" : "No" : "");
             // setBranch(!NullOrEmpty(employee_data.branchID) ? employee_data.branchID : "");
             // setDepartment(!NullOrEmpty(employee_data.department) ? employee_data.department : "");
             // setDesignation(!NullOrEmpty(employee_data.designation) ? employee_data.designation : "");
-            // if (!NullOrEmpty(reporting_data)) {
-            //   setReporting(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
-            //   setReportListID(!NullOrEmpty(reporting_data.reportingAuthorityID) ? reporting_data.reportingAuthorityID : "");
-            //   rpt_ID = reporting_data.reportingAuthorityID;
-            // }
 
-            // setEmployeeType(!NullOrEmpty(employee_data.employeeType) ? employee_data.employeeType : "0");
             // setWagesType(!NullOrEmpty(employee_data.wagesType) ? employee_data.wagesType === 1 ? "Daily" : "Monthly" : "");
             // setSalary(!NullOrEmpty(employee_data.salary) ? employee_data.salary : "");
 
@@ -720,15 +715,14 @@ const EmployeeEdit = () => {
 
           }
 
-          setLoading(false);
+          // setLoading(false);
 
-          FetchStates();
-          BloodGroupDropdown();
+          // FetchStates();
+          // BloodGroupDropdown();
           FetchBranch();
-
           FetchDepartment();
           FetchDesignation();
-          FetchReport();
+          // FetchReport();
         }
       })
       .catch((e) => {
@@ -769,7 +763,6 @@ const EmployeeEdit = () => {
               setSelectedStateName(a[0].label);
             }
           }
-
           FetchCities(st_ID);
         }
       })

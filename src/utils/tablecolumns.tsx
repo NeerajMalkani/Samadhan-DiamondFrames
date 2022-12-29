@@ -3801,13 +3801,13 @@ export const gMyContactsNameColumns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "name",
+    field: "contactName",
     headerName: " Name",
     flex: 1.8,
     minWidth: 140,
   },
   {
-    field: "mobileNo",
+    field: "contactPhoneno",
     headerName: "Mobile No",
     flex: 1.8,
     minWidth: 140,

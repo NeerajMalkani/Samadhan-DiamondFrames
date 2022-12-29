@@ -89,7 +89,7 @@ const GSubCategoryName = () => {
         pck_sub_category_refno: "all"
       },
     };
-    Provider.createDFCommon(Provider.API_URLS.pcksubcategoryrefnocheck_user, params)
+    Provider.createDFPocketDairy(Provider.API_URLS.pcksubcategoryrefnocheck_user, params)
       .then((response: any) => {
         debugger;
         if (response.data && response.data.code === 200) {
@@ -133,7 +133,7 @@ const GSubCategoryName = () => {
       },
     };
     setLoading(true);
-    await Provider.createDFCommon(Provider.API_URLS.gettransactiontype_pcksubcategoryform_user, params)
+    await Provider.createDFPocketDairy(Provider.API_URLS.gettransactiontype_pcksubcategoryform_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -159,7 +159,7 @@ const GSubCategoryName = () => {
       },
     };
     //setLoading(true);
-    await Provider.createDFCommon(Provider.API_URLS.getpckcategoryname_pcksubcategoryform_user, params)
+    await Provider.createDFPocketDairy(Provider.API_URLS.getpckcategoryname_pcksubcategoryform_user, params)
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
@@ -245,7 +245,7 @@ const GSubCategoryName = () => {
   const InsertUpdateData = (checked: boolean) => {
     debugger;
     if (actionStatus === "new") {
-      Provider.createDFCommon(Provider.API_URLS.pcksubcategorynamecreate_user, {
+      Provider.createDFPocketDairy(Provider.API_URLS.pcksubcategorynamecreate_user, {
         data: {
           Sess_UserRefno: cookies.dfc.UserID,
           pck_transtype_refno: transactionTypeID,
@@ -281,7 +281,7 @@ const GSubCategoryName = () => {
         });
     } else if (actionStatus === "edit") {
 
-      Provider.createDFCommon(Provider.API_URLS.pcksubcategorynameupdate_user, {
+      Provider.createDFPocketDairy(Provider.API_URLS.pcksubcategorynameupdate_user, {
         data: {
 
           Sess_UserRefno: cookies.dfc.UserID,
