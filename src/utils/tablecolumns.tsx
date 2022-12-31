@@ -223,6 +223,7 @@ export const pocketRemainder: GridColDef[] = [
     ),
   },
 ];
+
 export const serviceColumns: GridColDef[] = [
   {
     field: "srno",
@@ -4184,8 +4185,8 @@ export const ExpensesColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "paymentType",
-    headerName: "Payment Type",
+    field: "paymentModeType",
+    headerName: "Payment Mode Type",
     flex: 1.8,
     minWidth: 140,
   },
@@ -4325,6 +4326,12 @@ export const InboxSettlementListColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
+    field: "paymentModeType",
+    headerName: "Payment Mode Type",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
     field: "contactName",
     headerName: "Contact Name",
     flex: 1.8,
@@ -4339,6 +4346,12 @@ export const InboxSettlementListColumns: GridColDef[] = [
   {
     field: "amount",
     headerName: "Amount",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "remarks",
+    headerName: "Remarks",
     flex: 1.8,
     minWidth: 140,
   },
@@ -4365,6 +4378,12 @@ export const InboxLendingListColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
+    field: "paymentModeType",
+    headerName: "Payment Mode Type",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
     field: "contactName",
     headerName: "Contact Name",
     flex: 1.8,
@@ -4373,6 +4392,12 @@ export const InboxLendingListColumns: GridColDef[] = [
   {
     field: "contactPhoneNo",
     headerName: "Contact Phone No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "recurringDate",
+    headerName: "Recurring Date",
     flex: 1.8,
     minWidth: 140,
   },
@@ -5203,5 +5228,167 @@ export const employeeAttendenceListColumns: GridColDef[] = [
     renderCell: (e) => {
       return <Link href={`edit/${e.row.id}`}>Edit</Link>;
     },
+  },
+];
+
+export const brandConversationValueColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "serviceName",
+    headerName: "Service Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "brandName",
+    headerName: "Brand Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "conversionValue",
+    headerName: "Conversation Value",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+      </Grid>
+    ),
+  },
+];
+
+export const widthOfGPCoilColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "gpCoilWidth",
+    headerName: "GP Coil Width (Mtr)",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+      </Grid>
+    ),
+  },
+];
+
+export const massOfZincCoatingColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "gpCoilWidth",
+    headerName: "GP Coil Width (Mtr)",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    sortable: false,
+    flex: 1,
+    minWidth: 100,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+      </Grid>
+    ),
   },
 ];

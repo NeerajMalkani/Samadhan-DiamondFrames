@@ -43,7 +43,7 @@ const Sources = () => {
   const [receiptMode, setReceiptMode] = useState("--Select--");
   const [receiptModeID, setReceiptModeID] = useState<number>(0);
   const [receiptModeError, setReceiptModeError] = useState("");
-  const [isReceiptModeeError, setIsReceiptModeError] = useState(false);
+  const [isReceiptModeError, setIsReceiptModeError] = useState(false);
   const [receiptModeList, setReceiptModeList] = useState<Array<ReceiptModeNameModel>>([]);
  
   const [source, setSource] = useState("--Select--");
@@ -354,7 +354,7 @@ const Sources = () => {
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 <b><label style={{ color: "#ff0000" }}>*</label>Receipt Mode</b>
                 </Typography>
-                <FormControl fullWidth size="small" error={isReceiptModeeError}>
+                <FormControl fullWidth size="small" error={isReceiptModeError}>
               <Select value={receiptMode} onChange={handleSCNChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--

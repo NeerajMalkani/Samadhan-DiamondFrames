@@ -21,6 +21,8 @@ import { NullOrEmpty } from "../../../utils/CommonFunctions";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import AddIcon from "@mui/icons-material/Add";
+
 
 const EmployeeAttendenceEntry = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
@@ -210,14 +212,21 @@ const EmployeeAttendenceEntry = () => {
                         <Typography variant="h4">EMPLOYEE ATTENDENCE ENTRY</Typography>
                     </Grid>
 
-                </Grid>
-                <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "right", justifyContent: "right" }}>
+                {/* </Grid> */}
+                {/* <Grid item xs={4} sm={8} md={12}> */}
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/manufacture/employee/employeeattendenceentrylist")}>
+              View Attendence List
+              </Button>
+            </Stack>
+          </Grid>
+                {/* <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "right", justifyContent: "right" }}>
                     <Grid>
                         <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} >
                             View Attendence List
                         </LoadingButton>
                     </Grid>
-                </Grid>
+                </Grid> */}
                   <br></br>
 
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>

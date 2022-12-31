@@ -88,6 +88,7 @@ import SummaryMaterial from "../ui/Manufacture/SummaryMaterial";
 import OpeningStockScrap from "../ui/Manufacture/ProductionUnitMaster/OpeningStockScrap";
 import EmployeeRequest from "../ui/Manufacture/Employee/EmployeeRequest";
 import MarkAvailability from "../ui/Manufacture/Employee/MarkAvailability";
+import EmployeeAvailabilityEntryList from "../ui/Manufacture/Employee/EmployeeAvailabilityEntryList";
 import EmployeeAttendenceEntry from "../ui/Manufacture/Employee/EmployeeAttendenceEntry";
 import EmployeeAttendenceEntryList from "../ui/Manufacture/Employee/EmployeeAttendenceEntryList";
 
@@ -99,6 +100,13 @@ import GSubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GSubCategor
 import GMyContacts from "../ui/GeneralUsers/PocketDiary/Setting/GMyContacts";
 import GMyBank from "../ui/GeneralUsers/PocketDiary/Setting/GMyBank";
 import AddSource from "../ui/GeneralUsers/PocketDiary/AddSource";
+import ABrandConversionValue from "../ui/Admin/ProductionUnitMaster/ABrandConversationValue";
+import WidthOfGPCoil from "../ui/Admin/ProductionUnitMaster/WidthOfGPCoil";
+import MassOfZincCoating from "../ui/Admin/ProductionUnitMaster/MassOfZIncCoating";
+
+
+
+
 
 const AppRoutes = () => {
   return (
@@ -179,39 +187,46 @@ const AppRoutes = () => {
               <Route path="contractor/quotationandestimation/quotationwise" element={<QuotationWise />} />
               {/* <Route path="generalusers/pocketdiary/setting/categoryname" element={<CategoryName/>}/>
               <Route path="generalusers/pocketdiary/setting/subcategoryname" element={<SubCategoryName/>}/> */}
-              <Route path="generalusers/pocketdiary/setting/budgetsetup" element={<BudgetSetup />} />
-              <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses />} />
-              <Route path="generalusers/pocketdiary/source" element={<Sources />} />
-              <Route path="generalusers/pocketdiary/inbox" element={<Inbox />} />
-              <Route path="dashboardmanufacture" element={<DashboardManufacture />} />
-              <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue />} />
-              <Route path="manufacture/productionunitmaster/openingstock" element={<OpeningStock />} />
 
-              <Route path="manufacture/productproduction" element={<ProductProduction />} />
-              <Route path="manufacture/productOrderList" element={<ProductOrderList />} />
-              <Route path="manufacture/newproductorder" element={<CreateNewProductOrder />} />
-              <Route path="manufacture/venderOrderForm" element={<VenderOrderFormList />} />
-              <Route path="/manufacture/venderorderaddform" element={<VenderOrderAddForm />} />
-              <Route path="manufacture/invoicerecieptlist" element={<InvoiceRecieptList />} />
-              <Route path="manufacture/addinvoicerecieptlist" element={<AddInvoiceReciept />} />
-              <Route path="manufacture/productionstatus" element={<ProductionStatus />} />
-              <Route path="manufacture/addProductionStatus" element={<AddProductionStatus />} />
-              <Route path="manufacture/summaryMaterial" element={<SummaryMaterial />} />
+              <Route path="generalusers/pocketdiary/setting/budgetsetup" element={<BudgetSetup/>}/>
+              <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses/>}/>
+              <Route path="generalusers/pocketdiary/source" element={<Sources/>}/>
+              <Route path="generalusers/pocketdiary/inbox" element={<Inbox/>}/>
+              <Route path="dashboardmanufacture" element={<DashboardManufacture/>}/>
+              <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue/>}/>
+              <Route path="manufacture/productionunitmaster/openingstock" element={<OpeningStock/>}/>
 
-              <Route path="manufacture/productionunitmaster/openingstockscrap" element={<OpeningStockScrap />} />
-              <Route path="manufacture/employee/employeerequest" element={<EmployeeRequest />} />
-              <Route path="manufacture/employee/markavailability" element={<MarkAvailability />} />
-              <Route path="manufacture/employee/employeeattendenceentry" element={<EmployeeAttendenceEntry />} />
-              <Route path="manufacture/employee/employeeattendenceentrylist" element={<EmployeeAttendenceEntryList />} />
+              <Route path="manufacture/productproduction" element={<ProductProduction/>}/>
+              <Route path="manufacture/productOrderList" element={<ProductOrderList/>}/>
+              <Route path="manufacture/newproductorder" element={<CreateNewProductOrder />}/>
+              <Route path="manufacture/venderOrderForm" element={<VenderOrderFormList/>}/>
+              <Route path="/manufacture/venderorderaddform" element={<VenderOrderAddForm />}/>
+              <Route path="manufacture/invoicerecieptlist" element={<InvoiceRecieptList/>}/>
+              <Route path="manufacture/addinvoicerecieptlist" element={<AddInvoiceReciept />}/>
+              <Route path="manufacture/productionstatus" element={<ProductionStatus/>}/>
+              <Route path="manufacture/addProductionStatus" element={<AddProductionStatus />}/>
+              <Route path="manufacture/summaryMaterial" element={<SummaryMaterial/>}/>
 
-              <Route path="admin/pocketddairymaster/acategoryname" element={<ACategoryName />} />
-              <Route path="admin/pocketddairymaster/asubcategoryname" element={<ASubCategoryName />} />
+              <Route path="manufacture/productionunitmaster/openingstockscrap" element={<OpeningStockScrap/>}/>
+              <Route path="manufacture/employee/employeerequest" element={<EmployeeRequest/>}/>
+              <Route path="manufacture/employee/markavailability" element={<MarkAvailability/>}/>
+              <Route path="manufacture/employee/employeeavailabilityentrylist" element={<EmployeeAvailabilityEntryList/>}/>
+              <Route path="manufacture/employee/employeeattendenceentry" element={<EmployeeAttendenceEntry/>}/>
+              <Route path="manufacture/employee/employeeattendenceentrylist" element={<EmployeeAttendenceEntryList/>}/>
 
-              <Route path="generalusers/pocketdiary/setting/gcategoryname" element={<GCategoryName />} />
-              <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName />} />
-              <Route path="generalusers/pocketdiary/setting/gmycontacts" element={<GMyContacts />} />
-              <Route path="generalusers/pocketdiary/setting/gmybank" element={<GMyBank />} />
-              <Route path="generalusers/pocketdiary/addsource" element={<AddSource />} />
+              <Route path="admin/pocketddairymaster/acategoryname" element={<ACategoryName/>}/>
+              <Route path="admin/pocketddairymaster/asubcategoryname" element={<ASubCategoryName/>}/>
+
+              <Route path="generalusers/pocketdiary/setting/gcategoryname" element={<GCategoryName/>}/>
+              <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName/>}/>
+              <Route path="generalusers/pocketdiary/setting/gmycontacts" element={<GMyContacts/>}/>
+              <Route path="generalusers/pocketdiary/setting/gmybank" element={<GMyBank/>}/>
+              <Route path="generalusers/pocketdiary/addsource" element={<AddSource/>}/>
+              <Route path="admin/productionunitmaster/abrandconversationvalue" element={<ABrandConversionValue/>}/>
+              <Route path="admin/productionunitmaster/widthofgpcoil" element={<WidthOfGPCoil/>}/>
+              <Route path="admin/productionunitmaster/massofzinccoating" element={<MassOfZincCoating/>}/>
+              
+
             </Routes>
           </BrowserRouter>
         </Box>

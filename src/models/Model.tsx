@@ -1234,3 +1234,34 @@ export interface EmployeeAttendenceEntryModel {
   presentCount: string;
   action: string;
 }
+
+export interface WidthOfGPCoileModel {
+  id: number;
+  srno: number;
+  widthOfGPCoil: string;
+  display: string;
+  action: string;
+}
+
+export interface DescriptionModel {
+  id: number;
+  srno: number;
+  discription: string;
+  display: string;
+  action: string;
+}
+
+export interface WidthOfGPCoilModel {
+  id: number;
+  srno: number;
+  widthOfGPCoil: string;
+  action: string;
+}
+
+export interface GSMModel {
+  id: number;
+  srno: number;
+  gsm: string;
+  display: string;
+  action: string;
+}

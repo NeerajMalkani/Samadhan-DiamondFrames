@@ -95,10 +95,6 @@ const Inbox = () => {
     const [lendingtList, setLendingList] = useState<Array<InboxLendingModel>>([]);
     const [lendingListTemp, setLendingListTemp] = React.useState<Array<any>>([]);
 
-    const [companyList, setCompanyList] = useState<Array<InboxCompanyModel>>([]);
-    const [companyListTemp, setCompanyListTemp] = React.useState<Array<any>>([]);
-
-
     const [pageSize, setPageSize] = React.useState<number>(5);
     const [buttonDisplay, setButtonDisplay] = React.useState<string>("none");
     const [dataGridOpacity, setDataGridOpacity] = React.useState<number>(1);
@@ -204,18 +200,7 @@ const Inbox = () => {
         }
     };
 
-    const onChangeCompanySearch = (query: string) => {
-        setSearchQuery(query);
-        if (query === "") {
-            setLendingListTemp(companyList,);
-        } else {
-            setLendingListTemp(
-                companyList.filter((el: InboxCompanyModel) => {
-                    return el.company.toString().toLowerCase().includes(query.toLowerCase());
-                })
-            );
-        }
-    };
+    
     // const handelEditAndDelete = (type: string | null, a: InboxSttelementModel | undefined) => {
     //     if (type?.toLowerCase() === "edit" && a !== undefined) {
     //         setDataGridOpacity(0.3);
@@ -268,7 +253,6 @@ const Inbox = () => {
                                     <Tabs value={value} onChange={handleChange}>
                                         <Tab label="Settlement" {...a11yProps(0)} />
                                         <Tab label="Lending" {...a11yProps(1)} />
-                                        <Tab label="Company" {...a11yProps(2)} />
                                     </Tabs>
                                 </Box>
                                 <Grid item xs={4} sm={8} md={12}>
@@ -405,74 +389,6 @@ const Inbox = () => {
                                             )}
                                         </Grid>
                                     </TabPanel>
-
-                                    <TabPanel value={value} index={2}>
-                                        <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-                                            <Typography variant="h6">
-                                                Inbox-Company List
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={4} sm={8} md={12}>
-                                            {loading ? (
-                                                <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                                                    <CircularProgress />
-                                                </Box>
-                                            ) : (
-                                                <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                                                    {companyList.length === 0 ? (
-                                                        <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
-                                                    ) : (
-                                                        <>
-                                                            <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                                                                <TextField
-                                                                    placeholder="Search"
-                                                                    variant="outlined"
-                                                                    size="small"
-                                                                    onChange={(e) => {
-                                                                        onChangeCompanySearch((e.target as HTMLInputElement).value);
-                                                                    }}
-                                                                    value={searchQuery}
-                                                                    InputProps={{
-                                                                        startAdornment: (
-                                                                            <InputAdornment position="start">
-                                                                                <SearchIcon />
-                                                                            </InputAdornment>
-                                                                        ),
-                                                                    }}
-                                                                />
-                                                            </Grid>
-                                                            <DataGrid
-                                                                style={{
-                                                                    opacity: dataGridOpacity,
-                                                                    pointerEvents: dataGridPointer,
-                                                                }}
-                                                                autoHeight={true}
-                                                                rows={companyListTemp}
-                                                                columns={InboxComapnyListColumns}
-                                                                pageSize={pageSize}
-                                                                rowsPerPageOptions={[5, 10, 20]}
-                                                                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                                                                disableSelectionOnClick
-                                                                onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                                                                    const arrActivity = [...companyList];
-                                                                    let a: InboxCompanyModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                                                                    // handelEditAndDelete((e.target as any).textContent, a);
-                                                                }}
-                                                                sx={{
-                                                                    "& .MuiDataGrid-columnHeaders": {
-                                                                        backgroundColor: theme.palette.primary.main,
-                                                                        color: theme.palette.primary.contrastText,
-                                                                    },
-                                                                    mb: 1,
-                                                                }}
-                                                            />
-                                                        </>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </Grid>
-                                    </TabPanel>
-
                                 </Grid>
                             </>
                         )}
