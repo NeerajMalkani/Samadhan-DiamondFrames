@@ -718,6 +718,8 @@ export interface RateCardModel {
   serviceProductName: string;
   display: string;
   action: string;
+  actualUnitName: string;
+  contractorProductID:string;
 }
 
 export interface SendRateCardModel {

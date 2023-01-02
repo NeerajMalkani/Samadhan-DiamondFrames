@@ -259,6 +259,8 @@ class Provider {
     pckmycontactrefnocheck: "pckmycontactrefnocheck/",
     pckmycontactscreate: "pckmycontactscreate/",
     pckmycontactsupdate: "pckmycontactsupdate/",
+    contractorproductrefnocheck: "contractorproductrefnocheck/",
+    get_pckentrytype:"get_pckentrytype/",
 
 
   };

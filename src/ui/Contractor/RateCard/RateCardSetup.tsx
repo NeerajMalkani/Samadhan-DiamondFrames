@@ -16,6 +16,7 @@ import { GetStringifyJson } from "../../../utils/CommonFunctions";
 import { communication } from "../../../utils/communication";
 import Provider from "../../../api/Provider";
 import { useCookies } from "react-cookie";
+import { APIConverter } from "../../../utils/apiconverter";
 
 
 const RateCard = () => {
@@ -49,42 +50,25 @@ const RateCard = () => {
     }, []);
 
     function ResetFields() {
-        // setSelectedID(0);
-        // setActionStatus("new");
-        // setDataGridOpacity(1);
-        // setDataGridPointer("auto");
-        // setButtonDisplay("none");
-        // setButtonLoading(false);
-        // setAddCompanyName("");
-        // setContactPerson("");
-        // setContactMobileNo("");
-        // setAddress("");
-        // setPincode("");
-        // setGst("");
-        // setPan("");
-        // setDisplay("");
-        // serviceType[1]([
-        //     { key: "Vendor", isSelected: false, id: 1 },
-        //     { key: "Supplier", isSelected: false, id: 2 },
-        //     { key: "Client", isSelected: false, id: 3 },
-        // ]);
-        // setServiceProvider("");
         setOpen(false);
-
-
     }
 
 
     const FetchData = (type: string) => {
         let params = {
-            ContractorID: cookies.dfc.UserID,
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                Sess_group_refno: cookies.dfc.Sess_group_refno,
+                contractor_product_refno: "all"
+            }
         };
-        ResetFields();
-        Provider.getAll(`master/getcontractorratecardlist?${new URLSearchParams(GetStringifyJson(params))}`)
-
+        //ResetFields();
+        Provider.createDFContractor(Provider.API_URLS.contractorproductrefnocheck, params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
+                        debugger;
+                        response.data.data = APIConverter(response.data.data, "ratecard");
 
                         const arrList = [...response.data.data];
                         arrList.map(function (a: any, index: number) {
@@ -92,6 +76,7 @@ const RateCard = () => {
                             let sr = { srno: index + 1 };
                             a = Object.assign(a, sr);
                         });
+
                         setRateCardList(arrList);
                         setRateCardListTemp(arrList);
                         setGridRateCardList(arrList);
@@ -116,7 +101,7 @@ const RateCard = () => {
                 setOpen(true);
             });
     }
-   
+
     //#endregion 
 
     return (
@@ -179,7 +164,7 @@ const RateCard = () => {
                                             autoHeight={true}
                                             rows={gridRateCardListTemp}
                                             columns={rateCardListColumns}
-                                            rowHeight={80}
+                                            rowHeight={120}
                                             pageSize={pageSize}
                                             rowsPerPageOptions={[5, 10, 20]}
                                             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

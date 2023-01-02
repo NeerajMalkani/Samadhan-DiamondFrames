@@ -2996,6 +2996,7 @@ export const completedProject: GridColDef[] = [
 ];
 
 export const rateCardListColumns: GridColDef[] = [
+  
   {
     field: "srno",
     headerName: "Sr. No.",
@@ -3018,30 +3019,37 @@ export const rateCardListColumns: GridColDef[] = [
   },
   {
     field: "productName",
-    headerName: "Service Product Name/Specification",
+    headerName: "Service Product Name/ Specification",
     flex: 1,
-    minWidth: 100,
+    minWidth: 350,
+    width: 350,
     sortable: false,
+    renderCell: (params) => {
+      debugger;
+      if (params.row !== null && params.row !== undefined) {
+        return (
+          <div>
+            <Grid>
+              <Grid>
+                <Typography>{params.row.productName}</Typography>
+              </Grid>
+              <Grid>
+                <Typography>Specification:-</Typography>
+              </Grid>
+              <Grid>
+                <Typography>{params.row.shortSpecification}</Typography>
+              </Grid>
+            </Grid>
+          </div>
+        );
+      }
+    },
   },
   {
-    field: "selectedUnitName",
+    field: "actualUnitName",
     headerName: "Unit",
     flex: 1,
     minWidth: 80,
-    sortable: false,
-  },
-  {
-    field: "rateWithMaterials",
-    headerName: "Rate/Unit",
-    flex: 1,
-    minWidth: 80,
-    sortable: false,
-  },
-  {
-    field: "rateWithoutMaterials",
-    headerName: "Alternative Rate/Unit",
-    flex: 1,
-    minWidth: 100,
     sortable: false,
   },
   {
@@ -3071,7 +3079,7 @@ export const rateCardListColumns: GridColDef[] = [
     field: "altRateUnit",
     headerName: "Alternate Rate Unit",
     flex: 1,
-    minWidth: 100,
+    minWidth: 150,
     sortable: false,
     renderCell: (params) => {
       if (params.row !== null && params.row !== undefined) {
@@ -3079,10 +3087,10 @@ export const rateCardListColumns: GridColDef[] = [
           <div>
             <Grid>
               <Grid style={{ height: "40px", width: "100%" }}>
-                <Typography>{params.row.altRateWithMaterials}</Typography>
+                <Typography>{params.row.with_material_rate_alternate_rate} / {params.row.with_material_rate_alternate_unit}</Typography>
               </Grid>
               <Grid style={{ height: "40px", width: "100%" }}>
-                <Typography>{params.row.altRateWithoutMaterials}</Typography>
+                <Typography>{params.row.without_material_rate_alternate_rate} / {params.row.without_material_rate_alternate_unit}</Typography>
               </Grid>
             </Grid>
           </div>
@@ -3130,7 +3138,7 @@ export const rateCardListColumns: GridColDef[] = [
     minWidth: 100,
     sortable: false,
     renderCell: (e) => {
-      return <Link href={`ratecard/edit/${e.row.id}`}>Edit</Link>;
+      return <Link href={`ratecard/edit/${e.row.contractorProductID}`}>Edit</Link>;
     },
   },
 ];

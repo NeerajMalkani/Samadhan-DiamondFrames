@@ -2,6 +2,7 @@
 import {
     Box, Container, Grid, Typography, Stack, Button, TextField, AlertColor,
     Autocomplete, FormControl, FormLabel, FormGroup, FormControlLabel, Checkbox, RadioGroup, Radio, FormHelperText,
+    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Header from "../../../components/Header";
@@ -15,6 +16,7 @@ import Provider from "../../../api/Provider";
 import { communication } from "../../../utils/communication";
 import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
 import { APIConverter } from "../../../utils/apiconverter";
+import { updateArrayTypeNode } from "typescript";
 
 let s_ID = 0, c_ID = 0, p_ID = 0, u_ID = 0;
 
@@ -37,6 +39,7 @@ const AddRateCard = () => {
 
 
     // #region Variable
+    const [sno, setsno] = useState("");
     const [serviceNameID, setServiceNameID] = useState<number>(0);
     const [serviceNameError, setServiceNameError] = useState("");
     const [selectedServiceName, setSelectedServiceName] = useState("");
@@ -73,6 +76,9 @@ const AddRateCard = () => {
     const [unitOfSales, setUnitOfSales] = useState("--Select--");
     const [unitOfSalesID, setUnitOfSalesID] = useState<number>(0);
     const [selectedUnitID, setSelectedUnitID] = useState(0);
+
+    const [prevUnitOfSales, setPrevUnitOfSales] = useState("--Select--");
+    const [selectedPrevUnitID, setSelectedPrevUnitID] = useState(0);
 
     const [unitOfSalesError, setUnitOfSalesError] = useState("");
     const [selectedUnitOfSales, setSelectedUnitOfSales] = useState("");
@@ -117,23 +123,41 @@ const AddRateCard = () => {
     const [buttonLoading, setButtonLoading] = useState(false);
     const [actionStatus, setActionStatus] = React.useState<string>("new");
     const [arnID, setArnID] = useState<number>(0);
+
+    const [actualUnitName, setactualUnitName] = React.useState("");
+    const [convertedUnitName, setconvertedUnitName] = React.useState("");
+
+    const [actualUnitValue, setactualUnitValue] = React.useState("");
+    const [convertedUnitValue, setconvertedUnitValue] = React.useState("");
+
+    const [changeRate, setchangeRate] = useState(false);
+
     //#endregion
 
     //#region Functions
 
     useEffect(() => {
-
+        debugger;
         let id = window.location.pathname.split('/').at(-1);
         if (!NullOrEmpty(id) && !isNaN(parseInt(id))) {
             setRateCardID(parseInt(id));
             FetchRateCardDetails(parseInt(id));
         }
         else {
-            setRateCardID(0);
-            //FetchRateCardDetails(parseInt(id));
             FetchServiceName();
         }
     }, []);
+
+    const handleClose = () => {
+        debugger;
+        setUnitOfSales(prevUnitOfSales);
+        setSelectedUnitID(selectedPrevUnitID);
+
+        setPrevUnitOfSales("");
+        setSelectedPrevUnitID(0);
+
+        setchangeRate(false);
+    };
 
     const FetchServiceName = () => {
         let params = {
@@ -207,14 +231,19 @@ const AddRateCard = () => {
 
     const FetchRateCardDetails = (id: number) => {
         let params = {
-            RateCardID: id
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                Sess_group_refno: cookies.dfc.Sess_group_refno,
+                contractor_product_refno: id
+            }
         };
-        Provider.getAll(`master/getcontractorratecardbyid?${new URLSearchParams(GetStringifyJson(params))}`)
+        Provider.createDFContractor(Provider.API_URLS.contractorproductrefnocheck, params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
-
-                        setRateCardID(response.data.data[0].rateCardID);
+                        debugger;
+                        response.data.data = APIConverter(response.data.data, "ratecard");
+                        //setRateCardID(response.data.data[0].rateCardID);
                         if (!NullOrEmpty(response.data.data[0].serviceID)) {
                             s_ID = response.data.data[0].serviceID;
                         }
@@ -279,7 +308,13 @@ const AddRateCard = () => {
             .catch((e) => { });
     };
 
+    const updateRate = () => {
+        debugger;
+        fetchUnitOfSaleNameChanges(categoryID, serviceProductNameID, selectedUnitID);
+    }
+
     const fetchServiceProductRate = (categoryID, productID) => {
+        debugger;
         let params = {
             data: {
                 Sess_UserRefno: cookies.dfc.UserID,
@@ -287,24 +322,28 @@ const AddRateCard = () => {
                 product_refno: productID
             }
         };
-        debugger;
         Provider.createDFContractor(Provider.API_URLS.getmaterialratedataratecardform, params)
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
-                        debugger;
-                        response.data.data = APIConverter(response.data.data);
+
                         debugger;
 
+                        response.data.data = APIConverter(response.data.data, "ratecard");
                         setMaterialRate(response.data.data[0].rateWithMaterials);
                         setAlternativeWithMaterialRate(response.data.data[0].withMaterialAlternateRate);
-                        setAlternativeWithoutMaterialRate(response.data.data[0].withoutMaterialAlternateRate)
-                        setWithoutMaterialRate(response.data.data[0].rateWithoutMaterials)
-                        setShortSpecification(response.data.data[0].shortSpecification)
-                        setSpecificationSP(response.data.data[0].specification)
+                        setAlternativeWithoutMaterialRate(response.data.data[0].withoutMaterialAlternateRate);
+                        setWithoutMaterialRate(response.data.data[0].rateWithoutMaterials);
+                        setShortSpecification(response.data.data[0].shortSpecification);
+                        setSpecificationSP(response.data.data[0].specification);
+
+                        setactualUnitName(response.data.data[0].actualUnitName);
+                        setconvertedUnitName(response.data.data[0].convertUnitName);
+                        setactualUnitValue(response.data.data[0].actualUnitValue);
+                        setconvertedUnitValue(response.data.data[0].convertUnitValue);
                     }
                 }
-            })
+            });
 
     }
 
@@ -320,30 +359,74 @@ const AddRateCard = () => {
         debugger;
         Provider.createDFContractor(Provider.API_URLS.getmaterialratedata_unitofsaleonchange_ratecardform, params)
             .then((response: any) => {
+                setPrevUnitOfSales(unitOfSales);
+                setSelectedPrevUnitID(selectedUnitID);
+                setchangeRate(false);
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
                         debugger;
-                        response.data.data = APIConverter(response.data.data);
+                        response.data.data = APIConverter(response.data.data, "ratecard");
                         debugger;
-                        const Unit: any = [];
-                        response.data.data.map((data: any, i: number) => {
-                            Unit.push({
-                                id: data.id,
-                                label: data.UnitName,
-                            });
-                        });
-                        setUnitOfSalesDDData(Unit);
-                        setUnitOfSalesFullData(response.data.data);
-                        if (u_ID > 0) {
-                            let a = Unit.filter((el) => {
-                                return el.id === u_ID;
-                            });
+                        setsno(response.data.data[0].sno);
+                        setMaterialRate(response.data.data[0].rateWithMaterials);
 
-                            let b = response.data.data.filter((el) => {
-                                return el.id === u_ID;
-                            });
-                            setSelectedUnitOfSales(a[0].label);
-                            setUnitOfSales(a[0].id);
+                        setAlternativeWithMaterialRate(response.data.data[0].withMaterialAlternateRate);
+                        setAlternativeWithoutMaterialRate(response.data.data[0].withoutMaterialAlternateRate);
+                        setWithoutMaterialRate(response.data.data[0].rateWithoutMaterials);
+                        setactualUnitName(response.data.data[0].actualUnitName);
+                        setconvertedUnitName(response.data.data[0].convertUnitName);
+                        setactualUnitValue(response.data.data[0].actualUnitValue);
+                        setconvertedUnitValue(response.data.data[0].convertUnitValue);
+                    }
+                }
+            })
+            .catch((e) => { });
+    };
+
+
+    const onRateChanges = (rate, actualUnitValue, convertUnitValue, type) => {
+
+        let params = null;
+        let url = Provider.API_URLS.getmaterialratedata_withmaterialrateblur_ratecardform;
+
+        params = {
+            data: {
+                Sess_UserRefno: cookies.dfc.UserID,
+                sno: sno,
+                with_material_rate: rate,
+                actual_unit_value: actualUnitValue,
+                convert_unit_value: convertUnitValue
+            }
+        };
+
+        if (type == "without_material") {
+            url = Provider.API_URLS.getmaterialratedata_withoutmaterialrateblur_ratecardform;
+            params = {
+                data: {
+                    Sess_UserRefno: cookies.dfc.UserID,
+                    sno: sno,
+                    without_material_rate: rate,
+                    actual_unit_value: actualUnitValue,
+                    convert_unit_value: convertUnitValue
+                }
+            };
+        }
+
+        debugger;
+        Provider.createDFContractor(url, params)
+            .then((response: any) => {
+
+                if (response.data && response.data.code === 200) {
+                    if (response.data.data) {
+                        debugger;
+                        response.data.data = APIConverter(response.data.data, "ratecard");
+                        debugger;
+
+                        if (type == "with_material") {
+                            setAlternativeWithMaterialRate(response.data.data[0].withMaterialAlternateRate);
+                        }
+                        else if (type == "without_material") {
+                            setAlternativeWithoutMaterialRate(response.data.data[0].withoutMaterialAlternateRate);
                         }
                     }
                 }
@@ -363,7 +446,6 @@ const AddRateCard = () => {
             .then((response: any) => {
                 if (response.data && response.data.code === 200) {
                     if (response.data.data) {
-                        debugger;
                         response.data.data = APIConverter(response.data.data);
                         const serviceProduct: any = [];
                         response.data.data.map((data: any, i: number) => {
@@ -392,7 +474,6 @@ const AddRateCard = () => {
     };
 
 
-
     const FetchUnitOfSalesName = (serviceProductNameID, selectedUnitID) => {
         debugger;
         let params = {
@@ -413,45 +494,13 @@ const AddRateCard = () => {
                         const unitSales: any = [];
                         response.data.data.map((data: any, i: number) => {
                             unitSales.push({
-                                id: data.unitID,
-                                label: data.unitName,
+                                id: data.unitId,
+                                label: data.displayUnit,
                             });
                         });
-                        let selectedUID = 0;
+
                         setUnitOfSalesFullData(response.data.data);
-                        let product = serviceProductNameFullData.filter((el: any) => {
-                            return el.display && el.productID === serviceProductNameID;
-                        });
-
                         setUnitOfSalesDDData(unitSales);
-                        // if (selectedUnitID !== null) {
-
-                        //     if (selectedUnitID == response.data.data[0].unitID) {
-                        //         setUnitOfSales(response.data.data[0].unitName);
-                        //         setSelectedUnitID(response.data.data[0].unitID);
-                        //         selectedUID = response.data.data[0].unitID;
-                        //         setConversionRate(response.data.data[0].conversionRate);
-
-                        //         setMaterialRate(product[0].rateWithMaterials);
-                        //         setWithoutMaterialRate(product[0].rateWithoutMaterials);
-
-                        //         setAlternativeWithMaterialRate((parseFloat(product[0].rateWithMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
-                        //         setAlternativeWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
-                        //     }
-                        //     else if (selectedUnitID == response.data.data[1].unitID) {
-
-                        //         setUnitOfSales(response.data.data[1].unitName);
-                        //         setSelectedUnitID(response.data.data[1].unitID);
-                        //         selectedUID = response.data.data[1].unitID;
-                        //         setConversionRate(response.data.data[1].conversionRate);
-
-                        //         setMaterialRate((parseFloat(product[0].rateWithMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
-                        //         setWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * response.data.data[1].conversionRate).toFixed(2).toString());
-
-                        //         setAlternativeWithMaterialRate(((parseFloat(product[0].rateWithMaterials) * response.data.data[1].conversionRate) * response.data.data[0].conversionRate).toFixed(2).toString());
-                        //         setAlternativeWithoutMaterialRate(((parseFloat(product[0].rateWithoutMaterials) * response.data.data[1].conversionRate) * response.data.data[0].conversionRate).toFixed(2).toString());
-                        //     }
-                        // }
 
                         if (u_ID > 0) {
                             let a = unitSales.filter((el) => {
@@ -498,7 +547,7 @@ const AddRateCard = () => {
     }
 
     const handleSubmitClick = () => {
-
+        debugger;
         let isValid: boolean = true;
 
         if (selectedServiceName.trim() === "") {
@@ -566,31 +615,77 @@ const AddRateCard = () => {
     };
 
     const InsertUpdateData = () => {
+        debugger;
 
-        let params = {
-            RateCardID: rateCardID,
-
-            ProductID: serviceProductNameID,
-            ActivityID: arnID,
-            ServiceID: serviceNameID,
-            CategoryID: categoryID,
-            SelectedUnitID: selectedUnitID,
-            UnitOfSalesID: unitOfSalesID,
-            RateWithMaterials: materialRate,
-            RateWithoutMaterials: withoutMaterialRate,
-            AltRateWithMaterials: alternativeWithMaterialRate,
-            AltRateWithoutMaterials: alternativeWithoutMaterialRate,
-            AlternateUnitOfSales: 0,
-            ShortSpecification: shortSpecification,
-            Specification: specificationSP,
-            Display: display === "Yes" ? true : false,
-            ContractorID: cookies.dfc.UserID
-        };
-
+        debugger;
         if (actionStatus === "new") {
-            Provider.create("master/insertupdatecontractorratecard", params)
-                .then((response) => {
+            let params = {
 
+                data: {
+                    Sess_UserRefno: cookies.dfc.UserID,
+                    service_refno: serviceNameID,
+                    category_refno: categoryID,
+                    product_refno: serviceProductNameID,
+                    unitcategoryrefno_unitrefno: unitOfSalesFullData.find((el) => el.displayUnit === unitOfSales).unitId,
+                    unit_conversion_value: actualUnitValue,
+                    with_material_rate: materialRate,
+                    with_material_alternate_rate: alternativeWithMaterialRate,
+                    without_material_rate: withoutMaterialRate,
+                    without_material_alternate_rate: alternativeWithoutMaterialRate,
+                    short_desc: shortSpecification,
+                    specification: specificationSP,
+                    view_status: display === "Yes" ? "1" : "0"
+                }
+            };
+
+            Provider.createDFContractor(Provider.API_URLS.ratecardcreate, params)
+                .then((response) => {
+                    debugger;
+                    if (response.data && response.data.code === 200) {
+                        navigate(`/contractor/ratecardsetup`);
+                    } else if (response.data.code === 304) {
+                        setSnackMsg(communication.ExistsError);
+                        setOpen(true);
+                        setSnackbarType("error");
+                        ResetFields();
+                    } else {
+                        ResetFields();
+                        setSnackMsg(communication.Error);
+                        setSnackbarType("error");
+                        setOpen(true);
+                    }
+                })
+                .catch((e) => {
+                    ResetFields();
+                    setSnackMsg(communication.NetworkError);
+                    setSnackbarType("error");
+                    setOpen(true);
+                });
+        }
+        else if (actionStatus === "edit") {
+            let params = {
+
+                data: {
+                    Sess_UserRefno: cookies.dfc.UserID,
+                    contractor_product_refno: 0,
+                    service_refno: serviceNameID,
+                    category_refno: categoryID,
+                    product_refno: serviceProductNameID,
+                    unitcategoryrefno_unitrefno: unitOfSalesFullData.find((el) => el.displayUnit === unitOfSales).unitId,
+                    unit_conversion_value: actualUnitValue,
+                    with_material_rate: materialRate,
+                    with_material_alternate_rate: alternativeWithMaterialRate,
+                    without_material_rate: withoutMaterialRate,
+                    without_material_alternate_rate: alternativeWithoutMaterialRate,
+                    short_desc: shortSpecification,
+                    specification: specificationSP,
+                    view_status: display === "Yes" ? "1" : "0",
+                }
+            };
+
+            Provider.createDFContractor(Provider.API_URLS.ratecardupdate, params)
+                .then((response) => {
+                    debugger;
                     if (response.data && response.data.code === 200) {
                         navigate(`/contractor/ratecardsetup`);
                     } else if (response.data.code === 304) {
@@ -657,7 +752,6 @@ const AddRateCard = () => {
                                         options={serviceNameFullData}
                                         //sx={{ width: 300 }}
                                         onChange={(event: React.SyntheticEvent, value: any) => {
-                                            debugger;
                                             isSetServiceNameError(false);
                                             setServiceNameError("");
                                             if (value !== null) {
@@ -752,7 +846,6 @@ const AddRateCard = () => {
                                         options={serviceProductNameDDData}
                                         //sx={{ width: 300 }}
                                         onChange={(event: React.SyntheticEvent, value: any) => {
-                                            debugger;
                                             isSetServiceProductNameError(false);
                                             setServiceProductNameError("");
                                             if (value !== null) {
@@ -761,8 +854,6 @@ const AddRateCard = () => {
                                                 fetchServiceProductRate(categoryID, value.id);
 
                                                 FetchUnitOfSalesName(value.id, 0);
-                                                //fetchUnitOfSaleNameChanges(productID, value.id,unitId);
-
                                             }
 
                                         }}
@@ -786,34 +877,13 @@ const AddRateCard = () => {
                                         options={unitOfSalesDDData}
                                         //sx={{ width: 300 }}
                                         onChange={(event: React.SyntheticEvent, value: any) => {
-
+                                            debugger;
                                             isSetUnitOfSalesError(false);
                                             if (value !== null) {
+
                                                 setUnitOfSales(value.label);
                                                 setSelectedUnitID(value.id);
-
-
-                                                let product = serviceProductNameFullData.filter((el: any) => {
-                                                    return el.display && el.productID === serviceProductNameID;
-                                                });
-
-                                                if (value.id == unitOfSalesFullData[0].unitID) {
-
-                                                    setMaterialRate(product[0].rateWithMaterials);
-                                                    setWithoutMaterialRate(product[0].rateWithoutMaterials);
-
-                                                    setAlternativeWithMaterialRate((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
-                                                    setAlternativeWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
-
-                                                }
-                                                else if (value.id == unitOfSalesFullData[1].unitID) {
-
-                                                    setMaterialRate((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
-                                                    setWithoutMaterialRate((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate).toFixed(2).toString());
-
-                                                    setAlternativeWithMaterialRate(((parseFloat(product[0].rateWithMaterials) * unitOfSalesFullData[1].conversionRate) * unitOfSalesFullData[0].conversionRate).toFixed(2).toString());
-                                                    setAlternativeWithoutMaterialRate(((parseFloat(product[0].rateWithoutMaterials) * unitOfSalesFullData[1].conversionRate) * unitOfSalesFullData[0].conversionRate).toFixed(2).toString());
-                                                }
+                                                setchangeRate(true);
 
                                             }
                                         }}
@@ -836,17 +906,26 @@ const AddRateCard = () => {
                                     variant="outlined"
                                     size="small"
                                     onChange={(e) => {
-
                                         setMaterialRate((e.target as HTMLInputElement).value);
                                         isSetMaterialRateError(false);
                                         setMaterialRateErrorText("");
+                                    }}
+                                    onBlur={(e) => {
+                                        debugger;
+                                        onRateChanges(materialRate, actualUnitValue, convertedUnitValue, "with_material");
+
                                     }}
                                     error={isMaterialRateError}
                                     helperText={materialRateErrorText}
                                     value={materialRate}
                                 />
                             </Grid>
-                            <Grid item md={4} >
+                            <Grid item md={1}>
+                                <Typography variant="subtitle2" textAlign={"center"} sx={{ mb: 1 }}>
+                                    {actualUnitName}
+                                </Typography>
+                            </Grid>
+                            <Grid item md={3} >
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                     <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit </b>
                                 </Typography>
@@ -867,6 +946,11 @@ const AddRateCard = () => {
                                     value={alternativeWithMaterialRate}
                                 />
                             </Grid>
+                            <Grid item md={1}>
+                                <Typography variant="subtitle2" textAlign={"center"} sx={{ mb: 1 }}>
+                                    {convertedUnitName}
+                                </Typography>
+                            </Grid>
                         </Grid>
                         <Grid container sx={{ mt: 2 }} alignItems="center">
                             <Grid item md={3}>
@@ -884,12 +968,22 @@ const AddRateCard = () => {
                                         isSetWithoutMaterialRateError(false);
                                         setWithoutMaterialRateErrorText("");
                                     }}
+                                    onBlur={(e) => {
+                                        debugger;
+                                        onRateChanges(withoutMaterialRate, actualUnitValue, convertedUnitValue, "without_material");
+
+                                    }}
                                     error={isWithoutMaterialRateError}
                                     helperText={withoutMaterialRateErrorText}
                                     value={withoutMaterialRate}
                                 />
                             </Grid>
-                            <Grid item md={4} >
+                            <Grid item md={1}>
+                                <Typography variant="subtitle2" textAlign={"center"} sx={{ mb: 1 }}>
+                                    {actualUnitName}
+                                </Typography>
+                            </Grid>
+                            <Grid item md={3} >
                                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                                     <b style={{ float: "right" }}><label style={{ color: "#ff0000" }}>*</label>Alternate Rate / Unit </b>
                                 </Typography>
@@ -909,6 +1003,11 @@ const AddRateCard = () => {
                                     helperText={alternativeWithoutMaterialRateErrorText}
                                     value={alternativeWithoutMaterialRate}
                                 />
+                            </Grid>
+                            <Grid item md={1}>
+                                <Typography variant="subtitle2" textAlign={"center"} sx={{ mb: 1 }}>
+                                    {convertedUnitName}
+                                </Typography>
                             </Grid>
                         </Grid>
 
@@ -984,9 +1083,27 @@ const AddRateCard = () => {
                         <Button variant="contained" onClick={handleSubmitClick}>Submit</Button>
                     </Grid>
                 </Grid>
-
             </Container>
-        </Box >
+            <div>
+                <Dialog open={changeRate} onClose={handleClose}>
+                    <DialogTitle>Confirmation</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>Confirm to change Unit of Sales? If OK, then automatically changed all values. Please after changed check the all values</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button
+                            onClick={() => {
+                                updateRate();
+                            }}
+                            autoFocus
+                        >
+                            OK
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        </Box>
     );
 };
 
