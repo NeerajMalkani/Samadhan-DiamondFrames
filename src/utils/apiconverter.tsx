@@ -220,7 +220,10 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "employee_type_refno", "employeeType");
     renameKey(obj, "reporting_user_refno", "reportingAuthorityID");
     renameKey(obj, "contractor_product_refno", "contractorProductID");
-    
+    renameKey(obj, "pck_mode_refno", "pckModeID");
+    renameKey(obj, "pck_mode_name", "pckModeName");
+    renameKey(obj, "pck_category_refno", "pckCategoryID");
+    renameKey(obj, "pck_category_name", "pckCategoryName");
 
 
   });

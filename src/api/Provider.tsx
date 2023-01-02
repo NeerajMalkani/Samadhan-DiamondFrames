@@ -262,6 +262,8 @@ class Provider {
     contractorproductrefnocheck: "contractorproductrefnocheck/",
     get_pckentrytype:"get_pckentrytype/",
 
+    get_pckpaymentmodetype:"get_pckpaymentmodetype/",
+    getcategoryname_pckaddexpensesform:"getcategoryname_pckaddexpensesform/",
 
   };
   getAll(resource: string) {

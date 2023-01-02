@@ -14,12 +14,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import ListIcon from '@mui/icons-material/List';
 import NoData from "../../../components/NoData";
 import { SelectChangeEvent } from "@mui/material";
-import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
-import uuid from "react-uuid";
-import { AWSImagePath } from "../../../utils/paths";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { APIConverter } from "../../../utils/apiconverter";
+
+let p_ID = 0;
 
 const AddExpenses = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
@@ -47,17 +44,17 @@ const AddExpenses = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [snackbarType, setSnackbarType] = useState<AlertColor | undefined>("error");
 
-  const [entryType, setEntryType] = useState("--Select--");
-  const [entryTypeID, setEntryTypeID] = useState<number>(0);
+  const [entryType, setEntryType] = useState("");
   const [entryTypeError, setEntryTypeError] = useState("");
   const [isEntryTypeError, setIsEntryTypeError] = useState(false);
-  const [entryTypeList, setEntryTypeList] = useState<Array<EntryTypeModel>>([]);
 
   const [payMode, setPayMode] = useState("--Select--");
   const [payModeID, setPayModeID] = useState<number>(0);
   const [payModeError, setPayModeError] = useState("");
   const [ispayModeError, setIsPayModeError] = useState(false);
   const [payModeList, setPayModeList] = useState<Array<PayModeModel>>([]);
+  const [payModeFullData, setPayModeFullData] = useState([]);
+  const [selectedPayMode, setSelectedPayMode] = useState("");
 
   const [subCategoryName, setSubCategoryName] = useState("--Select--");
   const [subCategoryNameID, setSubCategoryNameID] = useState<number>(0);
@@ -80,6 +77,7 @@ const AddExpenses = () => {
   //#region Functions
   useEffect(() => {
     // FetchData("");
+    FetchPaymentMode();
   }, []);
 
   const ResetFields = () => {
@@ -155,17 +153,61 @@ const AddExpenses = () => {
 //     setActionStatus("new");
 //   };
 
-const handleETChange = (event: SelectChangeEvent) => {
-    debugger;
-    let entryType: string = event.target.value;
-    let ac = entryTypeList.find((el) => el.entryType === entryType);
-    if (ac !== undefined) {
-        setEntryType(entryType);
-        setEntryTypeID(ac?.id);
-        setIsEntryTypeError(false);
-        setEntryTypeError("");
-    }
+
+const FetchPaymentMode = async () => {
+  let params = {
+    data: {
+            Sess_UserRefno:  cookies.dfc.UserID,
+            pck_transtype_refno: 2,
+        },
   };
+  setLoading(true);
+  await Provider.createDFPocketDairy(Provider.API_URLS.get_pckpaymentmodetype, params)
+    .then((response: any) => {
+      if (response.data && response.data.code === 200) {
+        if (response.data.data) {
+          response.data.data = APIConverter(response.data.data);
+          setPayModeList(response.data.data);
+        }
+      }
+      setLoading(false);
+      FetchExpenses();
+    })
+    .catch((e) => {
+      setLoading(false);
+      //Show snackbar
+    });
+};
+
+const FetchExpenses = async () => {
+  debugger;
+  let params = {
+    data: {
+      Sess_UserRefno: cookies.dfc.UserID,
+      Sess_group_refno: cookies.dfc.Sess_group_refno,
+      pck_mode_refno: 1,
+      pck_entrytype_refno: 1
+  },
+  };
+  debugger;
+  setLoading(true);
+  await Provider.createDFPocketDairy(Provider.API_URLS.getcategoryname_pckaddexpensesform, params)
+    .then((response: any) => {
+      debugger;
+      if (response.data && response.data.code === 200) {
+        if (response.data.data) {
+          debugger;
+          response.data.data = APIConverter(response.data.data);
+          setExpensesList(response.data.data);
+        }
+      }
+      setLoading(false);
+    })
+    .catch((e) => {
+      setLoading(false);
+      //Show snackbar
+    });
+};
 
 
 
@@ -182,12 +224,11 @@ const handleETChange = (event: SelectChangeEvent) => {
   };
 
   const handlePMChange = (event: SelectChangeEvent) => {
-    debugger;
     let payMode: string = event.target.value;
-    let ac = payModeList.find((el) => el.payMode === payMode);
+    let ac = payModeList.find((el) => el.pckModeName === payMode);
     if (ac !== undefined) {
         setPayMode(payMode);
-        setPayModeID(ac?.id);
+        setPayModeID(ac?.pckModeID);
         setIsPayModeError(false);
         setPayModeError("");
     }
@@ -316,21 +357,20 @@ const handleETChange = (event: SelectChangeEvent) => {
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
                   <b><label style={{ color: "#ff0000" }}>*</label> Entry Type</b>
                 </Typography>
-                <FormControl fullWidth size="small" error={isEntryTypeError }>
-              <Select value={entryType} onChange={handleETChange}>
-                <MenuItem disabled={true} value="--Select--">
-                  --Select--
-                </MenuItem>
-                {entryTypeList.map((item, index) => {
-                  return (
-                    <MenuItem key={index} value={item.entryType}>
-                      {item.entryType}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              <FormHelperText>{entryTypeError}</FormHelperText>
-            </FormControl>
+                <TextField
+              fullWidth
+              placeholder="Entry Type"
+              variant="outlined"
+              size="small"
+              onChange={(e) => {
+                setEntryType((e.target as HTMLInputElement).value);
+                setIsEntryTypeError(false);
+                setEntryTypeError("");
+              }}
+              error={isEntryTypeError}
+              helperText={entryTypeError}
+              value={entryType}
+            />
               </Grid>
               <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -362,8 +402,8 @@ const handleETChange = (event: SelectChangeEvent) => {
                 </MenuItem>
                 {payModeList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.payMode}>
-                      {item.payMode}
+                    <MenuItem key={index} value={item.pckModeID}>
+                      {item.pckModeName}
                     </MenuItem>
                   );
                 })}
@@ -382,8 +422,8 @@ const handleETChange = (event: SelectChangeEvent) => {
                 </MenuItem>
                 {ExpensesList.map((item, index) => {
                   return (
-                    <MenuItem key={index} value={item.expenses}>
-                      {item.expenses}
+                    <MenuItem key={index} value={item.pckCategoryID}>
+                      {item.pckCategoryID}
                     </MenuItem>
                   );
                 })}

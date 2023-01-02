@@ -1040,8 +1040,8 @@ export interface CategoryNameModel {
 }
 
 export interface PayModeModel {
-  id: number;
-  payMode: string;
+  pckModeID: number;
+  pckModeName: string;
 }
 
 export interface SubCategoryNameModel {
@@ -1070,8 +1070,8 @@ export interface BudgetModel {
 }
 
 export interface ExpensesModel {
-  id: number;
-  expenses: string;
+  pckCategoryID: number;
+  pckCategoryName: string;
 }
 
 export interface SourceModel {
