@@ -1049,6 +1049,18 @@ export interface SubCategoryNameModel {
   subCategoryName: string;
 }
 
+export interface ReceivedFormModel {
+  id: number;
+  receivedFrom: string;
+}
+export interface DepositeTypeModel {
+  id: number;
+  depositeType: string;
+}
+export interface MyBankModel {
+  id: number;
+  myBank: string;
+}
 export interface ReceiptModeNameModel {
   id: number;
   receiptMode: string;

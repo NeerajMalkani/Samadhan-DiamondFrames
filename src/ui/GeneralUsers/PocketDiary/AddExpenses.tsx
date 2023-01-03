@@ -507,7 +507,7 @@ const FetchExpenses = async () => {
                           disableSelectionOnClick
                           onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
                             const arrActivity = [...expenseList];
-                            let a: ExpensesModel | undefined = arrActivity.find((el) => el.id === param.row.id);
+                            // let a: ExpensesModel | undefined = arrActivity.find((el) => el.id === param.row.id);
                         //    handelEditAndDelete((e.target as any).textContent, a);
                           }}
                           sx={{

@@ -3,11 +3,18 @@ import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { theme } from "../../../theme/AppTheme";
-import {ReceiptModeNameModel,SubCategoryNameModel,SourceNameModel} from "../../../models/Model";
+import {ReceiptModeNameModel,SubCategoryNameModel,SourceNameModel,MyBankModel,DepositeTypeModel,ReceivedFormModel} from "../../../models/Model";
 import { useCookies } from "react-cookie";
 import { LoadingButton } from "@mui/lab";
 import { SelectChangeEvent } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AWSImagePath } from "../../../utils/paths";
+import { UploadImageToS3WithNativeSdk } from "../../../utils/AWSFileUpload";
+import { GetStringifyJson, NullOrEmpty } from "../../../utils/CommonFunctions";
+import uuid from "react-uuid";
 
 const Sources = () => {
     const [cookies, setCookie] = useCookies(["dfc"]);
@@ -58,8 +65,45 @@ const Sources = () => {
   const [isSubCategoryNameError, setIsSubCategoryNameError] = useState(false);
   const [subCategoryNameList, setSubCategoryNameList] = useState<Array<SubCategoryNameModel>>([]);
 
+  const [receivedFrom, setReceivedFrom] = useState("--Select--");
+  const [receivedFromID, setReceivedFromID] = useState<number>(0);
+  const [receivedFromError, setReceivedFromError] = useState("");
+  const [isReceivedFromError, setIsReceivedFromError] = useState(false);
+  const [receivedFromList, setReceivedFromList] = useState<Array<ReceivedFormModel>>([]);
+
+  const [depositeType, setDepositeType] = useState("--Select--");
+  const [depositeTypeID, setDepositeTypeID] = useState<number>(0);
+  const [depositeTypeError, setDepositeTypeError] = useState("");
+  const [isDepositeTypeError, setIsDepositeTypeError] = useState(false);
+  const [depositeTypeList, setDepositeTypeList] = useState<Array<DepositeTypeModel>>([]);
+
+  const [myBank, setMyBank] = useState("--Select--");
+  const [myBankID, setMyBankID] = useState<number>(0);
+  const [myBankError, setMyBankError] = useState("");
+  const [isMyBankError, setIsMyBankError] = useState(false);
+  const [myBankList, setMyBankList] = useState<Array<MyBankModel>>([]);
+
+  const [chequeNo, setChequeNo] = useState("");
+  const [chequeNoError, setChequeNoError] = useState("");
+  const [isChequeNoError, setIsChequeNoError] = useState(false);
+
+  const [chequeDate, setChequeDate] = useState<Date | null>(new Date());
+  const [repaymentDate, setRepaymentDate] = useState<Date | null>(new Date());
+
   const [errorDIText, setDIErrorText] = useState("");
-  const [designButtonText, setDesignButtonText] = useState("Choose File");
+  const [designButtonText, setDesignButtonText] = useState("Upload File");
+  const [profileImage, setProfileImage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState("");
+  const [uploadFileUpload, setUploadFileUpload] = useState<any>();
+
+  const [notes, setNotes] = useState("");
+  const [notesError, setNotesError] = useState("");
+  const [isNotesError, setIsNotesError] = useState(false);
+
+
+
+
+  
   
  
  //#endregion 
@@ -173,14 +217,143 @@ const Sources = () => {
  
   const handleReceiptChange = (event: SelectChangeEvent) => {
     debugger;
-    let subCategoryName: string = event.target.value;
-    let ac = subCategoryNameList.find((el) => el.subCategoryName === subCategoryName);
+    let receiptMode: string = event.target.value;
+    let ac = receiptModeList.find((el) => el.receiptMode === receiptMode);
     if (ac !== undefined) {
-        setSubCategoryName(subCategoryName);
-        setSubCategoryNameID(ac?.id);
-        setIsSubCategoryNameError(false);
-        setSubCategoryNameError("");
+      setReceiptMode(receiptMode);
+      setReceiptModeID(ac?.id);
+        setIsReceiptModeError(false);
+        setReceiptModeError("");
+          }
+  };
+
+  const handleReceivedFormChange = (event: SelectChangeEvent) => {
+    debugger;
+    let receivedFrom: string = event.target.value;
+    let ac = receivedFromList.find((el) => el.receivedFrom === receivedFrom);
+    if (ac !== undefined) {
+      setReceivedFrom(receivedFrom);
+      setReceivedFromID(ac?.id);
+      setIsReceivedFromError(false);
+      setReceivedFromError("");
     }
+  };
+
+  const handleDepositeTypeChange = (event: SelectChangeEvent) => {
+    debugger;
+    let depositeType: string = event.target.value;
+    let ac = depositeTypeList.find((el) => el.depositeType === depositeType);
+    if (ac !== undefined) {
+        setDepositeType(depositeType);
+        setDepositeTypeID(ac?.id);
+        setIsDepositeTypeError(false);
+        setDepositeTypeError("");
+    }
+  };
+
+  const handleMyBankChange = (event: SelectChangeEvent) => {
+    debugger;
+    let myBank: string = event.target.value;
+    let ac = myBankList.find((el) => el.myBank === myBank);
+    if (ac !== undefined) {
+      setMyBank(myBank);
+        setMyBankID(ac?.id);
+        setIsMyBankError(false);
+        setMyBankError("");
+    }
+  };
+
+  const handleChequeDateChange = (newValueDate: Date | null) => {
+    debugger;
+    setChequeDate(newValueDate);
+  };
+
+  const handleRepaymentDateChange = (newValueDate: Date | null) => {
+    debugger;
+    setRepaymentDate(newValueDate);
+  };
+
+  const uploadImage = () => {
+    let imageName: string = uuid();
+    let fileExtension = uploadedImage.split(".").pop();
+    setUploadedImage(imageName + "." + fileExtension);
+    UploadImageToS3WithNativeSdk(uploadFileUpload, imageName + "." + fileExtension, InsertData);
+  };
+
+  const SplitImageName = (fullName: string) => {
+    let imgName = "";
+    if (!NullOrEmpty(fullName)) {
+      if (fullName.includes(AWSImagePath)) {
+        imgName = fullName.replace(AWSImagePath, '');
+      }
+      else {
+        imgName = fullName;
+      }
+    }
+    return imgName;
+  }
+
+  const InsertData = (status: string, fileName: string) => {
+    debugger;
+    // if (status.toLowerCase() === "success") {
+    //   const params = {
+    //     UserID: CookieUserID,
+    //     CompanyName: companyName,
+    //     CompanyLogo: fileName ? AWSImagePath + fileName : "",
+    //     ContactPersonName: contact,
+    //     ContactPersonNumber: contactNo,
+    //     AddressLine: address,
+    //     LocationName: locationName,
+    //     StateID: selectedStateID,
+    //     CityID: selectedCityID,
+    //     Pincode: pincode ? pincode : 0,
+    //     GSTNumber: gstNo,
+    //     PAN: panNo,
+    //     AccountNumber: accountNo ? accountNo : 0,
+    //     BankName: bankName,
+    //     BranchName: bankBranchName,
+    //     IFSCCode: IFSCCode,
+    //     CompanyNamePrefix: cnp,
+    //     QuotationBudgetPrefix: "",
+    //     EmployeeCodePrefix: ecp,
+    //     PurchaseOrderPrefix: pop,
+    //     SalesOrderPrefix: sop,
+    //     ShowBrand: display === "Yes",
+    //   };
+
+    //   Provider.create("master/insertuserprofile", params)
+    //     .then((response) => {
+    //       debugger;
+    //       if (response.data && response.data.code === 200) {
+    //         if (uploadFileUpload !== null && uploadFileUpload !== undefined) {
+    //           setProfileImage(fileName ? AWSImagePath + fileName : "");
+    //           setUploadFileUpload(undefined);
+    //         }
+    //         setSnackbarType("success");
+
+    //         setSnackMsg("Data updated successfully");
+
+    //         setOpen(true);
+    //       } else {
+    //         setSnackbarType("error");
+    //         setSnackMsg(communication.Error);
+    //         setOpen(true);
+    //       }
+    //       setButtonLoading(false);
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //       setSnackbarType("error");
+    //       setSnackMsg(communication.NetworkError);
+    //       setOpen(true);
+    //       setButtonLoading(false);
+    //     });
+    // } else {
+    //   setSnackbarType("error");
+    //   setSnackMsg(communication.Error);
+    //   setOpen(true);
+    //   setButtonLoading(false);
+    // }
   };
 //   const handelEditAndDelete = (type: string | null, a: ActivityRoleNameModel | undefined) => {
 //     if (type?.toLowerCase() === "edit" && a !== undefined) {
@@ -355,7 +528,7 @@ const Sources = () => {
                 <b><label style={{ color: "#ff0000" }}>*</label>Receipt Mode</b>
                 </Typography>
                 <FormControl fullWidth size="small" error={isReceiptModeError}>
-              <Select value={receiptMode} onChange={handleSCNChange}>
+              <Select value={receiptMode} onChange={handleReceiptChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
@@ -392,10 +565,10 @@ const Sources = () => {
             </Grid>
             <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                <b><label style={{ color: "#ff0000" }}>*</label> Sub Category</b>
+                <b><label style={{ color: "#ff0000" }}>*</label> Sub Category Name</b>
                 </Typography>
                 <FormControl fullWidth size="small" error={isSubCategoryNameError}>
-              <Select value={subCategoryName} onChange={handleReceiptChange}>
+              <Select value={subCategoryName} onChange={handleSCNChange}>
                 <MenuItem disabled={true} value="--Select--">
                   --Select--
                 </MenuItem>
@@ -410,7 +583,189 @@ const Sources = () => {
               <FormHelperText>{subCategoryNameError}</FormHelperText>
             </FormControl>
             </Grid>
-          
+            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b><label style={{ color: "#ff0000" }}>*</label> Received Form</b>
+                </Typography>
+                <FormControl fullWidth size="small" error={isReceivedFromError}>
+              <Select value={receivedFrom} onChange={handleReceivedFormChange}>
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {receivedFromList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.receivedFrom}>
+                      {item.receivedFrom}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>{receivedFromError}</FormHelperText>
+            </FormControl>
+            </Grid>
+            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b><label style={{ color: "#ff0000" }}>*</label> Deposite Type</b>
+                </Typography>
+                <FormControl fullWidth size="small" error={isDepositeTypeError}>
+              <Select value={depositeType} onChange={handleDepositeTypeChange}>
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {depositeTypeList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.depositeType}>
+                      {item.depositeType}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>{depositeTypeError}</FormHelperText>
+            </FormControl>
+            </Grid>
+            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b><label style={{ color: "#ff0000" }}>*</label> My Bank</b>
+                </Typography>
+                <FormControl fullWidth size="small" error={isMyBankError}>
+              <Select value={myBank} onChange={handleMyBankChange}>
+                <MenuItem disabled={true} value="--Select--">
+                  --Select--
+                </MenuItem>
+                {myBankList.map((item, index) => {
+                  return (
+                    <MenuItem key={index} value={item.myBank}>
+                      {item.myBank}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>{myBankError}</FormHelperText>
+            </FormControl>
+            </Grid>
+            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  <b><label style={{ color: "#ff0000" }}>*</label>Cheque No</b>
+                </Typography>
+                <TextField
+                  fullWidth
+                  placeholder=""
+                  variant="outlined"
+                  size="small"
+                  onChange={(e) => {
+                    setChequeNo((e.target as HTMLInputElement).value);
+                    setIsChequeNoError(false);
+                    setChequeNoError("");
+                  }}
+                  error={isChequeNoError}
+                  helperText={chequeNoError}
+                  value={chequeNo}
+                />
+              </Grid>
+              <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+              <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={4}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b style={{ float: "right" }}>Cheque Date</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6}>
+
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          clearable
+                          value={chequeDate}
+                          onChange={handleChequeDateChange}
+                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+                      </LocalizationProvider>
+
+                    </Grid>
+                  </Grid>
+                  </Grid>
+                  <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                  <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 9, md: 12 }}>
+                    <Grid item sm={4}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b style={{ float: "right" }}>Repayment Reminder Date</b>
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6}>
+
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          clearable
+                          value={repaymentDate}
+                          onChange={handleRepaymentDateChange}
+                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
+                      </LocalizationProvider>
+
+                    </Grid>
+                  </Grid>
+                  </Grid>
+                  <Grid item xs={4} sm={4} md={4} sx={{ mt: 1 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                      <b> Attachment</b>
+                      <label style={{ color: "#ff0000" }}>*</label>
+                    </Typography>
+                    <FormControl fullWidth size="small">
+                      <Grid style={{ display: "flex" }}>
+                        <Button size="small" variant="contained" component="label" sx={{ mr: 2 }}>
+                          {designButtonText}
+                          <input
+                            type="file"
+                            hidden
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.currentTarget !== null && e.currentTarget.files !== null) {
+                                setUploadFileUpload(e.currentTarget.files[0]);
+                                let FileName = e.currentTarget.files[0].name;
+                                if (FileName !== undefined) {
+                                  setDIErrorText(FileName.trim());
+                                  setUploadedImage(FileName);
+                                }
+                                setDesignButtonText("Change");
+                              }
+                            }}
+                          />
+                        </Button>
+                      </Grid>
+                      <FormHelperText>{errorDIText}</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                <b><label style={{ color: "#ff0000" }}>*</label> Notes</b>
+                </Typography>
+                <TextField
+                  fullWidth
+                  placeholder="Notes"
+                  variant="outlined"
+                  size="small"
+                  onChange={(e) => {
+                    setNotes((e.target as HTMLInputElement).value);
+                    setIsNotesError(false);
+                    setNotesError("");
+                  }}
+                  error={isNotesError}
+                  helperText={notesError}
+                  value={notes}
+                />
+            </Grid>
+            <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        <b>Display</b>
+                      </Typography>
+                      <FormControl>
+                        <RadioGroup row name="row-radio-buttons-group" value={display} onChange={handleDisplayChange}>
+                          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                          <FormControlLabel value="No" control={<Radio />} label="No" />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+
+
               <Grid item xs={3} sm={8} md={12}>
                 <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} >
                   Cancel
@@ -429,7 +784,8 @@ const Sources = () => {
           </Snackbar>
         </Box>
       );
-
+     
 };
+
 
 export default Sources;
