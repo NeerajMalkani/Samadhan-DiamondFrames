@@ -1053,6 +1053,11 @@ export interface ReceivedFormModel {
   id: number;
   receivedFrom: string;
 }
+
+export interface PaidToModel {
+  id: number;
+  paidTo: string;
+}
 export interface DepositeTypeModel {
   id: number;
   depositeType: string;
