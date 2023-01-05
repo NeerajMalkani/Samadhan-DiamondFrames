@@ -104,6 +104,7 @@ import ABrandConversionValue from "../ui/Admin/ProductionUnitMaster/ABrandConver
 import WidthOfGPCoil from "../ui/Admin/ProductionUnitMaster/WidthOfGPCoil";
 import MassOfZincCoating from "../ui/Admin/ProductionUnitMaster/MassOfZIncCoating";
 
+import AddExpensesList from "../ui/GeneralUsers/PocketDiary/ExpensesList";
 
 
 
@@ -225,6 +226,7 @@ const AppRoutes = () => {
               <Route path="admin/productionunitmaster/abrandconversationvalue" element={<ABrandConversionValue/>}/>
               <Route path="admin/productionunitmaster/widthofgpcoil" element={<WidthOfGPCoil/>}/>
               <Route path="admin/productionunitmaster/massofzinccoating" element={<MassOfZincCoating/>}/>
+              <Route path="generalusers/pocketdiary/expenseslist" element={<AddExpensesList/>}/>
               
 
             </Routes>
