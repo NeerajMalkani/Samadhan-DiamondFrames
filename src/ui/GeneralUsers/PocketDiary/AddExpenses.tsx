@@ -1,11 +1,10 @@
-import { Alert, AlertColor, Box, Button, CircularProgress, Container, Select, MenuItem, FormHelperText, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, AlertColor, Box, Button, CircularProgress, Container,Stack, Select, MenuItem, FormHelperText, FormControl, FormControlLabel, Grid, Icon, InputAdornment, Radio, RadioGroup, Snackbar, TextField, Typography } from "@mui/material";
 import Header from "../../../components/Header";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Provider from "../../../api/Provider";
 import { DataGrid } from "@mui/x-data-grid";
 import { communication } from "../../../utils/communication";
-import { ExpensesColumns } from "../../../utils/tablecolumns";
 import { theme } from "../../../theme/AppTheme";
 import {  SubCategoryNameModel,PaidToModel, DepositeTypeModel,MyBankModel, PayModeModel, ExpensesModel } from "../../../models/Model";
 import { useCookies } from "react-cookie";
@@ -18,6 +17,7 @@ import { APIConverter } from "../../../utils/apiconverter";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import AddIcon from "@mui/icons-material/Add";
 
 let p_ID = 0;
 
@@ -138,69 +138,7 @@ const AddExpenses = () => {
   };
 
 
-  //   const FetchData = (type: string) => {
-  //     ResetFields();
-  //     Provider.getAll("master/getactivityroles")
-  //       .then((response: any) => {
-  //         if (response.data && response.data.code === 200) {
-  //           if (response.data.data) {
-  //             const arrList = [...response.data.data];
-  //             arrList.map(function (a: any, index: number) {
-  //               a.display = a.display ? "Yes" : "No";
-  //               let sr = { srno: index + 1 };
-  //               a = Object.assign(a, sr);
-  //             });
-  //             setActivityNamesList(arrList);
-  //             setActivityNamesListTemp(arrList);
-  //             if (type !== "") {
-  //               setSnackMsg("Activity role " + type);
-  //               setOpen(true);
-  //               setSnackbarType("success");
-  //             }
-  //           }
-  //         } else {
-  //           setSnackbarType("info");
-  //           setSnackMsg(communication.NoData);
-  //           setOpen(true);
-  //         }
-  //         setLoading(false);
-  //       })
-  //       .catch((e) => {
-  //         setLoading(false);
-  //         setSnackbarType("error");
-  //         setSnackMsg(communication.NetworkError);
-  //         setOpen(true);
-  //       });
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   };
-
-
-
-  //   const handleSubmitClick = () => {
-  //     const IsTextFiledError = activityName.trim() === "";
-  //     setactivitynameError(IsTextFiledError ? communication.BlankActivityName : "");
-  //     setIsActivitynameError(IsTextFiledError);
-  //     if (!IsTextFiledError) {
-  //       setButtonLoading(true);
-  //     //   InsertUpdateData(activityName, display === "Yes");
-  //       setDisplay("Yes");
-  //       setActivityName("");
-  //       setactivitynameError("");
-  //       setIsActivitynameError(false);
-  //     }
-  //   };
-
-  //   const handleCancelClick = () => {
-  //     setDisplay("Yes");
-  //     // setActivityName("");
-  //     setactivitynameError("");
-  //     setIsActivitynameError(false);
-  //     setButtonDisplay("none");
-  //     setDataGridOpacity(1);
-  //     setDataGridPointer("auto");
-  //     setActionStatus("new");
-  //   };
-
+ 
 
   const FetchPaymentMode = async () => {
     let params = {
@@ -432,7 +370,8 @@ const AddExpenses = () => {
       return;
     }
     setOpen(false);
-  };
+  };    
+ 
 
   //   const onChangeSearch = (query: string) => {
   //     setSearchQuery(query);
@@ -455,10 +394,14 @@ const AddExpenses = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Typography variant="h4">Add Expenses</Typography>
           </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">Add Expenses</Typography>
+          <Grid item xs={4} sm={8} md={12}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="h4">Add Expenses</Typography>
+              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/generalusers/pocketdiary/expenseslist")}>
+                View List
+              </Button>
+            </Stack>
           </Grid>
-
           <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               <b><label style={{ color: "#ff0000" }}>*</label> Entry Type</b>
@@ -786,37 +729,6 @@ const AddExpenses = () => {
           </Grid>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           <Grid item xs={3} sm={8} md={12}>
             <Button variant="contained" sx={{ mt: 1, mr: 1, backgroundColor: theme.palette.error.main }} style={{ display: buttonDisplay }} >
               Cancel
@@ -824,70 +736,6 @@ const AddExpenses = () => {
             <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} >
               Submit
             </LoadingButton>
-          </Grid>
-          <Grid item xs={4} sm={8} md={12} sx={{ borderBottom: 1, paddingBottom: "8px", borderColor: "rgba(0,0,0,0.12)" }}>
-            <Typography variant="h6">
-              Expenses List
-            </Typography>
-          </Grid>
-          <Grid item xs={4} sm={8} md={12}>
-            {loading ? (
-              <Box height="300px" display="flex" alignItems="center" justifyContent="center" sx={{ m: 2 }}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                {expenseList.length === 0 ? (
-                  <NoData Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />} height="auto" text="No data found" secondaryText="" isButton={false} />
-                ) : (
-                  <>
-                    <Grid item xs={4} sm={8} md={12} sx={{ alignItems: "flex-end", justifyContent: "flex-end", mb: 1, display: "flex", mr: 1 }}>
-                      <TextField
-                        placeholder="Search"
-                        variant="outlined"
-                        size="small"
-                        onChange={(e) => {
-                          //   onChangeSearch((e.target as HTMLInputElement).value);
-                        }}
-                        value={searchQuery}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                    <DataGrid
-                      style={{
-                        opacity: dataGridOpacity,
-                        pointerEvents: dataGridPointer,
-                      }}
-                      autoHeight={true}
-                      rows={expenseListTemp}
-                      columns={ExpensesColumns}
-                      pageSize={pageSize}
-                      rowsPerPageOptions={[5, 10, 20]}
-                      onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                      disableSelectionOnClick
-                      onCellClick={(param, e: React.MouseEvent<HTMLElement>) => {
-                        const arrActivity = [...expenseList];
-                        // let a: ExpensesModel | undefined = arrActivity.find((el) => el.id === param.row.id);
-                        //    handelEditAndDelete((e.target as any).textContent, a);
-                      }}
-                      sx={{
-                        "& .MuiDataGrid-columnHeaders": {
-                          backgroundColor: theme.palette.primary.main,
-                          color: theme.palette.primary.contrastText,
-                        },
-                        mb: 1,
-                      }}
-                    />
-                  </>
-                )}
-              </div>
-            )}
           </Grid>
         </Grid>
       </Container>
