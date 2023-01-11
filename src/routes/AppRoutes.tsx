@@ -201,9 +201,9 @@ const AppRoutes = () => {
               <Route path="manufacture/productOrderList" element={<ProductOrderList/>}/>
               <Route path="manufacture/newproductorder" element={<CreateNewProductOrder />}/>
               <Route path="manufacture/venderOrderForm" element={<VenderOrderFormList/>}/>
-              <Route path="/manufacture/venderorderaddform" element={<VenderOrderAddForm />}/>
+              <Route path="manufacture/venderorderaddform" element={<VenderOrderAddForm />}/>
               <Route path="manufacture/invoicerecieptlist" element={<InvoiceRecieptList/>}/>
-              <Route path="manufacture/addinvoicerecieptlist" element={<AddInvoiceReciept />}/>
+              <Route path="manufacture/addinvoicereciept" element={<AddInvoiceReciept />}/>
               <Route path="manufacture/productionstatus" element={<ProductionStatus/>}/>
               <Route path="manufacture/addProductionStatus" element={<AddProductionStatus />}/>
               <Route path="manufacture/summaryMaterial" element={<SummaryMaterial/>}/>

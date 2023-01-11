@@ -5400,3 +5400,91 @@ export const massOfZincCoatingColumns: GridColDef[] = [
     ),
   },
 ];
+
+
+export const userBankDetailsColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "accountHolderName",
+    headerName: "A/c Holder Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "accountNo",
+    headerName: "A/c No",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "bankName",
+    headerName: "Bank Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "bankBranchName",
+    headerName: "Bank Branch Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "ifscCode",
+    headerName: "IFSC Code",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "cardTypeName",
+    headerName: "Crad Type Name",
+    flex: 1.8,
+    minWidth: 140,
+  },
+  {
+    field: "openingBalance",
+    headerName: "Opening Balance",
+    flex: 1.8,
+    minWidth: 140,
+  },
+
+  {
+    field: "display",
+    headerName: "",
+    flex: 1.8,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.error.main }}
+        >
+          Delete
+        </Button> */}
+        {/* <IconButton aria-label="edit" sx={{ mr: 1 }}>
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="delete">
+          <DeleteIcon />
+        </IconButton> */}
+      </Grid>
+    ),
+  },
+];

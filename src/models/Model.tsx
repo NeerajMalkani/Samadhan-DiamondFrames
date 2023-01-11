@@ -1284,3 +1284,13 @@ export interface GSMModel {
   display: string;
   action: string;
 }
+
+export interface UserBankListModel {
+  id: number;
+  srno: number;
+  bankNameList: string;
+  group_name: string;
+  display: string;
+  action: string;
+  group_refno: number;
+}

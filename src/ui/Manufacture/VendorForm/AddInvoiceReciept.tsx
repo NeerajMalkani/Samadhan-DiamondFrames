@@ -618,28 +618,6 @@ const AddInvoiceReciept = () => {
                       
                     </Grid>
                     <br></br>
-                    <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 16 }}>
-                        <Grid item sm={5}>
-                            <label>
-                                <label style={{ color: "#ff0000" }}>*</label> Invoice Entry Date
-                            </label>
-                        </Grid>
-                        <Grid item sm={6}>
-                            <TextField
-                                variant="outlined"
-                                size="small"
-                                error={isTotalProductError}
-                                helperText={totalProductError}
-                                value={totalProduct}
-                                onChange={(e) => {
-                                    setTotalProduct((e.target as HTMLInputElement).value);
-                                    setIsTotalProductError(false);
-                                    setTotalProductError("");
-                                }}
-                            >22-11-2022</TextField>
-                            </Grid>
-                    </Grid>
-                   
                 </div>
                 <div style={{ display: 'flex', marginTop: "50px",alignItems:"center", }}>
                     

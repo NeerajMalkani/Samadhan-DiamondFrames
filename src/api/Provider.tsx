@@ -265,6 +265,7 @@ class Provider {
     get_pckpaymentmodetype:"get_pckpaymentmodetype/",
     getcategoryname_pckaddexpensesform:"getcategoryname_pckaddexpensesform/",
 
+    userbankrefnocheck:"userbankrefnocheck/",
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

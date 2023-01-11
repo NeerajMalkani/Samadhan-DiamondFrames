@@ -471,23 +471,6 @@ const ProductProduction = () => {
                     </Grid>
                 </Grid>
                 <br></br>
-                {/* <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
-                    <Grid item sm={4}>
-                        <label><label style={{ color: "#ff0000" }}>*</label>Date</label>
-                    </Grid>
-                    <Grid item sm={4}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DesktopDatePicker
-                          inputFormat="MM/dd/yyyy"
-                          clearable
-                          value={date}
-                          onChange={handleDateChange}
-                          renderInput={(params) => <TextField size="small" {...params} />}></DesktopDatePicker>
-                      </LocalizationProvider>
-
-                    </Grid>
-                </Grid> */}
-                <br></br>
                 <div style={{ display: 'flex', marginTop: "30px" }}>
                     <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }}>
                         <Grid item sm={6}>

@@ -213,7 +213,7 @@ const MarkAvailability = () => {
                 </Grid>
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "right", justifyContent: "right" }}>
                     <Grid>
-                        <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} >
+                        <LoadingButton loading={buttonLoading} variant="contained" sx={{ mt: 1 }} onClick={() => navigate("/manufacture/employee/employeeavailabilityentrylist")}>
                             View Avalibility
                         </LoadingButton>
                     </Grid>

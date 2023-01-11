@@ -823,11 +823,6 @@ const CreateNewProductOrder = () => {
 
 
                 <br></br>
-                
-                
-
-
-
 
                 <Grid container spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 10, md: 15 }} style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",marginTop:"54px" }}>
                     <Grid>

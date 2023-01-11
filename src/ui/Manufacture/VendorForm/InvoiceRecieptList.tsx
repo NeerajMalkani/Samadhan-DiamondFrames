@@ -456,7 +456,7 @@ const InvoiceRecieptList = () => {
                         }}>
                         + Create New
                     </Button> */}
-                     <Button variant="contained"onClick={() => navigate("/manufacture/addinvoicerecieptlist")} sx={{mr:2}}> + Add Invoice Reciept</Button>
+                     <Button variant="contained"onClick={() => navigate("/manufacture/addinvoicereciept")} sx={{mr:2}}> + Add Invoice Reciept</Button>
 
                 </Grid>
             </Grid>

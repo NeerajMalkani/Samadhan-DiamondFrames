@@ -109,6 +109,11 @@ const AddExpenses = () => {
   const [chequeNoError, setChequeNoError] = useState("");
   const [isChequeNoError, setIsChequeNoError] = useState(false);
 
+  const [utrNo, setUtrNo] = useState("");
+  const [utrNoError, setUtrNoError] = useState("");
+  const [isUtrNoError, setIsUtrNoError] = useState(false);
+
+
   const [chequeDate, setChequeDate] = useState<Date | null>(new Date());
 
   const [errorDIText, setDIErrorText] = useState("");
@@ -634,6 +639,25 @@ const AddExpenses = () => {
               </Select>
               <FormHelperText>{myBankError}</FormHelperText>
             </FormControl>
+          </Grid>
+          <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              <b><label style={{ color: "#ff0000" }}>*</label>Utr No</b>
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder=""
+              variant="outlined"
+              size="small"
+              onChange={(e) => {
+                setUtrNo((e.target as HTMLInputElement).value);
+                setIsUtrNoError(false);
+                setUtrNoError("");
+              }}
+              error={isUtrNoError}
+              helperText={utrNoError}
+              value={utrNo}
+            />
           </Grid>
           <Grid item xs={3} sm={4} md={4} sx={{ mt: 1 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
