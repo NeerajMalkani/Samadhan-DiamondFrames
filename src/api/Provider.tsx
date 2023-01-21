@@ -275,6 +275,10 @@ class Provider {
     branchbankcreate:"branchbankcreate/",
     branchbankupdate:"branchbankupdate/",
 
+    pckmypersonalbankrefnocheck:"pckmypersonalbankrefnocheck/",
+    pckmypersonalbankcreate:"pckmypersonalbankcreate/",
+    pckmypersonalbankupdate:"pckmypersonalbankupdate/",
+
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

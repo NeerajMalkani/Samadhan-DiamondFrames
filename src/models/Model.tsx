@@ -1327,3 +1327,20 @@ export interface AddBankListModel {
   bank_refno:number;
   
 }
+
+export interface PersonalBankListModel {
+  id: number;
+  srno: number;
+  accountHolderName: string;
+  accountNumber: string;
+  bankName: string;
+  branchName: string;
+  ifscCode: string;
+  cardTypeName: string;
+  openingBalance: string;
+  remarks:string;
+  display: string;
+  action: string;
+  bank_refno:number;
+  
+}

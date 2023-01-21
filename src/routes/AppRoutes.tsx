@@ -106,6 +106,7 @@ import MassOfZincCoating from "../ui/Admin/ProductionUnitMaster/MassOfZIncCoatin
 
 import AddExpensesList from "../ui/Common/PocketDiary/ExpensesList";
 import AddBank from "../ui/Common/Organization/AddBank";
+import MyPersonalBank from "../ui/Common/PocketDiary/Setting/MyPersonalBank";
 
 
 
@@ -229,6 +230,7 @@ const AppRoutes = () => {
               <Route path="admin/productionunitmaster/massofzinccoating" element={<MassOfZincCoating/>}/>
               <Route path="common/pocketdiary/expenseslist" element={<AddExpensesList/>}/>
               <Route path="common/organization/addbank" element={<AddBank/>}/>
+              <Route path="common/pocketdiary/setting/mypersonalbank" element={<MyPersonalBank/>}/>
               
 
             </Routes>

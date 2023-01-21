@@ -868,6 +868,104 @@ const DrawerItems = ({ open }: OpenObj) => {
         },
       ],
     },
+    {
+      title: "Pocket Dairy",
+      icon: <BusinessIcon />,
+      expanded: true,
+      items: [
+        // {
+        //   title: "Category Name",
+        //   isActive: window.location.href.toLowerCase().includes("gcategoryname"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/pocketdiary/setting/gcategoryname`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: " Sub Category Name",
+        //   isActive: window.location.href.toLowerCase().includes("gsubcategoryname"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/pocketdiary/setting/gsubcategoryname`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: " My Contacts",
+        //   isActive: window.location.href.toLowerCase().includes("gmycontacts"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/generalusers/pocketdiary/setting/gmycontacts`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: " My Bank",
+        //   isActive: window.location.href.toLowerCase().includes("gmybank"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/pocketdiary/setting/gmybank`);
+        //     }, 300);
+        //   },
+        // },
+        {
+            title: "My Personal Bank",
+            isActive: window.location.href.toLowerCase().includes("mypersonalbank"),
+            navigation: () => {
+              open[1](false);
+              setTimeout(() => {
+                navigate(`/common/pocketdiary/setting/mypersonalbank`);
+              }, 300);
+            },
+          },
+        // {
+        //   title: "Budget Setup",
+        //   isActive: window.location.href.toLowerCase().includes("budgetsetup"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/pocketdiary/setting/budgetsetup`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "Add Expenses",
+        //   isActive: window.location.href.toLowerCase().includes("addexpenses"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/pocketdiary/addexpenses`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "Add Source",
+        //   isActive: window.location.href.toLowerCase().includes("source"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/pocketdiary/source`);
+        //     }, 300);
+        //   },
+        // },
+        // {
+        //   title: "Inbox",
+        //   isActive: window.location.href.toLowerCase().includes("inbox"),
+        //   navigation: () => {
+        //     open[1](false);
+        //     setTimeout(() => {
+        //       navigate(`/common/pocketdiary/inbox`);
+        //     }, 300);
+        //   },
+        // },
+      ],
+    },
+
   ];
 
   const MenuItemsClients = [
