@@ -1,5 +1,5 @@
 import {
-  Box, TextField, Button, Container, Tabs, Radio,InputAdornment,
+  Box, TextField, Button, Container, Tabs, Radio, InputAdornment,
   RadioGroup, Tab, FormControl, CircularProgress, FormControlLabel, Typography, Select, Grid, Menu, Snackbar, MenuItem, AlertColor, FormHelperText, Alert
 } from "@mui/material";
 import Header from "../../../components/Header";
@@ -144,6 +144,7 @@ const Userbasic = () => {
   const [accountHolderName, setAccountHolderName] = useState("");
   const [accountHolderNameError, setAccountHolderNameError] = useState("");
   const [isAccountHolderNameError, setIsAccountHolderNameError] = useState(false);
+  const [accountHolderNameText, setAccountHolderNameText] = useState<string>("");
 
   const [accountNo, setAccountNo] = useState("");
   const [accountNoError, setAccountNoError] = useState("");
@@ -152,13 +153,14 @@ const Userbasic = () => {
   const [bankName, setBankName] = useState("");
   const [bankNameError, setBankNameError] = useState("");
   const [isBankNameError, setIsBankNameError] = useState(false);
+  const [ankNameText, setBankNameText] = useState<string>("");
 
   const [bankBranchName, setBankBranchName] = useState("");
   const [bankBranchNameError, setBankBranchNameError] = useState("");
   const [isBankBranchNameError, setIsBankBranchNameError] = useState(false);
 
-  const [IFSCCode, setIFSCCode] = useState("");
-  const [IFSCCodeError, setIFSCCodeError] = useState("");
+  const [ifscCode, setIFSCCode] = useState("");
+  const [ifscCodeError, setIFSCCodeError] = useState("");
   const [isIFSCCodeError, setIsIFSCCodeError] = useState(false);
 
   const cardType = useState([
@@ -182,10 +184,13 @@ const Userbasic = () => {
 
   const [bankList, setBankList] = React.useState("");
 
-  const [bankNameList, setBankNameList] = useState<Array<UserBankListModel>>([]); //React.useContext(DataContext).activityNamesList;
-  const [bankNameListTemp, setBankNameListTemp] = React.useState< Array<any>>([]);
+  const [bankNamesList, setBankNamesList] = useState<Array<UserBankListModel>>([]);
+  const [bankNamesListTemp, setBankNamesListTemp] = React.useState<Array<any>>([]);
   const [bankListError, setBankListError] = useState("");
   const [isBankListError, setIsBankListError] = useState(false);
+
+
+
 
   //#endregion
 
@@ -198,6 +203,8 @@ const Userbasic = () => {
 
   useEffect(() => {
     FetchUserData("");
+    FetchBankData("");
+    FetchCardType();
   }, []);
 
   const FetchStates = () => {
@@ -285,11 +292,8 @@ const Userbasic = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
-            debugger;
             response.data.data = APIConverter(response.data.data);
-
             if (response.data.data[0] != null) {
-              debugger;
               const arrList = [...response.data.data];
               setUserID(arrList[0].userID);
               setCompanyName(!NullOrEmpty(arrList[0].companyName) ? arrList[0].companyName : "");
@@ -433,7 +437,6 @@ const Userbasic = () => {
   };
 
   const InsertUpdateData = () => {
-    debugger;
     if (actionStatus === "new") {
 
       let params = {
@@ -453,7 +456,6 @@ const Userbasic = () => {
       }
       Provider.createDFCommon(Provider.API_URLS.userprofileupdate, params)
         .then((response) => {
-          debugger;
           if (response.data && response.data.code === 200) {
             setSnackMsg("Profile Updated Successfully!.");
             setSnackbarType("success");
@@ -490,10 +492,34 @@ const Userbasic = () => {
       setDataGridOpacity(0.3);
       setDataGridPointer("none");
       setDisplay(a.display);
-      setBankList(a?.bankNameList);
-      setSelectedID(a.id);
-      setBankListError("");
-      setIsBankListError(false);
+      setAccountHolderName(a.accountHolderName);
+      setAccountNo(a.accountNumber);
+      setBankName(a.bankName);
+      setBankBranchName(a.branchName);
+      setIFSCCode(a.ifscCode);
+      
+      const stateData: any = [];
+      cardType[0].map((data: any, i: number) => {
+        if (a.cardTypeName.includes(data.key)) {
+          stateData.push({
+            key: data.key,
+            isSelected: true,
+            id: data.id
+          });
+        }
+        else {
+          stateData.push({
+            key: data.key,
+            isSelected: false,
+            id: data.id
+          });
+        }
+        cardType[1](stateData);
+      });
+
+      setOpeningBalance(a.openingBalance);
+      setRemarks(a.remarks);
+      setSelectedID(a.bank_refno);
       setButtonDisplay("unset");
       setActionStatus("edit");
     }
@@ -502,11 +528,11 @@ const Userbasic = () => {
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query === "") {
-      setBankNameListTemp(bankNameList);
+      setBankNamesListTemp(bankNamesList);
     } else {
-      setBankNameListTemp(
-        bankNameList.filter((el: UserBankListModel) => {
-          return el.bankNameList
+      setBankNamesListTemp(
+        bankNamesList.filter((el: UserBankListModel) => {
+          return el.bankName
             .toString()
             .toLowerCase()
             .includes(query.toLowerCase());
@@ -514,6 +540,216 @@ const Userbasic = () => {
       );
     }
   };
+
+  const FetchBankData = (type: string) => {
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+        Sess_company_refno: "all",
+        bank_refno: "all"
+      },
+    };
+    ///
+    Provider.createDFCommon(Provider.API_URLS.userbankrefnocheck, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+            const arrList = [...response.data.data];
+            arrList.map(function (a: any, index: number) {
+              a.id = index + 1;
+              a.cardType = a.cardType ? "Debit" : "Credit";
+              a.display = a.display == "1" ? "Yes" : "No";
+              let sr = { srno: index + 1 };
+              a = Object.assign(a, sr);
+            });
+            setBankNamesList(arrList);
+            setBankNamesListTemp(arrList);
+            if (type !== "") {
+              setSnackMsg("Activity role " + type);
+              setOpen(true);
+              setSnackbarType("success");
+            }
+          }
+        } else {
+          setSnackbarType("info");
+          setSnackMsg(communication.NoData);
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackbarType("error");
+        setSnackMsg(communication.NetworkError);
+        setOpen(true);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
+
+  const FetchCardType = () => {
+    let params = {
+      data: {
+        Sess_UserRefno: cookies.dfc.UserID,
+      },
+    };
+    Provider.createDFPocketDairy(Provider.API_URLS.getcardtype_pckmypersonalbankform, params)
+      .then((response: any) => {
+        if (response.data && response.data.code === 200) {
+          debugger;
+          if (response.data.data) {
+            response.data.data = APIConverter(response.data.data);
+
+            const stateData: any = [];
+            response.data.data.map((data: any, i: number) => {
+              stateData.push({
+                key: data.cardTypeName,
+                isSelected: false,
+                id: data.cardTypeID
+              });
+            });
+            cardType[1](stateData);
+
+          }
+        } else {
+          setSnackbarType("info");
+          setSnackMsg(communication.NoData);
+          setOpen(true);
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        setLoading(false);
+        setSnackbarType("error");
+        setSnackMsg(communication.NetworkError);
+        setOpen(true);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
+  const handleSubmitBankClick = () => {
+    debugger;
+    let isValid: boolean = true;
+
+    if (accountHolderName.trim() === "") {
+      isValid = false;
+      setIsAccountHolderNameError(true);
+      setAccountHolderName(communication.AccountHolderName);
+    }
+
+    if (bankName.trim() === "") {
+      isValid = false;
+      setIsBankNameError(true);
+      setBankName(communication.BlankBankName);
+    }
+
+    let blankData = cardType[0].filter((el) => el.isSelected);
+    if (blankData.length === 0) {
+      isValid = false;
+      isCardTypeError[1](true);
+      cardTypeError[1]("Please select Card Type ");
+    }
+
+    if (isValid) {
+
+      const ct = blankData.map((data) => data.id);
+      InsertUpdateBankData(accountHolderName, display === "Yes", ct);
+    }
+    setDisplay("Yes");
+    setAccountHolderName("");
+    setAccountHolderNameError("");
+    setIsAccountHolderNameError(false);
+  };
+
+
+  const InsertUpdateBankData = (accountHolderName: string, checked: boolean, ct) => {
+    setButtonLoading(true);
+    if (actionStatus === "new") {
+      debugger;
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_company_refno: cookies.dfc.Sess_company_refno.toString(),
+          Sess_branch_refno: cookies.dfc.Sess_branch_refno.toString(),
+          bank_ac_holder_name: accountHolderName,
+          bank_account_no: accountNo,
+          bank_name: bankName,
+          bank_branch_name: bankBranchName,
+          ifsc_code: ifscCode,
+          cardtype_refno: ct,
+          opening_balance: openingBalance,
+          remarks: remarks,
+          view_status: display === "Yes" ? 1 : 0,
+        },
+      }
+      Provider.createDFCommon(Provider.API_URLS.userbankcreate, params)
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            debugger;
+            FetchBankData("added");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+          } else {
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+          // handleCancelClick();
+        })
+        .catch((e) => {
+          // handleCancelClick();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
+    } else if (actionStatus === "edit") {
+      debugger;
+      let params = {
+        data: {
+          Sess_UserRefno: cookies.dfc.UserID,
+          Sess_company_refno: cookies.dfc.Sess_company_refno.toString(),
+          Sess_branch_refno: cookies.dfc.Sess_branch_refno.toString(),
+          bank_refno: selectedID,
+          bank_ac_holder_name: accountHolderName,
+          bank_account_no: accountNo,
+          bank_name: bankName,
+          bank_branch_name: bankBranchName,
+          ifsc_code: ifscCode,
+          cardtype_refno: ct,
+          opening_balance: openingBalance,
+          remarks: remarks,
+          view_status: display === "Yes" ? 1 : 0,
+        },
+      }
+      Provider.createDFCommon(Provider.API_URLS.userbankupdate, params)
+        .then((response) => {
+          debugger;
+          if (response.data && response.data.code === 200) {
+            debugger;
+            FetchBankData("updated");
+          } else if (response.data.code === 304) {
+            setSnackMsg(communication.ExistsError);
+            setOpen(true);
+            setSnackbarType("error");
+          } else {
+            setSnackMsg(communication.Error);
+            setSnackbarType("error");
+            setOpen(true);
+          }
+          // handleCancelClick();
+        })
+        .catch((e) => {
+          // handleCancelClick();
+          setSnackMsg(communication.NetworkError);
+          setSnackbarType("error");
+          setOpen(true);
+        });
+    }
+  };
+
+
 
   //#endregion 
 
@@ -765,14 +1001,10 @@ const Userbasic = () => {
                       </Grid>
                     </Grid>
                   </TabPanel>
+
+
                   <TabPanel value={value} index={1}>
-                    <Grid
-                      container
-                      xs={4}
-                      sm={8}
-                      md={12}
-                      spacing={{ xs: 1, md: 2 }}
-                    >
+                    <Grid container xs={4} sm={8} md={12} spacing={{ xs: 1, md: 2 }}>
                       <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Account Holder Number</b>
@@ -864,8 +1096,8 @@ const Userbasic = () => {
                             setIFSCCodeError("");
                           }}
                           error={isIFSCCodeError}
-                          helperText={IFSCCodeError}
-                          value={IFSCCode}
+                          helperText={ifscCodeError}
+                          value={ifscCode}
                         />
                       </Grid>
 
@@ -924,7 +1156,6 @@ const Userbasic = () => {
                           value={openingBalance}
                         />
                       </Grid>
-
                       <Grid item xs={4} sm={5} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Remarks</b>
@@ -943,6 +1174,8 @@ const Userbasic = () => {
                           value={remarks}
                         />
                       </Grid>
+
+
                       <Grid item xs={4} sm={3} md={4} sx={{ mt: 1 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
                           <b>Display</b>
@@ -965,122 +1198,116 @@ const Userbasic = () => {
                           loading={buttonLoading}
                           variant="contained"
                           sx={{ mt: 1 }}
-                          onClick={handleSubmitClick}
+                          onClick={handleSubmitBankClick}
                         >
                           Submit
                         </LoadingButton>
                       </Grid>
+                    </Grid>
 
-                      <Grid
-                        item
-                        xs={4}
-                        sm={8}
-                        md={12}
-                        sx={{
-                          borderBottom: 1,
-                          paddingBottom: "8px",
-                          borderColor: "rgba(0,0,0,0.12)",
-                        }}
-                      >
-                        <Typography variant="h6">Bank List</Typography>
-                      </Grid>
-                      <Grid item xs={4} sm={8} md={12}>
-                        {loading ? (
-                          <Box
-                            height="300px"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{ m: 2 }}
-                          >
-                            <CircularProgress />
-                          </Box>
-                        ) : (
-                          <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
-                            {bankNameList.length === 0 ? (
-                              <NoData
-                                Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />}
-                                height="auto"
-                                text="No data found"
-                                secondaryText=""
-                                isButton={false}
-                              />
-                            ) : (
-                              <>
-                                <Grid
-                                  item
-                                  xs={4}
-                                  sm={8}
-                                  md={12}
-                                  sx={{
-                                    alignItems: "flex-end",
-                                    justifyContent: "flex-end",
-                                    mb: 1,
-                                    display: "flex",
-                                    mr: 1,
+                    <Grid
+                      item
+                      xs={4}
+                      sm={8}
+                      md={12}
+                      sx={{
+                        borderBottom: 1,
+                        paddingBottom: "8px",
+                        borderColor: "rgba(0,0,0,0.12)",
+                      }}
+                    >
+                      <Typography variant="h6">Bank List</Typography>
+                    </Grid>
+                    <Grid item xs={4} sm={8} md={12}>
+                      {loading ? (
+                        <Box
+                          height="300px"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          sx={{ m: 2 }}
+                        >
+                          <CircularProgress />
+                        </Box>
+                      ) : (
+                        <div style={{ height: 500, width: "100%", marginBottom: "20px" }}>
+                          {bankNamesList.length === 0 ? (
+                            <NoData
+                              Icon={<ListIcon sx={{ fontSize: 72, color: "red" }} />}
+                              height="auto"
+                              text="No data found"
+                              secondaryText=""
+                              isButton={false}
+                            />
+                          ) : (
+                            <>
+                              <Grid
+                                item
+                                xs={4}
+                                sm={8}
+                                md={12}
+                                sx={{
+                                  alignItems: "flex-end",
+                                  justifyContent: "flex-end",
+                                  mb: 1,
+                                  display: "flex",
+                                  mr: 1,
+                                }}
+                              >
+                                <TextField
+                                  placeholder="Search"
+                                  variant="outlined"
+                                  size="small"
+                                  onChange={(e) => {
+                                    onChangeSearch((e.target as HTMLInputElement).value);
                                   }}
-                                >
-                                  <TextField
-                                    placeholder="Search"
-                                    variant="outlined"
-                                    size="small"
-                                    onChange={(e) => {
-                                      onChangeSearch((e.target as HTMLInputElement).value);
-                                    }}
-                                    value={searchQuery}
-                                    InputProps={{
-                                      startAdornment: (
-                                        <InputAdornment position="start">
-                                          <SearchIcon />
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                </Grid>
-                                <DataGrid
-                                  style={{
-                                    opacity: dataGridOpacity,
-                                    pointerEvents: dataGridPointer,
-                                  }}
-                                  autoHeight={true}
-                                  rows={bankNameListTemp}
-                                  columns={userBankDetailsColumns}
-                                  pageSize={pageSize}
-                                  rowsPerPageOptions={[5, 10, 20]}
-                                  onPageSizeChange={(newPageSize) =>
-                                    setPageSize(newPageSize)
-                                  }
-                                  disableSelectionOnClick
-                                  onCellClick={(
-                                    param,
-                                    e: React.MouseEvent<HTMLElement>
-                                  ) => {
-                                    const arrActivity = [...bankNameList];
-                                    let a: UserBankListModel | undefined =
-                                      arrActivity.find((el) => el.id === param.row.id);
-                                    handelEditAndDelete((e.target as any).textContent, a);
-                                  }}
-                                  sx={{
-                                    "& .MuiDataGrid-columnHeaders": {
-                                      backgroundColor: theme.palette.primary.main,
-                                      color: theme.palette.primary.contrastText,
-                                    },
-                                    mb: 1,
+                                  value={searchQuery}
+                                  InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <SearchIcon />
+                                      </InputAdornment>
+                                    ),
                                   }}
                                 />
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </Grid>
-
-
-
+                              </Grid>
+                              <DataGrid
+                                style={{
+                                  opacity: dataGridOpacity,
+                                  pointerEvents: dataGridPointer,
+                                }}
+                                autoHeight={true}
+                                rows={bankNamesListTemp}
+                                columns={userBankDetailsColumns}
+                                pageSize={pageSize}
+                                rowsPerPageOptions={[5, 10, 20]}
+                                onPageSizeChange={(newPageSize) =>
+                                  setPageSize(newPageSize)
+                                }
+                                disableSelectionOnClick
+                                onCellClick={(
+                                  param,
+                                  e: React.MouseEvent<HTMLElement>
+                                ) => {
+                                  const arrActivity = [...bankNamesList];
+                                  let a: UserBankListModel | undefined =
+                                    arrActivity.find((el) => el.id === param.row.id);
+                                  handelEditAndDelete((e.target as any).textContent, a);
+                                }}
+                                sx={{
+                                  "& .MuiDataGrid-columnHeaders": {
+                                    backgroundColor: theme.palette.primary.main,
+                                    color: theme.palette.primary.contrastText,
+                                  },
+                                  mb: 1,
+                                }}
+                              />
+                            </>
+                          )}
+                        </div>
+                      )}
                     </Grid>
                   </TabPanel>
-
-
-
                 </Grid>
               </>
             )}

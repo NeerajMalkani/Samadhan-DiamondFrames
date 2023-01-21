@@ -5417,7 +5417,7 @@ export const userBankDetailsColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "accountNo",
+    field: "accountNumber",
     headerName: "A/c No",
     flex: 1.8,
     minWidth: 140,
@@ -5429,7 +5429,7 @@ export const userBankDetailsColumns: GridColDef[] = [
     minWidth: 140,
   },
   {
-    field: "bankBranchName",
+    field: "branchName",
     headerName: "Bank Branch Name",
     flex: 1.8,
     minWidth: 140,
@@ -5484,6 +5484,80 @@ export const userBankDetailsColumns: GridColDef[] = [
         <IconButton aria-label="delete">
           <DeleteIcon />
         </IconButton> */}
+      </Grid>
+    ),
+  },
+];
+
+export const addBankColumns: GridColDef[] = [
+  {
+    field: "srno",
+    headerName: "Sr. No.",
+    flex: 0.8,
+    minWidth: 60,
+    sortable: false,
+  },
+  {
+    field: "companyBranchName",
+    headerName: "Company Branch Name",
+    flex: 1.4,
+    minWidth: 140,
+  },
+  {
+    field: "accountNumber",
+    headerName: "A/c No",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "bankName",
+    headerName: "Bank Name",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "branchName",
+    headerName: "Bank Branch Name",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "ifscCode",
+    headerName: "IFSC Code",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "cardTypeName",
+    headerName: "Crad Type Name",
+    flex: 1,
+    minWidth: 140,
+  },
+  {
+    field: "openingBalance",
+    headerName: "Opening Balance",
+    flex: 1,
+    minWidth: 140,
+  },
+
+  {
+    field: "display",
+    headerName: "Display",
+    flex: 1,
+    minWidth: 140,
+    sortable: false,
+  },
+  {
+    field: "action",
+    headerName: "Action",
+    flex: 1,
+    minWidth: 100,
+    sortable: false,
+    renderCell: (e) => (
+      <Grid>
+        <Button variant="text" sx={{ mr: 1 }}>
+          Edit
+        </Button>
       </Grid>
     ),
   },

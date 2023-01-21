@@ -66,10 +66,10 @@ import SendRateCardList from "../ui/Contractor/RateCard/SendRateCardList";
 import QuotationWise from "../ui/Contractor/QuotationAndEstimation/QuotationWise";
 // import CategoryName from "../ui/GeneralUsers/PocketDiary/Setting/CategoryName";
 // import SubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/SubCategoryName";
-import BudgetSetup from "../ui/GeneralUsers/PocketDiary/Setting/BudgetSetup";
-import AddExpenses from "../ui/GeneralUsers/PocketDiary/AddExpenses";
-import Sources from "../ui/GeneralUsers/PocketDiary/Source";
-import Inbox from "../ui/GeneralUsers/PocketDiary/Inbox";
+import BudgetSetup from "../ui/Common/PocketDiary/Setting/BudgetSetup";
+import AddExpenses from "../ui/Common/PocketDiary/AddExpenses";
+import Sources from "../ui/Common/PocketDiary/Source";
+import Inbox from "../ui/Common/PocketDiary/Inbox";
 import DashboardManufacture from "../ui/DashboardManufacture";
 import BrandConversionValue from "../ui/Manufacture/ProductionUnitMaster/BrandConversionValue";
 import OpeningStock from "../ui/Manufacture/ProductionUnitMaster/OpeningStock";
@@ -95,16 +95,17 @@ import EmployeeAttendenceEntryList from "../ui/Manufacture/Employee/EmployeeAtte
 import ACategoryName from "../ui/Admin/PocketDairyMaster/ACategoryName";
 import ASubCategoryName from "../ui/Admin/PocketDairyMaster/ASubcategoryName";
 
-import GCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GCategoryName";
-import GSubCategoryName from "../ui/GeneralUsers/PocketDiary/Setting/GSubCategoryName";
-import GMyContacts from "../ui/GeneralUsers/PocketDiary/Setting/GMyContacts";
-import GMyBank from "../ui/GeneralUsers/PocketDiary/Setting/GMyBank";
-import AddSource from "../ui/GeneralUsers/PocketDiary/AddSource";
+import GCategoryName from "../ui/Common/PocketDiary/Setting/GCategoryName";
+import GSubCategoryName from "../ui/Common/PocketDiary/Setting/GSubCategoryName";
+import GMyContacts from "../ui/Common/PocketDiary/Setting/GMyContacts";
+import GMyBank from "../ui/Common/PocketDiary/Setting/GMyBank";
+import AddSource from "../ui/Common/PocketDiary/AddSource";
 import ABrandConversionValue from "../ui/Admin/ProductionUnitMaster/ABrandConversationValue";
 import WidthOfGPCoil from "../ui/Admin/ProductionUnitMaster/WidthOfGPCoil";
 import MassOfZincCoating from "../ui/Admin/ProductionUnitMaster/MassOfZIncCoating";
 
-import AddExpensesList from "../ui/GeneralUsers/PocketDiary/ExpensesList";
+import AddExpensesList from "../ui/Common/PocketDiary/ExpensesList";
+import AddBank from "../ui/Common/Organization/AddBank";
 
 
 
@@ -185,14 +186,14 @@ const AppRoutes = () => {
               <Route path="contractor/ratecard/sendratecard/edit/:id" element={<SendRateCard />} />
               <Route path="contractor/ratecard/sendratecard" element={<SendRateCard />} />
               <Route path="contractor/ratecard/sendratecardlist" element={<SendRateCardList />} />
-              <Route path="contractor/quotationandestimation/quotationwise" element={<QuotationWise />} />
+              <Route path="contractor/quotationandeListestimation/quotationwise" element={<QuotationWise />} />
               {/* <Route path="generalusers/pocketdiary/setting/categoryname" element={<CategoryName/>}/>
               <Route path="generalusers/pocketdiary/setting/subcategoryname" element={<SubCategoryName/>}/> */}
 
-              <Route path="generalusers/pocketdiary/setting/budgetsetup" element={<BudgetSetup/>}/>
-              <Route path="generalusers/pocketdiary/addexpenses" element={<AddExpenses/>}/>
-              <Route path="generalusers/pocketdiary/source" element={<Sources/>}/>
-              <Route path="generalusers/pocketdiary/inbox" element={<Inbox/>}/>
+              <Route path="common/pocketdiary/setting/budgetsetup" element={<BudgetSetup/>}/>
+              <Route path="common/pocketdiary/addexpenses" element={<AddExpenses/>}/>
+              <Route path="common/pocketdiary/source" element={<Sources/>}/>
+              <Route path="common/pocketdiary/inbox" element={<Inbox/>}/>
               <Route path="dashboardmanufacture" element={<DashboardManufacture/>}/>
               <Route path="manufacture/poductionunitmaster/brandconversionvalue" element={<BrandConversionValue/>}/>
               <Route path="manufacture/productionunitmaster/openingstock" element={<OpeningStock/>}/>
@@ -218,15 +219,16 @@ const AppRoutes = () => {
               <Route path="admin/pocketddairymaster/acategoryname" element={<ACategoryName/>}/>
               <Route path="admin/pocketddairymaster/asubcategoryname" element={<ASubCategoryName/>}/>
 
-              <Route path="generalusers/pocketdiary/setting/gcategoryname" element={<GCategoryName/>}/>
-              <Route path="generalusers/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName/>}/>
-              <Route path="generalusers/pocketdiary/setting/gmycontacts" element={<GMyContacts/>}/>
-              <Route path="generalusers/pocketdiary/setting/gmybank" element={<GMyBank/>}/>
-              <Route path="generalusers/pocketdiary/addsource" element={<AddSource/>}/>
+              <Route path="common/pocketdiary/setting/gcategoryname" element={<GCategoryName/>}/>
+              <Route path="common/pocketdiary/setting/gsubcategoryname" element={<GSubCategoryName/>}/>
+              <Route path="common/pocketdiary/setting/gmycontacts" element={<GMyContacts/>}/>
+              <Route path="common/pocketdiary/setting/gmybank" element={<GMyBank/>}/>
+              <Route path="common/pocketdiary/addsource" element={<AddSource/>}/>
               <Route path="admin/productionunitmaster/abrandconversationvalue" element={<ABrandConversionValue/>}/>
               <Route path="admin/productionunitmaster/widthofgpcoil" element={<WidthOfGPCoil/>}/>
               <Route path="admin/productionunitmaster/massofzinccoating" element={<MassOfZincCoating/>}/>
-              <Route path="generalusers/pocketdiary/expenseslist" element={<AddExpensesList/>}/>
+              <Route path="common/pocketdiary/expenseslist" element={<AddExpensesList/>}/>
+              <Route path="common/organization/addbank" element={<AddBank/>}/>
               
 
             </Routes>

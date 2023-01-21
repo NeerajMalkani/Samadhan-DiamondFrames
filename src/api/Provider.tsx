@@ -266,6 +266,15 @@ class Provider {
     getcategoryname_pckaddexpensesform:"getcategoryname_pckaddexpensesform/",
 
     userbankrefnocheck:"userbankrefnocheck/",
+    userbankcreate:"userbankcreate/",
+    userbankupdate:"userbankupdate/",	
+    getcardtype_pckmypersonalbankform:"getcardtype_pckmypersonalbankform/",
+
+    getbranchnamebankform:"getbranchnamebankform/",
+    branchbankrefnocheck:"branchbankrefnocheck/",
+    branchbankcreate:"branchbankcreate/",
+    branchbankupdate:"branchbankupdate/",
+
   };
   getAll(resource: string) {
     return axios.get<Array<any>>(`${BASE_URL_OLD}/${resource}`, {

@@ -476,7 +476,7 @@ const Sources = () => {
           <Grid item xs={4} sm={8} md={12}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="h4">Add/Edit Service Product</Typography>
-              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/generalusers/pocketdiary/addsource")}>
+              <Button variant="contained" startIcon={<AddIcon sx={{ marginRight: 1 }} />} onClick={() => navigate("/common/pocketdiary/addsource")}>
                 View List
               </Button>
             </Stack>

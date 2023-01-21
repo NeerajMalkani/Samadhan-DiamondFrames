@@ -1288,9 +1288,42 @@ export interface GSMModel {
 export interface UserBankListModel {
   id: number;
   srno: number;
-  bankNameList: string;
-  group_name: string;
+  accountHolderName: string;
+  accountNumber: string;
+  bankName: string;
+  branchName: string;
+  ifscCode: string;
+  cardTypeName: string;
+  openingBalance: string;
+  remarks:string;
   display: string;
   action: string;
-  group_refno: number;
+  bank_refno:number;
+  
+}
+
+export interface CompanyBranchNameModel {
+  id: number;
+  locationName:string;
+  branchType: string;
+  isActive: string;
+  oldBranchType:string; 
+}
+
+export interface AddBankListModel {
+  id: number;
+  srno: number;
+  companyBranchNameID: number;
+  companyBranchName: string;
+  accountNumber: string;
+  bankName: string;
+  branchName: string;
+  ifscCode: string;
+  cardTypeName: string;
+  openingBalance: string;
+  display: string;
+  action: string;
+  branchID:string;
+  bank_refno:number;
+  
 }

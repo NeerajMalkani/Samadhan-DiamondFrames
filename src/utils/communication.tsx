@@ -94,4 +94,5 @@ export const communication = {
   QuoteApproved: "You have approved the quotation successfully",
   QuoteRejected: "You have rejected the quotation successfully",
   BlankUnitOfSales: "Please select unit of sales",
+  AccountHolderName: "Please enter Account Holder Name",
 };

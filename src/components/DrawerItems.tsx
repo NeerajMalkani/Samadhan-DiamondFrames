@@ -361,7 +361,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/setting/gcategoryname`);
+              navigate(`/common/pocketdiary/setting/gcategoryname`);
             }, 300);
           },
         },
@@ -371,7 +371,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/setting/gsubcategoryname`);
+              navigate(`/common/pocketdiary/setting/gsubcategoryname`);
             }, 300);
           },
         },
@@ -391,17 +391,17 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/setting/gmybank`);
+              navigate(`/common/pocketdiary/setting/gmybank`);
             }, 300);
           },
         },
         {
           title: "Budget Setup",
-          isActive: window.location.href.toLowerCase().includes("budgetSetup"),
+          isActive: window.location.href.toLowerCase().includes("budgetsetup"),
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/setting/budgetsetup`);
+              navigate(`/common/pocketdiary/setting/budgetsetup`);
             }, 300);
           },
         },
@@ -411,7 +411,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/addexpenses`);
+              navigate(`/common/pocketdiary/addexpenses`);
             }, 300);
           },
         },
@@ -421,7 +421,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/source`);
+              navigate(`/common/pocketdiary/source`);
             }, 300);
           },
         },
@@ -431,7 +431,7 @@ const DrawerItems = ({ open }: OpenObj) => {
           navigation: () => {
             open[1](false);
             setTimeout(() => {
-              navigate(`/generalusers/pocketdiary/inbox`);
+              navigate(`/common/pocketdiary/inbox`);
             }, 300);
           },
         },
@@ -708,6 +708,16 @@ const DrawerItems = ({ open }: OpenObj) => {
             open[1](false);
             setTimeout(() => {
               navigate(`/common/organization/branch`);
+            }, 300);
+          },
+        },
+        {
+          title: "Add Bank",
+          isActive: window.location.href.toLowerCase().includes("addbank"),
+          navigation: () => {
+            open[1](false);
+            setTimeout(() => {
+              navigate(`/common/organization/addbank`);
             }, 300);
           },
         },
