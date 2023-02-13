@@ -278,6 +278,8 @@ class Provider {
     pckmypersonalbankrefnocheck:"pckmypersonalbankrefnocheck/",
     pckmypersonalbankcreate:"pckmypersonalbankcreate/",
     pckmypersonalbankupdate:"pckmypersonalbankupdate/",
+    getcategoryname_pckaddsourceform: "getcategoryname_pckaddsourceform/",
+    getsubcategoryname_pckaddsourceform: "getsubcategoryname_pckaddsourceform/",
 
   };
   getAll(resource: string) {

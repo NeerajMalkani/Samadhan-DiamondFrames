@@ -719,7 +719,7 @@ export interface RateCardModel {
   display: string;
   action: string;
   actualUnitName: string;
-  contractorProductID:string;
+  contractorProductID: string;
 }
 
 export interface SendRateCardModel {
@@ -1067,13 +1067,13 @@ export interface MyBankModel {
   myBank: string;
 }
 export interface ReceiptModeNameModel {
-  id: number;
-  receiptMode: string;
+  pckModeID: string;
+  pckModeName: string;
 }
 
 export interface SourceNameModel {
-  id: number;
-  source: string;
+  pckCategoryID: string;
+  categoryName: string;
 }
 
 export interface EntryTypeModel {

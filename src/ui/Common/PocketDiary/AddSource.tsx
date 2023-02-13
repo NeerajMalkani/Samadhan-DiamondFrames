@@ -25,6 +25,7 @@ const AddSource = () => {
   }, []);
 
   //#region Variables
+  const [pktEntryTypeID, setPktEntryTypeID] = useState("0");
   const [loading, setLoading] = useState(true);
   const [dataGridOpacity, setDataGridOpacity] = useState<number>(1);
   const [dataGridPointer, setDataGridPointer] = useState<"auto" | "none">("auto");
@@ -44,12 +45,14 @@ const AddSource = () => {
   //#region Functions
 
   useEffect(() => {
-    FetchRecepientMode();
+    FetchEntryType();
+    //FetchRecepientMode();
 
   }, []);
 
 
   const FetchEntryType = () => {
+    debugger;
     let params = {
       data: {
         Sess_UserRefno: cookies.dfc.UserID,
@@ -60,8 +63,8 @@ const AddSource = () => {
       .then((response: any) => {
         if (response.data && response.data.code === 200) {
           if (response.data.data) {
+            debugger;
             // response.data.data = APIConverter(response.data.data);
-
 
           }
         } else {
@@ -69,7 +72,6 @@ const AddSource = () => {
           setIsSnackbarOpen(true);
           setSnackbarType("info");
         }
-        setLoading(false);
       })
       .catch((e) => {
         setLoading(false);

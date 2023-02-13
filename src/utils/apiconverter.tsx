@@ -40,14 +40,6 @@ export const APIConverter = (response: any, type?: string) => {
       renameKey(obj, "group_refno", "groupID");
     }
 
-    if (type == "contractor_bank") {
-      renameKey(obj, "branch_name", "companyBranchName");
-      renameKey(obj, "branch_refno", "branchID");
-      
-      
-
-    }
-
     renameKey(obj, "product_refno", "productID");
     renameKey(obj, "product_name", "productName");
     renameKey(obj, "product_refno", "id");
@@ -228,14 +220,6 @@ export const APIConverter = (response: any, type?: string) => {
     renameKey(obj, "employee_type_refno", "employeeType");
     renameKey(obj, "reporting_user_refno", "reportingAuthorityID");
     renameKey(obj, "contractor_product_refno", "contractorProductID");
-    renameKey(obj, "pck_mode_refno", "pckModeID");
-    renameKey(obj, "pck_mode_name", "pckModeName");
-    renameKey(obj, "pck_category_refno", "pckCategoryID");
-    renameKey(obj, "pck_category_name", "pckCategoryName");
-    renameKey(obj, "bank_ac_holder_name", "accountHolderName");
-    renameKey(obj, "cardtype_name", "cardTypeName");
-    renameKey(obj, "opening_balance", "openingBalance");
-    renameKey(obj, "branch_refno", "companyBranchName");
     
 
 
